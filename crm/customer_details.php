@@ -30,7 +30,7 @@
 	require '../PHPMailer/src/PHPMailer.php';
 	require '../PHPMailer/src/SMTP.php';
 	
-	function php_mailer($from, $to, $user, $subject, $body) {
+	function php_mailer($from, $to, $subject, $body) {
 
 		$mail = new PHPMailer(true);
 		try {
@@ -44,8 +44,8 @@
 		    $mail->Port       = 465;
 		    $mail->CharSet = 'UTF-8';
 		    $mail->setFrom('services@interlinkiq.com', 'Interlink IQ');
-		    $mail->addAddress($to, $user);
-		    $mail->addReplyTo($from, $user);
+		    $mail->addAddress($to);
+		    $mail->addReplyTo($from);
 		    $mail->isHTML(true);
 		    $mail->Subject = $subject;
 		    $mail->Body    = $body;
@@ -75,6 +75,10 @@
         }
     
         return $current_userEmployerID;
+    }
+    
+    function record_activities($contact_id, $activity, $type, $employee) {
+        $stmt = $conn->prepare('INSERT INTO tbl_crm_history_data (contact_id, user_id, performer_name, action_taken, type, action_id) VALUES (?, ?, ?, ?, ?, ?)');
     }
     
     function get_name($email) {
@@ -113,7 +117,7 @@
     // Details tab
     if(isset($_POST['get_contact_details'])) {
         $id = $_POST['id'];
-        $stmt = $conn->prepare('SELECT account_rep, account_name, account_address, account_country, Account_Source, parent_account, account_email, account_phone, account_fax, account_website, account_facebook, account_twitter, account_linkedin, account_interlink, flag, Account_Directory, account_status FROM tbl_Customer_Relationship WHERE crm_id = ?');
+        $stmt = $conn->prepare('SELECT duns, fda_reg_no, account_rep, account_name, account_address, account_state, account_country, Account_Source, parent_account, account_email, account_phone, account_fax, account_website, account_facebook, account_twitter, account_linkedin, account_interlink, flag, Account_Directory, account_status FROM tbl_Customer_Relationship WHERE crm_id = ?');
 
         if ($stmt == false) {
             echo 'Error preparing Statement: ' . $conn->error;
@@ -123,13 +127,16 @@
         $stmt->bind_param('i', $id);
         $stmt->execute();
 
-        $stmt->bind_result($account_rep, $account_name, $account_address, $account_country, $Account_Source, $parent_account, $account_email, $account_phone, $account_fax, $account_website, $account_facebook, $account_twitter, $account_linkedin, $account_interlink, $flag, $Account_Directory, $account_status);
+        $stmt->bind_result($duns, $fda_reg, $account_rep, $account_name, $account_address, $account_state, $account_country, $Account_Source, $parent_account, $account_email, $account_phone, $account_fax, $account_website, $account_facebook, $account_twitter, $account_linkedin, $account_interlink, $flag, $Account_Directory, $account_status);
 
         if ($stmt->fetch()) {
             $data = [
+                'duns'                  =>  $duns,
+                'fda_reg_no'            =>  $fda_reg,
                 'account_rep'           =>  $account_rep,
                 'account_name'          =>  $account_name,
                 'account_address'       =>  $account_address,
+                'account_state'         =>  $account_state,
                 'account_country'       =>  $account_country,
                 'Account_Source'        =>  $Account_Source,
                 'parent_account'        =>  $parent_account,
@@ -156,10 +163,13 @@
 
     elseif(isset($_POST['update_contact_details'])) {
         $id                 =   mysqli_real_escape_string($conn, $_POST['id']);
+        $duns               =   mysqli_real_escape_string($conn, $_POST['duns']);
+        $fda_reg            =   mysqli_real_escape_string($conn, $_POST['fda_reg_no']);
         $account_rep        =   mysqli_real_escape_string($conn, $_POST['account_rep']);
         $account_name       =   mysqli_real_escape_string($conn, $_POST['account_name']);
         $account_address    =   mysqli_real_escape_string($conn, $_POST['account_address']);
         $account_country    =   mysqli_real_escape_string($conn, $_POST['account_country']);
+        $account_state      =   mysqli_real_escape_string($conn, $_POST['account_state']);
         $account_source     =   mysqli_real_escape_string($conn, $_POST['Account_Source']);
         $parent_account     =   mysqli_real_escape_string($conn, $_POST['parent_account']);
         $account_email      =   mysqli_real_escape_string($conn, $_POST['account_email']);
@@ -186,9 +196,12 @@
 
         $stmt = $conn->prepare("UPDATE tbl_Customer_Relationship 
                                     SET  account_rep = ?,
+                                        duns = ?,
+                                        fda_reg_no = ?,
                                         account_name = ?,
                                         account_address = ?,
                                         account_country = ?,
+                                        account_state = ?,
                                         Account_Source = ?,
                                         parent_account = ?,
                                         account_email = ?,
@@ -207,7 +220,7 @@
             exit;
         }
 
-        $stmt->bind_param('ssssssssssssssssi', $account_rep, $account_name, $account_address, $account_country, $account_source, $parent_account, $account_email, $account_phone, $account_fax, $account_website, $account_facebook, $account_twitter, $account_linkedin, $account_interlink, $status, $flag, $id);
+        $stmt->bind_param('sssssssssssssssssssi', $account_rep, $duns, $fda_reg, $account_name, $account_address, $account_country, $account_state, $account_source, $parent_account, $account_email, $account_phone, $account_fax, $account_website, $account_facebook, $account_twitter, $account_linkedin, $account_interlink, $status, $flag, $id);
 
         if($stmt->execute()) {
             echo 'Contact details updated successfully';
@@ -349,10 +362,159 @@
             echo 'Error preparing Statement: '. $conn->error;
         }
         $stmt->bind_param('ssssssii', $task, $assignee, $description, $startdate, $duedate, $contact, $_COOKIE['ID'], $status);
-        $stmt->execute();
-
+        if($stmt->execute()) {
+            $user_id    = isset($_COOKIE['ID']) ? $_COOKIE['ID'] : null; // Check if cookie exists
+            $first_name = isset($_COOKIE['first_name']) ? $_COOKIE['first_name'] : 'Unknown';
+            $last_name  = isset($_COOKIE['last_name']) ? $_COOKIE['last_name'] : 'User';
+            $last_inserted_id = $stmt->insert_id;
+            $stmt->close();
+    
+            // Prepare data for the history log
+            $name = $first_name . ' ' . $last_name;
+            $action = 'Added New Task';
+            $type = 3; // Assuming 2 corresponds to notes in your system
+    
+            // Insert into `tbl_crm_history_data`
+            $historyStmt = $conn->prepare("INSERT INTO tbl_crm_history_data (contact_id, user_id, performer_name, action_taken, type, action_id) VALUES (?, ?, ?, ?, ?, ?)");
+            if ($historyStmt === false) {
+                echo "Error preparing history statement: " . $conn->error;
+                exit;
+            }
+    
+            $historyStmt->bind_param("iissii", $contact, $user_id, $name, $action, $type, $last_inserted_id);
+    
+            if ($historyStmt->execute()) {
+                echo "New notes added successfully.";
+            } else {
+                echo "Failed to log the action: " . $historyStmt->error;
+            }
+        }
         $stmt->close();
         $conn->close();
+    }
+    
+    elseif (isset($_POST['send_campaign'])) {
+        $id = mysqli_real_escape_string($conn, $_POST['id']);
+        $name = mysqli_real_escape_string($conn, $_POST['name']);
+        $from = mysqli_real_escape_string($conn, $_POST['from']);
+        $email = mysqli_real_escape_string($conn, $_POST['email']);
+        $subject = mysqli_real_escape_string($conn, $_POST['subject']);
+        $body = mysqli_real_escape_string($conn, $_POST['body']);
+        $status = 2;
+    
+        $stmt = $conn->prepare('INSERT INTO tbl_Customer_Relationship_Campaign 
+            (enterprise_id, crm_ids, Campaign_Name, Campaign_from, Campaign_Recipients, Campaign_Subject, Campaign_body, Campaign_Status, userID) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    
+        if ($stmt === false) {
+            error_log('Error preparing statement: ' . $conn->error);
+            $response = array('status' => 'error', 'message' => 'Failed to prepare statement');
+            echo json_encode($response);
+            exit;
+        }
+    
+        if (!$stmt->bind_param('iisssssii', $enterprise_id, $id, $name, $from, $email, $subject, $body, $status, $portal_user)) {
+            error_log('Error binding parameters: ' . $stmt->error);
+            $response = array('status' => 'error', 'message' => 'Failed to bind parameters');
+            echo json_encode($response);
+            exit;
+        }
+    
+        if (!$stmt->execute()) {
+            error_log('Error executing statement: ' . $stmt->error);
+            $response = array('status' => 'error', 'message' => 'Failed to execute query');
+            echo json_encode($response);
+            exit;
+        }
+    
+        // Record history after successful insertion
+        $last_inserted_id = $stmt->insert_id;
+        $user_id    = isset($_COOKIE['ID']) ? $_COOKIE['ID'] : null;
+        $first_name = isset($_COOKIE['first_name']) ? $_COOKIE['first_name'] : 'Unknown';
+        $last_name  = isset($_COOKIE['last_name']) ? $_COOKIE['last_name'] : 'User';
+    
+        $name = $first_name . ' ' . $last_name;
+        $action = 'Added New Campaign';
+        $type = 1;
+    
+        $historyStmt = $conn->prepare("INSERT INTO tbl_crm_history_data (contact_id, user_id, performer_name, action_taken, type, action_id) VALUES (?, ?, ?, ?, ?, ?)");
+        if ($historyStmt === false) {
+            error_log("Error preparing history statement: " . $conn->error);
+            $response = array('status' => 'error', 'message' => 'Failed to prepare history query');
+            echo json_encode($response);
+            exit;
+        }
+    
+        $historyStmt->bind_param("iissii", $id, $user_id, $name, $action, $type, $last_inserted_id);
+        if (!$historyStmt->execute()) {
+            error_log("Error executing history query: " . $historyStmt->error);
+        }
+        $historyStmt->close();
+    
+        // Send email
+        $mail = php_mailer($from, $email, $subject, $body);
+        if (!$mail) {
+            error_log('Error sending email');
+            $response = array('status' => 'error', 'message' => 'Failed to send email');
+            echo json_encode($response);
+            exit;
+        }
+    
+        $response = array('status' => 'success', 'message' => 'Campaign Sent Successfully');
+        echo json_encode($response);
+    
+        $stmt->close();
+        $conn->close();
+    }
+
+
+    elseif (isset($_POST['send_email'])) {
+        $id = mysqli_real_escape_string($conn, $_POST['id']);
+        $from = mysqli_real_escape_string($conn, $_POST['from']);
+        $email = mysqli_real_escape_string($conn, $_POST['email']);
+        $subject = mysqli_real_escape_string($conn, $_POST['subject']);
+        $body = mysqli_real_escape_string($conn, $_POST['body']);
+        $status = 2;
+        // $portal_user
+        $stmt = $conn->prepare('INSERT INTO tbl_Customer_Relationship_Mailing 
+            (crm_ids, Recipients, Subject, Message_body, user_cookies) 
+            VALUES (?, ?, ?, ?, ?)');
+    
+        if ($stmt === false) {
+            error_log('Error preparing statement: ' . $conn->error);
+            $response = array('status' => 'error', 'message' => 'Failed to prepare statement');
+            echo json_encode($response);
+            exit;
+        }
+    
+        if (!$stmt->bind_param('isssi', $id, $email, $subject, $body, $portal_user)) {
+            error_log('Error binding parameters: ' . $stmt->error);
+            $response = array('status' => 'error', 'message' => 'Failed to bind parameters');
+            echo json_encode($response);
+            exit;
+        }
+    
+        if (!$stmt->execute()) {
+            error_log('Error executing statement: ' . $stmt->error);
+            $response = array('status' => 'error', 'message' => 'Failed to execute query');
+            echo json_encode($response);
+            exit;
+        }
+    
+        // Send email
+        $mail = php_mailer($from, $email, $subject, $body);
+        if (!$mail) {
+            error_log('Error sending email');
+            $response = array('status' => 'error', 'message' => 'Failed to send email');
+            echo json_encode($response);
+            exit;
+        }
+    
+        $response = array('status' => 'success', 'message' => 'Email Sent Successfully');
+        echo json_encode($response);
+    
+        $stmt->close();
+        $conn->close();  
     }
 
     elseif(isset($_POST['get_task_details'])) {
@@ -449,26 +611,60 @@
         echo json_encode($notes);
     }
 
-    elseif(isset($_POST['add_notes'])) {
+    elseif (isset($_POST['add_notes'])) {
         $notes      = $_POST['notes'];
         $contactid  = $_POST['contactid'];
-        $taskid     = $_POST['taskid'];
-        $user_id    = $_COOKIE['ID'];
-
-        $stmt = $conn->prepare("INSERT INTO tbl_Customer_Relationship_Notes (Notes, crm_ids, taskid, user_cookies) VALUES (?, ?, ?, ?)");
-        
-        if($stmt  === false) {
-            echo "Error preparing Statement: ". $conn->error;
+        $user_id    = isset($_COOKIE['ID']) ? $_COOKIE['ID'] : null; // Check if cookie exists
+        $first_name = isset($_COOKIE['first_name']) ? $_COOKIE['first_name'] : 'Unknown';
+        $last_name  = isset($_COOKIE['last_name']) ? $_COOKIE['last_name'] : 'User';
+    
+        // Validate required data
+        if (!$notes || !$contactid || !$user_id) {
+            echo "Missing required fields.";
             exit;
         }
-
-        $stmt->bind_param("siii", $notes, $contactid, $taskid, $user_id);
-        $stmt->execute();
-        echo "New notes added successfully";
-
-        $stmt->close();
+    
+        // Insert into `tbl_Customer_Relationship_Notes`
+        $stmt = $conn->prepare("INSERT INTO tbl_Customer_Relationship_Notes (Notes, crm_ids, user_cookies) VALUES (?, ?, ?)");
+        if ($stmt === false) {
+            echo "Error preparing statement: " . $conn->error;
+            exit;
+        }
+    
+        $stmt->bind_param("sii", $notes, $contactid, $user_id);
+    
+        if ($stmt->execute()) {
+            $last_inserted_id = $stmt->insert_id; // Use `insert_id` for better compatibility
+            $stmt->close();
+    
+            // Prepare data for the history log
+            $name = $first_name . ' ' . $last_name;
+            $action = 'Added New Notes';
+            $type = 2; // Assuming 2 corresponds to notes in your system
+    
+            // Insert into `tbl_crm_history_data`
+            $historyStmt = $conn->prepare("INSERT INTO tbl_crm_history_data (contact_id, user_id, performer_name, action_taken, type, action_id) VALUES (?, ?, ?, ?, ?, ?)");
+            if ($historyStmt === false) {
+                echo "Error preparing history statement: " . $conn->error;
+                exit;
+            }
+    
+            $historyStmt->bind_param("iissii", $contactid, $user_id, $name, $action, $type, $last_inserted_id);
+    
+            if ($historyStmt->execute()) {
+                echo "New notes added successfully.";
+            } else {
+                echo "Failed to log the action: " . $historyStmt->error;
+            }
+    
+            $historyStmt->close();
+        } else {
+            echo "Failed to insert notes: " . $stmt->error;
+        }
+    
         $conn->close();
     }
+
 
     elseif(isset($_POST["get_notes_details"])) {
         $id = $_POST['id'];

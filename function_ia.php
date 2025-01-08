@@ -172,7 +172,7 @@
 		        <td>'.$audit_scope.'</td>
 		        <td class="text-center">
 		            <a href="#modalEditForm" data-toggle="modal" class="btn btn-xs dark m-0" onclick="btnEditForm('.$ID.')" title="Edit"><i class="fa fa-pencil"></i></a>
-		            <a href="'.$base_url.'pdf_dom?id='.$ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+		            <a href="'.$base_url.'pdf_ia?id='.$ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 		            <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$ID.')" title="Delete"><i class="fa fa-trash"></i></a>
 		            <a href="javascript:;" class="btn btn-xs btn-info m-0" onclick="btnCloseForm(this, '.$ID.')" title="Close"><i class="fa fa-check"></i></a>
 		        </td>';

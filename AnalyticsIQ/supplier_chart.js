@@ -431,15 +431,64 @@ am5.ready(function() {
   fetch('AnalyticsIQ/supplier_send_data.php')
     .then(response => response.json())
     .then(data => {
+    //   var data1 = [
+    //     { category: "Total Sent", value: parseInt(data.donutData.total_send), open: 0, stepValue: parseInt(data.donutData.total_send), columnConfig: { fill: am5.color(0x4da6ff) }, displayValue: parseInt(data.donutData.total_send) },
+    //     { category: "Pending", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending), open: parseInt(data.donutData.total_send), stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending), columnConfig: { fill: am5.color(0xf4b943) }, displayValue: parseInt(data.donutData.pending) },
+    //     { category: "Approved", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved), open: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending), stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved), columnConfig: { fill: am5.color(0x32CD32) }, displayValue: parseInt(data.donutData.approved) },
+    //     { category: "Non Approved", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved), open: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved), stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved), columnConfig: { fill: am5.color(0xff0000) }, displayValue: parseInt(data.donutData.non_approved) },
+    //     { category: "Emergency Use Only", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only), open: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved), stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only), columnConfig: { fill: am5.color(0xff8080) }, displayValue: parseInt(data.donutData.emergency_use_only) },
+    //     { category: "Do Not Use", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only), open: 0, columnConfig: { fill: am5.color(0xffff00) }, displayValue: parseInt(data.donutData.do_not_use) }
+    //   ];
       var data1 = [
-        { category: "Total Send", value: parseInt(data.donutData.total_send), open: 0, stepValue: parseInt(data.donutData.total_send), columnConfig: { fill: am5.color(0x4da6ff) }, displayValue: parseInt(data.donutData.total_send) },
-        { category: "Pending", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending), open: parseInt(data.donutData.total_send), stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending), columnConfig: { fill: am5.color(0xf4b943) }, displayValue: parseInt(data.donutData.pending) },
-        { category: "Approved", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved), open: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending), stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved), columnConfig: { fill: am5.color(0x32CD32) }, displayValue: parseInt(data.donutData.approved) },
-        { category: "Non Approved", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved), open: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved), stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved), columnConfig: { fill: am5.color(0xff0000) }, displayValue: parseInt(data.donutData.non_approved) },
-        { category: "Emergency Use Only", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only), open: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved), stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only), columnConfig: { fill: am5.color(0xff8080) }, displayValue: parseInt(data.donutData.emergency_use_only) },
-        { category: "Do Not Use", value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only), open: 0, columnConfig: { fill: am5.color(0xffff00) }, displayValue: parseInt(data.donutData.do_not_use) }
+        { 
+            category: "Total Sent", 
+            value: parseInt(data.donutData.total_send), 
+            open: 0, 
+            stepValue: parseInt(data.donutData.total_send), 
+            columnConfig: { fill: am5.color(0x4da6ff) }, 
+            displayValue: parseInt(data.donutData.total_send) 
+        },{ 
+            category: "Pending", 
+            value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending), 
+            open: parseInt(data.donutData.total_send), 
+            stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending), 
+            columnConfig: { fill: am5.color(0xf4b943) }, 
+            // displayValue: parseInt(data.donutData.pending) 
+            displayValue: parseInt(data.donutData.pending)
+        },{ 
+            category: "Approved", 
+            value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved), 
+            open: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending), 
+            stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved), 
+            columnConfig: { fill: am5.color(0x32CD32) }, 
+            // displayValue: parseInt(data.donutData.approved) 
+            displayValue: parseInt(data.donutData.approved)
+        },{ 
+            category: "Non Approved", 
+            value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved), 
+            open: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved), 
+            stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved), 
+            columnConfig: { fill: am5.color(0xff0000) }, 
+            // displayValue: parseInt(data.donutData.non_approved) 
+            displayValue: parseInt(data.donutData.non_approved)
+        },{ 
+            category: "Emergency Use Only", 
+            value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only), 
+            open: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved), 
+            stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only), 
+            columnConfig: { fill: am5.color(0xff8080) }, 
+            // displayValue: parseInt(data.donutData.emergency_use_only) 
+            displayValue: parseInt(data.donutData.emergency_use_only)
+        },{ 
+            category: "Do Not Use", 
+            value: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only), 
+            open: 0,
+            stepValue: parseInt(data.donutData.total_send) - parseInt(data.donutData.pending) - parseInt(data.donutData.approved) - parseInt(data.donutData.non_approved) + parseInt(data.donutData.emergency_use_only),
+            columnConfig: { fill: am5.color(0xffff00) }, 
+            // displayValue: parseInt(data.donutData.do_not_use) 
+            displayValue: parseInt(data.donutData.do_not_use)
+        }
       ];
-
       xAxis1.data.setAll(data1);
       series1.data.setAll(data1);
       stepSeries1.data.setAll(data1);

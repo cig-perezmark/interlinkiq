@@ -30,29 +30,72 @@
 		$portal_user = $_COOKIE['ID'];
 		$switch_user_id = employerID($portal_user);
 	}
+	
+	
+	$facility_switch_user_id = 0;
+    if (isset($_COOKIE['facilityswitchAccount'])) {
+        $facility_switch_user_id = $_COOKIE['facilityswitchAccount'];
+    }
 		
 		
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if(isset($_POST['get_employee'])){
+        if(isset($_POST['update_form_owner'])){
+            $form_id = $_POST['form_id'];
+            $form_owner = $_POST['form_owner'];
+            $enterprise_id = $_POST['enterprise_id'];
+            
+            // Fetch the current form_owned values
+            $select_user = "SELECT form_owned FROM tbl_forms_owned WHERE user_id = {$form_owner} AND enterprise_id = {$enterprise_id} LIMIT 1";
+            $user_result = mysqli_query($conn, $select_user);
+            
+            if ($user_result && mysqli_num_rows($user_result) > 0) {
+                $user_result_assoc = mysqli_fetch_assoc($user_result);
+                $form_owned = $user_result_assoc['form_owned']; // e.g., '58,44,52'
+            
+                // Convert the comma-separated values into an array
+                $form_owned_array = explode(',', $form_owned);
+            
+                // Remove the specific $form_id from the array
+                $form_owned_array = array_filter($form_owned_array, function($value) use ($form_id) {
+                    return $value != $form_id; // Keep only the values that are not equal to $form_id
+                });
+            
+                // Convert the array back to a comma-separated string
+                $new_form_owned = implode(',', $form_owned_array);
+            
+                // Update the database with the new form_owned values
+                $update_query = "UPDATE tbl_forms_owned SET form_owned = '{$new_form_owned}' WHERE user_id = {$form_owner} AND enterprise_id = {$enterprise_id} LIMIT 1";
+                $update_result = mysqli_query($conn, $update_query);
+            
+                if ($update_result) {
+                    echo "Updated successfully. New form_owned: " . $new_form_owned;
+                } else {
+                    echo "Failed to update: " . mysqli_error($conn);
+                }
+            } else {
+                echo "No matching record found.";
+            }
+        }
+        if(isset($_POST['get_employee1'])){
                 $form_id = $_POST['id'];
                 $switch_user_id = mysqli_real_escape_string($conn, $switch_user_id);
                 $form_id = mysqli_real_escape_string($conn, $form_id);
-                
-                $get_users = "SELECT * FROM `tbl_hr_employee` WHERE user_id = '$switch_user_id' AND status != 0";
+            
+                $get_users = "SELECT * FROM tbl_hr_employee WHERE facility_switch = $facility_switch_user_id AND user_id = $switch_user_id AND status != 0";
                 $user_result = mysqli_query($conn, $get_users);
                 
                 $options = ''; // Initialize an empty string to store options
                 echo '<label>Select Owner</label>
-                      <select id="form_owner" class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">';
+                      <select id="form_owner" onchange="check_selected()" class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">';
                 
                 if ($user_result && mysqli_num_rows($user_result) > 0) {
                     while ($rows = mysqli_fetch_assoc($user_result)) {
-                        $get_users_form = "SELECT * FROM `tbl_user` WHERE employee_id = '" . $rows['ID'] . "'";
+                        $get_users_form = "SELECT * FROM tbl_user WHERE employee_id = '" . $rows['ID'] . "'";
                         $user_form_result = mysqli_query($conn, $get_users_form);
                 
                         if ($user_form_result && mysqli_num_rows($user_form_result) > 0) {
                             while ($user_list = mysqli_fetch_assoc($user_form_result)) {
-                                $select_form_owned = "SELECT * FROM tbl_forms_owned WHERE user_id = '" . $user_list['ID'] . "' AND enterprise_id = '$switch_user_id'";
+                                $select_form_owned = "SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND user_id = '" . $user_list['ID'] . "' AND enterprise_id = '$switch_user_id'";
                                 $form_owned_result = mysqli_query($conn, $select_form_owned);
                 
                                 if ($form_owned_result && mysqli_num_rows($form_owned_result) > 0) {
@@ -64,7 +107,7 @@
                                     }
                                 }
                 
-                                $options .= '<option value="' . htmlspecialchars($user_list['ID'], ENT_QUOTES, 'UTF-8') . '"' . $selected . '>' . htmlspecialchars($user_list['first_name'] . ' ' . $user_list['last_name'], ENT_QUOTES, 'UTF-8') . '</option>';
+                                echo'<option value="' . htmlspecialchars($user_list['ID'], ENT_QUOTES, 'UTF-8') . '"' . $selected . '>' . htmlspecialchars($user_list['first_name'] . ' ' . $user_list['last_name'], ENT_QUOTES, 'UTF-8') . '</option>';
                             }
                         }
                     }
@@ -74,6 +117,50 @@
                 echo '</select>';
 
         }
+        if(isset($_POST['get_employee'])){
+            $form_id = $_POST['id'];
+            $switch_user_id = mysqli_real_escape_string($conn, $switch_user_id);
+            $form_id = mysqli_real_escape_string($conn, $form_id);
+        
+            $get_users = "SELECT * FROM tbl_hr_employee WHERE facility_switch = $facility_switch_user_id AND user_id = $switch_user_id AND status != 0"; 
+            $user_result = mysqli_query($conn, $get_users);
+            $selected = '';
+            $options = ''; // Initialize an empty string to store options
+            echo '<label>Select Owner</label>
+                  <select id="form_owner" onchange="check_selected()" class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">';
+        
+            if ($user_result && mysqli_num_rows($user_result) > 0) {
+                while ($rows = mysqli_fetch_assoc($user_result)) {
+                    echo  $get_users_form = "SELECT * FROM tbl_user WHERE employee_id = '" . $rows['ID'] . "'";
+                    $user_form_result = mysqli_query($conn, $get_users_form);
+        
+                    if ($user_form_result && mysqli_num_rows($user_form_result) > 0) {
+                        while ($user_list = mysqli_fetch_assoc($user_form_result)) {
+                            $select_form_owned = "SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND user_id = '" . $user_list['ID'] . "' AND enterprise_id = '$switch_user_id'";
+                            $form_owned_result = mysqli_query($conn, $select_form_owned);
+        
+                            $selected = ''; // Reset selected for each user, in case no match is found
+        
+                            if ($form_owned_result && mysqli_num_rows($form_owned_result) > 0) {
+                                while ($form_owned = mysqli_fetch_assoc($form_owned_result)) {
+                                    $form_owned_array = explode(',', $form_owned['form_owned']);
+        
+                                    // Check if $form_id is in the $form_owned_array
+                                    $selected = in_array($form_id, $form_owned_array) ? ' selected' : '';
+                                }
+                            }
+        
+                            // Only create an option if there's a valid record in tbl_user
+                            echo '<option value="' . htmlspecialchars($user_list['ID'], ENT_QUOTES, 'UTF-8') . '"' . $selected . '>' . htmlspecialchars($user_list['first_name'] . ' ' . $user_list['last_name'], ENT_QUOTES, 'UTF-8') . '</option>';
+                        }
+                    }
+                }
+            }
+        
+            echo $options;
+            echo '</select>';
+        }
+        
         if(isset($_POST['save_kpi_reviewer'])){
             if($_POST['collab_type'] == "performer"){
                 $record_data = array(

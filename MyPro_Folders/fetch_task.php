@@ -876,6 +876,7 @@ if( isset($_GET['modal_filter_status']) ) {
                     <th>Assign to</th>
                     <th>Task Name</th>
                     <th>Description</th>
+                    <th>Status</th>
                     <th>Desired Due Date</th>
                 </tr>
             </thead>
@@ -899,6 +900,7 @@ if( isset($_GET['modal_filter_status']) ) {
                                 </td>
                                 <td><?= $row['CAI_filename']; ?></td>
                                 <td><?= $row['CAI_description']; ?></td>
+                                <td>Not Started</td>
                                 <td><?= $row['CAI_Action_due_date']; ?></td>
                             </tr>
                     <?php }
@@ -925,6 +927,7 @@ if( isset($_GET['modal_filter_status_progress']) ) {
                     <th>Assign to</th>
                     <th>Task Name</th>
                     <th>Description</th>
+                    <th>Status</th>
                     <th>Due Date</th>
                 </tr>
             </thead>
@@ -948,6 +951,7 @@ if( isset($_GET['modal_filter_status_progress']) ) {
                                 </td>
                                 <td><?= $row['CAI_filename']; ?></td>
                                 <td><?= $row['CAI_description']; ?></td>
+                                <td>In Progress</td>
                                 <td><?= $row['CAI_Action_due_date']; ?></td>
                             </tr>
                    <?php  }
@@ -974,6 +978,7 @@ $ID = $_GET['modal_filter_status_completed'];
                 <th>Assign to</th>
                 <th>Task Name</th>
                 <th>Description</th>
+                <th>Status</th>
                 <th>Date Completed</th>
             </tr>
         </thead>
@@ -998,6 +1003,7 @@ $ID = $_GET['modal_filter_status_completed'];
                                 </td>
                             <td><?= $row['CAI_filename']; ?></td>
                             <td><?= $row['CAI_description']; ?></td>
+                            <td>Completed</td>
                             <td><?= $row['Date_Completed']; ?></td>
                         </tr>
                 <?php }

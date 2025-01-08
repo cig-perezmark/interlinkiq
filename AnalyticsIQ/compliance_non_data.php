@@ -1,13 +1,17 @@
 <?php
 require '../database.php';
 
-
 if (!empty($_COOKIE['switchAccount'])) {
     $portal_user = $_COOKIE['ID'];
     $user_id = $_COOKIE['switchAccount'];
 } else {
     $portal_user = $_COOKIE['ID'];
     $user_id = employerID($portal_user);
+}
+
+$facility_switch_user_id2 = 0;
+if (isset($_COOKIE['facilityswitchAccount'])) {
+    $facility_switch_user_id2 = $_COOKIE['facilityswitchAccount'];
 }
 
 function employerID($ID) {
@@ -52,11 +56,13 @@ $sql = "
             SUM(CASE WHEN compliant = 0 THEN 1 ELSE 0 END) AS non_compliant
         FROM tbl_library_compliance 
         WHERE deleted = 0
+        AND parent_id = 0
         GROUP BY library_id
     ) AS c 
     ON t1.ID = c.library_id
     WHERE t1.deleted = 0 
         AND t1.user_id = $user_id
+        AND t1.facility_switch = $facility_switch_user_id2
       /*AND t1.parent_id = 0*/
 ";
 

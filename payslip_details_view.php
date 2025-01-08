@@ -228,7 +228,7 @@
                                                             $formattedValue1 = '$' . number_format($row['adjustment'], 2, '.', ''); // Add dollar sign for positive value
                                                         }
                                                         echo $formattedValue1;
-                                                        echo '<input type="hidden" id="adjustment_minus" value="<?= '.$row['adjustment'].' ?>">'
+                                                        echo '<input type="hidden" id="adjustment_minus" value="'.$row['adjustment'].'">'
                 						            ?>
                 						           <?php else: ?>
                 						           <input type="hidden" id="adjustment_minus" value="0">
@@ -554,8 +554,13 @@ $(document).ready(function(){
     var absent_deduction = parseInt($('#absent_deduction').text()) || 0;
     var cash_advance = parseInt($('#cash_advance').text()) || 0;
     var adjustment_deduct = parseInt($('#adjustment_deduct').text()) || 0 ;
-    var total_ded = absent_deduction + Math.abs(cash_advance_minus) + Math.abs(adjustment_minus) + Math.abs(transfer_fee_minus) ;
+    
+    var adjustment_minus_int = parseInt(adjustment_minus);
+    
+    var total_ded = absent_deduction + Math.abs(cash_advance_minus) + Math.abs(adjustment_minus_int) + Math.abs(transfer_fee_minus) ;
+    console.log(adjustment_minus_int);
     $('#total_deduction').text('$ (' +total_ded+')');
+    
     var net_to_date = total - total_ded;
     $('#net_to_date').text(net_to_date);
     $('#deduction_to_date').text(total_ded);

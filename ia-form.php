@@ -325,6 +325,11 @@
             .blockUI {
                 position: unset !important;
             }
+            
+            .error {
+                border-color: #e73d4a !important;
+                color: #e73d4a;
+            }
 		</style>
 	</head>
 	<body>
@@ -342,7 +347,8 @@
 				if (isset($_GET['i']) AND isset($_GET['t'])) {
 					$ID = $_GET['i'];
 					if ($_GET['t'] == 1) {
-                        $selectData = mysqli_query( $conn,"SELECT
+                        $selectData = mysqli_query( $conn,"
+                            SELECT
                             i.timestamp_id AS s_timestamp_id,
                             i.title AS i_title,
                             i.description AS i_description,
@@ -362,11 +368,12 @@
                             WHERE i.deleted = 0 
                             AND i.ID = $ID
 
-                            GROUP BY i.ID" );
+                            GROUP BY i.ID
+                        " );
 						if ( mysqli_num_rows($selectData) > 0 ) {
                             $rowIA = mysqli_fetch_array($selectData);
-                            $ia_title = $rowIA['i_title'];
-                            $ia_description = $rowIA['i_description'];
+                            $ia_title = htmlentities($rowIA['i_title'] ?? '');
+                            $ia_description = htmlentities($rowIA['i_description'] ?? '');
                             $ia_sheet_id = $rowIA['i_sheet_id'];
                             $s_timestamp_id = $rowIA['s_timestamp_id'];
 
@@ -385,7 +392,7 @@
                                     while($rowFormat = mysqli_fetch_array($selectFormat)) {
                                         if ($rowFormat['type'] > 0) {
                                             if ($rowFormat['type'] == 1 OR $rowFormat['type'] == 3 OR $rowFormat['type'] == 4) {
-                                                $sub_header .= '<td class="bold">'.$rowFormat['label'].'</td>';
+                                                $sub_header .= '<td class="bold">'.htmlentities($rowFormat['label'] ?? '').'</td>';
                                             } else if ($rowFormat['type'] == 2) {
                                                 $radio_arr = explode(",", $rowFormat['label']);
                                                 foreach ($radio_arr as $r) {
@@ -578,7 +585,7 @@
             									        <input type="file" class="form-control" name="file" accept="image/*" />
             									    </div>
             									</div>
-            									<div class="col-md-4">
+            									<div class="col-md-4 hide">
             									    <div class="form-group">
             									        <label class="control-label">Set Scoring</label>
             									        <select class="form-control" name="score_type" onchange="changeType(this, this.value)">
@@ -616,7 +623,7 @@
             							        		$selectSheet = mysqli_query( $conn,"SELECT * FROM tbl_ia_sheet WHERE deleted = 0 AND ID = $sheet_id" );
             							        		if ( mysqli_num_rows($selectSheet) > 0 ) {
             							        			$rowSheet = mysqli_fetch_array($selectSheet);
-            												$sheet_name = $rowSheet['name'];
+            												$sheet_name = htmlentities($rowSheet['name'] ?? '');
             							        		}
     
             							        		echo '<tr class="bg-warning">
@@ -626,14 +633,16 @@
     
                                                         $array_ID = array();
     
-                                                        $selectDataRow = mysqli_query( $conn,"WITH RECURSIVE cte (rowID, rowOrder, rowParent, rowInclude, rowData) AS
+                                                        $selectDataRow = mysqli_query( $conn,"
+                                                            WITH RECURSIVE cte (rowID, rowOrder, rowParent, rowInclude, rowData, rowRequired) AS
                                                             (
                                                                 SELECT
                                                                 t1.ID AS rowID,
                                                                 t1.order_id AS rowOrder,
                                                                 t1.parent_id AS rowParent,
                                                                 t1.include AS rowInclude,
-                                                                t1.data AS rowData
+                                                                t1.data AS rowData,
+                                                                t1.required AS rowRequired
                                                                 FROM tbl_ia_data AS t1
                                                                 WHERE t1.parent_id = 0 
                                                                 AND t1.deleted = 0 
@@ -647,7 +656,8 @@
                                                                 t2.order_id AS rowOrder,
                                                                 t2.parent_id AS rowParent,
                                                                 t2.include AS rowInclude,
-                                                                t2.data AS rowData
+                                                                t2.data AS rowData,
+                                                                t2.required AS rowRequired
                                                                 FROM tbl_ia_data AS t2
                                                                 JOIN cte ON cte.rowID = t2.parent_id
                                                                 WHERE t2.deleted = 0 
@@ -655,15 +665,19 @@
                                                                 AND t2.sheet_id = $sheet_id
                                                             )
                                                             SELECT 
-                                                            rowID, rowOrder, rowParent, rowInclude, rowData
+                                                            rowID, rowOrder, rowParent, rowInclude, rowData, rowRequired
                                                             FROM cte
-                                                            ORDER BY rowOrder ASC, rowID ASC" );
+                                                            ORDER BY rowOrder ASC, rowID ASC
+                                                        " );
             											if ( mysqli_num_rows($selectDataRow) > 0 ) {
             												while($rowData = mysqli_fetch_array($selectDataRow)) {
             													$data_ID = $rowData['rowID'];
     
             													$include_arr = array();
             													if ($rowData['rowInclude'] != NULL) { $include_arr = explode(" | ", $rowData['rowInclude']); }
+
+                                                                $required_arr = array();
+                                                                if ($rowData['rowRequired'] != NULL) { $required_arr = explode(" | ", $rowData['rowRequired']); }
     
             							                        $data_arr = json_decode($rowData['rowData'],true);
     
@@ -675,14 +689,14 @@
                                                                     $i = 0;
                                                                     foreach ($type_arr as $value) {
                                                                         if ($value > 0) {
-                                                                            if ($value == 1 OR $value == 3 OR $value == 4) {
+                                                                            if ($value == 1 OR $value == 4) {
                                                                                 if (in_array($label_arr[$i], $include_arr)) {
                                                                                     echo '<td>';
     
                                                                                         foreach($data_arr as $key => $val) {
                                                                                             if ($label_arr[$i] == $val['ID']) {
                                                                                                 if (!empty($val['content'])) {
-                                                                                                    echo $val['content'];
+                                                                                                    echo html_entity_decode($val['content'] ?? '');
                                                                                                 } else {
                                                                                                     $formatID = $label_arr[$i];
                                                                                                     $rowColumnData = '';
@@ -701,8 +715,8 @@
                                                                                                     echo '<a href="javascript:;" onClick="btnEdit_summernote(this, '.$data_ID.', '.$label_arr[$i].')"><i class="fa fa-pencil"></i> [edit]</a>';
     
                                                                                                     if (!empty($rowColumnData)) { echo '<div class="textarea_value">'.$rowColumnData.'</div>'; }
-    
-                                                                                                    echo '<textarea class="hide" id="summernote_'.$data_ID.'_'.$label_arr[$i].'" name="columnData_'.$data_ID.'_'.$label_arr[$i].'">'.$rowColumnData.'</textarea>';
+
+                                                                                                    echo '<textarea class="hide '; echo in_array($label_arr[$i], $required_arr) ? 'required':''; echo '" id="summernote_'.$data_ID.'_'.$label_arr[$i].'" name="columnData_'.$data_ID.'_'.$label_arr[$i].'" '; echo in_array($label_arr[$i], $required_arr) ? 'required':''; echo '>'.$rowColumnData.'</textarea>';
                                                                                                 }
                                                                                             } 
                                                                                         }
@@ -715,16 +729,48 @@
                                                                                     $rowColumnData = '';
                                                                                     foreach ($radio_arr as $r) {
                                                                                         if (("n/a" === strtolower($r)) OR ("na" === strtolower($r))) {
-                                                                                            echo '<td><input type="radio" value="'.$r.'" name="radio_'.$data_ID.'_'.$label_arr[$i].'" onclick="changeRadio(this.value, '.$data_ID.', '.$label_arr[$i].', '.$ID.')" checked/></td>';
+                                                                                            echo '<td><input type="radio" value="'.$r.'" name="radio_'.$data_ID.'_'.$label_arr[$i].'" onclick="changeRadio(this, '.$data_ID.', '.$label_arr[$i].', '.$ID.')" checked/></td>';
                                                                                             $rowColumnData = $r;
                                                                                         } else {
-                                                                                            echo '<td><input type="radio" value="'.$r.'" name="radio_'.$data_ID.'_'.$label_arr[$i].'" onclick="changeRadio(this.value, '.$data_ID.', '.$label_arr[$i].', '.$ID.')" /></td>';
+                                                                                            echo '<td><input type="radio" value="'.$r.'" name="radio_'.$data_ID.'_'.$label_arr[$i].'" onclick="changeRadio(this, '.$data_ID.', '.$label_arr[$i].', '.$ID.')" /></td>';
                                                                                         }
                                                                                     }
                                                                                     echo '<td class="hide"><input type="hidden" class="radio_'.$data_ID.'_'.$label_arr[$i].'" name="columnData_'.$label_arr[$i].'[]" value="'.$rowColumnData.'" /></td>';
                                                                                 } else {
                                                                                     echo '<td colspan="'.count($radio_arr).'"></td>
                                                                                     <td class="hide"></td>';
+                                                                                }
+                                                                            } else if ($value == 3) {
+                                                                                if (in_array($label_arr[$i], $include_arr)) {
+                                                                                    echo '<td>';
+
+                                                                                        foreach($data_arr as $key => $val) {
+                                                                                            if ($label_arr[$i] == $val['ID']) {
+                                                                                                if (!empty($val['content'])) {
+                                                                                                    echo html_entity_decode($val['content'] ?? '');
+                                                                                                } else {
+                                                                                                    $formatID = $label_arr[$i];
+                                                                                                    $rowColumnData = '';
+                                                                                                    if (!empty($form_data)) {
+                                                                                                        $form_data_arr = json_decode($form_data,true);
+
+                                                                                                        if (in_array($data_ID, array_column($form_data_arr, 'row'))) {
+                                                                                                            $rowColumnData = array_reduce($form_data_arr, function ($carry, $item) use ($data_ID, $formatID) {
+                                                                                                                if ($item['row'] === $data_ID && $item['content']['column'] === $formatID) {
+                                                                                                                    return $item['content']['data'];
+                                                                                                                }
+                                                                                                                return $carry;
+                                                                                                            });
+                                                                                                        }
+                                                                                                    }
+                                                                                                    echo '<a href="javascript:;" onClick="btnEdit_date(this, '.$data_ID.', '.$label_arr[$i].')"><i class="fa fa-pencil"></i> [edit]</a>
+                                                                                                    <input type="date" class="form-control '; echo !empty($rowColumnData) ? '':'hide'; echo '" name="columnData_'.$data_ID.'_'.$label_arr[$i].'" value="'.$rowColumnData.'" />';
+                                                                                                }
+                                                                                            } 
+                                                                                        }
+                                                                                    echo '</td>';
+                                                                                } else {
+                                                                                    echo '<td></td>';
                                                                                 }
                                                                             }
                                                                             $i++;
@@ -739,6 +785,7 @@
             								echo '</table>
                                         </div>
         								<div class="modal-footer modal-footer--sticky bg-white text-right">
+                                            <input type="hidden" value="" id="summernote_required_data" class="form-control" />
         			                        <button type="submit" class="btn btn-danger ladda-button" name="btnGenerate2" id="btnGenerate2" data-style="zoom-out"><span class="ladda-label">Save as Draft</span></button>
         			                        <button type="submit" class="btn btn-info ladda-button" name="btnGenerate" id="btnGenerate" data-style="zoom-out"><span class="ladda-label">Submit for Preliminary</span></button>
         								</div>
@@ -751,7 +798,8 @@
 							echo 'Please try again!';
 						}
 					} else if ($_GET['t'] == 2) {
-                        $selectData = mysqli_query( $conn,"SELECT 
+                        $selectData = mysqli_query( $conn,"
+                            SELECT 
                             f.*,
                             i.title AS i_title,
                             i.sheet_id AS i_sheet_id,
@@ -778,10 +826,11 @@
                             WHERE f.deleted = 0 
                             AND f.ID = $ID
 
-                            GROUP BY f.ID" );
+                            GROUP BY f.ID
+                        " );
 	                    if ( mysqli_num_rows($selectData) > 0 ) {
 	                        $rowForm = mysqli_fetch_array($selectData);
-	                        $form_organization = $rowForm['organization'];
+	                        $form_organization = htmlentities($rowForm['organization'] ?? '');
 	                        $form_audit_type = $rowForm['audit_type'];
 	                        $form_inspected_by = $rowForm['inspected_by'];
 	                        $form_auditee = $rowForm['auditee'];
@@ -792,7 +841,7 @@
 	                        $form_file = $rowForm['file'];
 	                        $form_data = $rowForm['data'];
 	                        $form_label = $rowForm['label'];
-	                        $form_description = $rowForm['description'];
+                            $form_description = htmlentities($rowForm['description'] ?? '');
 
 	                        $form_score_type = $rowForm['score_type'];
 	                        $form_score_data = array();
@@ -800,7 +849,7 @@
 	                            $form_score_data = json_decode($rowForm['score_data'],true);
 	                        }
 
-                            $form_ia_title = $rowForm['i_title'];
+                            $form_ia_title = htmlentities($rowForm['i_title'] ?? '');
                             $ia_sheet_id = $rowForm['i_sheet_id'];
                             $s_timestamp_id = $rowForm['s_timestamp_id'];
 
@@ -815,7 +864,7 @@
                                     while($rowFormat = mysqli_fetch_array($selectFormat)) {
                                         if ($rowFormat['type'] > 0) {
                                             if ($rowFormat['type'] == 1 OR $rowFormat['type'] == 3 OR $rowFormat['type'] == 4) {
-                                                $sub_header .= '<td class="bold">'.$rowFormat['label'].'</td>';
+                                                $sub_header .= '<td class="bold">'.htmlentities($rowFormat['label'] ?? '').'</td>';
                                             } else if ($rowFormat['type'] == 2) {
                                                 $radio_arr = explode(",", $rowFormat['label']);
                                                 foreach ($radio_arr as $r) {
@@ -1018,7 +1067,7 @@
         	                                            echo '<input type="hidden" name="file_temp" value="'.$form_file.'" />
         	                                        </div>
         	                                    </div>
-        	                                    <div class="col-md-4">
+        	                                    <div class="col-md-4 hide">
         	                                        <div class="form-group">
         	                                            <label class="control-label">Set Scoring</label>
         	                                            <select class="form-control" name="score_type" onchange="changeType(this, this.value)">
@@ -1151,7 +1200,7 @@
         	                                            $selectSheet = mysqli_query( $conn,"SELECT * FROM tbl_ia_sheet WHERE deleted = 0 AND ID = $sheet_id" );
         	                                            if ( mysqli_num_rows($selectSheet) > 0 ) {
         	                                                $rowSheet = mysqli_fetch_array($selectSheet);
-        	                                                $sheet_name = $rowSheet['name'];
+        	                                                $sheet_name = htmlentities($rowSheet['name'] ?? '');
         	                                            }
     
         	                                            echo '<tr class="bg-warning">
@@ -1159,14 +1208,15 @@
         	                                            </tr>
         	                                            <tr class="bg-default">'.$sub_header.'</tr>';
     
-                                                        $selectDataRow = mysqli_query( $conn,"WITH RECURSIVE cte (rowID, rowOrder, rowParent, rowInclude, rowData) AS
+                                                        $selectDataRow = mysqli_query( $conn,"WITH RECURSIVE cte (rowID, rowOrder, rowParent, rowInclude, rowData, rowRequired) AS
                                                             (
                                                                 SELECT
                                                                 t1.ID AS rowID,
                                                                 t1.order_id AS rowOrder,
                                                                 t1.parent_id AS rowParent,
                                                                 t1.include AS rowInclude,
-                                                                t1.data AS rowData
+                                                                t1.data AS rowData,
+                                                                t1.required AS rowRequired
                                                                 FROM tbl_ia_data AS t1
                                                                 WHERE t1.parent_id = 0 
                                                                 AND t1.deleted = 0 
@@ -1180,7 +1230,8 @@
                                                                 t2.order_id AS rowOrder,
                                                                 t2.parent_id AS rowParent,
                                                                 t2.include AS rowInclude,
-                                                                t2.data AS rowData
+                                                                t2.data AS rowData,
+                                                                t2.required AS rowRequired
                                                                 FROM tbl_ia_data AS t2
                                                                 JOIN cte ON cte.rowID = t2.parent_id
                                                                 WHERE t2.deleted = 0 
@@ -1188,7 +1239,7 @@
                                                                 AND t2.sheet_id = $sheet_id
                                                             )
                                                             SELECT 
-                                                            rowID, rowOrder, rowParent, rowInclude, rowData
+                                                            rowID, rowOrder, rowParent, rowInclude, rowData, rowRequired
                                                             FROM cte
                                                             ORDER BY rowOrder ASC, rowID ASC" );
                                                         if ( mysqli_num_rows($selectDataRow) > 0 ) {
@@ -1197,6 +1248,9 @@
     
                                                                 $include_arr = array();
                                                                 if ($rowData['rowInclude'] != NULL) { $include_arr = explode(" | ", $rowData['rowInclude']); }
+
+                                                                $required_arr = array();
+                                                                if ($rowData['rowRequired'] != NULL) { $required_arr = explode(" | ", $rowData['rowRequired']); }
     
                                                                 $data_arr = json_decode($rowData['rowData'],true);
     
@@ -1208,14 +1262,14 @@
                                                                     $i = 0;
                                                                     foreach ($type_arr as $value) {
                                                                         if ($value > 0) {
-                                                                            if ($value == 1 OR $value == 3 OR $value == 4) {
+                                                                            if ($value == 1 OR $value == 4) {
                                                                                 if (in_array($label_arr[$i], $include_arr)) {
                                                                                     echo '<td>';
     
                                                                                         foreach($data_arr as $key => $val) {
                                                                                             if ($label_arr[$i] == $val['ID']) {
                                                                                                 if (!empty($val['content'])) {
-                                                                                                    echo $val['content'];
+                                                                                                    echo html_entity_decode($val['content'] ?? '');
                                                                                                 } else {
                                                                                                     $formatID = $label_arr[$i];
                                                                                                     $rowColumnData = '';
@@ -1235,7 +1289,7 @@
     
                                                                                                     if (!empty($rowColumnData)) { echo '<div class="textarea_value">'.$rowColumnData.'</div>'; }
     
-                                                                                                    echo '<textarea class="hide" id="summernote_'.$data_ID.'_'.$label_arr[$i].'" name="columnData_'.$data_ID.'_'.$label_arr[$i].'">'.$rowColumnData.'</textarea>';
+                                                                                                    echo '<textarea class="hide '; echo in_array($label_arr[$i], $required_arr) ? 'required':''; echo '" id="summernote_'.$data_ID.'_'.$label_arr[$i].'" name="columnData_'.$data_ID.'_'.$label_arr[$i].'">'.$rowColumnData.'</textarea>';
                                                                                                 }
                                                                                             } 
                                                                                         }
@@ -1263,9 +1317,9 @@
                                                                                     if (!empty($rowColumnData)) {
                                                                                         foreach ($radio_arr as $r) {
                                                                                             if ($rowColumnData === $r) {
-                                                                                                echo '<td><input type="radio" value="'.$r.'" name="radio_'.$data_ID.'_'.$label_arr[$i].'" onclick="changeRadio(this.value, '.$data_ID.', '.$label_arr[$i].', '.$ID.')" checked /></td>';
+                                                                                                echo '<td><input type="radio" value="'.$r.'" name="radio_'.$data_ID.'_'.$label_arr[$i].'" onclick="changeRadio(this, '.$data_ID.', '.$label_arr[$i].', '.$ID.')" checked /></td>';
                                                                                             } else {
-                                                                                                echo '<td><input type="radio" value="'.$r.'" name="radio_'.$data_ID.'_'.$label_arr[$i].'" onclick="changeRadio(this.value, '.$data_ID.', '.$label_arr[$i].', '.$ID.')" /></td>';
+                                                                                                echo '<td><input type="radio" value="'.$r.'" name="radio_'.$data_ID.'_'.$label_arr[$i].'" onclick="changeRadio(this, '.$data_ID.', '.$label_arr[$i].', '.$ID.')" /></td>';
                                                                                             }
                                                                                         }
                                                                                     } else {
@@ -1275,6 +1329,38 @@
                                                                                 } else {
                                                                                     echo '<td colspan="'.count($radio_arr).'"></td>
                                                                                     <td class="hide"></td>';
+                                                                                }
+                                                                            } else if ($value == 3) {
+                                                                                if (in_array($label_arr[$i], $include_arr)) {
+                                                                                    echo '<td>';
+
+                                                                                        foreach($data_arr as $key => $val) {
+                                                                                            if ($label_arr[$i] == $val['ID']) {
+                                                                                                if (!empty($val['content'])) {
+                                                                                                    echo html_entity_decode($val['content'] ?? '');
+                                                                                                } else {
+                                                                                                    $formatID = $label_arr[$i];
+                                                                                                    $rowColumnData = '';
+                                                                                                    if (!empty($form_data)) {
+                                                                                                        $form_data_arr = json_decode($form_data,true);
+
+                                                                                                        if (in_array($data_ID, array_column($form_data_arr, 'row'))) {
+                                                                                                            $rowColumnData = array_reduce($form_data_arr, function ($carry, $item) use ($data_ID, $formatID) {
+                                                                                                                if ($item['row'] === $data_ID && $item['content']['column'] === $formatID) {
+                                                                                                                    return $item['content']['data'];
+                                                                                                                }
+                                                                                                                return $carry;
+                                                                                                            });
+                                                                                                        }
+                                                                                                    }
+                                                                                                    echo '<a href="javascript:;" onClick="btnEdit_date(this, '.$data_ID.', '.$label_arr[$i].')" class="'; echo !empty($rowColumnData) ? 'hide':''; echo '"><i class="fa fa-pencil"></i> [edit]</a>
+                                                                                                    <input type="date" class="form-control '; echo !empty($rowColumnData) ? '':'hide'; echo '" name="columnData_'.$data_ID.'_'.$label_arr[$i].'" value="'.$rowColumnData.'" />';
+                                                                                                }
+                                                                                            } 
+                                                                                        }
+                                                                                    echo '</td>';
+                                                                                } else {
+                                                                                    echo '<td></td>';
                                                                                 }
                                                                             }
                                                                             $i++;
@@ -1372,7 +1458,7 @@
                                                             $selectSheet = mysqli_query( $conn,"SELECT * FROM tbl_ia_sheet WHERE deleted = 0 AND ID = $sheet_id" );
                                                             if ( mysqli_num_rows($selectSheet) > 0 ) {
                                                                 $rowSheet = mysqli_fetch_array($selectSheet);
-                                                                $sheet_name = $rowSheet['name'];
+                                                                $sheet_name = htmlentities($rowSheet['name'] ?? '');
     
                                                                 echo '<li class="" id="li_'.$sheet_id.'">
                                                                     <input type="hidden" name="sheetID[]" value="'.$sheet_id.'">
@@ -1431,8 +1517,8 @@
                             GROUP BY i.ID" );
                         if ( mysqli_num_rows($selectData) > 0 ) {
                             $rowIA = mysqli_fetch_array($selectData);
-                            $ia_title = $rowIA['i_title'];
-                            $ia_description = $rowIA['i_description'];
+                            $ia_title = htmlentities($rowIA['i_title'] ?? '');
+                            $ia_description = htmlentities($rowIA['i_description'] ?? '');
                             $ia_sheet_id = $rowIA['i_sheet_id'];
                             $s_timestamp_id = $rowIA['s_timestamp_id'];
 
@@ -1451,7 +1537,7 @@
                                     while($rowFormat = mysqli_fetch_array($selectFormat)) {
                                         if ($rowFormat['type'] > 0) {
                                             if ($rowFormat['type'] == 1 OR $rowFormat['type'] == 3 OR $rowFormat['type'] == 4) {
-                                                $sub_header .= '<td class="bold">'.$rowFormat['label'].'</td>';
+                                                $sub_header .= '<td class="bold">'.htmlentities($rowFormat['label'] ?? '').'</td>';
                                             } else if ($rowFormat['type'] == 2) {
                                                 $radio_arr = explode(",", $rowFormat['label']);
                                                 foreach ($radio_arr as $r) {
@@ -1483,7 +1569,7 @@
                                         $selectSheet = mysqli_query( $conn,"SELECT * FROM tbl_ia_sheet WHERE deleted = 0 AND ID = $sheet_id" );
                                         if ( mysqli_num_rows($selectSheet) > 0 ) {
                                             $rowSheet = mysqli_fetch_array($selectSheet);
-                                            $sheet_name = $rowSheet['name'];
+                                            $sheet_name = htmlentities($rowSheet['name'] ?? '');
                                         }
 
                                         echo '<tr class="bg-warning">
@@ -1491,7 +1577,8 @@
                                         </tr>
                                         <tr class="bg-default">'.$sub_header.'</tr>';
 
-                                        $selectDataRow = mysqli_query( $conn,"WITH RECURSIVE cte (rowID, rowOrder, rowParent, rowInclude, rowData) AS
+                                        $selectDataRow = mysqli_query( $conn,"
+                                            WITH RECURSIVE cte (rowID, rowOrder, rowParent, rowInclude, rowData) AS
                                             (
                                                 SELECT
                                                 t1.ID AS rowID,
@@ -1522,7 +1609,8 @@
                                             SELECT 
                                             rowID, rowOrder, rowParent, rowInclude, rowData
                                             FROM cte
-                                            ORDER BY rowOrder ASC, rowID ASC" );
+                                            ORDER BY rowOrder ASC, rowID ASC
+                                        " );
                                         if ( mysqli_num_rows($selectDataRow) > 0 ) {
                                             while($rowData = mysqli_fetch_array($selectDataRow)) {
                                                 $data_ID = $rowData['rowID'];
@@ -1547,7 +1635,7 @@
                                                                     $idToContentMap = array_column($data_arr, 'content', 'ID');
                                                                     
                                                                     if (isset($idToContentMap[$targetId])) {
-                                                                        $content = $idToContentMap[$targetId];
+                                                                        $content = html_entity_decode($idToContentMap[$targetId] ?? '');
                                                                         echo '<td>'.$content.'</td>';
                                                                     } else {
                                                                         echo '<td></td>';
@@ -1605,7 +1693,7 @@
                     <form method="post" class="form-horizontal modalForm modalNewSheet">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h4 class="modal-title">Sheet Details</h4>
+                            <h4 class="modal-title">Section Details</h4>
                         </div>
                         <div class="modal-body"></div>
                         <div class="modal-footer modal-footer--sticky bg-white">
@@ -1622,7 +1710,7 @@
                     <form method="post" class="form-horizontal modalForm modalViewSheet">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h4 class="modal-title">Sheet Details</h4>
+                            <h4 class="modal-title">Section Details</h4>
                         </div>
                         <div class="modal-body"></div>
                         <div class="modal-footer modal-footer--sticky bg-white">
@@ -1730,6 +1818,7 @@
         <script type="text/javascript" src="justgage.js"></script>
 
         <script type="text/javascript">
+            let summernote_required_data_arr = [];
             $(document).ready(function(){
             	var id = <?php echo $ID; ?>;
                 var template = <?php echo $_GET['t']; ?>;
@@ -1833,8 +1922,9 @@
                 if (e.value == 1 || e.value == 3 || e.value == 4) {
                     $(e).parent().next().html('<input type="hidden" name="formatID[]" value="0" /><input type="text" class="form-control" name="label[]" placeholder="Label" required />');
                 } else if (e.value == 2) {
-                    $(e).parent().next().html('<input type="hidden" name="formatID[]" value="0" /><input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" required />');
-                    widget_inputTag();
+                    $(e).parent().next().html('<input type="hidden" name="formatID[]" value="0" /><input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" value="Yes,No,NA" readonly />');
+                    // $(e).parent().next().html('<input type="hidden" name="formatID[]" value="0" /><input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" required />');
+                    // widget_inputTag();
                 } else {
                     $(e).parent().next().html('');
                 }
@@ -1847,8 +1937,20 @@
                 }
             }
             function changeRadio(val, row, formatID, id) {
-                $('.radio_'+row+'_'+formatID).val(val);
+                radio = val.value;
+                $('.radio_'+row+'_'+formatID).val(radio);
                 widget_gauge(id);
+
+                if (radio.toLowerCase() == "no") {
+                    $(val).parent().parent().find('.required').summernote();
+                    summernote_required_data_arr.push('#tr_'+row+' .required');
+                } else {
+                    $(val).parent().parent().find('.required').summernote('destroy');
+                    summernote_required_data_arr = summernote_required_data_arr.filter(item => item !== '#tr_'+row+' .required');
+                }
+
+                var summernote_required_data = summernote_required_data_arr.join(', ');
+                $('#summernote_required_data').val(summernote_required_data_arr);
             }
             function checkRadio() {
                 var total_item = 0;
@@ -1888,6 +1990,9 @@
             function btnEdit_summernote(e, row, column) {
                 $(e).next('.textarea_value').hide();
                 widget_summernote(row, column);
+            }
+            function btnEdit_date(e, row, column) {
+                $(e).next('input').removeClass('hide');
             }
             function widget_summernote(modal, type) {
                 $('#summernote_'+modal+'_'+type).summernote({
@@ -1973,11 +2078,11 @@
                     maxValue = $(newRange).last().prop('hi');
                     total_percentage = total_sum * maxValue;
 
-                    if (total_percentage < maxValue) {
-                        total_percentage = 0;
-                    } else {
-                        total_percentage = maxValue;
-                    }
+                    // if (total_percentage < maxValue) {
+                    //     total_percentage = 0;
+                    // } else {
+                    //     total_percentage = maxValue;
+                    // }
                 } else {
                     newRange = JSON.parse($('#range_'+id).val());
                     newValue = $('#label_'+id).val();
@@ -2049,7 +2154,7 @@
                         data += '<select class="form-control" name="type[]" onchange="selectType(this)">';
                             data += '<option value="0" SELECTED>Select Type</option>';
                             data += '<option value="1">Text</option>';
-                            data += '<option value="2">Radio Button</option>';
+                            data += '<option value="2">Yes, No, NA</option>';
                             data += '<option value="3">Date</option>';
                             // data += '<option value="4">File Upload</option>';
                         data += '</select>';
@@ -2142,7 +2247,7 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalViewSheet .modal-body").html(data);
-                        widget_inputTag();
+                        // widget_inputTag();
 
                         $('.modalViewSheet .format').sortable({
                             placeholder: 'sorting_highlight',
@@ -2617,38 +2722,44 @@
 
                 var button = $(e.target).find("button[type=submit]:focus").attr("id");
 
-                formObj = $(this);
-                if (!formObj.validate().form()) return false;
-
-                // var formData = $(".modalGenerate").serializeArray()
-                // console.log(formData);
-                var formData = new FormData(this);
-                formData.append('btnGenerate',true);
-                formData.append('btnType', button);
-
-                var l = Ladda.create(document.querySelector('#'+button));
-                l.start();
-
-                $.ajax({
-                    url: "function_ia_new.php",
-                    type: "POST",
-                    data: formData,
-                    contentType: false,
-                    processData:false,
-                    cache: false,
-                    datatype: "html",
-                    success:function(response) {
-                        if ($.trim(response)) {
-                            // alert(response);
-                            msg = "Sucessfully Save!";
-                        } else {
-                            msg = "Error!"
+                // var summernote_required_data = $('#summernote_required_data').val();
+                // if ($(summernote_required_data).summernote('isEmpty')) {
+                //   alert('editor content is empty');
+                //   return false;
+                // } else {
+                    formObj = $(this);
+                    if (!formObj.validate().form()) return false;
+    
+                    // var formData = $(".modalGenerate").serializeArray()
+                    // console.log(formData);
+                    var formData = new FormData(this);
+                    formData.append('btnGenerate',true);
+                    formData.append('btnType', button);
+    
+                    var l = Ladda.create(document.querySelector('#'+button));
+                    l.start();
+    
+                    $.ajax({
+                        url: "function_ia_new.php",
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData:false,
+                        cache: false,
+                        datatype: "html",
+                        success:function(response) {
+                            if ($.trim(response)) {
+                                // alert(response);
+                                msg = "Sucessfully Save!";
+                            } else {
+                                msg = "Error!"
+                            }
+                            l.stop();
+    
+                            bootstrapGrowl(msg);
                         }
-                        l.stop();
-
-                        bootstrapGrowl(msg);
-                    }
-                });
+                    });
+                // }
             }));
             $(".modalEditForm").on('submit',(function(e) {
                 e.preventDefault();

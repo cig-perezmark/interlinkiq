@@ -154,14 +154,35 @@ function showHint($hint) {
                         <div class="mls-grid" id="productsListSelection"></div>
                     </div>
                 </div>
+                
                 <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="evalComments">Comments</label>
+                            <textarea name="comments" id="evalComments" class="form-control" placeholder="Comments"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <div id="signature"></div>
+                        </div>
+                    </div>
                     <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="dateSigned">Date Signed</label>
+                            <input type="date" name="date_signed" id="dateSigned" class="form-control">
+                        </div>
                         <div class="form-group">
                             <label for="evalDate">Evaluation Date <span class="required">*</span></label>
                             <input type="date" name="evaluation_date" id="evalDate" class="form-control" required>
                         </div>
                     </div>
                 </div>
+                
                 <div class="alert alert-danger alert-dismissable" id="modalNewImporterError" style="display: none;">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
                     <strong>Error!</strong> <span id="modalNewSupplierMessage"></span>
@@ -228,6 +249,61 @@ function showHint($hint) {
                                 <?= showHint($hints['cbp_entry_filer']) ?>
                             </label>
                             <textarea name="cbp_entry_filer" id="cfEntryFiler" class="form-control" placeholder="Enter CBP entry filer"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- reviewed bt -->
+                <div class="row">
+                    <div class="col-md-12"><strong>Reviewed By</strong></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="revName">Name</label>
+                            <input type="text" name="reviewed_by" id="revName" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="revDate">Date</label>
+                            <input type="date" name="review_date" id="revDate" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <div id="reviewer_signature" class="signature__"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- approved by -->
+                <div class="row">
+                    <div class="col-md-12"><strong>Approved By</strong></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="apbName">Name</label>
+                            <input type="text" name="approved_by" id="apbName" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="apbDate">Date</label>
+                            <input type="date" name="approve_date" id="apbDate" class="form-control" >
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <div id="approver_signature" class="signature__"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="cbpComment">Comments</label>
+                            <textarea name="comments" id="cbpComment" class="form-control" placeholder="Comments"></textarea>
                         </div>
                     </div>
                 </div>

@@ -117,7 +117,7 @@ jQuery(function() {
                 $('#modalActWorksheet [name=assessment_results]').val(data.assessment_results);
                 $('#modalActWorksheet [name=corrective_actions]').val(data.corrective_actions);
                 $('#modalActWorksheet [name=reevaluation_date]').val(data.reevaluation_date);
-                $('#modalActWorksheet [data-edit-span]').show();
+                $('#modalActWorksheet [name=comments]').val(data.comments);
 
                 $('#modalActWorksheet').modal('show');
             },
@@ -132,7 +132,7 @@ jQuery(function() {
         supplierSelect.reset();
         fsvpqiSelect.reset();
         importerSelect.reset();
-        $('#modalActWorksheet [data-edit-span]').hide();
+    
         onViewAWId = null;
     }
 });

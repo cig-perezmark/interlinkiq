@@ -95,6 +95,13 @@ th {
 .p-0 {
     padding: 0;
 }
+
+img.signature__.display {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+} 
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;" id="fstToolbar">
@@ -173,20 +180,7 @@ th {
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="efEvalDate">Evaluation Date <span class="required">*</span></label>
-                            <input type="date" name="evaluation_date" id="efEvalDate" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="efEvalDueDate">Evaluation Due Date <span class="required">*</span></label>
-                            <input type="date" name="evaluation_due_date" id="efEvalDueDate" class="form-control" required>
-                        </div>
-                    </div>
-                </div>
+                
                 <div class="row">
                     <div class="col-md-12">
                         <h5 data-efm="eval"><strong>**Evaluation Consideration and Results</strong></h5>
@@ -415,20 +409,75 @@ th {
                     </div>
                 </div>
 
-                <?php if(false): ?>
                 <div class="row">
-                    <div class="col-md-12">
-                        <div>
-                            <div class="form-group">
-                                <label for="">Approved by:</label>
-                                <input type="text" class="form-control" style="width: 300px;" placeholder="Approver's name">
-                            </div>
-                            <p>Signature:</p>
-                            <div class="esign"></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="efEvalDate">Evaluation Date <span class="required">*</span></label>
+                            <input type="date" name="evaluation_date" id="efEvalDate" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="efEvalDueDate">Evaluation Due Date <span class="required">*</span></label>
+                            <input type="date" name="evaluation_due_date" id="efEvalDueDate" class="form-control" required>
                         </div>
                     </div>
                 </div>
-                <?php endif; ?>
+
+                <!-- reviewed bt -->
+                <div class="row">
+                    <div class="col-md-12"><strong>Reviewed By</strong></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="efReviewedBy">Name</label>
+                            <input type="text" name="reviewed_by" id="efReviewedBy" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="efReviewDate">Date</label>
+                            <input type="date" name="review_date" id="efReviewDate" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <div id="reviewer_signature" class="signature__"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- approved by -->
+                <div class="row">
+                    <div class="col-md-12"><strong>Approved By</strong></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="efApprovedBy">Name</label>
+                            <input type="text" name="approved_by" id="efApprovedBy" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="efApproveDate">Date</label>
+                            <input type="date" name="approve_date" id="efApproveDate" class="form-control" >
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <div id="approver_signature" class="signature__"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="efComment">Comments</label>
+                            <textarea name="comments" id="efComment" class="form-control" placeholder="Comments"></textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
@@ -774,10 +823,64 @@ th {
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="">Assessment of Results of Foreign Supplier Evaluation</label>
-                            <div class="form-control border-nonex" style="min-height: 7rem;" data-ed="assessment"></div>
+                            <div class="form-control" style="min-height: 7rem;" data-ed="assessment"></div>
                         </div>
                     </div>
                 </div>
+
+                <!-- reviewed by -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Reviewed By</label>
+                            <div data-ed="reviewed_by" class="form-control"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <div data-ed="review_date" class="form-control"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label> <br>
+                            <img src="#" id="reviewer_signature_display" class="signature__ display" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- approval -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Approved By</label>
+                            <div data-ed="approved_by" class="form-control"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <div data-ed="approve_date"  class="form-control"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label> <br>
+                            <img src="#" id="approver_signature_display" class="signature__ display" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- comment -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Comments</label>
+                            <div data-ed="comments" class="form-control"></div>
+                        </div>
+                    </div>
+                </div>  
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>

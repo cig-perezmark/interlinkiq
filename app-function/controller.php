@@ -146,37 +146,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
       
-        if($_POST['action'] == "add_form"){
+        if ($_POST['action'] == "add_form") {
             $eform_id = $_POST['eform_id'];
-            $form_owner = $_POST['form_owner'];
+            $form_owner = $_POST['form_owner'];  // This should be an array
             $enterprise_id = $_POST['enterprise_id'];
-            $i = '';
-            foreach($form_owner as $row){
-                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '$row' AND enterprise_id = '$enterprise_id' ");
-                $check_result = mysqli_fetch_array($check_form_owned);
-                if( mysqli_num_rows($check_form_owned) > 0 ) {
-                    $array_counter = explode(",", $check_result["form_owned"]); 
-                    if(!in_array($eform_id,$array_counter)){
-                        array_push($array_counter,$eform_id);
-                        $new_form_id =   implode(',',$array_counter);
-                        $update_query = "UPDATE tbl_forms_owned SET form_owned='$new_form_id' WHERE user_id = '$row'";
-                        if (mysqli_query($conn, $update_query)) {
-                            return true;
+        
+            // Make sure $form_owner is an array
+            if (is_array($form_owner)) {
+                foreach ($form_owner as $row) {
+                    echo $i++; // Debugging: Check which iteration we're on
+                    $check_form_owned = mysqli_query($conn, "SELECT * FROM tbl_forms_owned WHERE user_id = '$row' AND enterprise_id = '$enterprise_id'");
+                    $check_result = mysqli_fetch_array($check_form_owned);
+                    
+                    if (mysqli_num_rows($check_form_owned) > 0) {
+                        // User already has form(s) assigned, so we append the new form
+                        $array_counter = explode(",", $check_result["form_owned"]);
+                        if (!in_array($eform_id, $array_counter)) {
+                            array_push($array_counter, $eform_id);
+                            $new_form_id = implode(',', $array_counter);
+        
+                            // Update the existing record with the new form ID
+                            echo $update_query = "UPDATE tbl_forms_owned SET form_owned = '$new_form_id' WHERE user_id = '$row' AND enterprise_id = '$enterprise_id'";
+                            if (mysqli_query($conn, $update_query)) {
+                                // Successfully updated
+                            } else {
+                                echo "Error updating record: " . mysqli_error($conn);
+                            }
+                        }
+                    } else {
+                        // User does not have any forms assigned, so insert a new record
+                        echo $insert_query = "INSERT INTO tbl_forms_owned (user_id, enterprise_id, form_owned) VALUES ('$row', '$enterprise_id', '$eform_id')";
+                        if (mysqli_query($conn, $insert_query)) {
+                            // Successfully inserted
                         } else {
-                            echo "Error updating record: " . mysqli_error($conn);
+                            echo "Error inserting record: " . mysqli_error($conn);
                         }
                     }
                 }
-                else{
-                    $insert_query = "INSERT INTO `tbl_forms_owned`(`user_id`,enterprise_id,`form_owned`) VALUES ( '$row' ,'$enterprise_id' ,'$eform_id')";
-                    if (mysqli_query($conn, $insert_query)) {
-                        return true;
-                    } else {
-                        echo "Error updating record: " . mysqli_error($conn);
-                    }
-                }
+            } else {
+                echo "form_owner is not an array";
             }
         }
+
     }
 }
 

@@ -847,7 +847,7 @@ $builderTabs = [
                                         <input type="radio" name="assignee_pool" value="internal" checked onchange="selectAssignee(this)"> Internal <span></span>
                                     </label>
                                     <label class="mt-radio mt-radio-outline">
-                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> HACCP Team <span></span>
+                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> FS Team <span></span>
                                     </label>
                                 </div>
                             </div>

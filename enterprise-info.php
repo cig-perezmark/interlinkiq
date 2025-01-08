@@ -67,6 +67,17 @@
     .uuploader:hover{
         opacity:1;
     }
+    
+    @media only screen and (min-width: 600px) {
+        .list-column-break {
+            -moz-column-count: 2;
+            -moz-column-gap: 20px;
+            -webkit-column-count: 2;
+            -webkit-column-gap: 20px;
+            column-count: 2;
+            column-gap: 20px;
+        }
+    }
 </style>
 
                     <div class="row">
@@ -719,8 +730,8 @@
                                                                         </div>
                                                                     </div>
                                                                 <?php endif; ?>
-                                                                <hr>
-                                                                <div class="row">
+                                                                <div class="row <?php if ($switch_user_id == 1649 OR $current_client == 16) { echo 'hide'; } ?>">
+                                                                    <hr>
                                                                     <div class="col-md-12">
                                                                         <div class="col-md-4">
                                                                             
@@ -791,114 +802,43 @@
                                                                     <div class="row">
                                                                         <div class="col-md-12">
                                                                             <div class="col-md-4">
-                                                                                <label>Enterprise Categories</label>
                                                                                 <?php
+                                                                                    
+                                                                                    $sql_category = '';
+																                    if ($switch_user_id == 1649 OR $current_client == 16) { 
+																                        $sql_category = "FIND_IN_SET(16, REPLACE(client, ' ', '')) AND ";
+																                        echo '<label>Industry Categories</label>';
+																                    } else {
+																                        echo '<label>Enterprise Categories</label>';
+																                    }
                                                                                     $array_busi = explode(", ", $row["Categories"]); 
                                                                                 ?>
-                                                                            </div>
-                                                                            <div class="col-md-4">
                                                                                 <input type="hidden" name="ids" class="form-control" value="<?php echo $row['enterp_id']; ?>">
-                                                                                <input type="checkbox" name="Categories[]" value="1" <?php if(in_array('1', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label> Acidified Foods</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="2" <?php if(in_array('2', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label> Animal Feed</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="33" <?php if(in_array('33', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label> Animal Product</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="3" <?php  if(in_array('3', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label> Aquaculture</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="4" <?php  if(in_array('4', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Beverages</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="5" <?php  if(in_array('5', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label> Cannabis</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="6" <?php  if(in_array('6', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Chemicals</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="7" <?php  if(in_array('7', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Confectionery</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="8" <?php  if(in_array('8', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>CPG/FMCG</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="9" <?php  if(in_array('9', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Cosmetics</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="10" <?php  if(in_array('10', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label for="Packaging">Dietary Supplements</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="11" <?php  if(in_array('11', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Equipment</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="12" <?php  if(in_array('12', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Flavoring</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="13" <?php  if(in_array('13', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Food</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="14" <?php  if(in_array('14', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Functional</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="15" <?php  if(in_array('15', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Foods</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="16" <?php if(in_array('16', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Herbal / Herbs</label> <br>
-                                                                                
                                                                             </div>
-                                                                            <div class="col-md-4">
-                                                                                <input type="checkbox" name="Categories[]" value="17" <?php if(in_array('17', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Ingredients</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="18" <?php  if(in_array('18', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label> Juice</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="19" <?php  if(in_array('19', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Medical Device</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="20" <?php  if(in_array('20', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label> Medical Food</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="21" <?php  if(in_array('21', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Nutraceuticals</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="22" <?php  if(in_array('22', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Packaging</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="23" <?php  if(in_array('23', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Pet Food</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="24" <?php  if(in_array('24', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Pharmaceuticals</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="25" <?php  if(in_array('25', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label for="Packaging">Produce</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="26" <?php  if(in_array('26', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Raw Materials</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="27" <?php  if(in_array('27', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Seafood</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="28" <?php  if(in_array('28', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Spices</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="29" <?php  if(in_array('29', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Systems</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="30" <?php  if(in_array('30', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Tobacco</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="31" <?php  if(in_array('31', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Utensils</label> <br>
-                                                                                
-                                                                                <input type="checkbox" name="Categories[]" value="32" <?php  if(in_array('32', $array_busi)){echo 'checked';}else{echo '';} ?>>
-                                                                                <label>Others</label> <br>
-                                                                                <br>
+                                                                            <div class="col-md-8">
+                                                                                <?php
+                                                                                    echo '<ul class="list-unstyled list-column-break mt-checkbox-list">';
+                                                                                        $selectData = mysqli_query( $conn,"SELECT * FROM tblEnterpise_category WHERE $sql_category deleted = 0 AND ID != 32 ORDER BY name" );
+                                                                                        if ( mysqli_num_rows($selectData) > 0 ) {
+                                                                                            while($rowData = mysqli_fetch_array($selectData)) {
+                                                                                                echo '<li>
+                                                                                                    <label class="mt-checkbox mt-checkbox-outline">
+                                                                                                        <input type="checkbox" name="Categories[]" value="'.$rowData['ID'].'" '; echo in_array($rowData['ID'], $array_busi) ? 'checked':''; echo ' /> '.$rowData['name'].'
+                                                                                                        <span></span>
+                                                                                                    </label>
+                                                                                                </li>';
+                                                                                            }
+                                                                                        }
+                                                        
+                                                                                        echo '<li>
+                                                                                            <label class="mt-checkbox mt-checkbox-outline">
+                                                                                                <input type="checkbox" name="Categories[]" value="32" '; echo in_array(32, $array_busi) ? 'checked':''; echo ' onchange="changedCategory(this)" /> Others
+                                                                                                <span></span>
+                                                                                            </label>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                    <input type="text" class="form-control margin-bottom-15  Categories_other '; echo in_array(32, $array_busi) ? '':'hide';  echo '" name="Categories_other" placeholder="Specify others" value="'.htmlentities($row['Categories_other'] ?? '').'" />';
+                                                                                ?>
                                                                             </div>
                                                                         </div>      
                                                                     </div>
@@ -948,8 +888,8 @@
                                                         <!--end--> 
                                                         <!--start-->
                                                         <div class="tab-pane" id="BS">
-                                                            <h4><strong>Business Structure</strong></h4>
-                                                            <div class="row">
+                                                            <!--<h4><strong>Business Structure</strong></h4>-->
+                                                            <div class="row hide">
                                                                 <form method="post" class="form-horizontal modalForm form_bs">
                                                                     <table class="table">
                                                                         <!--marked-->
@@ -1076,7 +1016,53 @@
                                                                     </div>
                                                                 </form>
                                                             </div>
+
+                                                            <!--<hr >-->
+                                                            <h4><strong>Business Structure</strong> &nbsp;<a data-toggle="modal" href="#addBSModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
+                                                            <div class="row">
+                                                                <table class="table" >
+                                                                    <thead style="border-bottom:solid #003865 2px;">
+                                                                        <tr>
+                                                                            <td>Name</td>
+                                                                            <td>Supporting Document</td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <?php
+                                                                            $resultBS = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_BusinessStructure WHERE deleted = 0 AND user_id = $switch_user_id");
+                                                                            while($rowBS = mysqli_fetch_array($resultBS)){
+                                                                                
+                                                                                $files = $rowBS['files'];
+                                                                                if (!empty($files)) {
+                                                                                    $fileExtension = fileExtension($files);
+                                                                                    $src = $fileExtension['src'];
+                                                                                    $embed = $fileExtension['embed'];
+                                                                                    $type = $fileExtension['type'];
+                                                                                    $file_extension = $fileExtension['file_extension'];
+                                                                                    $url = $base_url.'uploads/enterprise/';
+
+                                                                                    $files = $src.$url.rawurlencode($files).$embed;
+                                                                                }
+
+                                                                                echo '<tr>
+                                                                                    <td>'.htmlentities($rowBS['name'] ?? '').'</td>
+                                                                                    <td>'; 
+                                                                                        if (!empty($files)) { echo '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>'; }
+                                                                                    echo '</td>
+                                                                                    <td class="text-right">
+                                                                                        <a class="btn blue btn-outline btnViewBS" data-toggle="modal" href="#modalBS" data-id="'.$rowBS["ID"].'">VIEW</a>
+                                                                                        <a class="btn btn-outline red" onclick="btnDelete_BS('.$rowBS["ID"].', this)">Delete</a>
+                                                                                    </td>
+                                                                                </tr>';
+                                                                            }
+                                                                        ?>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            
                                                             <hr>
+                                                            
                                                             <div class="row">
                                                                 <div class="col-md-12">
                                                                     <div class="form-group">
@@ -1086,7 +1072,8 @@
                                                                 </div>
                                                             </div>
 
-                                                            <hr >
+                                                            <hr>
+                                                            
                                                             <h4><strong>Trademarks</strong> &nbsp;<a data-toggle="modal" href="#addTrademarkModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
                                                             <div class="row">
                                                                 <table class="table" >
@@ -1102,8 +1089,10 @@
                                                                         <?php
                                                                             $resultQuery = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_Trademark where deleted = 0 AND user_id = $switch_user_id");
                                                                             while($rowtrade = mysqli_fetch_array($resultQuery)){
-                                                                                if (!empty($rowtrade['files'])) {
-                                                                                    $fileExtension = fileExtension($rowtrade['files']);
+                                                                                
+                                                                                $files = $rowtrade['files'];
+                                                                                if (!empty($files)) {
+                                                                                    $fileExtension = fileExtension($files);
                                                                                     $src = $fileExtension['src'];
                                                                                     $embed = $fileExtension['embed'];
                                                                                     $type = $fileExtension['type'];
@@ -1128,7 +1117,6 @@
                                                                         ?>
                                                                     </tbody>
                                                                 </table>
-                                                                <hr>
                                                             </div>
 
                                                             <hr>
@@ -1498,6 +1486,87 @@
                                                                         <input class="form-control" name="positionEnterpriseOthers" onchange="positionEnterpriseOthers(this.value,'<?php echo $row['enterp_id']; ?>')" value="<?php echo $row['positionEnterpriseOthers']; ?>">
                                                                     </div>
                                                                 </div>
+                                                            </div>
+                                                            <hr >
+                                                            <h4><strong>Agent Information</strong> &nbsp;<a data-toggle="modal" href="#addAgentModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
+                                                            <div class="row">
+                                                                <table class="table" >
+                                                                    <thead style="border-bottom:solid #003865 2px;">
+                                                                        <tr>
+                                                                            <td>Country</td>
+                                                                            <td>Agent Name</td>
+                                                                            <td>Phone</td>
+                                                                            <td>Email</td>
+                                                                            <td>Address</td>
+                                                                            <td>Website</td>
+                                                                            <td>Contract</td>
+                                                                            <td>Expiration Date</td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <?php
+                                                                            // $resultQuery = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_Agent WHERE deleted = 0 AND user_id = $switch_user_id");
+                                                                            $resultQuery = mysqli_query($conn, "
+                                                                                SELECT 
+                                                                                c.name AS country,
+                                                                                a.name AS name,
+                                                                                a.phone,
+                                                                                a.email,
+                                                                                a.address,
+                                                                                a.website,
+                                                                                a.files,
+                                                                                a.date_start,
+                                                                                a.date_end,
+                                                                                a.ID
+                                                                                FROM tblEnterpiseDetails_Agent AS a
+                                                                                
+                                                                                LEFT JOIN (
+                                                                                	SELECT
+                                                                                    id,
+                                                                                    name
+                                                                                    FROM countries
+                                                                                ) AS c
+                                                                                ON a.country = c.id
+                                                                                
+                                                                                WHERE a.deleted = 0 
+                                                                                AND a.user_id = $switch_user_id
+                                                                            ");
+                                                                            while($rowagent = mysqli_fetch_array($resultQuery)){
+                                                                                
+                                                                                $files = $rowagent['files'];
+                                                                                if (!empty($files)) {
+                                                                                    $fileExtension = fileExtension($files);
+                                                                                    $src = $fileExtension['src'];
+                                                                                    $embed = $fileExtension['embed'];
+                                                                                    $type = $fileExtension['type'];
+                                                                                    $file_extension = $fileExtension['file_extension'];
+                                                                                    $url = $base_url.'uploads/enterprise/';
+
+                                                                                    $files = $src.$url.rawurlencode($rowagent['files']).$embed;
+                                                                                }
+
+                                                                                echo '<tr>
+                                                                                    <td>'.htmlentities($rowagent['country'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowagent['name'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowagent['phone'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowagent['email'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowagent['address'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowagent['website'] ?? '').'</td>
+                                                                                    <td>'; 
+                                                                                        if (!empty($files)) { echo '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>'; }
+                                                                                    echo '</td>
+                                                                                    <td>'.htmlentities($rowagent['date_start'] ?? '').' - '.htmlentities($rowagent['date_end'] ?? '').'</td>
+                                                                                    <td style="text-align: right;">
+                                                                                        <a class="btn blue btn-outline btnViewAgent" data-toggle="modal" href="#modalAgent" data-id="'.$rowagent["ID"].'">VIEW</a>
+                                                                                        <a class="btn btn-outline red" onclick="btnDelete_Trademark('.$rowagent["ID"].', this)">Delete</a>
+                                                                                    </td>
+                                                                                </tr>';
+                                                                            }
+                                                                        ?>
+                                                                    </tbody>
+                                                                </table>
+                                                                <hr>
                                                             </div>
                                                         </div>
                                                         <!--end--> 
@@ -2009,10 +2078,10 @@
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <hr>
                                                             <form action="enterprise-information-function.php" method="POST" enctype="multipart/form-data">
-                                                                <div class="row">
+                                                                <div class="row <?php if ($switch_user_id == 1649 OR $current_client == 16) { echo 'hide'; } ?>">
                                                                     <div class="col-md-12">
+                                                                        <hr>
                                                                         <div class="col-md-4">
                                                                             <?php
                                                                                 if ($current_client == 1) {
@@ -2070,94 +2139,46 @@
                                                                 <div class="row">
                                                                     <div class="col-md-12">
                                                                         <div class="col-md-4">
-                                                                            <label>Enterprise Categories</label>
                                                                             <?php
-                                                                                $array_busi = explode(", ", $row["BusinessPROCESS"]); 
+                                                                                
+                                                                                $sql_category = '';
+															                    if ($switch_user_id == 1649 OR $current_client == 16) { 
+															                        $sql_category = "FIND_IN_SET(16, REPLACE(client, ' ', '')) AND ";
+															                        echo '<label>Industry Categories</label>';
+															                    } else {
+															                        echo '<label>Enterprise Categories</label>';
+															                    }
+                                                                                $array_busi = explode(", ", $row["Categories"]); 
+                                                                            ?>
+                                                                            <input type="hidden" name="ids" class="form-control" value="<?php echo $row['enterp_id']; ?>">
+                                                                        </div>
+                                                                        <div class="col-md-8">
+                                                                            <?php
+                                                                                echo '<ul class="list-unstyled list-column-break mt-checkbox-list">';
+                                                                                    $selectData = mysqli_query( $conn,"SELECT * FROM tblEnterpise_category WHERE $sql_category deleted = 0 AND ID != 32 ORDER BY name" );
+                                                                                    if ( mysqli_num_rows($selectData) > 0 ) {
+                                                                                        while($rowData = mysqli_fetch_array($selectData)) {
+                                                                                            echo '<li>
+                                                                                                <label class="mt-checkbox mt-checkbox-outline">
+                                                                                                    <input type="checkbox" name="Categories[]" value="'.$rowData['ID'].'" '; echo in_array($rowData['ID'], $array_busi) ? 'checked':''; echo ' /> '.$rowData['name'].'
+                                                                                                    <span></span>
+                                                                                                </label>
+                                                                                            </li>';
+                                                                                        }
+                                                                                    }
+                                                    
+                                                                                    echo '<li>
+                                                                                        <label class="mt-checkbox mt-checkbox-outline">
+                                                                                            <input type="checkbox" name="Categories[]" value="32" '; echo in_array(32, $array_busi) ? 'checked':''; echo ' onchange="changedCategory(this)" /> Others
+                                                                                            <span></span>
+                                                                                        </label>
+                                                                                    </li>
+                                                                                
+                                                                                </ul>
+                                                                                <input type="text" class="form-control margin-bottom-15  Categories_other '; echo in_array(32, $array_busi) ? '':'hide';  echo '" name="Categories_other" placeholder="Specify others" value="'.htmlentities($row['Categories_other'] ?? '').'" />';
                                                                             ?>
                                                                         </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="hidden" name="ids" class="form-control" value="<?php echo $row['enterp_id']; ?>">
-                                                                            <input type="checkbox" name="Categories[]" value="1" <?php if(in_array('1', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label> Acidified Foods</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="2" <?php if(in_array('2', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label> Animal Feed</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="3" <?php  if(in_array('3', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label> Aquaculture</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="4" <?php  if(in_array('4', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Beverages</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="5" <?php  if(in_array('5', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label> Cannabis</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="6" <?php  if(in_array('6', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Chemicals</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="7" <?php  if(in_array('7', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Confectionery</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="8" <?php  if(in_array('8', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>CPG/FMCG</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="9" <?php  if(in_array('9', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Cosmetics</label> <br>
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="Categories[]" value="10" <?php  if(in_array('10', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label for="Packaging">Dietary Supplements</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="11" <?php  if(in_array('11', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Equipment</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="12" <?php  if(in_array('12', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Flavoring</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="13" <?php  if(in_array('13', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Food</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="14" <?php  if(in_array('14', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Functional</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="15" <?php  if(in_array('15', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Foods</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="16" <?php if(in_array('16', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Herbal / Herbs</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="17" <?php if(in_array('17', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Ingredients</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="18" <?php  if(in_array('18', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label> Juice</label> <br>
-                                                                        </div>
                                                                     </div>      
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-12">
-                                                                        <div class="col-md-4">
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="Categories[]" value="19" <?php  if(in_array('19', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Medical Device</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="20" <?php  if(in_array('20', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label> Medical Food</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="21" <?php  if(in_array('21', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Nutraceuticals</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="22" <?php  if(in_array('22', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Packaging</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="23" <?php  if(in_array('23', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Pet Food</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="24" <?php  if(in_array('24', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Pharmaceuticals</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="25" <?php  if(in_array('25', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label for="Packaging">Produce</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="26" <?php  if(in_array('26', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Raw Materials</label> <br>
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="Categories[]" value="27" <?php  if(in_array('27', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Seafood</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="28" <?php  if(in_array('28', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Spices</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="29" <?php  if(in_array('29', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Systems</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="30" <?php  if(in_array('30', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Tobacco</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="31" <?php  if(in_array('31', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Utensils</label> <br>
-                                                                            <input type="checkbox" name="Categories[]" value="32" <?php  if(in_array('32', $array_busi)){echo 'checked';}else{echo '';} ?> disabled>
-                                                                            <label>Others</label> <br>
-                                                                            <input class="form-control" name="EnterpriseProcessSpecify" value="<?php echo $row['EnterpriseProcessSpecify']; ?>" readonly>
-                                                                            <br>
-                                                                              <input type="submit" name=""  class="btn btn-success" value="Save">
-                                                                        </div>
-                                                                    </div>        
                                                                 </div>
                                                             </form>   
                                                         </div>
@@ -2198,8 +2219,8 @@
                                                         <!--end--> 
                                                         <!--start-->
                                                         <div class="tab-pane" id="BS">
-                                                            <h4><strong>Business Structure</strong></h4>
-                                                            <div class="row">
+                                                            <!--<h4><strong>Business Structure</strong></h4>-->
+                                                            <div class="row hide">
                                                                 <div>
                                                                     <table class="table">
                                                                         <thead>
@@ -2372,7 +2393,53 @@
                                                                     </table>
                                                                  </div>
                                                             </div>
+                                                            <!--<hr>-->
+                                                            
+                                                            <h4><strong>Business Structure</strong> &nbsp;<a data-toggle="modal" href="#addBSModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
+                                                            <div class="row">
+                                                                <table class="table" >
+                                                                    <thead style="border-bottom:solid #003865 2px;">
+                                                                        <tr>
+                                                                            <td>Name</td>
+                                                                            <td>Supporting Document</td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <?php
+                                                                            $resultBS = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_BusinessStructure WHERE deleted = 0 AND user_id = $switch_user_id");
+                                                                            while($rowBS = mysqli_fetch_array($resultBS)){
+                                                                                
+                                                                                $files = $rowBS['files'];
+                                                                                if (!empty($files)) {
+                                                                                    $fileExtension = fileExtension($files);
+                                                                                    $src = $fileExtension['src'];
+                                                                                    $embed = $fileExtension['embed'];
+                                                                                    $type = $fileExtension['type'];
+                                                                                    $file_extension = $fileExtension['file_extension'];
+                                                                                    $url = $base_url.'uploads/enterprise/';
+
+                                                                                    $files = $src.$url.rawurlencode($files).$embed;
+                                                                                }
+
+                                                                                echo '<tr>
+                                                                                    <td>'.htmlentities($rowBS['name'] ?? '').'</td>
+                                                                                    <td>'; 
+                                                                                        if (!empty($files)) { echo '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>'; }
+                                                                                    echo '</td>
+                                                                                    <td class="text-right">
+                                                                                        <a class="btn blue btn-outline btnViewBS" data-toggle="modal" href="#modalBS" data-id="'.$rowBS["ID"].'">VIEW</a>
+                                                                                        <a class="btn btn-outline red" onclick="btnDelete_BS('.$rowBS["ID"].', this)">Delete</a>
+                                                                                    </td>
+                                                                                </tr>';
+                                                                            }
+                                                                        ?>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            
                                                             <hr>
+                                                            
                                                             <div class="row">
                                                                 <div class="col-md-12">
                                                                     <div class="form-group">
@@ -2381,7 +2448,9 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            
                                                             <hr>
+                                                            
                                                             <h4><strong>Trademarks </strong> &nbsp;
                                                                 <?php if($row['trademarkStatus'] != ''){ ?>
                                                                 <input type="checkbox" id="" name="trademarkStatus" value="" onchange="trademarkStatus(this.value,'<?php echo $row['enterp_id']; ?>')" <?php if($row['trademarkStatus'] == 'None'){echo 'checked';}else{echo '';}?> disabled>
@@ -3383,8 +3452,24 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal fade bs-modal-lg" id="modalBS" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="enterprise-information-function.php" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-header bg-primary">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Business Structure</h4>
+                                    </div>
+                                    <div class="modal-body"></div>
+                                    <div class="modal-footer">
+                                        <input type="submit" name="btnBSUpdate" value="Update" class="btn btn-info">       
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal fade bs-modal-lg" id="modalTrademark" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog">
                             <div class="modal-content">
                                 <form action="enterprise-information-function.php" method="POST" enctype="multipart/form-data">
                                     <div class="modal-header bg-primary">
@@ -3394,6 +3479,22 @@
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
                                         <input type="submit" name="btnTrademarkUpdate" value="Update" class="btn btn-info">       
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade bs-modal-lg" id="modalAgent" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="enterprise-information-function.php" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-header bg-primary">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Agent Information</h4>
+                                    </div>
+                                    <div class="modal-body"></div>
+                                    <div class="modal-footer">
+                                        <input type="submit" name="btnAgentUpdate" value="Update" class="btn btn-info">       
                                     </div>
                                 </form>
                             </div>
@@ -3744,6 +3845,44 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal fade" id="addBSModal" tabindex="-1" role="dialog" >
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="enterprise-information-function.php" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-header bg-primary">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Add Business Structure</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Name</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input class="form-control" type="text" name="name" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Supporting Document</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input class="form-control" type="file" name="file" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer" style="margin-top:10px;">
+                                        <input type="submit" name="btnBS" value="Insert" class="btn btn-info">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal fade" id="addTrademarkModal" tabindex="-1" role="dialog" >
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -3788,6 +3927,129 @@
                                     </div>
                                     <div class="modal-footer" style="margin-top:10px;">
                                         <input type="submit" name="btnTrademarks" value="Insert" class="btn btn-info">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="addAgentModal" tabindex="-1" role="dialog" >
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="enterprise-information-function.php" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-header bg-primary">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Add Agent</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Country</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <?php
+                                                        $resultcountry = mysqli_query($conn, "SELECT * FROM countries order by name ASC");
+                                                        if ( mysqli_num_rows($resultcountry) > 0 ) {
+                                                            echo '<select class="form-control" name="country">
+                                                                <option value="0">---Select---</option>';
+                                                                
+                                                                while($rowcountry = mysqli_fetch_array($resultcountry)) {
+                                                                    echo '<option value="'.$rowcountry['id'],'">'.utf8_encode($rowcountry['name']).'</option>';
+                                                                }
+                                                                
+                                                            echo '</select>';
+                                                        }
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Agent Name</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input class="form-control" type="text" name="name" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Phone</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input class="form-control" type="text" name="phone" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Email</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input class="form-control" type="email" name="email" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Address</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input class="form-control" type="text" name="address" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Website</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input class="form-control" type="url" name="website" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Contract</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input class="form-control" type="file" name="file" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Expiration Date</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control daterange" name="daterange" />
+                                                        <span class="input-group-btn">
+                                                            <button class="btn default date-range-toggle" type="button">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer" style="margin-top:10px;">
+                                        <input type="submit" name="btnAgent" value="Insert" class="btn btn-info">
                                     </div>
                                 </form>
                             </div>
@@ -4467,8 +4729,28 @@
     			// });
     			
                 // Emjay script ends here 
+                
+                
+                widget_date();
             });
 
+            function widget_date() {
+                $('.daterange').daterangepicker({
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
+                    },
+                    "autoApply": true,
+                    "showDropdowns": true,
+                    "linkedCalendars": false,
+                    "alwaysShowCalendars": true,
+                    "drops": "auto"
+                }, function(start, end, label) {
+                  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+                });
+            }
+            
             function btnRemoveContactSet(id, e) {
                 swal({
                     title: "Are you sure?",
@@ -4677,6 +4959,17 @@
                     }
                 });
             });
+            $(".btnViewBS").click(function() {
+                var id = $(this).data("id");
+                $.ajax({    
+                    type: "GET",
+                    url: "enterprise-function/fetch-bs-contact.php?modalViewApp="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalBS .modal-body").html(data);
+                    }
+                });
+            });
             $(".btnViewTM").click(function() {
                 var id = $(this).data("id");
                 $.ajax({    
@@ -4685,6 +4978,18 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalTrademark .modal-body").html(data);
+                    }
+                });
+            });
+            $(".btnViewAgent").click(function() {
+                var id = $(this).data("id");
+                $.ajax({    
+                    type: "GET",
+                    url: "enterprise-function/fetch-agent.php?modalViewApp="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalAgent .modal-body").html(data);
+                        widget_date();
                     }
                 });
             });
@@ -5201,6 +5506,27 @@
                     swal("Done!", "This item has been deleted.", "success");
                 });
             }
+            function btnDelete_BS(id, e) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be deleted!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "enterprise-information-function.php?btnDelete_BS="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $(e).parent().parent().remove();
+                        }
+                    });
+                    swal("Done!", "This item has been deleted.", "success");
+                });
+            }
             function btnDelete_Trademark(id, e) {
                 swal({
                     title: "Are you sure?",
@@ -5243,6 +5569,13 @@
                     swal("Done!", "This item has been deleted.", "success");
                 });
             }
+			function changedCategory(e) {
+				if (e.checked) {
+				    $('.Categories_other').removeClass('hide');
+				} else {
+				    $('.Categories_other').addClass('hide');
+				}
+			}
                      
             // addFacility_registration
             $(".addFacility_registration").on('submit',(function(e) {

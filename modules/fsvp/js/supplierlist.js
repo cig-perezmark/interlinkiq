@@ -37,6 +37,7 @@ jQuery(function() {
     const evalFormAlert = Init.createAlert($('#evaluationForm .modal-body'));
     
     $('.esign').eSign();
+    $('.signature__.display').prop('src', '#').css('display', 'none'); // reset signature display
 
     $('#tableSupplierList').on('click', '[data-openevalform]', function() {
         const data = suppliersData[this.dataset.eval];
@@ -125,6 +126,9 @@ jQuery(function() {
         const fsvpSupplierId = this.dataset.updateForeignSupplier;
         const data = suppliersData[fsvpSupplierId];
         
+        const hasSupplierAgreementFiles = data.supplier_agreement.length > 0;
+        const hasComplianceStatementFiles = data.compliance_statement.length > 0;   
+        
         supplierSelect.reset();
         $('#materialListSelection').html('');
         $('#materialListHelpBlock').text('Please select a supplier first.');
@@ -132,6 +136,26 @@ jQuery(function() {
 
         $('#newSupplierForm [name=supplier]').val(data.supplier_id);
         $('#fsName').val(data.name || '');
+
+        // uncheck options by default
+        $('#modalNewSupplier .supplierlist-check :where(input[name="supplier_agreement"], input[name="compliance_statement"])').prop('checked', false);
+
+        // enable files 
+        if(hasSupplierAgreementFiles) {
+            const container = $('#modalNewSupplier .supplierlist-check input[name="supplier_agreement"]').closest('.supplierlist-check').find('.filesArrayDisplay');
+            $('#modalNewSupplier .supplierlist-check input[name="supplier_agreement"][value="1"]').prop('checked', true);            
+            createUploadedFilesRowInSupplierModal(container, data.supplier_agreement, 'supplier_agreement');
+        } else {
+            $('#modalNewSupplier .supplierlist-check input[name="supplier_agreement"][value="0"]').prop('checked', true);
+        }
+
+        if(hasComplianceStatementFiles) {
+            const container = $('#modalNewSupplier .supplierlist-check input[name="compliance_statement"]').closest('.supplierlist-check').find('.filesArrayDisplay');
+            $('#modalNewSupplier .supplierlist-check input[name="compliance_statement"][value="1"]').prop('checked', true);
+            createUploadedFilesRowInSupplierModal(container, data.compliance_statement, 'compliance_statement')
+        } else {
+            $('#modalNewSupplier .supplierlist-check input[name="compliance_statement"][value="0"]').prop('checked', true);
+        }
         
         // simulate multiselect dropdown selectopn
         supplierDdOnchange(data.supplier_id, data.id);
@@ -176,6 +200,7 @@ jQuery(function() {
             modal.find('#evalFileIframeAnchor').attr('data-src', '');
             modal.find('.evalFileCommentRow').hide();
             document.getElementById('edStatus').outerHTML = '<span id="edStatus"></span>';
+            $('.signature__.display').prop('src', '#').css('display', 'none'); // reset signature display
         });
     });
 
@@ -435,6 +460,10 @@ jQuery(function() {
 
         const data = new FormData(form);
 
+        // signatures
+        data.append('reviewer_sign', $('#reviewer_signature').eSign("getData"));
+        data.append('approver_sign', $('#approver_signature').eSign("getData"));
+
         var l = Ladda.create(this.querySelector('[type=submit]'));
         l.start();
 
@@ -475,6 +504,11 @@ jQuery(function() {
     $('#modalEvaluationForm').on('hidden.bs.modal', () => {
         prevEvalId = null;
         switchEvalModalFn();
+        $('.signature__').eSign('destroy');
+    });
+
+    $('#modalEvaluationForm').on('show.bs.modal', () => {
+        $('.signature__').eSign();
     });
 
     $('#toggleEvaluationBtn').click(function() {
@@ -492,6 +526,41 @@ jQuery(function() {
             initSuppliers();
         }
     });
+
+    // reset supplier modal
+    $('#modalNewSupplier').on('hidden.bs.modal', function() {
+        $('#modalNewSupplier input[type=checkbox').prop('checked', false); // uncheck doocument uploads
+        $('#modalNewSupplier .filesArrayDisplay .fileRow').remove(); // reset uploaded rows
+
+        // reset file storage
+        newSupplierFiles = {
+            supplier_agreement: {},
+            compliance_statement: {},
+        }
+    });
+
+    function createUploadedFilesRowInSupplierModal(container, files, nameAttr) {
+        // reset rows
+        container.find('.fileRow').remove();
+        
+        files.forEach(file => {
+            const fileId = 'forUpdate-' + file.id; 
+            const item = document.createElement('div');
+            item.classList.add('fileArrayItem', 'fileRow');
+            item.innerHTML = `
+                <span class="fileArrayName">
+                    <a href="#">${file.filename}</a> 
+                    <button type="button" data-id="${fileId}" data-name="${nameAttr}" class="btn btn-xs btn-default removeFileButton"><i class="fa fa-close"></i></button>
+                </span>
+                <input class="form-control fileArrayDates" type="date" data-name="date" data-fileinfoid="${fileId}" required value="${file.document_date}">
+                <input class="form-control fileArrayDates" type="date" data-name="exp" data-fileinfoid="${fileId}" required value="${file.expiration_date}">
+                <input class="form-control fileArrayDates" type="text" data-name="note" data-fileinfoid="${fileId}" placeholder="Add note" value="${file.note}">
+            `;
+
+            container.append(item)
+            newSupplierFiles[nameAttr][fileId] = file.id;
+        })
+    }
 
     function refreshSupplierDT(headers, centerColumns) {
         // destroy datatable
@@ -738,7 +807,7 @@ jQuery(function() {
                 viewEvaluationDetails(data);
             },
             error: function({responseJSON}) {
-                bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
+                bootstrapGrowl(responseJSON?.error || 'Error fetching data!', 'danger');
             },
         });
     }
@@ -957,6 +1026,20 @@ function viewEvaluationDetails(data) {
     modal.find('[data-ed=food_products_description]').html(data.description || none);
     modal.find('[data-ed=spp]').html(data.sppp || none);
 
+    modal.find('[data-ed=approved_by]').text(data.approved_by || '(None)');
+    modal.find('[data-ed=approve_date]').text(data.approve_date || '(None)');
+    modal.find('[data-ed=reviewed_by]').text(data.reviewed_by || '(None)');
+    modal.find('[data-ed=review_date]').text(data.review_date || '(None)');
+    modal.find('[data-ed=comments]').text(data.comments || '(None)');
+    
+    if(data.reviewed_by_sign) {
+        $('#reviewer_signature_display').prop('src', data.reviewed_by_sign).css('display', 'inline-block');
+    }
+
+    if(data.approved_by_sign) {
+        $('#approver_signature_display').prop('src', data.approved_by_sign).css('display', 'inline-block');
+    }
+    
     let fpStr = ``;
     if(data.food_imported && Array.isArray(data.food_imported)) {
         fpStr = `<ul style="margin:0;">`;

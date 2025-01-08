@@ -206,7 +206,7 @@
                                                 echo '%)</td>
                                                 <td>
                                                     <a style="color:#fff;" href="#modalAddActionItem" data-toggle="modal" class="btn green btn-outline btn-xs" onclick="btnNew_File('.$rowMain['m_ID'].')">Add New</a>
-                                                    <a style="color:#fff;" class="btn blue btn-outline btn-xs btnViewMyPro_update" data-toggle="modal" href="#modalGetMyPro_update" data-id="'.$rowMain["m_ID"].'>">View</a>
+                                                    <a style="color:#fff;" class="btn blue btn-outline btn-xs btnViewMyPro_update" data-toggle="modal" href="#modalGetMyPro_update" data-id="'.$rowMain["m_ID"].'">View</a>
                                                 </td>
                                             </tr>
                                     </table>
@@ -223,14 +223,12 @@
                                     <?php
                                         $resultType = mysqli_query($conn, "SELECT Services_History_PK, CAI_id, CAI_filename, CAI_description FROM tbl_MyProject_Services_Childs_action_Items where Parent_MyPro_PK = $myProMain order by CAI_filename ASC");
                                         while($rowType = mysqli_fetch_array($resultType)) { 
-                                            echo '<option value="'.$rowType['Services_History_PK'].'" >
+                                            echo '<option value="'.$rowType['CAI_id'].'" data-id="'.$rowType['Services_History_PK'].'" >
                                                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion'.$rowType['Services_History_PK'].'" href="#'.$rowType['Services_History_PK'].'"> 
                                                     '.htmlentities($rowType['CAI_filename'] ?? '').', '.htmlentities($rowType['CAI_description'] ?? '').'
                                                 </a>
-                                            </option>'; 
-                                           
-                                     
-                                        } 
+                                            </option>';
+                                        }
                                     ?>
                                 </select>
                             </div>
@@ -402,13 +400,15 @@
             //search 
             function search_filter(search_field){
                 var search_val = $('#single-append-radio').val();
+                // var search_val_id = $('#single-append-radio').attr('data-id');
+                var search_val_id = $('#single-append-radio').find('option:selected').data('id');
                 var ids = <?= $_GET['view_id'] ?>;
                 let url = "mypro_task.php";
-                uiBlock(search_val);
+                uiBlock(search_val_id);
 
                 $("#hide_box tr").empty();
                 $("#main_task > tr").empty();
-                $('html,body').animate({scrollTop:$("#center_"+search_val).offset().top}, 'slow');
+                // $('html,body').animate({scrollTop:$("#center_"+search_val_id).offset().top}, 'slow');
                 
                 $.ajax({
                     url:'mypro_function/search_task.php',
@@ -420,12 +420,12 @@
                         // $("#main_task > tr").empty();
                         $("#main_ > tbody").empty();
                         $("#searched_data"+search_val).html(data);
-                        $('#data_child'+search_val).empty();
-                        $('#data_child'+search_val).append(data);
+                        $('#data_child'+search_val_id).empty();
+                        $('#data_child'+search_val_id).append(data);
                         // $('html,body').animate({scrollTop:$("#searched_data"+search_val).offset().top}, 'slow');
-                        $('html,body').animate({scrollTop:$("#center_"+search_val).offset().top}, 'slow');
-                        $('#'+search_val).addClass('in');
-                        $('#'+search_val).unblock();
+                        $('html,body').animate({scrollTop:$("#center_"+search_val_id).offset().top}, 'slow');
+                        $('#'+search_val_id).addClass('in');
+                        $('#'+search_val_id).unblock();
                     }
                 });
             }

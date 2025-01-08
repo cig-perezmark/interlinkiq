@@ -215,8 +215,8 @@
 
               <!-- Register -->
               <form method="POST" class="form formSignUp" style="display: none;">
-                <h2 class="text-blue mt-5" style="font-weight: 800;">Create Account</h1>
-                <p class="text-light-blue mb-5">Get Your FREE Access Now!</p>
+                <h2 class="text-blue mt-5 mb-5" style="font-weight: 800;">Create Account</h1>
+                <p class="text-light-blue mb-5 d-none">Get Your FREE Access Now!</p>
 
                 <div class="alert_msg text-white"></div>
                 <input class="form-control" type="hidden" name="ID" value="<?php echo !empty($invited_id) ? $invited_id : ''; ?>" />
@@ -304,10 +304,23 @@
 
                 <div class="alert_msg text-white"></div>
                 <input class="form-control" type="hidden" name="ID" value="<?php echo $ID; ?>" />
-                <div class="form-floating mb-3">
-                  <input type="text" class="form-control" id="code" name="code" placeholder="Verification Code" required />
-                  <label for="code">Verification Code</label>
-                </div>
+                
+                <?php
+                  if (!empty($_GET['x']) AND intval($_GET['x']) > 0) {
+                    echo '<div class="input-group mb-3">
+                      <div class="form-floating">
+                        <input type="password" class="form-control" id="ppassword" name="ppassword" placeholder="Previous Password" required />
+                        <label for="ppassword">Previous Password</label>
+                      </div>
+                      <button class="btn btn-outline-secondary viewPW" type="button"><i class="fa fa-eye text-light-blue"></i></button>
+                    </div>';
+                  } else {
+                    echo '<div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="code" name="code" placeholder="Verification Code" required />
+                      <label for="code">Verification Code</label>
+                    </div>';
+                  }
+                ?>
 
                 <div class="input-group mb-3">
                   <div class="form-floating">
@@ -361,9 +374,29 @@
       </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="modalThankYou" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Thank You!</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p class="lead">Thank you for signing up for a free access account with InterlinkIQ! We're excited to have you on board.</p>
+            <p class="lead">Your free access account is now being activated so you can start exploring all the features that InterlinkIQ has to offer. To help you get the most out of our software, a member of our Free Access Account Team will be reaching out soon. They’ll guide you through the platform, highlight key features, and provide tips on maximizing its benefits for your business needs.</p>
+            <p class="lead">We're here to ensure you have everything you need to make the most of InterlinkIQ. Welcome aboard!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="../assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
     <script src="../assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 
     <script>
       var $ = jQuery;
@@ -382,6 +415,7 @@
           }
       });
 
+      <?php if ( !empty( $_GET['i'] ) AND !empty( $_GET['r'] ) AND $_GET['r'] == 1 ) { ?> btnCreate(); <?php } ?>
       <?php if ( !empty( $_GET['i'] ) AND !empty( $_GET['p'] ) AND $_GET['p'] == 1 ) { ?> ResetPassword(); <?php } ?>
 
       function btnBack() {
@@ -460,8 +494,9 @@
               data += '</div>';
 
               $('#container').removeClass('right-panel-active');
-              $('.formSignIn .alert_msg').html(data);
-              btnBack();
+            //   $('.formSignIn .alert_msg').html(data);
+            //   btnBack();
+              $('#modalThankYou').modal('show');
             } else {
               var data = '<div class="alert alert-danger">';
               data += obj.message;

@@ -147,8 +147,8 @@
                         </div>
                         <div class="col-md-9">
                             <!-- BEGIN BORDERED TABLE PORTLET-->
-                            <div class="portlet light portlet-fit ">
-                                <div class="portlet-title">
+                            <div class="portlet light">
+                                <div class="portlet-title tabbable-line">
                                     <div class="caption">
                                         <span class="icon-graduation font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">List of Trainings</span>
@@ -182,147 +182,60 @@
                                                         }
                                                     }
 	                                            }
+                                                
+                                                if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
+                                                    echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
+                                                }
                                             }
                                         ?>
+                                        
+                                        <a href="#modalNew" class="btn btn-circle btn-success btn-xs" data-toggle="modal" onclick="btnNew(1, 'modalNew')">Add New Training</a>
                                     </div>
-                                    <div class="actions">
-                                        <div class="btn-group">
-                                            <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
-                                                <i class="fa fa-angle-down"></i>
-                                            </a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li>
-                                                    <a data-toggle="modal" href="#modalNew" onclick="btnNew(1, 'modalNew')">Add New Training</a>
-                                                </li>
-                                                <?php if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163): ?>
-                                                    <li>
-                                                        <a data-toggle="modal" data-target="#modalInstruction" onclick="btnInstruction()">Add New Instruction</a>
-                                                    </li>
-                                                <?php endif; ?>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_actions_active" data-toggle="tab">Active</a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_actions_inactive" data-toggle="tab">Inactive</a>
+                                        </li>
+                                    </ul>
                                 </div>
                                 <div class="portlet-body">
-                                    <div class="table-scrollable">
-                                        <table class="table table-bordered table-hover" id="tableData">
-                                            <thead>
-                                                <tr>
-                                                    <th style="width: 50px;">No.</th>
-                                                    <th>Title</th>
-                                                    <th>Description</th>
-                                                    <!--<th>Under Job Description/s</th>-->
-                                                    <th class="text-center" style="width: 120px;">Compliance %</th>
-                                                    <th style="width: 80px;" class="text-center">Status</th>
-                                                    <th style="width: 150px;" class="text-center">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                    // $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $switch_user_id" );
-                                                    // if ( mysqli_num_rows($result) > 0 ) {
-                                                    //     $i=0;
-                                                    //     while($row = mysqli_fetch_array($result)) {
-                                                            
-                                                    //         echo '<tr id="tr_'. $row["ID"] .'">
-                                                    //             <td>'. $row["title"] .'</td>
-                                                    //             <td>'. $row["description"] .'</td>';
-
-                                                    //             $countTraining = 0;
-                                                    //             $countApproved = 0;
-                                                    //             $countEmployee = 0;
-                                                    //             $percentage = 0;
-
-                                                    //             $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id" );
-                                                    //             if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                    //                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                                                    //                     $found = null;
-                                                    //                     $employee_id = $rowEmployee["ID"];
-                                                    //                     $array_rowEmployee = explode(", ", $rowEmployee["job_description_id"]);
-                                                    //                     $array_rowTraining = explode(", ", $row["job_description_id"]);
-                                                    //                     foreach($array_rowEmployee as $emp_JD) {
-                                                    //                         if (in_array($emp_JD,$array_rowTraining)) {
-                                                    //                             $found = true;
-                                                    //                         }
-                                                    //                     }
-
-                                                    //                     if ( $found == true ) {
-                                                    //                         $trainingStatus = "Not Yet Started";
-                                                    //                         $trainingResult = 0;
-                                                    //                         $completed_date = '';
-                                                    //                         $due_date = '';
-
-                                                    //                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $employee_id" );
-                                                    //                         if ( mysqli_num_rows($selectUser) > 0 ) {
-                                                    //                             $rowUser = mysqli_fetch_array($selectUser);
-                                                    //                             $employee_user_ID = $rowUser['ID'];
-
-                                                    //                             $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $employee_user_ID " );
-                                                    //                             if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                                    //                                 while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                                    //                                     $trainingResultID = $rowQuizResult['ID'];
-                                                    //                                     $trainingQuizID = $rowQuizResult['quiz_id'];
-
-                                                    //                                     if (!empty($row['quiz_id'])) {
-                                                    //                                         $array_quiz_id = explode(', ', $row['quiz_id']);
-                                                    //                                         if (in_array($trainingQuizID, $array_quiz_id)) {
-                                                    //                                             $trainingResult = $rowQuizResult['result'];
-
-                                                    //                                             if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                                    //                                             else { $trainingStatus = "Not Yet Started"; }
-                                                                                
-                                                    //                                             $completed_date = $rowQuizResult['last_modified'];
-                                                    //                                             $completed_date = new DateTime($completed_date);
-                                                    //                                             $completed_date = $completed_date->format('M d, Y');
-                                                                                                
-                                                    //                                             $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                    //                                             $due_date = new DateTime($due_date);
-                                                    //                                             $due_date = $due_date->format('M d, Y');
-                                                    //                                         }
-                                                    //                                     }
-                                                    //                                 }
-                                                    //                                 if ($trainingResult == 100) { $countApproved++; }
-                                                    //                             }
-                                                    //                         }
-
-                                                    //                         $countEmployee++;
-                                                    //                     }
-                                                    //                 }
-                                                    //             }
-
-                                                    //             if ($countEmployee > 0) {
-                                                    //                 $percentage = (100 / $countEmployee) * $countApproved;
-                                                    //             } else {
-                                                    //                 $countApproved = 0;
-                                                    //             }
-
-                                                    //             echo ' <td class="text-center">'. intval($percentage) .'% ('. $countApproved .'/'. $countEmployee .')</td>';
-
-                                                    //             if ( $row["status"] == 0 ) {
-                                                    //                 echo '<td class="text-center"><span class="label label-sm label-danger">Inactive</span></td>';
-                                                    //             } else if ( $row["status"] == 1 ) {
-                                                    //                 echo '<td class="text-center"><span class="label label-sm label-success">Active</span></td>';
-                                                    //             } else {
-                                                    //                 echo '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';
-                                                    //             }
-
-                                                    //             echo '<td class="text-center">
-                                                    //                 <div class="mt-action-buttons">
-                                                    //                     <div class="btn-group btn-group-circle">
-                                                    //                         <a href="#modalView" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('. $row["ID"].', \'modalView\')">View</a>
-                                                    //                         <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDelete('. $row["ID"].')">Delete</a>
-                                                    //                     </div>
-                                                    //                 </div>
-                                                    //             </td>
-                                                    //         </tr>';
-                                                    //         $i++;
-                                                    //     }
-                                                    // } else {
-                                                    //     echo '<tr class="text-center text-default"><td colspan="8">Empty Record</td></tr>';
-                                                    // }
-                                                ?>
-                                            </tbody>
-                                        </table>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_actions_active">
+                                            <div class="table-scrollable">
+                                                <table class="table table-bordered table-hover" id="tableDataActive">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width: 50px;">No.</th>
+                                                            <th>Title</th>
+                                                            <th>Description</th>
+                                                            <th class="text-center" style="width: 120px;">Compliance %</th>
+                                                            <th class="text-center" style="width: 80px;">Status</th>
+                                                            <th class="text-center" style="width: 150px;">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_actions_inactive">
+                                            <div class="table-scrollable">
+                                                <table class="table table-bordered table-hover" id="tableDataInactive">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width: 50px;">No.</th>
+                                                            <th>Title</th>
+                                                            <th>Description</th>
+                                                            <th class="text-center" style="width: 120px;">Compliance %</th>
+                                                            <th class="text-center" style="width: 80px;">Status</th>
+                                                            <th class="text-center" style="width: 150px;">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -530,9 +443,9 @@
                     url: "function.php?modalView_HR_Trainings_Type="+id,
                     dataType: "html",
                     success: function(data){
-                        // $('#tableDataViewAll').removeClass('hide');
-                        $("#tableData tbody").html(data);
-                        $('#tableData').unblock();
+                        var obj = jQuery.parseJSON(data);
+                        $("#tableDataActive tbody").html(obj.tblActive);
+                        $("#tableDataInactive tbody").html(obj.tblInactive);
                     }
                 });
             }
@@ -618,11 +531,11 @@
                     }
                 });
             }
-            function btnView(id, count, view) {
+            function btnView(id, count, tab, view) {
                 btnClose(view);
                 $.ajax({    
                     type: "GET",
-                    url: "function.php?modalView_HR_Trainings="+id+"&c="+count,
+                    url: "function.php?modalView_HR_Trainings="+id+"&c="+count+"&t="+tab,
                     dataType: "html",
                     success: function(data){
                         $("#modalView .modal-body").html(data);
@@ -688,7 +601,7 @@
                                 result += '</td>';
                             result += '</tr>';
 
-                            $('#tableData tbody').append(result);
+                            $('#tableDataActive tbody').append(result);
 
                             // CounterUp Section
                             var pct_counter1 = (parseInt(obj.statusActive) / parseInt(obj.statusTotal)) * 100;
@@ -775,8 +688,12 @@
                                     result += '</div>';
                                 result += '</div>';
                             result += '</td>';
-                            
-                            $('#tableData tbody #tr_'+obj.ID).html(result);
+
+                            if (obj.t == 1) {
+                                $('#tableDataActive tbody #tr_'+obj.ID).html(result);
+                            } else if (obj.t == 2) {
+                                $('#tableDataInactive tbody #tr_'+obj.ID).html(result);
+                            }
 
                             // CounterUp Section
                             var pct_counter1 = (parseInt(obj.statusActive) / parseInt(obj.statusTotal)) * 100;

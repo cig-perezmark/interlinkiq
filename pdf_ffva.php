@@ -25,6 +25,7 @@
     $result = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE ID = $id" );
     if ( mysqli_num_rows($result) > 0 ) {
         $row = mysqli_fetch_array($result);
+        $likelihood_user_Id = $row["user_id"];
         $likelihood_type = $row["type"];
         
         $likelihood_answer = $row["likelihood_answer"];
@@ -102,6 +103,10 @@
     $sum = 0;
     $total_likelihood = 0;
     $result_likelihood = 'Undefined';
+
+    $sql_organic = 'WHERE organic = 0';
+    if ($likelihood_user_Id == 256) { $sql_organic = ''; }
+    
     $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
     if ( mysqli_num_rows($selectLikelihood) > 0 ) {
         while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
@@ -409,6 +414,14 @@
             </td>
         </tr>
     </table>
+    
+    <p></p>
+    
+    <table cellpadding="7" cellspacing="0" border="1" style="background-color: #9cc2e5;">
+        <tr>
+            <td style="text-align: center;"><b>Materials names and/or codes included in this assessment</b></td>
+        </tr>
+    </table>
 
     <p></p>
     
@@ -420,14 +433,6 @@
         <tr>
             <td colspan="2">Ingredient(s) or raw material(s) group</td>
             <td colspan="2" style="background-color: #92d050;">'.htmlentities($row["assessment"]).'</td>
-        </tr>
-    </table>
-    
-    <p></p>
-    
-    <table cellpadding="7" cellspacing="0" border="1" style="background-color: #9cc2e5;">
-        <tr>
-            <td style="text-align: center;"><b>Materials names and/or codes included in this assessment</b></td>
         </tr>
     </table>
     
@@ -479,7 +484,7 @@
         </tr>';
         
         $index = 0;
-        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic" );
         if ( mysqli_num_rows($selectLikelihood) > 0 ) {
             while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                 $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);

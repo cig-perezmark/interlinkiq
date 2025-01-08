@@ -103,7 +103,14 @@
                                     ?>
                                     <tr>
                                         <td><?= $rows['leave_name'] ?></td>
-                                        <td><?= $rows['leave_count'] ?></td>
+                                        <td>
+                                            <?php if($rows['leave_id'] == -7): ?>
+                                                .5
+                                            <?php else: ?>
+                                                <?= $rows['leave_count'] ?>
+                                            <?php endif; ?>
+                                           
+                                            </td>
                                         <td><?= $rows['start_date'] ?></td>
                                         <td><?= $rows['end_date'] ?></td>
                                         <td><?= $rows['notes'] ?></td>

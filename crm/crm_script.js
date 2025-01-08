@@ -86,11 +86,6 @@ $(document).ready(function() {
                 search: "Search:",
                 zeroRecords: "No matching records found"
             },
-            buttons: [
-                { extend: 'print', className: 'btn default' },
-                { extend: 'pdf', className: 'btn red' },
-                { extend: 'csv', className: 'btn green' }
-            ],
             order: [
                 [0, 'asc']
             ],
@@ -115,20 +110,96 @@ $(document).ready(function() {
         }
     }
 
+    // function load_data() {
+    //     if ($.fn.DataTable.isDataTable('#dataTable_2')) {
+    //         $('#dataTable_1').DataTable().destroy();
+    //     }
+    //     $.ajax({
+    //         url: "crm/controller_functions.php",
+    //         method: "POST",
+    //         data: { query: true },
+    //         success: function(data) {
+    //             $('#dataTable_1 tbody').html(data);
+    //             initializeDataTable('#dataTable_1');
+    //             $('#site_activities_loading, #spinner-text').addClass('d-none');
+    //             $('.portlet-body').addClass('margin-5');
+    //             $('#search, #dataTable_1, #filter-side').removeClass('d-none');
+    //         }
+    //     });
+    // }
+    
     function load_data() {
-        if ($.fn.DataTable.isDataTable('#dataTable_2')) {
-            $('#dataTable_1').DataTable().destroy();
+        // Show loading indicators
+        $('#site_activities_loading, #spinner-text').removeClass('d-none');
+        
+        // Destroy previous DataTables instances if present
+        if ($.fn.DataTable.isDataTable('#dataTable_1')) {
+            $('#dataTable_1').DataTable().clear().destroy();
+            $('#dataTable_1').addClass('d-none');
         }
-        $.ajax({
-            url: "crm/controller_functions.php",
-            method: "POST",
-            data: { query: true },
-            success: function(data) {
-                $('#dataTable_1 tbody').html(data);
-                initializeDataTable('#dataTable_1');
+        if ($.fn.DataTable.isDataTable('#dataTable_2')) {
+            $('#dataTable_2').DataTable().clear().destroy();
+            $('#dataTable_2').addClass('d-none');
+        }
+        
+        $('#dataTable_1').addClass('d-none');
+        // Initialize DataTable
+        $('#dataTable_2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "crm/controller_functions.php",
+                "type": "POST",
+                "data": { query: true }
+                ,
+                "dataSrc": function(json) {
+                    console.log('Raw JSON response:', json); // Logs the entire JSON response
+                    return json.data; // Returns the data array to DataTables
+                }
+            },
+            "columns": [
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                <span></span>
+                            </label>`;
+                }},
+                { "data": "account_name", "render": function(data) {
+                    return data || '';
+                }},
+                { "data": "account_email", "render": function(data) {
+                    return data || '';
+                }},
+                { "data": "account_phone", "render": function(data) {
+                    return data || '';
+                }},
+                { "data": "Account_Source", "render": function(data) {
+                    return data || '';
+                }},
+                { "data": "status", "render": function(data) {
+                    return data ? `<span class="contact-status">${data}</span>` : '';
+                }},
+                { "data": "activity_date", "render": function(data) {
+                    return data === 'Expired' ? '<span class="font-red bold">Expired Campaign</span>' : data || '';
+                }},
+                { "data": "performer_name", "render": function(data) {
+                    return data || '';
+                }},
+                { "data": "crm_id", "render": function(data) {
+                    return `<div class="clearfix">
+                                <div class="">
+                                    <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>`;
+                }}
+            ],
+            "initComplete": function(settings, json) {
+                $('#dataTable_2').removeClass('d-none');
                 $('#site_activities_loading, #spinner-text').addClass('d-none');
                 $('.portlet-body').addClass('margin-5');
-                $('#search, #dataTable_1, #filter-side').removeClass('d-none');
+                $('#search, #filter-side').removeClass('d-none');
             }
         });
     }
@@ -778,7 +849,7 @@ $(document).ready(function() {
                 { "data": "account_email", "render": function(data, type, row) {
                     return data || '';
                 }},
-                { "data": "contact_phone", "render": function(data, type, row) {
+                { "data": "account_phone", "render": function(data, type, row) {
                     return data || '';
                 }},
                 { "data": "Account_Source", "render": function(data, type, row) {
@@ -800,8 +871,8 @@ $(document).ready(function() {
                 { "data": "crm_id", "render": function(data, type, row) {
                     return `<div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
                             </div>`;
@@ -854,7 +925,7 @@ $(document).ready(function() {
                     { "data": "account_email", "render": function(data, type, row) {
                         return data || '';
                     }},
-                    { "data": "contact_phone", "render": function(data, type, row) {
+                    { "data": "account_phone", "render": function(data, type, row) {
                         return data || '';
                     }},
                     { "data": "Account_Source", "render": function(data, type, row) {
@@ -876,8 +947,8 @@ $(document).ready(function() {
                     { "data": "crm_id", "render": function(data, type, row) {
                         return `<div class="clearfix">
                                     <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                        <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                        <a target="_blank" class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                     </div>
                                 </div>`;
@@ -929,7 +1000,7 @@ $(document).ready(function() {
                     { "data": "account_email", "render": function(data, type, row) {
                         return data || '';
                     }},
-                    { "data": "contact_phone", "render": function(data, type, row) {
+                    { "data": "account_phone", "render": function(data, type, row) {
                         return data || '';
                     }},
                     { "data": "Account_Source", "render": function(data, type, row) {
@@ -951,8 +1022,8 @@ $(document).ready(function() {
                     { "data": "crm_id", "render": function(data, type, row) {
                         return `<div class="clearfix">
                                     <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                        <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                        <a target="_blank" class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                     </div>
                                 </div>`;
@@ -1070,7 +1141,7 @@ $(document).ready(function() {
                 { "data": "account_email", "render": function(data, type, row) {
                     return data || '';
                 }},
-                { "data": "contact_phone", "render": function(data, type, row) {
+                { "data": "account_phone", "render": function(data, type, row) {
                     return data || '';
                 }},
                 { "data": "Account_Source", "render": function(data, type, row) {
@@ -1092,7 +1163,7 @@ $(document).ready(function() {
                 { "data": "crm_id", "render": function(data, type, row) {
                     return `<div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
                             </div>`;
@@ -1128,6 +1199,10 @@ $(document).ready(function() {
                 "data": {
                     search_contact_email: true,
                     searchEmailVal: searchVal,
+                },
+                "dataSrc": function(json) {
+                    console.log('Raw JSON response:', json); // Logs the entire JSON response
+                    return json.data; // Returns the data array to DataTables
                 }
             },
             "columns": [
@@ -1143,7 +1218,7 @@ $(document).ready(function() {
                 { "data": "account_email", "render": function(data, type, row) {
                     return data || '';
                 }},
-                { "data": "contact_phone", "render": function(data, type, row) {
+                { "data": "account_phone", "render": function(data, type, row) {
                     return data || '';
                 }},
                 { "data": "Account_Source", "render": function(data, type, row) {
@@ -1165,7 +1240,7 @@ $(document).ready(function() {
                 { "data": "crm_id", "render": function(data, type, row) {
                     return `<div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
                             </div>`;
@@ -1216,7 +1291,7 @@ $(document).ready(function() {
                 { "data": "account_email", "render": function(data, type, row) {
                     return data || '';
                 }},
-                { "data": "contact_phone", "render": function(data, type, row) {
+                { "data": "account_phone", "render": function(data, type, row) {
                     return data || '';
                 }},
                 { "data": "Account_Source", "render": function(data, type, row) {
@@ -1238,7 +1313,7 @@ $(document).ready(function() {
                 { "data": "crm_id", "render": function(data, type, row) {
                     return `<div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
                             </div>`;
@@ -1272,7 +1347,7 @@ $(document).ready(function() {
                 "url": "crm/controller_functions.php",
                 "type": "POST",
                 "data": {
-                    search_contact_phone: true,
+                    search_account_phone: true,
                     searchPhoneVal: searchVal,
                 }
             },
@@ -1289,7 +1364,7 @@ $(document).ready(function() {
                 { "data": "account_email", "render": function(data, type, row) {
                     return data || '';
                 }},
-                { "data": "contact_phone", "render": function(data, type, row) {
+                { "data": "account_phone", "render": function(data, type, row) {
                     return data || '';
                 }},
                 { "data": "Account_Source", "render": function(data, type, row) {
@@ -1311,7 +1386,7 @@ $(document).ready(function() {
                 { "data": "crm_id", "render": function(data, type, row) {
                     return `<div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
                             </div>`;
@@ -1364,7 +1439,7 @@ $(document).ready(function() {
                 { "data": "account_email", "render": function(data, type, row) {
                     return data || '';
                 }},
-                { "data": "contact_phone", "render": function(data, type, row) {
+                { "data": "account_phone", "render": function(data, type, row) {
                     return data || '';
                 }},
                 { "data": "Account_Source", "render": function(data, type, row) {
@@ -1386,7 +1461,7 @@ $(document).ready(function() {
                 { "data": "crm_id", "render": function(data, type, row) {
                     return `<div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
                             </div>`;
@@ -1437,7 +1512,7 @@ $(document).ready(function() {
                 { "data": "account_email", "render": function(data, type, row) {
                     return data || '';
                 }},
-                { "data": "contact_phone", "render": function(data, type, row) {
+                { "data": "account_phone", "render": function(data, type, row) {
                     return data || '';
                 }},
                 { "data": "Account_Source", "render": function(data, type, row) {
@@ -1459,8 +1534,83 @@ $(document).ready(function() {
                 { "data": "crm_id", "render": function(data, type, row) {
                     return `<div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a target="_blank" class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>`;
+                }}
+            ],
+            "initComplete": function(settings, json) {
+                $('#dataTable_2').removeClass('d-none');
+                $('#site_activities_loading, #spinner-text').addClass('d-none');
+            }
+        });
+    });
+    
+    $('#searchStateForm').on('submit', function(e) {
+        e.preventDefault();
+        var searchVal = $('#searchStateValue').val();
+
+        // Destroy any existing DataTable instance to initialize a new one
+        if ($.fn.DataTable.isDataTable('#dataTable_1')) {
+            $('#dataTable_1').DataTable().destroy();
+            $('#dataTable_1').addClass('d-none');
+        }
+        if ($.fn.DataTable.isDataTable('#dataTable_2')) {
+            $('#dataTable_2').DataTable().destroy();
+            $('#dataTable_2').addClass('d-none');
+        }
+        $('#site_activities_loading, #spinner-text').removeClass('d-none');
+
+        // Initialize the DataTable with server-side processing
+        $('#dataTable_2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "crm/controller_functions.php",
+                "type": "POST",
+                "data": {
+                    search_state: true,
+                    searchVal: searchVal,
+                }
+            },
+            "columns": [
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                <span></span>
+                            </label>`;
+                }},
+                { "data": "account_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "account_email", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "account_phone", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "Account_Source", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "status", "render": function(data, type, row) {
+                    return `<span class="contact-status">${data || ''}</span>`;
+                }},
+                { "data": "activity_date", "render": function(data, type, row) {
+                    if (data === 'Expired') {
+                        return '<span class="font-red bold">Expired Campaign</span>';
+                    } else {
+                        return data || '';
+                    }
+                }},
+                { "data": "performer_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<div class="clearfix">
+                                <div class="">
+                                    <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
                             </div>`;
@@ -1490,13 +1640,13 @@ $(document).ready(function() {
             contentType: false,
     
             success: function(response) {
-                var responseParts = response.split('|');
-                var status = responseParts[0];
-                var message = responseParts[1];
-                var success_data = responseParts[2];
-                var skipped_data = responseParts[3];
+                const result = JSON.parse(response);
+                const status = result.status;
+                const message = result.message;
+                const skippedRows = result.skippedRows;
+    
                 if (status === 'success') {
-                    $.bootstrapGrowl('All contact entries uploaded successfully!', {
+                    $.bootstrapGrowl(message, {
                         ele: 'body',
                         type: 'success',
                         offset: { from: 'bottom', amount: 50 },
@@ -1510,18 +1660,26 @@ $(document).ready(function() {
                     $('#massUploadForm')[0].reset();
                 } else if (status === 'error') {
                     $('#massUploadResult').modal('show');
-                    // Destroy existing DataTable instances before reinitializing
-                    initializeDataTable2('#existContactEntriesResult');
-                    initializeDataTable2('#insertedContactEntriesResult');
     
-                    // Reinitialize DataTable with the new data
-                    $('#existContactEntriesResult').DataTable().clear().destroy();
-                    $('#insertedContactEntriesResult').DataTable().clear().destroy();
-                    $('#existContactEntriesResult tbody').html(skipped_data);
-                    $('#insertedContactEntriesResult tbody').html(success_data);
-                    initializeDataTable2('#existContactEntriesResult');
-                    initializeDataTable2('#insertedContactEntriesResult');
+                    // Clear existing table data
+                    $('#existContactEntriesResult tbody').empty();
     
+                    // Loop through skipped rows and append to the table
+                    skippedRows.forEach((row, index) => {
+                        const rowData = row.data;
+                        const reason = row.reason;
+                        const html = `<tr>
+                            <td>${index + 1}</td>
+                            <td>${rowData[0]}</td>
+                            <td>${rowData[2]}</td>
+                            <td>${rowData[1]}</td>
+                            <td>${rowData[9]}</td>
+                            <td>${reason}</td>
+                        </tr>`;
+                        $('#existContactEntriesResult tbody').append(html);
+                    });
+    
+                    // initializeDataTable2('#existContactEntriesResult');
                     $('#modalMultiUpload').modal('hide');
                     $('#massUploadForm')[0].reset();
                 }
@@ -1534,6 +1692,68 @@ $(document).ready(function() {
             }
         });
     });
+
+    // $('#massUploadForm').on('submit', function(e) {
+    //     e.preventDefault();
+    
+    //     const formData = new FormData(this);
+    //     var btn = $('#massUploadFormBtn');
+    //     var l = Ladda.create(btn[0]);
+    
+    //     l.start();
+    //     formData.append('upload_multiple_contacts', 'upload_multiple_contacts');
+    //     $.ajax({
+    //         url: 'crm/controller_functions.php',
+    //         type: 'POST',
+    //         data: formData,
+    //         processData: false,
+    //         contentType: false,
+    
+    //         success: function(response) {
+    //             var responseParts = response.split('|');
+    //             var status = responseParts[0];
+    //             var message = responseParts[1];
+    //             var success_data = responseParts[2];
+    //             var skipped_data = responseParts[3];
+    //             if (status === 'success') {
+    //                 $.bootstrapGrowl('All contact entries uploaded successfully!', {
+    //                     ele: 'body',
+    //                     type: 'success',
+    //                     offset: { from: 'bottom', amount: 50 },
+    //                     align: 'right',
+    //                     width: 'auto',
+    //                     delay: 4000,
+    //                     allow_dismiss: true,
+    //                     stackup_spacing: 10
+    //                 });
+    //                 $('#modalMultiUpload').modal('hide');
+    //                 $('#massUploadForm')[0].reset();
+    //             } else if (status === 'error') {
+    //                 $('#massUploadResult').modal('show');
+    //                 // Destroy existing DataTable instances before reinitializing
+    //                 initializeDataTable2('#existContactEntriesResult');
+    //                 initializeDataTable2('#insertedContactEntriesResult');
+    
+    //                 // Reinitialize DataTable with the new data
+    //                 $('#existContactEntriesResult').DataTable().clear().destroy();
+    //                 $('#insertedContactEntriesResult').DataTable().clear().destroy();
+    //                 $('#existContactEntriesResult tbody').html(skipped_data);
+    //                 $('#insertedContactEntriesResult tbody').html(success_data);
+    //                 initializeDataTable2('#existContactEntriesResult');
+    //                 initializeDataTable2('#insertedContactEntriesResult');
+    
+    //                 $('#modalMultiUpload').modal('hide');
+    //                 $('#massUploadForm')[0].reset();
+    //             }
+    
+    //             l.stop();
+    //         },
+    //         error: function(jqXHR, textStatus, errorThrown) {
+    //             console.error('AJAX Error:', textStatus, errorThrown);
+    //             l.stop();
+    //         }
+    //     });
+    // });
 
     $('#massArchiveForm').on('submit', function(e) {
         e.preventDefault();
@@ -1908,6 +2128,204 @@ $(document).ready(function() {
         return year + '-' + day + '-' + month;
     }
     
+    // $('.nav-tabs a').on('click', function (e) {
+    //     e.preventDefault();
+        
+    //     var contact_id
+    //     var targetId = $(this).attr('href');
+    //     var $targetPane = $(targetId);
+        
+    //     if (!$targetPane.data('loaded')) {
+    //         loadTabData(targetId, contact_id);
+    //     }
+        
+    //     console.log($targetPane)
+    // });
+    
+    //  function loadTabData(targetId) {
+    //     var action_type;
+
+    //     if (targetId === '#campaigns-section') {
+    //         action_type = 'get_campaigns';
+    //     } else if (targetId === '#notes-section') {
+    //         action_type = '/get_notes';
+    //     } else if (targetId === '#task-section') {
+    //         action_type = '/get_tasks';
+    //     }
+
+    //     if (!action_type) return;
+
+    //     $.ajax({
+    //         url: action_type,
+    //         method: 'GET',
+    //         data: {
+    //             action: action_type
+    //         },
+    //         success: function (response) {
+    //             var $mtActions = $(`${targetId} .mt-actions`);
+
+    //             response.forEach(function (item) {
+    //                 $mtActions.append(`
+    //                     <div class="mt-action">
+    //                         <div class="mt-action-img">
+    //                             <img src="${item.avatar}" alt="Avatar" height="50" width="50">
+    //                         </div>
+    //                         <div class="mt-action-body">
+    //                             <div class="mt-action-row">
+    //                                 <div class="mt-action-info">
+    //                                     <div class="mt-action-icon">
+    //                                         <i class="bi bi-activity"></i>
+    //                                     </div>
+    //                                     <div class="mt-action-details">
+    //                                         <span class="mt-action-author">${item.author}</span><br>
+    //                                         <a class="mt-action-desc view-content" data-id="${item.id}" data-toggle="modal" href="#view-content">
+    //                                             ${item.actionText}
+    //                                         </a>
+    //                                     </div>
+    //                                 </div>
+    //                                 <div class="mt-action-datetime">
+    //                                     <span class="mt-action-date"><i class="bi bi-calendar"></i> ${item.date}</span>
+    //                                     <span class="mt-action-dot bg-green"></span>
+    //                                     <span class="mt-action-time"><i class="bi bi-clock"></i> ${item.time}</span>
+    //                                 </div>
+    //                             </div>
+    //                         </div>
+    //                     </div>
+    //                 `);
+    //             });
+                
+    //             $(`${targetId}`).data('loaded', true);
+    //         },
+    //         error: function (jqXHR, textStatus, errorThrown) {
+    //             console.error('Error fetching data:', textStatus, errorThrown);
+    //         }
+    //     });
+    // }
+    
+    const recordCache = {};
+
+    // When a contact activity is clicked, set the contact ID for the tabs
+    $(document).on('click', '.activity-history', function () {
+        let contactId = $(this).attr('id');
+        $('#history-options .campaign-tab').attr('data-id', contactId);
+        $('#history-options .notes-tab').attr('data-id', contactId);
+        $('#history-options .task-tab').attr('data-id', contactId);
+        fetchTabData(`campaigns-section`, contactId);
+    });
+    
+    // When a tab is clicked, fetch data for that tab
+    $(document).on('click', '#history-options a[data-toggle="tab"]', function () {
+        var targetTab = $(this).data('action');
+        let dataId = $(this).attr('data-id');
+    
+        fetchTabData(targetTab, dataId);
+    });
+    
+    // Fetch data for the selected tab and contact ID
+    function fetchTabData(tab, contactId) {
+        // Cache key combining tab and contact ID
+        const cacheKey = `${tab}-${contactId}`;
+    
+        // Check if data for this tab and contactId is cached
+        if (recordCache[cacheKey] && recordCache[cacheKey].size > 0) {
+            renderTabContent(tab, Array.from(recordCache[cacheKey]).map(record => JSON.parse(record))); // Parse back to objects
+        } else {
+            fetchNewData(tab, contactId, cacheKey);
+        }
+    }
+    
+    // Fetch new data from the server
+    function fetchNewData(tab, contactId, cacheKey) {
+        $.post({
+            url: 'crm/controller_functions.php',
+            data: {
+                get_history: true,
+                action: tab,
+                contact_id: contactId,
+                existing_ids: JSON.stringify(Array.from(recordCache[cacheKey] || [])) // Passing existing ids from cache
+            },
+            success: function(response) {
+    
+                let parsedData;
+    
+                try {
+                    // Attempt to parse the response as JSON
+                    parsedData = JSON.parse(response);
+    
+                    // Check if parsedData has the 'newRecords' property and it's an array
+                    if (parsedData.newRecords && Array.isArray(parsedData.newRecords)) {
+                        // Cache the new data using Set (save as strings to prevent duplicates)
+                        recordCache[cacheKey] = new Set(parsedData.newRecords.map(record => JSON.stringify(record)));
+    
+                        // Render the new data
+                        renderTabContent(tab, parsedData.newRecords);
+                    } else {
+                        console.error("Expected 'newRecords' to be an array but got:", parsedData.newRecords);
+                    }
+                } catch (e) {
+                    console.error("Failed to parse response as JSON:", e);
+                }
+            },
+            error: function() {
+                console.error("Failed to fetch data");
+            }
+        });
+    }
+    
+    // Render the tab content dynamically
+    function renderTabContent(tab, records) {
+        const tabContainer = document.querySelector(`#${tab} .mt-actions`); // Corrected query selector
+        if (!tabContainer) {
+            console.error(`Tab container not found for ${tab}`);
+            return; // Stop execution if the container doesn't exist
+        }
+    
+        // Clear any existing content before adding new records
+        tabContainer.innerHTML = '';
+    
+        // Loop through the records and append them
+        records.forEach(record => {
+            const recordHtml = `
+                <div class="mt-action">
+                    <div class="mt-action-img">
+                        <img src="https://interlinkiq.com/uploads/avatar/643815%20-%20112BpQGu8GL._AC_SY350_QL15_.jpg" alt="Avatar" height="50" width="50">
+                    </div>
+                    <div class="mt-action-body">
+                        <div class="mt-action-row">
+                            <div class="mt-action-info">
+                                <div class="mt-action-icon">
+                                    <i class="bi bi-activity"></i>
+                                </div>
+                                <div class="mt-action-details">
+                                    <span class="mt-action-author">${record.name}</span><br>
+                                    <a class="mt-action-desc view-content" data-type="${record.type}" data-action="${record.action_id}" data-toggle="modal" href="#view-content">View Content</a>
+                                </div>
+                            </div>
+                            <div class="mt-action-datetime">
+                                <span class="mt-action-date"><i class="bi bi-calendar"></i> ${record.date}</span>
+                                <span class="mt-action-dot bg-green"></span>
+                                <span class="mt-action-time"><i class="bi bi-clock"></i> ${record.time}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+    
+            // Append the new HTML to the corresponding tab's content container
+            tabContainer.insertAdjacentHTML('beforeend', recordHtml);
+        });
+    }
+    
+    $('#activity-history').on('hidden.bs.modal', function () {
+        $(this).find('.mt-actions').html('');
+    });
+    
+    $('#activity-history').on('show.bs.modal', function () {
+        $(this).find('.active').removeClass('active');
+        $(this).find('.nav-tabs li:first-child').addClass('active');
+        $(this).find('#campaigns-section').addClass('active');
+        
+    });
+
     $(document).on('click', '.campaignDetails', function(e) {
         e.preventDefault();
         var campaignid = $(this).data('id');
@@ -1937,20 +2355,21 @@ $(document).ready(function() {
         });
     });
     
-    $(document).on('click', '.activity-history', function() {
-        let id = $(this).attr('id');
-        $.ajax({
-            url: '/crm/controller_functions.php',
-            type: 'POST',
-            data: {
-                id: id,
-                get_activity_history: true
-            },
-            success: function(response) {
-                $('#activity-history .modal-body').html(response);
-            }
-        })
-    })
+    // $(document).on('click', '.activity-history', function() {
+    //     let id = $(this).attr('id');
+    //     $('#campaigns-section , #notes-section, #task-section').val(id);
+    //     $.ajax({
+    //         url: '/crm/controller_functions.php',
+    //         type: 'POST',
+    //         data: {
+    //             id: id,
+    //             get_activity_history: true
+    //         },
+    //         success: function(response) {
+    //             $('#activity-history .modal-body').html(response);
+    //         }
+    //     })
+    // })
 
     $(document).on('click', '.get-task-notes', function(e) {
         e.preventDefault();
@@ -2128,8 +2547,8 @@ $(document).ready(function() {
     })
     
     $(document).on('click', '.view-content', function() {
-        let type = $(this).data('id');
-        let action_id = $(this).attr('id');
+        let type = $(this).data('type');
+        let action_id = $(this).data('action');
         console.log(type)
         console.log(action_id)
         $.ajax({

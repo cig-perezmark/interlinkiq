@@ -30,6 +30,7 @@ function getLayout($type, $title, $data) {
         $html .= '</table>';
         return $html;
     } else if($type === 'ipr-2') {
+        $data = $data[0];
         return '
             <style>
                 table { width: 100%; padding: 5px 0 5px 0; }
@@ -37,28 +38,33 @@ function getLayout($type, $title, $data) {
             <br>
             <br><table class="borderless">
                 <tr>
-                    <td class="borderless">Reviewed By:</td>
-                    <td>Approved By:</td>
+                    <td class="borderless">Reviewed By: '.txt($data['reviewed_by']).'</td>
+                    <td class="borderless">Approved By: '.txt($data['reviewed_by']).'</td>
                 </tr>
                 <tr>
-                    <td>Signature:</td>
-                    <td>Signature:</td>
+                    <td>Signature: <br /> 
+                        <img src="'.$data['reviewed_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
+                    </td>
+                  <td>Signature: <br /> 
+                        <img src="'.$data['approved_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
+                    </td>
                 </tr>
                 <tr>
-                    <td>Date:</td>
-                    <td>Date:</td>
+                    <td>Date: '.txt($data['review_date']).'</td>
+                    <td>Date: '.txt($data['approve_date']).'</td>
                 </tr>
             </table>
             <p style="display:none;">Note: Review and return this form to the Quality Personnel within 24 hours. If the document is not approved, state the reason in the comment section below.</p>
 
         ';
     } else if($type === 'ipr-3') {
+        $data = $data[0];
         return '
             <br>
             <br><strong>Comments:</strong>
             <br><table>
                 <tr>
-                    <td></td>
+                    <td>'.txt($data['comments']).'</td>
                 </tr>
             </table>
         ';
@@ -110,9 +116,9 @@ function getLayout($type, $title, $data) {
                     <td>'.txt($data['warning_letters']).'</td>
                     <td>'.txt($data['other_significant_ca']).'</td>
                     <td>'.txt($data['suppliers_corrective_actions']).'</td>
-                    <td>'.txt($data['info_related']).'</td>
-                    <td>'.txt($data['rejection_date']).'</td>
-                    <td>'.txt($data['approval_date']).'</td>
+                    <td>'.txt($data['info_related'] ?? '').'</td>
+                    <td>'.txt($data['rejection_date'] ?? '').'</td>
+                    <td>'.txt($data['approval_date'] ?? '').'</td>
                 </tr>
                 <tr>
                     <td colspan="4" style="width: 50%; font-weight:bold;">Assessment of Results of Foreign Supplier Evaluation<span style="color:gray; display:none;">[Note: If the evaluation was performed by another entity (other than the foreign supplier) include Entity’s name, address, email, and date of evaluation.]</span></td>
@@ -128,19 +134,29 @@ function getLayout($type, $title, $data) {
             <br>
             <br><table>
                 <tr>
-                    <td>Importer Approval: </td>
-                    <td>Date: </td>
+                    <td>Importer Approval:<br />
+                        <img src="'.$data['approved_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
+                        <div style="text-align:center;">'.txt($data['approved_by']).'</div>
+                    </td>
+                     <td>Date:
+                        <p style="text-align:center;">'.txt($data['approve_date']).'</p>
+                    </td>
                 </tr>
                 <tr>
-                    <td>Reviewed By: </td>
-                    <td>Date: </td>
+                   <td>Reviewed By:<br />
+                        <img src="'.$data['reviewed_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
+                        <div style="text-align:center;">'.txt($data['reviewed_by']).'</div>
+                    </td>
+                    <td>Date:
+                        <p style="text-align:center;">'.txt($data['review_date']).'</p>
+                    </td>
                 </tr>
             </table>
             <span style="color:gray; display:none;">Note:  Review and return this form to the Quality Personnel within 24 hours. If the document is not approved, state the reason in the comment section below.</span>
             <br>Comments:
             <br /><table>
                 <tr>
-                    <td></td>
+                    <td>'.txt($data['comments']).'</td>
                 </tr>
             </table>
         ',
@@ -189,17 +205,20 @@ function getLayout($type, $title, $data) {
             <br><strong>Importer Name and Signature:</strong>
             <br><table>
                 <tr>
-                    <td>Name and Signature:
-                        <p style="text-align:center;">'.txt($data['importer_name']).'</p>
+                    <td>Name and Signature:<br />
+                        <img src="'.$data['signature'].'" style="text-align:center;" border="0" height="70" align="middle" />
+                        <div style="text-align:center;">'.txt($data['importer_name']).'</div>
                     </td>
-                    <td>Date:</td>
+                    <td>Date:
+                        <p style="text-align:center;">'.txt($data['date_signed']).'</p>
+                    </td>
                 </tr>
             </table>
             <br>
             <br>Comments:
             <br><table>
                 <tr>
-                    <td></td>
+                    <td>'.txt($data['comments']).'</td>
                 </tr>
             </table>
         ',
@@ -240,19 +259,29 @@ function getLayout($type, $title, $data) {
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3" style="width: 50%;"><strong>Reviewed By:</strong></td>
-                    <td colspan="2" style="width: 50%;"><strong>Date:</strong></td>
+                    <td colspan="3" style="width: 50%;"><strong>Reviewed By:</strong><br />
+                        <img src="'.$data['reviewed_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
+                        <div style="text-align:center;">'.txt($data['reviewed_by']).'</div>
+                    </td>
+                    <td style="width: 50%;">Date:
+                        <p style="text-align:center;">'.txt($data['review_date']).'</p>
+                    </td>
                 </tr>
-                <tr>
-                    <td colspan="3" style="width: 50%;"><strong>Approved By:</strong></td>
-                    <td colspan="2" style="width: 50%;"><strong>Date:</strong></td>
+                 <tr>
+                    <td colspan="3" style="width: 50%;"><strong>Approved By:</strong><br />
+                        <img src="'.$data['approved_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
+                        <div style="text-align:center;">'.txt($data['approved_by']).'</div>
+                    </td>
+                    <td style="width: 50%;">Date:
+                        <p style="text-align:center;">'.txt($data['approve_date']).'</p>
+                    </td>
                 </tr>
             </table>
             <span style="display:none;">Note: Review and return this form to the Quality Personnel within 24 hours. If the document is not approved, state the reason in the comment section below.</span>
             <br><br><strong>Comments:</strong>
             <br><table>
                 <tr>
-                    <td></td>
+                    <td>'.txt($data['comments']).'</td>
                 </tr>
             </table>
         ',
@@ -343,7 +372,7 @@ function getLayout($type, $title, $data) {
             <p></p>Comments:
             <br><table>
                 <tr>
-                    <td></td>
+                    <td>'.txt($data['comments']).'</td>
                 </tr>
             </table>
         ',
@@ -509,7 +538,7 @@ function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
     $pdf->writeHTML(getLayout('ipr-2', $title, $productRegistry));
     $pdf->writeHTML($css . getLayout('ipr-3', $title, $productRegistry));
 
-    debugger([
+    debugOutput([
         'supplier info', $supplierInfo,
         'importers', $importersInfo,
         'ipr', $productRegistry

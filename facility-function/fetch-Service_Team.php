@@ -80,4 +80,59 @@
             mysqli_close($conn);
     	}
 
+     
+    if( isset($_GET['modalViewCMT']) ) {
+		$id = $_GET['modalViewCMT'];
+		$selectData = mysqli_query( $conn,"SELECT * FROM tbl_critical_operation WHERE critical_operation_id  = $id" );
+		if ( mysqli_num_rows($selectData) > 0 ) {
+            $row = mysqli_fetch_array($selectData);
+            
+    		echo '
+    		<input type="hidden" id="ID" name="ID" value="'.$id.'">
+    		<input type="hidden" id="ID" name="assign_area" value="'.$row['assign_area'].'">
+    		<div class="mb-3 row">
+                <label for="addOperationField" class="col-md-3 form-label">Operation</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" id="addOperationField" name="addOperationField" value="'.htmlentities($row['addOperationField'] ?? '').'" required>
+                </div>
+            </div>
+            <br>
+            <div class="mb-3 row">
+                <label for="addPrimaryNameField" class="col-md-3 form-label">Primary Name</label>
+                <div class="col-md-9">
+                    <select class="form-control" name="addPrimaryNameField" id="addPrimaryNameField" required>
+                        <option value="">Select</option>';
+                        
+                        $queries = "SELECT * FROM tbl_hr_employee where user_id = ".$row['user_cookies'];
+                        $resultQuery = mysqli_query($conn, $queries);
+                        while($rowcrm = mysqli_fetch_array($resultQuery)){ 
+                            echo '<option value="'.$rowcrm['ID'].'"'; echo $rowcrm['ID']==$row['addPrimaryNameField'] ? 'SELECTED':''; echo '>'.htmlentities($rowcrm['first_name'] ?? '').' '.htmlentities($rowcrm['last_name'] ?? '').'</option>';
+                        }
+                    
+                    echo '</select>
+                </div>
+            </div>
+            <br>
+            <div class="mb-3 row">
+                <label for="addAlternateNameField" class="col-md-3 form-label">Alternate Name</label>
+                <div class="col-md-9">
+                
+                    <select class="form-control" name="addAlternateNameField" id="addAlternateNameField" required>
+                        <option value="">Select</option>';
+                        
+                        $queries = "SELECT * FROM tbl_hr_employee where user_id = ".$row['user_cookies'];
+                        $resultQuery = mysqli_query($conn, $queries);
+                        while($rowcrm = mysqli_fetch_array($resultQuery)){ 
+                            echo '<option value="'.$rowcrm['ID'].'"'; echo $rowcrm['ID']==$row['addAlternateNameField'] ? 'SELECTED':''; echo '>'.htmlentities($rowcrm['first_name'] ?? '').' '.htmlentities($rowcrm['last_name'] ?? '').'</option>';
+                        }
+                        
+                    echo '</select>
+                </div>
+            </div>';
+
+        }
+
+        mysqli_close($conn);
+	}
+
 ?>

@@ -423,13 +423,13 @@
                                         $i = 0;
                                         foreach ($type_arr as $value) {
                                             if ($value > 0) {
-                                                if ($value == 1 OR $value == 3 OR $value == 4) {
+                                                if ($value == 1 OR $value == 4) {
                                                     if (in_array($label_arr[$i], $include_arr)) {
                                                         $html .= '<td>';
                                                             foreach($data_arr as $key => $val) {
                                                                 if ($label_arr[$i] == $val['ID']) {
                                                                     if (!empty($val['content'])) {
-                                                                        $html .= $val['content'];
+                                                                        $html .= html_entity_decode($val['content'] ?? '');
                                                                     } else {
                                                                         $formatID = $label_arr[$i];
                                                                         $rowColumnData = '';
@@ -497,6 +497,38 @@
                                                     } else {
                                                         $html .= '<td colspan="'.count($radio_arr).'"></td>';
                                                     }
+                                                } else if ($value == 3) {
+                                                    if (in_array($label_arr[$i], $include_arr)) {
+                                                        $html .= '<td style="text-align: center; ">';
+                                                            foreach($data_arr as $key => $val) {
+                                                                if ($label_arr[$i] == $val['ID']) {
+                                                                    if (!empty($val['content'])) {
+                                                                        $html .= html_entity_decode($val['content'] ?? '');
+                                                                    } else {
+                                                                        $formatID = $label_arr[$i];
+                                                                        $rowColumnData = '';
+                                                                        if (!empty($form_data)) {
+                                                                            $form_data_arr = json_decode($form_data,true);
+
+                                                                            if (in_array($data_ID, array_column($form_data_arr, 'row'))) {
+                                                                                $rowColumnData = array_reduce($form_data_arr, function ($carry, $item) use ($data_ID, $formatID) {
+                                                                                    if ($item['row'] === $data_ID && $item['content']['column'] === $formatID) {
+                                                                                        return $item['content']['data'];
+                                                                                    }
+                                                                                    return $carry;
+                                                                                });
+                                                                            }
+                                                                        }
+                                                                        if (!empty($rowColumnData)) {
+                                                                            $html .= $rowColumnData;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        $html .= '</td>';
+                                                    } else {
+                                                        $html .= '<td></td>';
+                                                    }
                                                 }
                                                 $i++;
                                             }
@@ -511,6 +543,8 @@
             </body>
         </html>';
     }
+    
+    // echo $html;
 
     // Load HTML content
     $dompdf->loadHtml($html, 'LIBXML_NOERROR'); 
@@ -534,6 +568,6 @@
     });
 
     // Output the generated PDF to Browser 
-    // $dompdf->stream();
-    $dompdf->stream('PDF -'.date('Ymd'), array("Attachment" => 0));
+    $dompdf->stream();
+    // $dompdf->stream('PDF -'.date('Ymd'), array("Attachment" => 0));
 ?>

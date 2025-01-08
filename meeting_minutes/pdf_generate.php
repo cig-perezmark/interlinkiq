@@ -35,9 +35,7 @@ if( isset($_POST['post_id']) ) {
                                 echo $rowTaker['first_name'].' '.$rowTaker['last_name'].'<br><br>';
                             }
                         }
-                echo '<b>ATTENDEES:</b>
-                <br>
-                ';
+                echo '<b>ATTENDEES:</b><br>';
                         
                         $array_data = explode(", ", $row["attendees"]);
                         $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
@@ -49,6 +47,10 @@ if( isset($_POST['post_id']) ) {
                                 echo $rowAssignto['first_name'].' '.$rowAssignto['last_name'].', ';
                             }
                         }
+                        
+                if (!empty($row['guest'])) {
+                    echo '<br><br><b>GUEST:</b><br>'.$row['guest'];
+                }
                     
             echo '
             </div>';

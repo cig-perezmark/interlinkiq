@@ -7,7 +7,7 @@
                                     <div class="profile-userpic">
                                         <?php
                                             if ( empty($current_userAvatar) ) {
-                                                echo '<img src="https://via.placeholder.com/230x150/EFEFEF/AAAAAA.png?text=no+image" class="img-responsive thumbnailx" alt="Avatar" />';
+                                                echo '<img src="//placehold.co/230x150/EFEFEF/AAAAAA?text=no+image" class="img-responsive thumbnailx" alt="Avatar" />';
                                             } else {
                                                 echo '<img src="uploads/avatar/'. $current_userAvatar .'" class="img-responsive thumbnailx" alt="Avatar" />';
                                             }

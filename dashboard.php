@@ -286,7 +286,7 @@
                                     <li class="active">
                                         <a href="#home" data-toggle="tab">Home</a>
                                     </li>         
-                                    <?php if($switch_user_id == 464 OR $switch_user_id == 1457) { ?>
+                                    <?php if($switch_user_id == 464 OR $switch_user_id == 1457 OR $switch_user_id == 1649) { ?>
                                          <li>
                                             <a href="#com_analytics" data-toggle="tab">Analytics </a>
                                         </li>
@@ -298,7 +298,7 @@
                                 <div class="col-md-4" style="margin-top: 5px;">
                                     <div class="input-group">
                                         <input class="form-control" id="deliverable_search" type="text" placeholder="Search" />
-                                        <?php if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $switch_user_id == 464) { ?>
+                                        <?php if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $switch_user_id == 464 OR $switch_user_id == 1622) { ?>
                                             <div class="input-group-btn">
                                                 <button type="button" class="btn green dropdown-toggle" data-toggle="dropdown">Action
                                                     <i class="fa fa-angle-down"></i>
@@ -3734,7 +3734,7 @@
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
 
         
-        <?php if($switch_user_id == 464 OR $switch_user_id == 1457) { ?>
+        <?php if($switch_user_id == 464 OR $switch_user_id == 1457 OR $switch_user_id == 1649) { ?>
             <script src="AnalyticsIQ/compliance_chart.js"></script>
         <?php } ?>
 
@@ -6830,6 +6830,18 @@
             }
 
             // Clone Section
+            function selectUser(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalCloneFacility="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#facility").html(data);
+                        $("#facility").multiselect('destroy');
+                        selectMulti();
+                    }
+                });
+            }
             function btnClone(id) {
                 $.ajax({
                     type: "GET",

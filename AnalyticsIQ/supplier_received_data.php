@@ -18,6 +18,11 @@ if (!empty($_COOKIE['switchAccount'])) {
     $user_id = employerID($portal_user);
 }
 
+$facility_switch_user_id2 = 0;
+if (isset($_COOKIE['facilityswitchAccount'])) {
+    $facility_switch_user_id2 = $_COOKIE['facilityswitchAccount'];
+}
+
 function employerID($ID) {
     global $conn;
 
@@ -49,9 +54,9 @@ function employerID($ID) {
 }
 
 // Get the email and employer ID
-$userData = employerID($portal_user);
+$userData = employerID($user_id);
 $current_userEmail = $userData['email'];
-$current_userEmployerID = $userData['employerID'];
+$current_userEmployerID = $user_id;
 
 
 $sql = <<<SQL
@@ -101,6 +106,7 @@ WITH RECURSIVE cte (
     AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|', ',')  ) > 0
     WHERE s1.page = 2
     AND s1.is_deleted = 0 
+    AND s1.facility_switch = $facility_switch_user_id2
     AND s1.email = '$current_userEmail'
     
     UNION ALL
@@ -147,6 +153,7 @@ WITH RECURSIVE cte (
     AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  ) > 0
     WHERE s2.page = 2
     AND s2.is_deleted = 0 
+    AND s2.facility_switch = $facility_switch_user_id2
     AND s2.email = '$current_userEmail'
 )
 SELECT

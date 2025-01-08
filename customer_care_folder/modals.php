@@ -10,9 +10,13 @@
                 <div class="modal-body">
                     <center><h4><b>CUSTOMER COMPLAINT REPORT</b></h4></center>
                     <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                            <label>Date:</label>
                            <input type="date" class="form-control" name="care_date" value="<?= date('Y-m-d', strtotime(date('Y-m-d')));?>" required>
+                       </div>
+                        <div class="col-md-6">
+                           <label>Date and Time of Incident:</label>
+                           <input type="datetime-local" class="form-control" name="care_date_time" required>
                        </div>
                    </div>
                    <div class="form-group">
@@ -48,7 +52,11 @@
                        </div>
                    </div>
                    <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
+                           <label>Product Code:</label>
+                           <input type="text" class="form-control" name="product_code" >
+                       </div>
+                        <div class="col-md-6">
                            <label>Package ID:</label>
                            <input type="text" class="form-control" name="METRC_package_id" >
                        </div>
@@ -104,8 +112,7 @@
                                <option value="1">Caused Illness or Injury</option>
                                <option value="2">Foreign Material in Cannabis Product Container</option>
                                <option value="3">Foul Odor</option>
-                               <option value="4">Improper Packaging</option>
-                               <option value="5">Incorrect Concentration of Cannabinoids</option>
+                               <option value="4">Defective or Damaged Packaging</option>
                                <option value="6">Mislabeling</option>
                                 <option value="customOption">[Others]</option>
                            </select>

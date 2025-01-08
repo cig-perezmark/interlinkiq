@@ -29,7 +29,7 @@ include_once __DIR__ . '/init.php';
                 <div class="caption">
                     <i class=" icon-folder font-green"></i>
                     <span class="caption-subject font-green sbold uppercase">
-                        Edit HACCP Plan
+                        Edit FS Plan
                     </span>
                 </div>
                 <div style="display: flex; justify-content: end; gap:1rem;">
@@ -107,7 +107,7 @@ include_once __DIR__ . '/init.php';
                             <label class="save-status-choice">
                                 <input type="radio" class="hide" name="save_as" value="draft" checked />
                                 <i class="fa fa-file-text-o" style="font-size: 3rem;"></i>
-                                <div>Save as draft <br> <small class="text-muted">Continue drafting the HACCP Plan</small></div>
+                                <div>Save as draft <br> <small class="text-muted">Continue drafting the FS Plan</small></div>
                             </label>
                             <label class="save-status-choice">
                                 <input type="radio" class="hide" name="save_as" value="submit_for_review" />
@@ -138,7 +138,7 @@ include_once __DIR__ . '/init.php';
                                                         <input type="radio" name="assignee_pool" value="internal" checked onchange="selectAssignee(this)"> Internal <span></span>
                                                     </label>
                                                     <label class="mt-radio mt-radio-outline">
-                                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> HACCP Team <span></span>
+                                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> FS Team <span></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -177,7 +177,7 @@ include_once __DIR__ . '/init.php';
                                                         <input type="radio" name="assignee_pool" value="internal" checked onchange="selectAssignee(this)"> Internal <span></span>
                                                     </label>
                                                     <label class="mt-radio mt-radio-outline">
-                                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> HACCP Team <span></span>
+                                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> FS Team <span></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -203,7 +203,7 @@ include_once __DIR__ . '/init.php';
                             <label class="save-status-choice">
                                 <input type="radio" class="hide" name="save_as" value="accept_approval" checked />
                                 <i class="fa fa-thumbs-o-up" style="font-size: 3rem;"></i>
-                                <div>Approve document <br> <small class="text-muted">Approve this HACCP Plan</small></div>
+                                <div>Approve document <br> <small class="text-muted">Approve this FS Plan</small></div>
                             </label>
                             <label class="save-status-choice">
                                 <input type="radio" class="hide" name="save_as" value="reject_approval" />
@@ -248,7 +248,7 @@ include_once __DIR__ . '/init.php';
                                                         <input type="radio" name="assignee_pool" value="internal" checked onchange="selectAssignee(this)"> Internal <span></span>
                                                     </label>
                                                     <label class="mt-radio mt-radio-outline">
-                                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> HACCP Team <span></span>
+                                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> FS Team <span></span>
                                                     </label>
                                                 </div>
                                             </div>

@@ -176,7 +176,19 @@ if(isset($_GET["newSupplierToList"])) {
         // process uploads
         $csFile = null;
         $uploadPath = getUploadsDir('fsvp/supplier_lists');
-        if(isset($_POST['compliance_statement']) && $_POST['compliance_statement'] == 1 && ($csFile = uploadFile($uploadPath, $_FILES['compliance_statement_file']))) {
+        
+        // file details has been updated
+        if(isset($_POST['compliance_statement_file'])) {
+            $recordType = 'supplier-list:compliance-statement';
+            $fileId = $_POST['compliance_statement_file'];
+            
+            $conn->execute(
+                "UPDATE tbl_fsvp_files SET document_date = ?, expiration_date = ?, note = ? WHERE id = ?",
+                $_POST['csf_date'] ?? null, $_POST["csf_exp"] ?? null, $_POST["csf_note"] ?? null, $fileId
+            );
+        } 
+        // for new uploads
+        else if(isset($_POST['compliance_statement']) && $_POST['compliance_statement'] == 1 && ($csFile = uploadFile($uploadPath, $_FILES['compliance_statement_file']))) {
             $csFile = [
                 "filename" => $csFile,
                 "path" => $uploadPath,
@@ -189,10 +201,47 @@ if(isset($_GET["newSupplierToList"])) {
             $conn->execute($fileInsertQuery, [$id, 'supplier-list:compliance-statement', ...array_values($csFile)]);
             $csFile['id'] = $conn->getInsertId();
             $csFile = prepareFileInfo($csFile);
+        } 
+        // removed/not existing
+        else {
+            $conn->execute("UPDATE tbl_fsvp_files SET deleted_at = ? WHERE record_id = ? AND record_type = ? AND deleted_at IS NULL",[
+                $currentTimestamp, $id, "supplier-list:compliance-statement",
+            ]);
         }
 
         $saFiles = null;
-        if(isset($_POST['supplier_agreement']) && $_POST['supplier_agreement'] == 1) {
+        $hasSAParam = false; // used for checking no-file entry (removed by user)
+
+        /**
+         * existing file records stores the ID only
+         * so $_POST body is checked instead
+         */
+        if(isset($_POST['supplier_agreement_file'])){
+            // perhaps it's an array of IDs
+            $fileIds = $_POST['supplier_agreement_file'];
+
+            if(!empty($fileIds)) {
+                // soft delete file records that are not present in the current request (removed by the user)
+                $conn->execute(
+                    "UPDATE tbl_fsvp_files SET deleted_at = ? WHERE deleted_at IS NULL AND id NOT IN (". implode(',', $fileIds) .")",
+                    $currentTimestamp
+                );
+            }
+            
+            // update present data
+            foreach($fileIds as $index => $fileId) {
+                $conn->execute(
+                    "UPDATE tbl_fsvp_files SET document_date = ?, expiration_date = ?, note = ? WHERE id =?",
+                    $_POST['saf_date'][$index] ?? null, $_POST["saf_exp"][$index] ?? null, $_POST["saf_note"][$index] ?? null, $fileId
+                );
+            }
+
+            $hasSAParam = true;
+        } 
+        
+        // check for new uploads, save it 
+        if(isset($_POST['supplier_agreement']) && $_POST['supplier_agreement'] == 1 && isset($_FILES['supplier_agreement_file'])) {
+            // saving new files
             $saFiles = [];            
             $files = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
             foreach($files as $index => $file) {
@@ -209,6 +258,14 @@ if(isset($_GET["newSupplierToList"])) {
                 $info['id'] = $conn->getInsertId();
                 $saFiles[] = prepareFileInfo($info);
             }
+            $hasSAParam = true;
+        } 
+        
+        // delete existing records if request data is not present
+        if(!$hasSAParam) {
+            $conn->execute("UPDATE tbl_fsvp_files SET deleted_at = ? WHERE record_id = ? AND record_type = ? AND deleted_at IS NULL",[
+                $currentTimestamp, $id, "supplier-list:supplier-agreement",
+            ]);
         }
         
         // food imported names
@@ -667,6 +724,9 @@ if(isset($_GET['newImporter']) ) {
             'evaluation_date' =>  $_POST['evaluation_date'],
             'duns_no' =>  $_POST['duns_no'],
             'fda_registration' =>  $_POST['fda_registration'],
+            'signature' =>  $_POST['signature'] ?? null,
+            'comments' =>  $_POST['comments'] ?? null,
+            'date_signed' =>  $_POST['date_signed'] ?? null,
         ];
         $conn->insert("tbl_fsvp_importers", $insertData);
 
@@ -763,7 +823,16 @@ if(isset($_GET['fetchImportersForTable'])) {
             cbp.designated_importer,
             cbp.cbp_entry_filer,
             cbp.prev_record_id AS previous_cbp_record_id,
-            cbp.created_at AS cbp_date
+            cbp.created_at AS cbp_date,
+
+            -- added
+            cbp.approved_by,
+            cbp.approved_by_sign,
+            cbp.approve_date,
+            cbp.reviewed_by,
+            cbp.reviewed_by_sign,
+            cbp.review_date,
+            cbp.comments
         FROM 
             tbl_fsvp_importers i 
             LEFT JOIN tbl_supplier imp ON imp.ID = i.importer_id
@@ -797,7 +866,18 @@ if(isset($_GET['fetchImportersForTable'])) {
                 'determining_importer' => $data['determining_importer'],
                 'designated_importer' => $data['designated_importer'],
                 'cbp_entry_filer' => $data['cbp_entry_filer'],
+                'comments' => $data['comments'],
                 'date' => date('Y-m-d', strtotime($data['cbp_date'])),
+                'reviewer' => [
+                    'name' => $data['reviewed_by'],
+                    'sign' => $data['reviewed_by_sign'],
+                    'date' => $data['review_date'],
+                ],
+                'approver' => [
+                    'name' => $data['approved_by'],
+                    'sign' => $data['approved_by_sign'],
+                    'date' => $data['approve_date'],
+                ],
             ];
         }
         
@@ -850,7 +930,7 @@ if(isset($_GET['newSupplierEvaluation'])) {
             emptyIsNull($_POST['info_related']),
             emptyIsNull($_POST['rejection_date']),
             emptyIsNull($_POST['approval_date']),
-            emptyIsNull($_POST['assessment']),
+            emptyIsNull($_POST['assessment']),            
             $evalId,
             $user_id,
         ];
@@ -941,6 +1021,15 @@ if(isset($_GET['newCBPRecord'])) {
             'determining_importer'  => $_POST['determining_importer'],
             'designated_importer'   => $_POST['designated_importer'],
             'cbp_entry_filer'       => $_POST['cbp_entry_filer'],
+
+            // new fields
+            'approved_by'           => emptyIsNull($_POST['approved_by']),
+            'approved_by_sign'      => emptyIsNull($_POST['approver_sign']),
+            'approve_date'          => emptyIsNull($_POST['approve_date']),
+            'reviewed_by'           => emptyIsNull($_POST['reviewed_by']),
+            'reviewed_by_sign'      => emptyIsNull($_POST['reviewer_sign']),
+            'review_date'           => emptyIsNull($_POST['review_date']),
+            'comments'              => emptyIsNull($_POST['comments']),
         ];
 
         $conn->insert("tbl_fsvp_cbp_records", $values);
@@ -958,6 +1047,17 @@ if(isset($_GET['newCBPRecord'])) {
                 'determining_importer' => $values['determining_importer'],
                 'designated_importer' => $values['designated_importer'],
                 'cbp_entry_filer' => $values['cbp_entry_filer'],
+                'comments' => $values['comments'],
+                'reviewer' => [
+                    'name' => $values['reviewed_by'],
+                    'sign' => $values['reviewed_by_sign'],
+                    'date' => $values['review_date'],
+                ],
+                'approver' => [
+                    'name' => $values['approved_by'],
+                    'sign' => $values['approved_by_sign'],
+                    'date' => $values['approve_date'],
+                ],
             ]
         ]);
     } catch(Throwable $e) {
@@ -985,19 +1085,47 @@ if(isset($_GET['updateCBPRecord'])) {
             $_POST['determining_importer'],
             $_POST['designated_importer'],
             $_POST['cbp_entry_filer'],
-            $recordId,
-            $user_id,
+
+            // new fields
+            $_POST['approved_by'],
+            $_POST['approve_date'],
+            $_POST['reviewed_by'],
+            $_POST['review_date'],
+            $_POST['comments'],
         ];
 
-        $conn->execute("UPDATE tbl_fsvp_cbp_records SET
-                portal_user = ?,
-                foods_info = ?,
-                supplier_info = ?,
-                determining_importer = ?,
-                designated_importer = ?,
-                cbp_entry_filer = ?
-            WHERE id = ? AND user_id = ?
-        ", $values);
+        $setQuery = [
+            'portal_user = ?',
+            'foods_info = ?',
+            'supplier_info = ?',
+            'determining_importer = ?',
+            'designated_importer = ?',
+            'cbp_entry_filer = ?',
+            'approved_by = ?',
+            'approve_date = ?',
+            'reviewed_by = ?',
+            'review_date = ?',
+            'comments = ?'
+        ];
+
+        // update approver sign if acquired
+        if(!empty($_POST['approver_sign']) && $_POST['approver_sign'] != 'null') {
+            $values[] = $_POST['approver_sign'];
+            $setQuery[] = 'approved_by_sign = ?';
+        }
+
+        // update reviewer sign if acquired
+        if(!empty($_POST['reviewer_sign']) && $_POST['reviewer_sign'] != 'null') {
+            $values[] = $_POST['reviewer_sign'];
+            $setQuery[] = 'reviewed_by_sign = ?';
+        }
+
+        // apppend the ids
+        $values[] = $recordId;
+        $values[] = $user_id;
+
+        $setQuery = implode(', ', $setQuery);
+        $conn->execute("UPDATE tbl_fsvp_cbp_records SET $setQuery WHERE id = ? AND user_id = ?", $values);
 
         $data = $conn->execute("SELECT * FROM tbl_fsvp_cbp_records WHERE id = ? AND user_id = ?", $recordId, $user_id)->fetchAssoc(function ($d) {
             return [
@@ -1009,6 +1137,17 @@ if(isset($_GET['updateCBPRecord'])) {
                 'determining_importer' => $d['determining_importer'],
                 'designated_importer' => $d['designated_importer'],
                 'cbp_entry_filer' => $d['cbp_entry_filer'],
+                'comments' => $d['comments'],
+                'reviewer' => [
+                    'name' => $d['reviewed_by'],
+                    'sign' => $d['reviewed_by_sign'],
+                    'date' => $d['review_date'],
+                ],
+                'approver' => [
+                    'name' => $d['approved_by'],
+                    'sign' => $d['approved_by_sign'],
+                    'date' => $d['approve_date'],
+                ],
             ];
         });
 
@@ -1090,21 +1229,52 @@ if(isset($_GET['ingredientProductRegister'])) {
                 throw new Exception('Imported product does not exists.');
             }
 
-            $conn->execute("UPDATE tbl_fsvp_ipr_imported_by SET
-                    portal_user = ?,
-                    importer_id = ?,
-                    brand_name = ?,
-                    ingredients_list = ?,
-                    intended_use = ?
-                    WHERE id = ? AND user_id = ?",
+            $setQuery = [
+                'portal_user = ?',
+                'importer_id = ?',
+                'brand_name = ?',
+                'ingredients_list = ?',
+                'intended_use = ?',
+
+                // newly added
+                'approved_by = ?',
+                'approve_date = ?',
+                'reviewed_by = ?',
+                'review_date = ?',
+                'comments = ?'
+            ];
+            
+            $values = [
                 $portal_user,
                 emptyIsNull($_POST['importer']),
                 emptyIsNull($_POST['brand_name']),
                 emptyIsNull($_POST['ingredients']),
                 emptyIsNull($_POST['intended_use']),
-                $_POST['product_id'],
-                $user_id
-            );
+                emptyIsNull($_POST['approved_by']),
+                emptyIsNull($_POST['approve_date']),
+                emptyIsNull($_POST['reviewed_by']),
+                emptyIsNull($_POST['review_date']),
+                emptyIsNull($_POST['comments']),
+            ];
+
+            // update approver sign if acquired
+            if(!empty($_POST['approver_sign']) && $_POST['approver_sign'] != 'null') {
+                $values[] = $_POST['approver_sign'];
+                $setQuery[] = 'approved_by_sign = ?';
+            }
+
+            // update reviewer sign if acquired
+            if(!empty($_POST['reviewer_sign']) && $_POST['reviewer_sign'] != 'null') {
+                $values[] = $_POST['reviewer_sign'];
+                $setQuery[] = 'reviewed_by_sign = ?';
+            }
+
+            // apppend the ids
+            $values[] = $_POST['product_id'];
+            $values[] = $user_id;
+
+            $setQuery = implode(', ', $setQuery);
+            $conn->execute("UPDATE tbl_fsvp_ipr_imported_by SET $setQuery WHERE id = ? AND user_id = ?", $values);
             
             $returnData = [
                 'message' => 'Successfully updated.'
@@ -1128,6 +1298,7 @@ if(isset($_GET['ingredientProductRegister'])) {
 
             if(!count($mySupplier)) {
                 throw new Exception("The foreign supplier of the selected product is not linked with the current importer.");
+                
             }
             
             $conn->execute("INSERT INTO tbl_fsvp_ipr_imported_by(
@@ -1137,8 +1308,17 @@ if(isset($_GET['ingredientProductRegister'])) {
                     importer_id,
                     brand_name,
                     ingredients_list,
-                    intended_use
-                ) VALUE(?,?,?,?,?,?,?)",
+                    intended_use,
+
+                    -- new
+                    'approved_by'
+                    'approved_by_sign'
+                    'approve_date'
+                    'reviewed_by'
+                    'reviewed_by_sign'
+                    'review_date'
+                    'comments'
+                ) VALUE(".implode(',', array_fill(0, 12, '?')).")",
                 $user_id,
                 $portal_user,
                 $iprId,
@@ -1146,6 +1326,13 @@ if(isset($_GET['ingredientProductRegister'])) {
                 emptyIsNull($_POST['brand_name']),
                 emptyIsNull($_POST['ingredients']),
                 emptyIsNull($_POST['intended_use']),
+                emptyIsNull($_POST['approved_by']),
+                emptyIsNull($_POST['approver_sign']),
+                emptyIsNull($_POST['approve_date']),
+                emptyIsNull($_POST['reviewed_by']),
+                emptyIsNull($_POST['reviewer_sign']),
+                emptyIsNull($_POST['review_date']),
+                emptyIsNull($_POST['comments']),
             );
 
             $id = $conn->getInsertId();
@@ -1178,6 +1365,13 @@ if(isset($_GET['ingredientProductsRegisterData'])) {
             iby.brand_name,
             iby.ingredients_list,
             iby.intended_use,
+            iby.approved_by,            
+            iby.approved_by_sign,
+            iby.approve_date,
+            iby.reviewed_by,            
+            iby.reviewed_by_sign,
+            iby.review_date,
+            iby.comments,
             iby.importer_id,
             isup.name AS importer_name
         FROM tbl_fsvp_ipr_imported_by iby
@@ -1248,8 +1442,9 @@ if(isset($_GET['newActivityWorksheet'])) {
                     verification_records,
                     assessment_results,
                     corrective_actions,
-                    reevaluation_date
-                ) VALUE (" . (implode(',', array_fill(0, 18, '?'))) . ")
+                    reevaluation_date,
+                    comments
+                ) VALUE (" . (implode(',', array_fill(0, 19, '?'))) . ")
             ";
             $values = [
                 $user_id,
@@ -1270,6 +1465,7 @@ if(isset($_GET['newActivityWorksheet'])) {
                 emptyIsNull($_POST['assessment_results']),
                 emptyIsNull($_POST['corrective_actions']),
                 emptyIsNull($_POST['reevaluation_date']),
+                emptyIsNull($_POST['comments']),
             ];
     
             $conn->execute($sql, $values);
@@ -1298,6 +1494,7 @@ if(isset($_GET['activitiesWorksheetsInitialData'])) {
             CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS qi_name,
             aw.approval_date,
             aw.reevaluation_date AS evaluation_date,
+            aw.comments,
             GROUP_CONCAT(sm.material_name SEPARATOR ', ') AS products
         FROM tbl_fsvp_activities_worksheets aw
 

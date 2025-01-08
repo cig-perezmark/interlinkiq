@@ -73,31 +73,31 @@
 
                 <!--END SEARCH BAR-->
                 <?php if($current_client == 1): ?>
-                <?php if($current_userAdminAccess == 1): ?>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="portlet-title" style="margin-bottom:10px;float:right">
-                            <div class="actions">
-                                <div class="btn-group">
-                                    <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
-                                        <i class="fa fa-angle-down"></i>
-                                    </a>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <!--<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#exampleModal':'#modalService'; ?>"> Assign Form</a>-->
-                                        </li>
-                                        <?php if($switch_user_id == 163): ?>
-                                        <li>
-                                            <a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#clone_modal':'#modalService'; ?>"> Clone Form</a>
-                                        </li>
-                                        <?php endif; ?>
-                                    </ul>
+                    <?php if($current_userAdminAccess == 1): ?>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="portlet-title" style="margin-bottom:10px;float:right">
+                                <div class="actions">
+                                    <div class="btn-group">
+                                        <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
+                                            <i class="fa fa-angle-down"></i>
+                                        </a>
+                                        <ul class="dropdown-menu pull-right">
+                                            <li>
+                                                <!--<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#exampleModal':'#modalService'; ?>"> Assign Form</a>-->
+                                            </li>
+                                            <?php if($switch_user_id == 163): ?>
+                                            <li>
+                                                <a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#clone_modal':'#modalService'; ?>"> Clone Form</a>
+                                            </li>
+                                            <?php endif; ?>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <?php endif; ?>
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <div class="row">
@@ -146,15 +146,17 @@
                                         if($current_client != 1) {
                                             if($user_roles != 1){
                                                 if($current_userEmployeeID == 0){
-                                                    $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '" . $_COOKIE['ID'] . "' AND enterprise_id = '" . $_COOKIE['ID'] . "'"); 
+                                                    $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND user_id = '" . $_COOKIE['ID'] . "' AND enterprise_id = '" . $_COOKIE['ID'] . "'"); 
                                                 } else{
-                                                        $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE enterprise_id = '$switch_user_id' AND user_id = {$_COOKIE['ID']}"); 
+                                                    $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = '$switch_user_id' AND user_id = {$_COOKIE['ID']}"); 
                                                 }
                                             }
                                             else{
-                                                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE enterprise_id = '$switch_user_id'"); 
+                                                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = '$switch_user_id'"); 
                                             }
-                                            
+                                            if(isset($_COOKIE['facilityswitchAccount'])){
+                                                $switch_user_id = $switch_user_id.'999'.$facility_switch_user_id;
+                                            }
                                             $num_rows = mysqli_num_rows($check_form_owned);
                                             if($num_rows > 0 ){
                                                 $check_result = mysqli_fetch_array($check_form_owned);
@@ -203,8 +205,8 @@
                                     <?php endif; ?>
                                     <td>
                                         <?php
-                                                                    if($row['form_free'] != 1):
-                                                                ?>
+                                          if($row['form_free'] != 1):
+                                         ?>
                                         <a onclick="myfunction('<?= $switch_user_id ?>', '<?= $enterp_logo ?>')" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/add_records/<?= $row['PK_id'] ?>" target="_blank" class="btn <?= $btn_color ?> btn-outline">Add Records</a>
                                         <?php if($row['pending_records'] != 0 OR $row['pending_records'] == NULL): ?>
                                         <!--<a onclick="myfunction(<?= $current_userEmployerID; ?>)" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/pending/<?= $row['PK_id'] ?>" target="_blank" class="btn blue btn-outline">Pending Records</a>-->
@@ -236,24 +238,23 @@
                                         ( <a class="view_videos" data-src="<?= $video_row['video_link'] ?>" data-fancybox> <?= $video_row['video_name'] ?></a>)
                                         <?php endforeach; ?>
                                         <?php
-                                                                    if($current_userEmployerID == '34'){
-                                                                        $check_form_owned1 = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE enterprise_id = '308' AND user_id = '308'"); 
-                                                                        $check_result1 = mysqli_fetch_array($check_form_owned1);
-                                                                        $array_counter1 = explode(",", $check_result1["form_owned"]);
-                                                                        foreach($array_counter1 as $value1){
-                                                                            if($value1 == $row['PK_id']){
-                                                                                echo "Activated";
-                                                                            }
-                                                                        }
-                                                                    }
+                                                                    // if($current_userEmployerID == '34'){
+                                                                    //     $check_form_owned1 = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE enterprise_id = '308' AND user_id = '308'"); 
+                                                                    //     $check_result1 = mysqli_fetch_array($check_form_owned1);
+                                                                    //     $array_counter1 = explode(",", $check_result1["form_owned"]);
+                                                                    //     foreach($array_counter1 as $value1){
+                                                                    //         if($value1 == $row['PK_id']){
+                                                                    //             echo "Activated";
+                                                                    //         }
+                                                                    //     }
+                                                                    // }
                                                                 ?>
                                     </td>
                                 </tr>
                                 <?php }
                                                 endforeach;
                                             }
-                                        }
-                                        else{
+                                        } else{
                                             $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '$switch_user_id' AND enterprise_id = '$switch_user_id'"); 
                                             $num_rows = mysqli_num_rows($check_form_owned);
                                             foreach($check_form_owned as $form_own_row){
@@ -656,21 +657,22 @@ if (mysqli_num_rows($record_result) > 0) {
                     <div class="col-md-12 form-group">
                         <label>Select Form</label>
                         <?php
-                                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '" . $switch_user_id . "'");
-					            $check_result = mysqli_fetch_array($check_form_owned);
-					            $array_counter = explode(",", $check_result["form_owned"]);
-                            ?>
+                            $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND user_id = '" . $switch_user_id . "'");
+				            $check_result = mysqli_fetch_array($check_form_owned);
+				            $array_counter = explode(",", $check_result["form_owned"]);
+                        ?>
                         <select onchange="get_employee_list(this)" name="" class="form-control" id="form_id">
                             <option>-- Please Select --</option>
-                            <?php foreach($array_counter as $value):
-                                    $query = "SELECT * FROM tbl_afia_forms_list WHERE PK_id = '$value'";
+                            <?php 
+                                foreach($array_counter as $value):
+                                    $query = "SELECT * FROM tbl_afia_forms_list WHERE PK_id = $value ORDER BY afl_form_name ASC";
                                     $result = mysqli_query($e_connection, $query);
-                                ?>
-                            <?php foreach($result as $row): ?>
-                            <option value="<?= $row['PK_id'] ?>"><?= $row['afl_form_name'] ?></option>
-                            <?php endforeach; ?>
-
-                            <?php endforeach; ?>
+                                    
+                                    foreach($result as $row):
+                                        echo '<option value="'.$row['PK_id'].'">'.$row['afl_form_name'].'</option>';
+                                    endforeach;
+                                endforeach;
+                            ?>
                         </select>
                     </div>
                 </div>
@@ -876,6 +878,7 @@ if (mysqli_num_rows($record_result) > 0) {
 <?php include('footer.php'); ?>
 
 <script>
+var initiallySelected = [];
 function get_employee_list(id) {
     var id = $(event.target).val();
     $.ajax({
@@ -889,6 +892,7 @@ function get_employee_list(id) {
             $('#form_owner_display').html(response);
             selectMulti();
             console.log(response);
+              initiallySelected = Array.from(document.querySelectorAll('#form_owner option:checked')).map(option => option.value);
         },
         error: function(xhr, status, error) {
             console.error('AJAX Error: ' + status + error);
@@ -1016,7 +1020,8 @@ function myfunction1(id, enterpriseLogo) {
 $(document).ready(function() {
     $('#assign').click(function() {
         var eform_id = $('#form_id').find(":selected").val();
-        var form_owner = $('#form_owner').val();
+        var form_owner = $('#form_owner').val();  // This should return an array
+        console.log(form_owner);  // Check the console log for the array
         var enterprise_id = <?= $switch_user_id ?>;
         $.ajax({
             url: "app-function/controller.php",
@@ -1025,16 +1030,52 @@ $(document).ready(function() {
                 action: "add_form",
                 eform_id: eform_id,
                 enterprise_id: enterprise_id,
-                form_owner: form_owner
+                form_owner: form_owner  // This will send an array of owners
             },
             success: function(data) {
-                window.location.reload();
-                //console.log(data); 
+               // console.log(data);  // Log the response from the server
+                alert('Successfully Assigned !');
             }
-        })
+        });
     });
+
     // for gallery
 });
+
+    function check_selected() {
+        // Get the currently selected options
+        var currentlySelected = Array.from(document.querySelectorAll('#form_owner option:checked')).map(option => option.value);
+    
+        // Iterate over initially selected options
+        initiallySelected.forEach(function(id) {
+            // Check if an initially selected option is now unchecked
+            if (!currentlySelected.includes(id)) {
+                // Remove the ID from the initiallySelected array to avoid multiple alerts for the same uncheck action
+                initiallySelected = initiallySelected.filter(item => item !== id);
+    
+                var form_id = $('#form_id').val();
+                var form_owner = id;
+                var enterprise_id = <?= $switch_user_id ?>;
+                if (confirm('Are you sure you want to unassign this form to this personnel?')) {
+                  // Save it!
+                    $.ajax({
+                        url: "controller.php",
+                        method: "POST",
+                        data: {
+                            update_form_owner: '1',
+                            form_id: form_id,
+                            enterprise_id: enterprise_id,
+                            form_owner: form_owner
+                        },
+                        success: function(data) {
+                            alert('Unassigned Successfully!')
+                        }
+                    });
+                }
+            }
+        });
+    }
+
 </script>
 <script>
 am5.ready(function() {

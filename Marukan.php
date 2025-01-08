@@ -244,7 +244,7 @@
               <!-- Login -->
               <form method="POST" class="form formSignIn">
                 <img class="w-100" src="uploads/login/icon/marukan2.png" />
-                <h2 class="text-dark" style="font-weight: 800;">Welcome Back</h1>
+                <h2 class="text-dark" style="font-weight: 800;">Welcome Back</h2>
 
                 <div class="alert_msg text-white"></div>
 
@@ -290,7 +290,7 @@
               <!-- Register -->
               <form method="POST" class="form formSignUp" style="display: none;">
                 <img class="w-100" src="uploads/login/icon/marukan22.png" />
-                <h2 style="font-weight: 800;">Create Account</h1>
+                <h2 style="font-weight: 800;">Create Account</h2>
 
                 <div class="alert_msg text-white"></div>
                 <input class="form-control" type="hidden" name="ID" value="<?php echo !empty($invited_id) ? $invited_id : ''; ?>" />
@@ -360,9 +360,7 @@
       $(document).ready(function(){
         $(".form").validate();
 
-        <?php
-          if (true) {}
-        ?>
+        <?php if ( !empty( $_GET['i'] ) AND !empty( $_GET['r'] ) AND $_GET['r'] == 1 ) { ?> btnCreate(); <?php } ?>
       });
 
       function btnCreate() {

@@ -301,7 +301,8 @@
                                                             $sql_s1 = ' AND s1.facility = 0 ';
                                                             $sql_s2 = ' AND s2.facility = 0 ';
                                                         }
-                                                        $result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+                                                        $result = mysqli_query( $conn,"
+                                                            WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
                                                             (
                                                                 SELECT
                                                                 s1.ID AS s_ID,
@@ -467,7 +468,8 @@
 
                                                             GROUP BY s_ID
 
-                                                            ORDER BY s_name" );
+                                                            ORDER BY s_name
+                                                        " );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
@@ -493,12 +495,8 @@
                                                                 $s_status = $row["s_status"];
                                                                 $status_type = array(
                                                                     0 => 'Pending',
-                                                                    1 => 'Approved',
-                                                                    2 => 'Non Approved',
-                                                                    3 => 'Emergency Use Only',
-                                                                    4 => 'Do Not Use',
-																	5 => 'Active',
-																	6 => 'Inactive'
+																	1 => 'Active',
+																	2 => 'Inactive'
                                                                 );
 
                                                                 if ($s_category == "3") {
@@ -550,19 +548,33 @@
                                                                         $material = implode(', ', $material_result);
                                                                     }
                                                                 }
-                                                                
-                                                                $address_array = array();
-                                                                $address = $row["s_address"];
-                                                                $address_arr = explode(" | ", $address);
-                                                                if (COUNT($address_arr) < 5) {
-                                                                    $address_arr = explode(", ", $address);
-                                                                }
-                                                                array_push($address_array, htmlentities($address_arr[1]));
-                                                                array_push($address_array, htmlentities($address_arr[2]));
-                                                                array_push($address_array, htmlentities($address_arr[3]));
-                                                                array_push($address_array, $address_arr[0]);
-                                                                array_push($address_array, $address_arr[4]);
-                                                                $address_arr = implode(", ", $address_array);
+    																
+																$address_array = array();
+																$address_arr = htmlentities($row["s_address"] ?? '');
+																$address_arr_country = '';
+																if (!empty($address_arr)) {
+																	if (str_contains($address_arr, '|')) {
+    													            	$address_arr = explode(" | ", $address_arr);
+    													            	
+        													            array_push($address_array, htmlentities($address_arr[1]));
+        													            array_push($address_array, htmlentities($address_arr[2]));
+        													            array_push($address_array, htmlentities($address_arr[3]));
+        													            array_push($address_array, $address_arr[0]);
+        													            array_push($address_array, $address_arr[4]);
+        													            $address_arr_country = $address_arr[0];
+        													            $address_arr = implode(", ", $address_array);
+																	} else if (str_contains($address_arr, ',')) {
+    													                if (count(explode(", ", $address_arr)) == 5) {
+            													            array_push($address_array, htmlentities($address_arr[1]));
+            													            array_push($address_array, htmlentities($address_arr[2]));
+            													            array_push($address_array, htmlentities($address_arr[3]));
+            													            array_push($address_array, $address_arr[0]);
+            													            array_push($address_array, $address_arr[4]);
+            													            $address_arr_country = $address_arr[0];
+            													            $address_arr = implode(", ", $address_array);
+    													                }
+																	}
+																}
 
                                                                 echo '<tr id="tr_'.$s_ID.'">';
                                                                     // <td class="hide">'.$s_ID.'</td>
@@ -621,7 +633,8 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        $result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_user_id, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+                                                        $result = mysqli_query( $conn,"
+                                                            WITH RECURSIVE cte (s_ID, s_user_id, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
 															(
 															    SELECT
 															    s1.ID AS s_ID,
@@ -800,7 +813,8 @@
 
 															GROUP BY s_ID
 
-															ORDER BY s_name" );
+															ORDER BY s_name
+														" );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
@@ -863,19 +877,33 @@
                                                                         $material = implode(', ', $material_result);
                                                                     }
                                                                 }
-                                                                
-                                                                $address_array = array();
-                                                                $address = $row["s_address"];
-                                                                $address_arr = explode(" | ", $address);
-                                                                if (COUNT($address_arr) < 5) {
-                                                                    $address_arr = explode(", ", $address);
-                                                                }
-                                                                array_push($address_array, htmlentities($address_arr[1]));
-                                                                array_push($address_array, htmlentities($address_arr[2]));
-                                                                array_push($address_array, htmlentities($address_arr[3]));
-                                                                array_push($address_array, $address_arr[0]);
-                                                                array_push($address_array, $address_arr[4]);
-                                                                $address_arr = implode(", ", $address_array);
+    																
+																$address_array = array();
+																$address_arr = htmlentities($row["s_address"] ?? '');
+																$address_arr_country = '';
+																if (!empty($address_arr)) {
+																	if (str_contains($address_arr, '|')) {
+    													            	$address_arr = explode(" | ", $address_arr);
+    													            	
+        													            array_push($address_array, htmlentities($address_arr[1]));
+        													            array_push($address_array, htmlentities($address_arr[2]));
+        													            array_push($address_array, htmlentities($address_arr[3]));
+        													            array_push($address_array, $address_arr[0]);
+        													            array_push($address_array, $address_arr[4]);
+        													            $address_arr_country = $address_arr[0];
+        													            $address_arr = implode(", ", $address_array);
+																	} else if (str_contains($address_arr, ',')) {
+    													                if (count(explode(", ", $address_arr)) == 5) {
+            													            array_push($address_array, htmlentities($address_arr[1]));
+            													            array_push($address_array, htmlentities($address_arr[2]));
+            													            array_push($address_array, htmlentities($address_arr[3]));
+            													            array_push($address_array, $address_arr[0]);
+            													            array_push($address_array, $address_arr[4]);
+            													            $address_arr_country = $address_arr[0];
+            													            $address_arr = implode(", ", $address_array);
+    													                }
+																	}
+																}
 
                                                                 echo '<tr id="tr_'.$s_ID.'">';
                                                                     // <td class="hide">'.$s_ID.'</td>
@@ -1059,7 +1087,7 @@
                     </div>
 
                         <!-- MODAL AREA-->
-                        <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
+                        <div class="modal fade" data-backdrop="static" data-keyboard="false" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
                             <div class="modal-dialog modal-full">
                                 <div class="modal-content">
                                     <form method="post" enctype="multipart/form-data" class="modalForm modalSave">
@@ -1154,7 +1182,7 @@
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Category</label>
-                                                                    <select class="form-control" name="category" onchange="changedCategory(this)" required>
+                                                                    <select class="form-control" name="category" onchange="changedCategory(this, 1)" required>
                                                                         <option value="">Select</option>
                                                                         <?php
                                                                             $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
@@ -1165,6 +1193,7 @@
                                                                             }
                                                                         ?>
                                                                     </select>
+                                                        			<input type="text" class="form-control margin-top-15" name="supplier_category_other" id="supplier_category_other_1" placeholder="Specify others" style="display: none;" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
@@ -1181,6 +1210,7 @@
                                                                             }
                                                                         ?>
                                                                     </select>
+                                                        			<input type="text" class="form-control margin-top-15" name="supplier_industry_other" id="supplier_industry_other_1" placeholder="Specify others" style="display: none;" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
@@ -1551,7 +1581,10 @@
                                                         ?>
                                                         <div class="mt-checkbox-list">
                                                             <?php
-                                                                $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
+                                                            
+                                                                $sql_supplier = '';
+                                                                if ($switch_user_id == 1649 OR $current_client == 16) { $sql_supplier = ' WHERE client = 16 '; }
+                                                                $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement $sql_supplier ORDER BY name" );
                                                                 if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                                                                     while($row = mysqli_fetch_array($selectRequirement2)) {
                                                                         echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
@@ -1934,14 +1967,14 @@
                                             </div>
                                         </div>
 										<div class="modal-footer modal-footer--sticky bg-white">
-                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                            <a href="javascript:;" class="btn dark btn-outline" onclick="btnSaveClose('modalNew', 'modalSave')" title="Close">Close</a>
                                             <button type="submit" class="btn btn-success ladda-button" name="btnSave_Customer" id="btnSave_Customer" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="modalView" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal fade" data-backdrop="static" data-keyboard="false" id="modalView" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-full">
                                 <div class="modal-content">
                                     <form method="post" enctype="multipart/form-data" class="modalForm modalUpdate">
@@ -1951,7 +1984,7 @@
                                         </div>
                                         <div class="modal-body"></div>
 										<div class="modal-footer modal-footer--sticky bg-white">
-                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                            <a href="javascript:;" class="btn dark btn-outline" onclick="btnSaveClose('modalView', 'modalUpdate')" title="Close">Close</a>
                                             <button type="submit" class="btn btn-success ladda-button" name="btnUpdate_Customer" id="btnUpdate_Customer" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                                         </div>
                                     </form>
@@ -2112,9 +2145,9 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="text-center" style="width: 135px;">Compliance</th>
-                                                        <th style="width: 200px;">Customer Name</th>
+                                                        <th>Customer Name</th>
                                                         <th>Users</th>
-                                                        <th>Required Documents</th>
+                                                        <th class="text-center" style="width: 135px;">Required Documents</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -2123,6 +2156,31 @@
                                         <div class="modal-footer modal-footer--sticky bg-white">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                             <button type="button" class="btn green ladda-button" name="btnExport" id="btnExport" data-style="zoom-out"><span class="ladda-label">Export</span></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="modalReportView" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="post" enctype="multipart/form-data" class="modalForm modalReportView">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">Report</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer modal-footer--sticky bg-white">
+                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         </div>
                                     </form>
                                 </div>
@@ -2431,7 +2489,7 @@
                 return error;
             }
 
-            function changedCategory(sel) {
+            function changedCategory(sel, modal) {
                 if (sel.value == 3) {
                     $('.tabProducts').addClass('hide');
                     $('.tabService').removeClass('hide');
@@ -2439,9 +2497,15 @@
                     $('.tabProducts').removeClass('hide');
                     $('.tabService').addClass('hide');
                 }
+
+                $('#supplier_category_other_'+modal).hide();
+                if (sel.value == 41) { $('#supplier_category_other_'+modal).show(); }
             }
             function changeIndustry(id, modal) {
 				var client = '<?php echo $current_client; ?>';
+				
+                $('#supplier_industry_other_'+modal).hide();
+                if (id == 34) { $('#supplier_industry_other_'+modal).show(); }
 
 				if (client == 0) {
                     var country = $('#tabBasic_'+modal+' select[name="countries"]').val();
@@ -2565,6 +2629,38 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalReport .modal-body table tbody").html(data);
+                    }
+                });
+            }
+            function btnReportView(id, type) {
+                $("#modalReportView .modal-body table tbody").html('');
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalView_Customer_ReportView="+id+"&t="+type,
+                    dataType: "html",
+                    success: function(data){
+                        var title = "List of Required Documents"
+                        if (type == 2) {
+                            title = "List of Materials"
+                        }
+                        $("#modalReportView .modal-header .modal-title").html(title);
+                        $("#modalReportView .modal-body table tbody").html(data);
+                    }
+                });
+            }
+            function btnReportView(id, type) {
+                $("#modalReportView .modal-body table tbody").html('');
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalView_Customer_ReportView="+id+"&t="+type,
+                    dataType: "html",
+                    success: function(data){
+                        var title = "List of Required Documents"
+                        if (type == 2) {
+                            title = "List of Materials"
+                        }
+                        $("#modalReportView .modal-header .modal-title").html(title);
+                        $("#modalReportView .modal-body table tbody").html(data);
                     }
                 });
             }
@@ -2771,6 +2867,25 @@
                 jQuery(document).ready(function(){FormRepeater.init()});
             }
 
+            function btnSaveClose(modal, form) {
+                swal({
+                    title: "Do you want to save the changes?",
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonClass: "btn-danger",
+                    cancelButtonText: "Don't Save",
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function (inputValue) {
+                    if (inputValue == true) {
+                        $('.'+form).submit();
+                        $('#'+modal).modal('hide');
+                    } else {
+                        $('#'+modal).modal('hide');
+                    }
+                });
+            }
             $(".modalSave").on('submit',(function(e) {
                 e.preventDefault();
 

@@ -8,7 +8,7 @@ if(!isset($_COOKIE['ID'])) {
 include_once __DIR__ . '../../../alt-setup/setup.php';
 $con = $conn;
 
-// error_reporting(E_ALL);
+error_reporting(E_ALL);
 default_timezone();
 
 $method = $_SERVER['REQUEST_METHOD'] == 'GET' ? $_GET['method'] : $_POST['method'];
@@ -67,20 +67,48 @@ function getVASummary() {
         $showAllClause = "";
     }
      
+    // $results = $con->query("SELECT 
+    //         *,
+    //         user_id,
+    //         CONCAT(first_name,' ',last_name) AS name, 
+    //         SUM(minute) AS total_minutes 
+    //     FROM tbl_service_logs 
+    //     LEFT JOIN tbl_user on ID = user_id
+    //     WHERE task_date >= '$last_month' 
+    //         AND task_date <= '$today' 
+    //         AND is_active = 1 
+    //         AND not_approved = 0 
+    //         $showAllClause
+    //         AND deleted = 0
+    //     GROUP BY task_date, user_id 
+    //     ORDER BY task_date DESC
+    // ");
+    
+    
     $results = $con->query("SELECT 
-            *,
-            user_id,
-            CONCAT(first_name,' ',last_name) AS name, 
-            SUM(minute) AS total_minutes 
-        FROM tbl_service_logs 
-        LEFT JOIN tbl_user on ID = user_id
-        WHERE task_date >= '$last_month' 
-            AND task_date <= '$today' 
-            AND is_active = 1 
-            AND not_approved = 0 
-            $showAllClause
-        GROUP BY task_date, user_id 
-        ORDER BY task_date DESC
+        *,
+        user_id,
+        CONCAT(first_name,' ',last_name) AS name, 
+        SUM(minute) AS total_minutes 
+        FROM tbl_service_logs AS s
+        
+        LEFT JOIN (
+        	SELECT
+            *
+            FROM tbl_user
+            WHERE deleted = 0
+        ) AS u
+        ON u.ID = s.user_id
+        
+        
+        WHERE s.task_date >= '$last_month' 
+        AND s.task_date <= '$today' 
+        AND u.is_active = 1 
+        AND s.not_approved = 0 
+        $showAllClause
+        AND s.deleted = 0
+        GROUP BY s.task_date, s.user_id 
+        ORDER BY s.task_date DESC
     ");
     $data = array();
 

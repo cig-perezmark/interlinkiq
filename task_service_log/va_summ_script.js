@@ -217,26 +217,26 @@ async function initVASummaryTable() {
     const dateColumns = [];
     
     data.forEach((log, index) => {
-    const lastPos = names.indexOf(log.name.ref()) == -1 ? null : names.indexOf(log.name.ref());
-    
-    if(dateColumns.indexOf(log.task_date) == -1) {
-        dateColumns.push(log.task_date);
-    }
-    
-    // VA name do not exists yet
-    if(lastPos === null) {
-        names.push(log.name.ref());
+        const lastPos = names.indexOf(log.name.ref()) == -1 ? null : names.indexOf(log.name.ref());
         
-        // create new
-        const va_object = { name: log.name,user_id: log.user_id };
-        va_object[log.task_date] = toHours(log.total_minutes);
+        if(dateColumns.indexOf(log.task_date) == -1) {
+            dateColumns.push(log.task_date);
+        }
         
-        va_summary.push(va_object);
-    }
-    else {
-        // append task_date as new key and its total minutes
-        va_summary[lastPos][log.task_date] = toHours(log.total_minutes);
-    }
+        // VA name do not exists yet
+        if(lastPos === null) {
+            names.push(log.name.ref());
+            
+            // create new
+            const va_object = { name: log.name,user_id: log.user_id };
+            va_object[log.task_date] = toHours(log.total_minutes);
+            
+            va_summary.push(va_object);
+        }
+        else {
+            // append task_date as new key and its total minutes
+            va_summary[lastPos][log.task_date] = toHours(log.total_minutes);
+        }
     
     });
     
@@ -269,10 +269,19 @@ async function initVASummaryTable() {
 
 // asynchronous function to fetch the VA Summary data from the database
 async function VASummary() {
+    // try {
+    //     const response = await fetch('task_service_log/private/functions.php?method=getVASummary');
+    //     console.log(response);
+    // } catch(err) {
+    //     console.error(err);
+    // }
+    
+    
     try {
         const response = await fetch('task_service_log/private/functions.php?method=getVASummary');
-        return await response.json();
-    } catch(err) {
+        const data = await response.json();
+        return data;
+    } catch (err) {
         console.error(err);
     }
 }

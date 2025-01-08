@@ -241,7 +241,7 @@
                                         </tr>
                                         <tr>
                                             <td colspan="2" >
-                                                Bunos
+                                                Bonus
                                             </td>
                                             <td style="text-align:center" id="adjustment">
                                                 <?= "$" ?><?= $row['bunos'] ?>

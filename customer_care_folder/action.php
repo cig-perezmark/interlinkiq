@@ -99,6 +99,7 @@
         $cookie = $_COOKIE['ID'];
        
         $care_date = mysqli_real_escape_string($conn,$_POST['care_date']);
+        $care_date_time = mysqli_real_escape_string($conn,$_POST['care_date_time']);
         $cusEmail = mysqli_real_escape_string($conn,$_POST['cusEmail']);
         $cusName = mysqli_real_escape_string($conn,$_POST['cusName']);
         $cusAddress = mysqli_real_escape_string($conn,$_POST['cusAddress']);
@@ -144,6 +145,7 @@
         $date_of_acknowledgement = mysqli_real_escape_string($conn,$_POST['date_of_acknowledgement']);
         
         $product_description = mysqli_real_escape_string($conn,$_POST['product_description']);
+        $product_code = mysqli_real_escape_string($conn,$_POST['product_code']);
         $lot_code = mysqli_real_escape_string($conn,$_POST['lot_code']);
         
         $product_purchased_date = mysqli_real_escape_string($conn,$_POST['product_purchased_date']);
@@ -205,8 +207,8 @@
 			$files2 = $_POST['fileurl2'];
 		}
         
-        $sql = "INSERT INTO tbl_complaint_records(care_date,cusEmail,cusName,cusAddress,phoneNo,product_name,product_description,reply_to_customer,reply_type,date_of_acknowledgement,METRC_package_id,complaint_type,complaint_category,lot_code,product_expiry,product_expiry_remarks,product_purchased_date,product_purchased_date_remarks,product_purchase_location,person_contacted,person_handling,nature_complaint,action_taken,date_resolution,investigation_started,resolution_desc,care_addedby,care_ownedby, files, filetype, files2, filetype2, user_id, portal_user) 
-        VALUES('$care_date','$cusEmail','$cusName','$cusAddress','$phoneNo','$product_name','$product_description','$reply_to_customer','$reply_type','$date_of_acknowledgement','$METRC_package_id','$complaint_type','$complaint_category','$lot_code','$product_expiry','$product_expiry_remarks','$product_purchased_date','$product_purchased_date_remarks','$product_purchase_location','$person_contacted','$person_handling','$nature_complaint','$action_taken','$date_resolution','$investigation_started','$resolution_desc','$cookie','$user_id', '$files', '$filetype', '$files2', '$filetype2','$cookie','$user_id')";
+        $sql = "INSERT INTO tbl_complaint_records(care_date,care_date_time,cusEmail,cusName,cusAddress,phoneNo,product_name,product_description,product_code,reply_to_customer,reply_type,date_of_acknowledgement,METRC_package_id,complaint_type,complaint_category,lot_code,product_expiry,product_expiry_remarks,product_purchased_date,product_purchased_date_remarks,product_purchase_location,person_contacted,person_handling,nature_complaint,action_taken,date_resolution,investigation_started,resolution_desc,care_addedby,care_ownedby, files, filetype, files2, filetype2, user_id, portal_user) 
+        VALUES('$care_date','$care_date_time','$cusEmail','$cusName','$cusAddress','$phoneNo','$product_name','$product_description','$product_code','$reply_to_customer','$reply_type','$date_of_acknowledgement','$METRC_package_id','$complaint_type','$complaint_category','$lot_code','$product_expiry','$product_expiry_remarks','$product_purchased_date','$product_purchased_date_remarks','$product_purchase_location','$person_contacted','$person_handling','$nature_complaint','$action_taken','$date_resolution','$investigation_started','$resolution_desc','$cookie','$user_id', '$files', '$filetype', '$files2', '$filetype2','$cookie','$user_id')";
         if(mysqli_query($conn, $sql)){
             $last_id = mysqli_insert_id($conn);
             
@@ -270,7 +272,7 @@
                 else if($row['complaint_category'] == 1){ $complaint_category = 'Caused Illness or Injury'; }
                 else if($row['complaint_category'] == 2){ $complaint_category = 'Foreign Material in Cannabis Product Container'; }
                 else if($row['complaint_category'] == 3){ $complaint_category = 'Foul Odor'; }
-                else if($row['complaint_category'] == 4){ $complaint_category = 'Improper Packaging'; }
+                else if($row['complaint_category'] == 4){ $complaint_category = 'Defective or Damaged Packaging'; }
                 else if($row['complaint_category'] == 5){ $complaint_category = 'Incorrect Concentration of Cannabinoids'; }
                 else if($row['complaint_category'] == 6){ $complaint_category = 'Mislabeling'; }
                                                 
@@ -365,9 +367,13 @@
                 ?>
                     <center><h4><b>CUSTOMER COMPLAINT REPORT</b></h4></center>
                     <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                            <label>Date:</label>
                            <input type="date" class="form-control" name="care_date" value="<?= date('Y-m-d', strtotime($row['care_date']));?>" required>
+                       </div>
+                        <div class="col-md-6">
+                           <label>Date and Time of Incident:</label>
+                           <input type="datetime-local" class="form-control" name="care_date_time" value="<?= $row['care_date_time']; ?>" required>
                        </div>
                    </div>
                    <div class="form-group">
@@ -403,7 +409,11 @@
                        </div>
                    </div>
                    <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
+                           <label>Product Code:</label>
+                           <input type="text" class="form-control" name="product_code" value="<?= $row['product_code']; ?>">
+                       </div>
+                        <div class="col-md-6">
                            <label>Package ID:</label>
                            <input type="text" class="form-control" name="METRC_package_id" value="<?= $row['METRC_package_id']; ?>">
                        </div>
@@ -458,7 +468,7 @@
                                <option value="1" <?php if($row['complaint_category']== 1){echo 'selected';}else{ echo ''; } ?>>Caused Illness or Injury</option>
                                <option value="2" <?php if($row['complaint_category']== 2){echo 'selected';}else{ echo ''; } ?>>Foreign Material in Cannabis Product Container</option>
                                <option value="3" <?php if($row['complaint_category']== 3){echo 'selected';}else{ echo ''; } ?>>Foul Odor</option>
-                               <option value="4" <?php if($row['complaint_category']== 4){echo 'selected';}else{ echo ''; } ?>>Improper Packaging</option>
+                               <option value="4" <?php if($row['complaint_category']== 4){echo 'selected';}else{ echo ''; } ?>>Defective or Damaged Packaging</option>
                                <option value="5" <?php if($row['complaint_category']== 5){echo 'selected';}else{ echo ''; } ?>>Incorrect Concentration of Cannabinoids</option>
                                <option value="6" <?php if($row['complaint_category']== 6){echo 'selected';}else{ echo ''; } ?>>Mislabeling</option>
                                 <option value="customOption" <?php echo is_numeric($row['complaint_category']) == 1 ? '':'SELECTED'; ?>>[Others]</option>
@@ -587,6 +597,7 @@
         $cookie = $_COOKIE['ID'];
         $IDs = mysqli_real_escape_string($conn,$_POST['ID']);
         $care_date = mysqli_real_escape_string($conn,$_POST['care_date']);
+        $care_date_time = mysqli_real_escape_string($conn,$_POST['care_date_time']);
         $cusEmail = mysqli_real_escape_string($conn,$_POST['cusEmail']);
         $cusName = mysqli_real_escape_string($conn,$_POST['cusName']);
         $cusAddress = mysqli_real_escape_string($conn,$_POST['cusAddress']);
@@ -631,6 +642,7 @@
         $date_of_acknowledgement = mysqli_real_escape_string($conn,$_POST['date_of_acknowledgement']);
         
         $product_description = mysqli_real_escape_string($conn,$_POST['product_description']);
+        $product_code = mysqli_real_escape_string($conn,$_POST['product_code']);
         $lot_code = mysqli_real_escape_string($conn,$_POST['lot_code']);
         
         $product_purchased_date = mysqli_real_escape_string($conn,$_POST['product_purchased_date']);
@@ -702,7 +714,7 @@
 			}
 		}
        
-    	$sql = "UPDATE tbl_complaint_records set care_date='$care_date',cusEmail='$cusEmail',cusName='$cusName',cusAddress='$cusAddress',phoneNo='$phoneNo',product_name='$product_name',reply_type='$reply_type',date_of_acknowledgement='$date_of_acknowledgement',product_description='$product_description',reply_to_customer='$reply_to_customer',METRC_package_id='$METRC_package_id',complaint_type='$complaint_type',complaint_category='$complaint_category',lot_code='$lot_code',product_expiry='$product_expiry',product_expiry_remarks='$product_expiry_remarks',product_purchased_date='$product_purchased_date',product_purchased_date_remarks='$product_purchased_date_remarks',product_purchase_location='$product_purchase_location',person_contacted='$person_contacted',person_handling='$person_handling',nature_complaint='$nature_complaint',action_taken='$action_taken',date_resolution='$date_resolution',investigation_started ='$investigation_started',resolution_desc ='$resolution_desc',care_addedby='$cookie' where care_id = $IDs";
+    	$sql = "UPDATE tbl_complaint_records set care_date='$care_date',care_date_time='$care_date_time',cusEmail='$cusEmail',cusName='$cusName',cusAddress='$cusAddress',phoneNo='$phoneNo',product_name='$product_name',reply_type='$reply_type',date_of_acknowledgement='$date_of_acknowledgement',product_description='$product_description',product_code='$product_code',reply_to_customer='$reply_to_customer',METRC_package_id='$METRC_package_id',complaint_type='$complaint_type',complaint_category='$complaint_category',lot_code='$lot_code',product_expiry='$product_expiry',product_expiry_remarks='$product_expiry_remarks',product_purchased_date='$product_purchased_date',product_purchased_date_remarks='$product_purchased_date_remarks',product_purchase_location='$product_purchase_location',person_contacted='$person_contacted',person_handling='$person_handling',nature_complaint='$nature_complaint',action_taken='$action_taken',date_resolution='$date_resolution',investigation_started ='$investigation_started',resolution_desc ='$resolution_desc',care_addedby='$cookie' where care_id = $IDs";
         if(mysqli_query($conn, $sql)){
             $IDs = mysqli_real_escape_string($conn,$_POST['ID']);
             $queryr = "SELECT * FROM tbl_complaint_records where care_id = $IDs";
@@ -721,7 +733,7 @@
                 else if($row['complaint_category'] == 1){ $complaint_category = 'Caused Illness or Injury'; }
                 else if($row['complaint_category'] == 2){ $complaint_category = 'Foreign Material in Cannabis Product Container'; }
                 else if($row['complaint_category'] == 3){ $complaint_category = 'Foul Odor'; }
-                else if($row['complaint_category'] == 4){ $complaint_category = 'Improper Packaging'; }
+                else if($row['complaint_category'] == 4){ $complaint_category = 'IDefective or Damaged Packaging'; }
                 else if($row['complaint_category'] == 5){ $complaint_category = 'Incorrect Concentration of Cannabinoids'; }
                 else if($row['complaint_category'] == 6){ $complaint_category = 'Mislabeling'; }
                                                 

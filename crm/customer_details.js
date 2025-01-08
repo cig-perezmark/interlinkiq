@@ -384,13 +384,13 @@ $(document).ready(function() {
         e.preventDefault();
         var fileInput = $('#referenceFile');
         var file = fileInput[0].files[0];
-
+    
         // Check if a file is selected
         if (!file) {
             alert("Please select a file.");
             return;
         }
-
+    
         // Validate file type
         var allowedTypes = [
             'image/jpeg',
@@ -399,13 +399,15 @@ $(document).ready(function() {
             'text/csv',
             'application/msword',
             'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // Allow .docx
         ];
+    
         if (allowedTypes.indexOf(file.type) === -1) {
             alert("Invalid file type. Please upload an image, PDF, CSV, Word document, or Excel spreadsheet.");
             return;
         }
-
+    
         // Submit form if file is valid
         var formData = new FormData(this);
         formData.append('add_references', 'add_references');
@@ -428,7 +430,7 @@ $(document).ready(function() {
                 });
                 $('#addReference').modal('hide');
                 $('#referenceForm')[0].reset();
-                get_references()
+                get_references();
             },
             error: function(xhr, status, error) {
                 alert("Error uploading file.");
@@ -436,6 +438,7 @@ $(document).ready(function() {
             }
         });
     });
+
     
     $('#fseForm').submit(function(e) {
         e.preventDefault();
@@ -447,8 +450,18 @@ $(document).ready(function() {
             return;
         }
 
-        var allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv', 'application/msword', 'application/vnd.ms-excel'];
-        if (allowedTypes.indexOf(file.type) === -1) {
+        const allowedTypes = new Set([
+            'image/jpeg',
+            'image/png',
+            'application/pdf',
+            'text/csv',
+            'application/msword',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.template'  // .dotx
+        ]);
+        
+        if (!allowedTypes.has(file.type)) {
             alert("Invalid file type. Please upload an image, PDF, CSV, Word document, or Excel spreadsheet.");
             return;
         }
@@ -663,44 +676,61 @@ $(document).ready(function() {
     });
 
     $('#updateCampaignForm').on('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    formData.append('update_campaign', 'update_campaign');
-
-    $.ajax({
-        url: 'crm/customer_details.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            console.log(response);
-            response = JSON.parse(response);
-
-            if(response.status === "success") {
-                $.bootstrapGrowl(response.message, {
-                    ele: 'body',
-                    type: 'success',
-                    offset: {from: 'bottom', amount: 50},
-                    align: 'right',
-                    width: 'auto',
-                    delay: 4000,
-                    allow_dismiss: true,
-                    stackup_spacing: 10
-                });
-            } else if(response.status === "info") {
-                $.bootstrapGrowl(response.message, {
-                    ele: 'body',
-                    type: 'info',
-                    offset: {from: 'bottom', amount: 50},
-                    align: 'right',
-                    width: 'auto',
-                    delay: 4000,
-                    allow_dismiss: true,
-                    stackup_spacing: 10
-                });
-            } else {
-                $.bootstrapGrowl(response.message, {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('update_campaign', 'update_campaign');
+    
+        $.ajax({
+            url: 'crm/customer_details.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log(response);
+                response = JSON.parse(response);
+    
+                if(response.status === "success") {
+                    $.bootstrapGrowl(response.message, {
+                        ele: 'body',
+                        type: 'success',
+                        offset: {from: 'bottom', amount: 50},
+                        align: 'right',
+                        width: 'auto',
+                        delay: 4000,
+                        allow_dismiss: true,
+                        stackup_spacing: 10
+                    });
+                } else if(response.status === "info") {
+                    $.bootstrapGrowl(response.message, {
+                        ele: 'body',
+                        type: 'info',
+                        offset: {from: 'bottom', amount: 50},
+                        align: 'right',
+                        width: 'auto',
+                        delay: 4000,
+                        allow_dismiss: true,
+                        stackup_spacing: 10
+                    });
+                } else {
+                    $.bootstrapGrowl(response.message, {
+                        ele: 'body',
+                        type: 'danger',
+                        offset: {from: 'bottom', amount: 50},
+                        align: 'right',
+                        width: 'auto',
+                        delay: 4000,
+                        allow_dismiss: true,
+                        stackup_spacing: 10
+                    });
+                }
+    
+                $('#campaignDetailsModal').modal('hide');
+                get_contact_campaigns();
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error: ' + status + error);
+                $.bootstrapGrowl('An error occurred while updating the campaign.', {
                     ele: 'body',
                     type: 'danger',
                     offset: {from: 'bottom', amount: 50},
@@ -711,26 +741,146 @@ $(document).ready(function() {
                     stackup_spacing: 10
                 });
             }
-
-            $('#campaignDetailsModal').modal('hide');
-            get_contact_campaigns();
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX Error: ' + status + error);
-            $.bootstrapGrowl('An error occurred while updating the campaign.', {
-                ele: 'body',
-                type: 'danger',
-                offset: {from: 'bottom', amount: 50},
-                align: 'right',
-                width: 'auto',
-                delay: 4000,
-                allow_dismiss: true,
-                stackup_spacing: 10
-            });
-        }
+        });
     });
-});
+    
+    $('#emailCampaignForm').on('submit', function(e) {
+        e.preventDefault();
+        $('#campaignBtn').attr('disabled', true).text('Sending ...');
+        var contact_id = $('input[name="id"]').val();
+        var from = $('input[name="campaign_from"]').val();
+        var email = $('input[name="account_emailc"]').val();
+        var name = $('input[name="campaign_name"]').val();
+        var subject = $('input[name="campaign_subject"]').val();
+        var body = $('.summernoteEditor').summernote('code');
 
+        $.post({
+            url: 'crm/customer_details.php',
+            data: {
+                id: contact_id,
+                from: from,
+                email: email,
+                name: name,
+                subject: subject,
+                body: body,
+                send_campaign: true
+            },
+            success: function (response) {
+                response = JSON.parse(response);
+                if (response.status === 'success') {
+                    $.bootstrapGrowl(response.message, {
+                        ele: 'body',
+                        type: 'success',
+                        offset: {from: 'bottom', amount: 50},
+                        align: 'right',
+                        width: 'auto',
+                        delay: 4000,
+                        allow_dismiss: true,
+                        stackup_spacing: 10
+                    });
+                    $('.summernoteEditor').summernote('code', '');
+                    $('#emailCampaignForm')[0].reset();
+                    $('#sendCampaign').modal('hide');
+                    get_contact_campaigns()
+                } else {
+                    $.bootstrapGrowl(response.message, {
+                        ele: 'body',
+                        type: 'danger',
+                        offset: {from: 'bottom', amount: 50},
+                        align: 'right',
+                        width: 'auto',
+                        delay: 4000,
+                        allow_dismiss: true,
+                        stackup_spacing: 10
+                    });
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $.bootstrapGrowl('An error occurred during the request.', {
+                    ele: 'body',
+                    type: 'danger',
+                    offset: {from: 'bottom', amount: 50},
+                    align: 'right',
+                    width: 'auto',
+                    delay: 4000,
+                    allow_dismiss: true,
+                    stackup_spacing: 10
+                });
+            },
+            complete: function () {
+                $('#campaignBtn').attr('disabled', false).text('Send');
+            }
+        });
+    })
+    
+    $('#emailForm').on('submit', function(e) {
+        e.preventDefault();
+        $('#emailBtn').attr('disabled', true).text('Sending ...');
+        var contact_id = $('input[name="id"]').val();
+        var from = $('input[name="email_from"]').val();
+        var email = $('input[name="account_emaile"]').val();
+        var name = $('input[name="email_name"]').val();
+        var subject = $('input[name="email_subject"]').val();
+        var body = $('.summernoteEmailEditor').summernote('code');
+
+        $.post({
+            url: 'crm/customer_details.php',
+            data: {
+                id: contact_id,
+                from: from,
+                email: email,
+                name: name,
+                subject: subject,
+                body: body,
+                send_email: true
+            },
+            success: function (response) {
+                response = JSON.parse(response);
+                if (response.status === 'success') {
+                    $.bootstrapGrowl(response.message, {
+                        ele: 'body',
+                        type: 'success',
+                        offset: {from: 'bottom', amount: 50},
+                        align: 'right',
+                        width: 'auto',
+                        delay: 4000,
+                        allow_dismiss: true,
+                        stackup_spacing: 10
+                    });
+                    $('.summernoteEmailEditor').summernote('code', '');
+                    $('#emailForm')[0].reset();
+                    $('#sendEmail').modal('hide');
+                    get_contact_emails()
+                } else {
+                    $.bootstrapGrowl(response.message, {
+                        ele: 'body',
+                        type: 'danger',
+                        offset: {from: 'bottom', amount: 50},
+                        align: 'right',
+                        width: 'auto',
+                        delay: 4000,
+                        allow_dismiss: true,
+                        stackup_spacing: 10
+                    });
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $.bootstrapGrowl('An error occurred during the request.', {
+                    ele: 'body',
+                    type: 'danger',
+                    offset: {from: 'bottom', amount: 50},
+                    align: 'right',
+                    width: 'auto',
+                    delay: 4000,
+                    allow_dismiss: true,
+                    stackup_spacing: 10
+                });
+            },
+            complete: function () {
+                $('#emailBtn').attr('disabled', false).text('Send');
+            }
+        });
+    })
 })
 
     

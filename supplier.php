@@ -94,9 +94,14 @@
   }
 
    #supplierchartdiv, #compliancePieChartDiv, #materialDonutChartDiv {
-            width: 100%;
-            height: 500px;
-        } 
+        width: 100%;
+        height: 500px;
+    } 
+    
+    .mt-repeater .mt-repeater-item {
+        border-bottom: unset;
+        padding-bottom: unset;
+    }
 </style>
 
 				<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
@@ -591,9 +596,9 @@
     															LEFT JOIN (
     																SELECT
     																*
-    																FROM tbl_supplier_material
-    																WHERE user_id = $switch_user_id
-                                                                    AND facility_switch = $facility_switch_user_id
+                                                                	FROM tbl_supplier_material
+                                                                	WHERE facility_switch = $facility_switch_user_id
+                                                                    -- AND user_id = $switch_user_id
     															) AS m
     
     															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0
@@ -670,18 +675,38 @@
     																}
     																
     																$address_array = array();
-    																$address = htmlentities($row["s_address"] ?? '');
-    													            $address_arr = explode(" | ", $address);
-    													            if (COUNT($address_arr) < 5) {
-    													                $address_arr = explode(", ", $address);
-    													            }
-    													            array_push($address_array, htmlentities($address_arr[1]));
-    													            array_push($address_array, htmlentities($address_arr[2]));
-    													            array_push($address_array, htmlentities($address_arr[3]));
-    													            array_push($address_array, $address_arr[0]);
-    													            array_push($address_array, $address_arr[4]);
-    													            $address_arr_country = $address_arr[0];
-    													            $address_arr = implode(", ", $address_array);
+    																$address_arr = htmlentities($row["s_address"] ?? '');
+    																$address_arr_country = '';
+    																if (!empty($address_arr)) {
+        													           // if (isset($address_arr[1])) { array_push($address_array, htmlentities($address_arr[1])); }
+        													           // if (isset($address_arr[2])) { array_push($address_array, htmlentities($address_arr[2])); }
+        													           // if (isset($address_arr[3])) { array_push($address_array, htmlentities($address_arr[3])); }
+        													           // if (isset($address_arr[0])) { array_push($address_array, htmlentities($address_arr[0])); }
+        													           // if (isset($address_arr[4])) { array_push($address_array, htmlentities($address_arr[4])); }
+            													            
+        													            
+																		if (str_contains($address_arr, '|')) {
+	    													            	$address_arr = explode(" | ", $address_arr);
+	    													            	
+            													            array_push($address_array, htmlentities($address_arr[1]));
+            													            array_push($address_array, htmlentities($address_arr[2]));
+            													            array_push($address_array, htmlentities($address_arr[3]));
+            													            array_push($address_array, $address_arr[0]);
+            													            array_push($address_array, $address_arr[4]);
+            													            $address_arr_country = $address_arr[0];
+            													            $address_arr = implode(", ", $address_array);
+																		} else if (str_contains($address_arr, ',')) {
+    													                    if (count(explode(", ", $address_arr)) == 5) {
+                													            array_push($address_array, htmlentities($address_arr[1]));
+                													            array_push($address_array, htmlentities($address_arr[2]));
+                													            array_push($address_array, htmlentities($address_arr[3]));
+                													            array_push($address_array, $address_arr[0]);
+                													            array_push($address_array, $address_arr[4]);
+                													            $address_arr_country = $address_arr[0];
+                													            $address_arr = implode(", ", $address_array);
+	    													                }
+																		}
+    																}
     
     																echo '<tr id="tr_'.$s_ID.'">
     																	<td>'.htmlentities($s_vendor_code ?? '').'</td>
@@ -963,12 +988,8 @@
 																$s_status = $row["s_status"];
 																$status_type = array(
 																	0 => 'Pending',
-																	1 => 'Approved',
-																	2 => 'Non Approved',
-																	3 => 'Emergency Used Only / Spot Purchasing',
-																	4 => 'Do Not Use',
-																	5 => 'Active',
-																	6 => 'Inactive'
+																	1 => 'Active',
+																	2 => 'Inactive'
 																);
 
 																if ($s_category == "3") {
@@ -1016,19 +1037,32 @@
 																	}
 																}
                                                                 
-                                                                $address_array = array();
-                                                                $address = $row["s_address"];
-                                                                $address_arr = explode(" | ", $address);
-                                                                if (COUNT($address_arr) < 5) {
-                                                                    $address_arr = explode(", ", $address);
-                                                                }
-                                                                array_push($address_array, htmlentities($address_arr[1]));
-                                                                array_push($address_array, htmlentities($address_arr[2]));
-                                                                array_push($address_array, htmlentities($address_arr[3]));
-                                                                array_push($address_array, $address_arr[0]);
-                                                                array_push($address_array, $address_arr[4]);
-													            $address_arr_country = $address_arr[0];
-                                                                $address_arr = implode(", ", $address_array);
+																$address_array = array();
+																$address_arr = htmlentities($row["s_address"] ?? '');
+																$address_arr_country = '';
+																if (!empty($address_arr)) {
+																	if (str_contains($address_arr, '|')) {
+    													            	$address_arr = explode(" | ", $address_arr);
+    													            	
+        													            array_push($address_array, htmlentities($address_arr[1]));
+        													            array_push($address_array, htmlentities($address_arr[2]));
+        													            array_push($address_array, htmlentities($address_arr[3]));
+        													            array_push($address_array, $address_arr[0]);
+        													            array_push($address_array, $address_arr[4]);
+        													            $address_arr_country = $address_arr[0];
+        													            $address_arr = implode(", ", $address_array);
+																	} else if (str_contains($address_arr, ',')) {
+    													                if (count(explode(", ", $address_arr)) == 5) {
+            													            array_push($address_array, htmlentities($address_arr[1]));
+            													            array_push($address_array, htmlentities($address_arr[2]));
+            													            array_push($address_array, htmlentities($address_arr[3]));
+            													            array_push($address_array, $address_arr[0]);
+            													            array_push($address_array, $address_arr[4]);
+            													            $address_arr_country = $address_arr[0];
+            													            $address_arr = implode(", ", $address_array);
+    													                }
+																	}
+																}
 																
 																echo '<tr id="tr_'.$s_ID.'">
 																	<td>'.htmlentities($s_name ?? '').'</td>
@@ -1694,7 +1728,7 @@
 											<div class="row widget-row">   																																	
 												<div class="col-md-6">                                     
 													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
-														<h3 class="d-flex justify-content-center">Send</h3>   
+														<h3 class="d-flex justify-content-center">Sent</h3>   
 														<div class="widget-thumb-wrap">                                       
 															<div id="waterfallChart1" style="width: 100%; height: 500px;"></div>                                        
 														</div>
@@ -1742,7 +1776,7 @@
                         </div>
 
                         <!-- MODAL AREA-->
-                        <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
+                        <div class="modal fade" data-backdrop="static" data-keyboard="false" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
                             <div class="modal-dialog modal-full">
                                 <div class="modal-content">
                                     <form method="post" enctype="multipart/form-data" class="modalForm modalSave">
@@ -1847,8 +1881,8 @@
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Category</label>
-                                                                    <select class="form-control" name="supplier_category" onchange="changedCategory(this)" required>
-                                                                        <option value="">Select</option>
+                                                                    <select class="form-control" name="supplier_category" onchange="changedCategory(this, 1)" required>
+                                                                        <option value="0">Select</option>
                                                                         <?php
                                                                             $selectCategory = mysqli_query( $conn,"SELECT ID, name FROM tbl_supplier_category WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
                                                                             if ( mysqli_num_rows($selectCategory) > 0 ) {
@@ -1858,13 +1892,14 @@
                                                                             }
                                                                         ?>
                                                                     </select>
+                                                        			<input type="text" class="form-control margin-top-15" name="supplier_category_other" id="supplier_category_other_1" placeholder="Specify others" style="display: none;" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Industry</label>
                                                                     <select class="form-control" name="supplier_industry" onchange="changeIndustry(this.value, 1)" required>
-                                                                        <option value="">Select</option>
+                                                                        <option value="0">Select</option>
                                                                         <?php
                                                                             $selectIndustry = mysqli_query( $conn,"SELECT ID, name FROM tbl_supplier_industry WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
                                                                             if ( mysqli_num_rows($selectIndustry) > 0 ) {
@@ -1874,6 +1909,7 @@
                                                                             }
                                                                         ?>
                                                                     </select>
+                                                        			<input type="text" class="form-control margin-top-15" name="supplier_industry_other" id="supplier_industry_other_1" placeholder="Specify others" style="display: none;" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
@@ -2273,7 +2309,10 @@
                                                         ?>
                                                         <div class="mt-checkbox-list">
                                                             <?php
-                                                                $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = 0 ORDER BY name" );
+                                                                
+                                                                $sql_supplier = '';
+																if ($switch_user_id == 1649 OR $current_client == 16) { $sql_supplier = 'client = 16 AND '; }
+																$selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE $sql_supplier organic = 0 ORDER BY name" );
                                                                 if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                                                                     while($row = mysqli_fetch_array($selectRequirement2)) {
                                                                         echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
@@ -2616,14 +2655,14 @@
                                             </div>
                                         </div>
 										<div class="modal-footer modal-footer--sticky bg-white">
-                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+											<a href="javascript:;" class="btn dark btn-outline" onclick="btnSaveClose('modalNew', 'modalSave')" title="Close">Close</a>
                                             <button type="submit" class="btn btn-success ladda-button" name="btnSave_Supplier" id="btnSave_Supplier" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="modalView" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal fade" data-backdrop="static" data-keyboard="false" id="modalView" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-full">
                                 <div class="modal-content">
                                     <form method="post" enctype="multipart/form-data" class="modalForm modalUpdate">
@@ -2633,7 +2672,7 @@
                                         </div>
                                         <div class="modal-body"></div>
 										<div class="modal-footer modal-footer--sticky bg-white">
-                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+											<a href="javascript:;" class="btn dark btn-outline" onclick="btnSaveClose('modalView', 'modalUpdate')" title="Close">Close</a>
                                             <button type="submit" class="btn btn-success ladda-button" name="btnUpdate_Supplier" id="btnUpdate_Supplier" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                                         </div>
                                     </form>
@@ -2860,14 +2899,14 @@
                                             <h4 class="modal-title">Report</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <table class="table table-bordered table-hover" id="table2excel">
+                                            <table class="table table-bordered table-hover tableData_Report" id="table2excel">
                                                 <thead>
                                                     <tr>
                                                         <th class="text-center" style="width: 135px;">Compliance</th>
-                                                        <th style="width: 200px;">Supplier Name</th>
+                                                        <th>Supplier Name</th>
                                                         <th>Users</th>
-                                                        <th>Required Documents</th>
-                                                        <th>Materials</th>
+                                                        <th class="text-center" style="width: 135px;">Required Documents</th>
+                                                        <th class="text-center" style="width: 135px;">Materials</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -2876,6 +2915,25 @@
                                         <div class="modal-footer modal-footer--sticky bg-white">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                             <button type="button" class="btn green ladda-button" name="btnExport" id="btnExport" data-style="zoom-out"><span class="ladda-label">Export</span></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="modalReportView" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <form method="post" enctype="multipart/form-data" class="modalForm modalReportView">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">Report</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table table-bordered table-hover" id="tableData_ReportView"></table>
+                                        </div>
+                                        <div class="modal-footer modal-footer--sticky bg-white">
+                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                            <button type="button" class="btn green ladda-button" name="btnExport" id="btnExport_ReportView" data-style="zoom-out"><span class="ladda-label">Export</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -3146,7 +3204,7 @@
                 if(window.location.href.indexOf('#new') != -1) {
                     $('#modalNew').modal('show');
                 }
-                $('#tableData_req').DataTable({
+                $('.tableData_Report, #tableData_req').DataTable({
 			        dom: 'lBfrtip',
 			        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
                     buttons: [
@@ -3210,24 +3268,23 @@
 			        ]
 			    });
 				$("#filterSent").on('change', function() {
+				    var iso = '<?php echo $enterp_iso2; ?>';
 				    //filter by selected value on second column
 				    if ($(this).val() == 1) {
-				    	// tableData_1.column(5).search('US').draw();
-				    	// tableData_1.column(5).search('US' ? '^' + 'US'  + '$' : '', true, false).draw();
-				    	tableData_1.column(5).search('^(?!US$)', true).draw();
-				    	tableData_1.column(1).search('').draw();
+				    	tableData_1.column(2).search('').draw();
+				    	tableData_1.column(6).search('^(?!'+iso+'$).*$', true, false).draw();
 				    } else if ($(this).val() == 2) {
-				    	tableData_1.column(5).search('US').draw();
-				    	tableData_1.column(1).search('').draw();
+				    	tableData_1.column(2).search('').draw();
+				    	tableData_1.column(6).search(iso).draw();
 				    } else if ($(this).val() == 3) {
-				    	tableData_1.column(5).search('').draw();
-				    	tableData_1.column(1).search('Services').draw();
+				    	tableData_1.column(2).search('Contract Service Provider').draw();
+				    	tableData_1.column(6).search('').draw();
 				    } else if ($(this).val() == 4) {
-				    	tableData_1.column(5).search('').draw();
-				    	tableData_1.column(1).search('Co-Manufacturer').draw();
+				    	tableData_1.column(2).search('Contract Manufacturer').draw();
+				    	tableData_1.column(6).search('').draw();
 				    } else {
-				    	tableData_1.column(5).search('').draw();
-				    	tableData_1.column(1).search('').draw();
+				    	tableData_1.column(2).search('').draw();
+				    	tableData_1.column(6).search('').draw();
 				    }
 				});
 				$("#tableData_1_filter.dataTables_filter").append($("#filterSent"));
@@ -3264,24 +3321,23 @@
 			        ]
 			    });
 				$("#filterReceived").on('change', function() {
+				    var iso = '<?php echo $enterp_iso2; ?>';
 				    //filter by selected value on second column
 				    if ($(this).val() == 1) {
-				    	// tableData_1.column(5).search('US').draw();
-				    	// tableData_1.column(5).search('US' ? '^' + 'US'  + '$' : '', true, false).draw();
-				    	tableData_2.column(5).search('^(?!US$)', true).draw();
-				    	tableData_2.column(1).search('').draw();
+				    	tableData_2.column(2).search('').draw();
+				    	tableData_2.column(6).search('^(?!'+iso+'$).*$', true, false).draw();
 				    } else if ($(this).val() == 2) {
-				    	tableData_2.column(5).search('US').draw();
-				    	tableData_2.column(1).search('').draw();
+				    	tableData_2.column(2).search('').draw();
+				    	tableData_2.column(6).search(iso).draw();
 				    } else if ($(this).val() == 3) {
-				    	tableData_2.column(5).search('').draw();
-				    	tableData_2.column(1).search('Services').draw();
+				    	tableData_2.column(2).search('Contract Service Provider').draw();
+				    	tableData_2.column(6).search('').draw();
 				    } else if ($(this).val() == 4) {
-				    	tableData_2.column(5).search('').draw();
-				    	tableData_2.column(1).search('Co-Manufacturer').draw();
+				    	tableData_2.column(2).search('Contract Manufacturer').draw();
+				    	tableData_2.column(6).search('').draw();
 				    } else {
-				    	tableData_2.column(5).search('').draw();
-				    	tableData_2.column(1).search('').draw();
+				    	tableData_2.column(2).search('').draw();
+				    	tableData_2.column(6).search('').draw();
 				    }
 				});
 				$("#tableData_2_filter.dataTables_filter").append($("#filterReceived"));
@@ -3349,6 +3405,17 @@
 				
 	            $("#btnExport, #btnExportReq").click(function(){
 	                $("#table2excel").table2excel({
+	                    exclude:".noExl",           // exclude CSS class
+	                    name:"Worksheet Name",
+	                    filename:"Download",        //do not include extension
+	                    fileext:".xlsx",             // file extension
+	                    exclude_img:true,
+	                    exclude_links:true,
+	                    exclude_inputs:true
+	                });
+	            });
+	            $("#btnExport_ReportView").click(function(){
+	                $("#tableData_ReportView").table2excel({
 	                    exclude:".noExl",           // exclude CSS class
 	                    name:"Worksheet Name",
 	                    filename:"Download",        //do not include extension
@@ -3439,7 +3506,7 @@
 			// 	}
 			// }
 
-            function changedCategory(sel) {
+            function changedCategory(sel, modal) {
                 if (sel.value == 3) {
                     $('.tabMaterials').addClass('hide');
                     $('.tabService').removeClass('hide');
@@ -3447,10 +3514,16 @@
                     $('.tabMaterials').removeClass('hide');
                     $('.tabService').addClass('hide');
                 }
+
+                $('#supplier_category_other_'+modal).hide();
+                if (sel.value == 41) { $('#supplier_category_other_'+modal).show(); }
             }
             function changeIndustry(id, modal, source) {
-				// var client = '<?php echo $current_client; ?>';
+				var client = '<?php echo $current_client; ?>';
 
+                $('#supplier_industry_other_'+modal).hide();
+                if (id == 34) { $('#supplier_industry_other_'+modal).show(); }
+                
 				if (current_client == 0) {
 					var country = $('#tabBasic_'+modal+' select[name="supplier_countries"]').val();
 					var organic = $('#tabBasic_'+modal+' select[name="organic"]').val();
@@ -3591,6 +3664,22 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalReport .modal-body table tbody").html(data);
+                    }
+                });
+            }
+            function btnReportView(id, type) {
+                $("#modalReportView .modal-body table tbody").html('');
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalView_Customer_ReportView="+id+"&t="+type,
+                    dataType: "html",
+                    success: function(data){
+                    	var title = "List of Required Documents"
+                    	if (type == 2) {
+                    		title = "List of Materials"
+                    	}
+                        $("#modalReportView .modal-header .modal-title").html(title);
+                        $("#modalReportView .modal-body table").html(data);
                     }
                 });
             }
@@ -3834,7 +3923,7 @@
                                         }, function(start, end, label) {
                                             console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
                                         });
-                                        (this).find('.daterange_empty').val('');
+                                        $(this).find('.daterange_empty').val('');
                                     },
                                     hide:function(e){
                                         let text = "Are you sure you want to delete this row?";
@@ -3920,6 +4009,25 @@
 				}
             }
 
+            function btnSaveClose(modal, form) {
+                swal({
+                    title: "Do you want to save the changes?",
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonClass: "btn-danger",
+                    cancelButtonText: "Don't Save",
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function (inputValue) {
+                	if (inputValue == true) {
+                		$('.'+form).submit();
+                		$('#'+modal).modal('hide');
+                	} else {
+                		$('#'+modal).modal('hide');
+                	}
+                });
+            }
             $(".modalSave").on('submit',(function(e) {
                 e.preventDefault();
 
@@ -3957,6 +4065,7 @@
                             var obj = jQuery.parseJSON(response);
                             var tbl_counter = $("#tableData_1 tbody > tr").length + 1;
                             var html = '<tr id="tr_'+obj.ID+'">';
+                                html += '<td>'+obj.supplier_code+'</td>';
                                 html += '<td>'+obj.supplier_name+'</td>';
                                 html += '<td>'+obj.category+'</td>';
                                 html += '<td>'+obj.material+'</td>';
@@ -4045,7 +4154,8 @@
                             msg = "Sucessfully Save!";
                             var obj = jQuery.parseJSON(response);
                             var tbl_counter = $("#tableData_1 tbody > tr").length + 1;
-                            var html = '<td>'+obj.supplier_name+'</td>';
+                            var html = '<td>'+obj.supplier_code+'</td>';
+                            html += '<td>'+obj.supplier_name+'</td>';
                             html += '<td>'+obj.category+'</td>';
                             html += '<td>'+obj.material+'</td>';
                             html += '<td></td>';

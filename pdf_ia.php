@@ -1,4 +1,14 @@
 <?php
+
+	require_once __DIR__ . '/vendor/autoload.php';
+
+    // $mpdf = new \Mpdf\Mpdf();
+    $mpdf = new \Mpdf\Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4-L',
+        'orientation' => 'L'
+    ]);
+    
     include_once ('database_iiq.php');
     
     function employerID($ID) {
@@ -72,13 +82,13 @@
                                                     if (!empty($rowColumnData)) {
                                                         $pattern = '/<img[^>]+>/i';
                                                         if (preg_match($pattern, $rowColumnData)) {
-                                                            $pattern_src = '/(<img[^>]+)src=[\'"](?<src>[^\'"]+)/i';
-                                                            if (preg_match($pattern_src, $rowColumnData, $matches)) {
-                                                                $old_src = $matches['src'];
-                                                                $new_src = '@'. preg_replace('#^data:image/[^;]+;base64,#', '', $old_src);
-                                                                $replacement = '${1}src="' . $new_src . '';
-                                                                $rowColumnData = preg_replace($pattern_src, $replacement, $rowColumnData);
-                                                            }
+                                                            // $pattern_src = '/(<img[^>]+)src=[\'"](?<src>[^\'"]+)/i';
+                                                            // if (preg_match($pattern_src, $rowColumnData, $matches)) {
+                                                            //     $old_src = $matches['src'];
+                                                            //     $new_src = '@'. preg_replace('#^data:image/[^;]+;base64,#', '', $old_src);
+                                                            //     $replacement = '${1}src="' . $new_src . '';
+                                                            //     $rowColumnData = preg_replace($pattern_src, $replacement, $rowColumnData);
+                                                            // }
                                                         }
                                                     }
                                                     $data .= '<td>';
@@ -112,9 +122,9 @@
 
                                         foreach ($radio_arr as $r) {
                                             if ($rowColumnData === $r) {
-                                                $data .= '<td><span style="font-size: 15px;">✔</span></td>';
+                                                $data .= '<td style="text-align: center; font-weight: 700;">O</td>';
                                             } else {
-                                                $data .= '<td>—</td>';
+                                                $data .= '<td style="text-align: center;">-</td>';
                                             }
                                         }
                                     } else {
@@ -136,114 +146,40 @@
 
     $ID = $_GET['id'];
     $html = '';
+    
+    $selectData = mysqli_query( $conn,"SELECT 
+        f.*,
+        i.title AS i_title,
+        i.sheet_id AS i_sheet_id,
+        s.timestamp_id AS s_timestamp_id
+        FROM tbl_ia_form AS f
 
-    //============================================================+
-    // File name   : example_006.php
-    // Begin       : 2008-03-04
-    // Last Update : 2013-05-14
-    //
-    // Description : Example 006 for TCPDF class
-    //               WriteHTML and RTL support
-    //
-    // Author: Nicola Asuni
-    //
-    // (c) Copyright:
-    //               Nicola Asuni
-    //               Tecnick.com LTD
-    //               www.tecnick.com
-    //               info@tecnick.com
-    //============================================================+
+        LEFT JOIN (
+            SELECT
+            *
+            FROM tbl_ia
+            WHERE deleted = 0
+        ) AS i
+        ON i.ID = f.ia_id
 
-    /**
-     * Creates an example PDF TEST document using TCPDF
-     * @package com.tecnick.tcpdf
-     * @abstract TCPDF - Example: WriteHTML and RTL support
-     * @author Nicola Asuni
-     * @since 2008-03-04
-     */
+        INNER JOIN (
+            SELECT
+            *
+            FROM tbl_ia_sheet
+            WHERE deleted = 0
+            AND LENGTH(timestamp_id) > 0
+        ) AS s
+        ON FIND_IN_SET(s.ID, REPLACE(REPLACE(i.sheet_id, ' ', ''), '|',','  )  ) > 0
 
-    // Include the main TCPDF library (search for installation path).
-    require_once('TCPDF/tcpdf.php');
+        WHERE f.deleted = 0 
+        AND f.ID = $ID
 
-    // create new PDF document
-    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-    // set document information
-    $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor('InterlinkIQ.com');
-    $pdf->SetTitle('InterlinkIQ.com');
-    $pdf->SetSubject('InterlinkIQ.com');
-    $pdf->SetKeywords('InterlinkIQ.com');
-
-    // set default header data
-    // $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
-
-    // set header and footer fonts
-    $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-    $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-    // remove default header/footer
-    $pdf->setPrintHeader(false);
-    // $pdf->setPrintFooter(false);
-    // $pdf->setHeaderMargin(0);
-    // $pdf->setMargins(0, 0, 0, true);
-    // $pdf->setPageOrientation('', false, 0);
-
-    // set default monospaced font
-    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-    // // set margins
-    // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-    // $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-    $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-    // set auto page breaks
-    $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-    // set image scale factor
-    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-    // set some language-dependent strings (optional)
-    if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-        require_once(dirname(__FILE__).'/lang/eng.php');
-        $pdf->setLanguageArray($l);
-    }
-
-    // ---------------------------------------------------------
-
-    // set font
-    $pdf->SetFont('dejavusans', '', 9);
-
-    // add a page
-    $pdf->AddPage();
-
-    // writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='')
-    // writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=0, $reseth=true, $align='', $autopadding=true)
-
-    // create some HTML content
-
-    // $img_base64_encoded = str_replace("image/;base64,", "", $img_base64_encoded);
-
-    // // Image from data stream ('PHP rules')
-    // $imgLogo = base64_decode($img_base64_encoded);
-
-    // $imgLogo = setImageScale(7);
-    // $imgLogo = Image('@'.$imgLogo);
-
-    $selectData = mysqli_query( $conn,"SELECT * FROM tbl_ia_form WHERE deleted = 0 AND ID = $ID" );
+        GROUP BY f.ID" );
     if ( mysqli_num_rows($selectData) > 0 ) {
         $rowForm = mysqli_fetch_array($selectData);
-        $form_organization = $rowForm['organization'];
-        $form_audit_type = $rowForm['audit_type'];
-        $form_inspected_by = $rowForm['inspected_by'];
-        $form_auditee = $rowForm['auditee'];
-        $form_verified_by = $rowForm['verified_by'];
-        $form_audit_scope = $rowForm['audit_scope'];
-        $form_file = $rowForm['file'];
         $form_data = $rowForm['data'];
-        $form_data_score = $rowForm['data_score'];
-        $form_label = $rowForm['label'];
-        $form_description = $rowForm['description'];
+        $ia_sheet_id = $rowForm['i_sheet_id'];
+        $s_timestamp_id = $rowForm['s_timestamp_id'];
 
         $form_date_start = $rowForm['date_start'];
         $form_date_start = new DateTime($form_date_start);
@@ -260,260 +196,405 @@
 		    $enterprise_logo = $rowEnterprise['BrandLogos'];
 		}
 
-        $form_ia_id = $rowForm['ia_id'];
-        $selectFormIA = mysqli_query( $conn,"SELECT * FROM tbl_ia WHERE deleted = 0 AND ID = $form_ia_id" );
-        if ( mysqli_num_rows($selectFormIA) > 0 ) {
-            $rowFormIA = mysqli_fetch_array($selectFormIA);
-            $form_ia_title = $rowFormIA['title'];
-            $form_ia_description = $rowFormIA['description'];
-            $ia_sheet_id = $rowFormIA['sheet_id'];
-
-            $html .= '<p style="text-align: center;">';
-                
-                if (!empty($form_file)) {
-                    $html .= '<img src="@'.preg_replace('#^data:image/[^;]+;base64,#', '', $form_file).'" height="50" /><br>';
-                } else {
-                    $html .= '<img src="/companyDetailsFolder/'.$enterprise_logo.'" height="50" /><br>';
+        $type_arr = array();
+        $label_arr = array();
+        $label_name_arr = array();
+        $sub_header = '';
+        $colspan = 0;
+        
+        // $colspanWidth = 0;
+        // $selectFormat = mysqli_query( $conn,"SELECT * FROM tbl_ia_format WHERE deleted = 0 AND timestamp_id = $s_timestamp_id ORDER BY order_id" );
+        // if ( mysqli_num_rows($selectFormat) > 0 ) {
+        //     while($rowFormat = mysqli_fetch_array($selectFormat)) {
+        //         if ($rowFormat['type'] > 0) {
+        //             if ($rowFormat['type'] == 2 OR $rowFormat['type'] == 3) {
+        //                 $radio_arr = explode(",", $rowFormat['label']);
+        //                 foreach ($radio_arr as $r) {
+        //                     $colspanWidth++;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // $colspanWidth = $colspanWidth * 90;
+        
+        $selectFormat = mysqli_query( $conn,"SELECT * FROM tbl_ia_format WHERE deleted = 0 AND timestamp_id = $s_timestamp_id ORDER BY order_id" );
+        if ( mysqli_num_rows($selectFormat) > 0 ) {
+            while($rowFormat = mysqli_fetch_array($selectFormat)) {
+                if ($rowFormat['type'] > 0) {
+                    if ($rowFormat['type'] == 1 OR $rowFormat['type'] == 4) {
+                        $sub_header .= '<td style="text-align: center;"><b>'.$rowFormat['label'].'</b></td>';
+                        $colspan++;
+                    } else if ($rowFormat['type'] == 2 OR $rowFormat['type'] == 3) {
+                        $radio_arr = explode(",", $rowFormat['label']);
+                        foreach ($radio_arr as $r) {
+                            $sub_header .= '<td style="text-align: center; width: 90px;"><b>'.$r.'</b></td>';
+                            $colspan++;
+                        }
+                    }
+                    
+                    array_push($type_arr, $rowFormat['type']);
+                    array_push($label_arr, $rowFormat['ID']);
+                    array_push($label_name_arr, $rowFormat['label']);
                 }
-		        
-                $html .= '<b>'.stripcslashes($form_ia_title).'</b><br>
-                '.stripcslashes($form_ia_description).'
-            </p>
-            <table cellpadding="7" cellspacing="0" border="1" nobr="false">
-                <tr>
-                    <td style="background-color: #e1e5ec;">Organization</td>
-                    <td>'.stripcslashes($form_organization).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Audit Type</td>
-                    <td>'.stripcslashes($form_audit_type).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Inspected By</td>
-                    <td>'.stripcslashes($form_inspected_by).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Auditee</td>
-                    <td>'.stripcslashes($form_auditee).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Verified By</td>
-                    <td>'.stripcslashes($form_verified_by).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Date Start</td>
-                    <td>'.stripcslashes($form_date_start).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Date End</td>
-                    <td>'.stripcslashes($form_date_end).'</td>
-                </tr>
+            }
+        }
+        $type = implode(' | ', $type_arr);
+        $label = implode(' | ', $label_arr);
+        $label_name = implode(' | ', $label_name_arr);
 
-                <tr>
-                    <td style="background-color: #e1e5ec;">Operation</td>
-                    <td>'.stripcslashes($rowForm['operation']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Shipper</td>
-                    <td>'.stripcslashes($rowForm['shipper']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Operation Type</td>
-                    <td>'.stripcslashes($rowForm['operation_type']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Audit Executive Summary</td>
-                    <td>'.stripcslashes($rowForm['audit_ex']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Addendum(s) included in the audit</td>
-                    <td>'.stripcslashes($rowForm['addendum']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Product(s) observed during audit</td>
-                    <td>'.stripcslashes($rowForm['product_observed']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Similar product(s)/process(es) not observed</td>
-                    <td>'.stripcslashes($rowForm['similar_product']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Product(s) applied for but not observed</td>
-                    <td>'.stripcslashes($rowForm['product_applied']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Auditor</td>
-                    <td>'.stripcslashes($rowForm['auditor']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Preliminary Audit Score</td>
-                    <td>'.stripcslashes($rowForm['preliminary_audit']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Final Audit Score</td>
-                    <td>'.stripcslashes($rowForm['final_audit']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Certificate Valid From</td>
-                    <td>'.stripcslashes($rowForm['cert_valid']).'</td>
-                </tr>
-
-                <tr>
-                    <td style="background-color: #e1e5ec;">Date Documentation Review Started</td>
-                    <td>'.stripcslashes($rowForm['date_review_started']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Date Documentation Review Finished</td>
-                    <td>'.stripcslashes($rowForm['date_review_finished']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Total Amount of Time on the Documentation Review</td>
-                    <td>'.stripcslashes($rowForm['total_time_review']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Date Visual Inspection Stared</td>
-                    <td>'.stripcslashes($rowForm['date_inspection_started']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Date Visual Inspection Finished</td>
-                    <td>'.stripcslashes($rowForm['date_inspection_finished']).'</td>
-                </tr>
-                <tr>
-                    <td style="background-color: #e1e5ec;">Total Amount of Time on Visual Inspection</td>
-                    <td>'.stripcslashes($rowForm['total_time_inspection']).'</td>
-                </tr>
+        $html .= '<html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <title>PDF</title>
+                <style>
+                    * {
+                        font-size: 12px;
+                        font-family: "dejavusans", sans-serif;
+                    }
+                    @page {
+                        size: landscape;
+                    }
+                    @page cover {
+                        size: portrait;
+                    }
+                    .coverPage {
+                        page: cover;
+                        page-break-after: always;
+                    }
+                    .table {display:block; }
+                    .row { display:block;}
+                    .cell {display:inline-block;}
+                </style>
+            </head>
+            <body>
+                <p style="text-align: center;">';
                 
-                <tr>
-                    <td style="background-color: #e1e5ec;">Scope</td>
-                    <td>'.stripcslashes($form_audit_scope).'</td>
-                </tr>';
+                    if (!empty($rowForm['file'])) {
+                        $html .= '<img src="'.rawurlencode($rowForm['file']).'" height="100" /><br>';
+                    } else {
+                        $html .= '<img src="'.$base_url.'/companyDetailsFolder/'.rawurlencode($enterprise_logo).'" height="100" /><br>';
+                    }
+                
+                    $html .= '<b>'.stripcslashes($rowForm['i_title']).'</b><br>
+                    '.stripcslashes($rowForm['organization']).'
+                </p>
+                <table style="page: cover; page-break-after: always;" cellpadding="7" cellspacing="0" border="1" nobr="true" width="100%" >
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Organization</td>
+                        <td>'.stripcslashes($rowForm['organization']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Audit Type</td>
+                        <td>'.stripcslashes($rowForm['audit_type']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Inspected By</td>
+                        <td>'.stripcslashes($rowForm['inspected_by']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Auditee</td>
+                        <td>'.stripcslashes($rowForm['auditee']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Verified By</td>
+                        <td>'.stripcslashes($rowForm['verified_by']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Date Start</td>
+                        <td>'.stripcslashes($form_date_start).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Date End</td>
+                        <td>'.stripcslashes($form_date_end).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Operation</td>
+                        <td>'.stripcslashes($rowForm['operation']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Shipper</td>
+                        <td>'.stripcslashes($rowForm['shipper']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Operation Type</td>
+                        <td>'.stripcslashes($rowForm['operation_type']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Audit Executive Summary</td>
+                        <td>'.stripcslashes($rowForm['audit_ex']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Addendum(s) included in the audit</td>
+                        <td>'.stripcslashes($rowForm['addendum']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Product(s) observed during audit</td>
+                        <td>'.stripcslashes($rowForm['product_observed']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Similar product(s)/process(es) not observed</td>
+                        <td>'.stripcslashes($rowForm['similar_product']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Product(s) applied for but not observed</td>
+                        <td>'.stripcslashes($rowForm['product_applied']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Auditor</td>
+                        <td>'.stripcslashes($rowForm['auditor']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Preliminary Audit Score</td>
+                        <td>'.stripcslashes($rowForm['preliminary_audit']).'%</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Final Audit Score</td>
+                        <td>'.stripcslashes($rowForm['final_audit']).'%</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Certificate Valid From</td>
+                        <td>'.stripcslashes($rowForm['cert_valid']).'</td>
+                    </tr>
 
-                if (!empty($form_label)) {
-                    $form_label_arr = explode(' | ', $form_label);
-                    $form_description_arr = explode(' | ', $form_description);
-                    foreach($form_label_arr as $key => $value) {
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Date Documentation Review Started</td>
+                        <td>'.stripcslashes($rowForm['date_review_started']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Date Documentation Review Finished</td>
+                        <td>'.stripcslashes($rowForm['date_review_finished']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Total Amount of Time on the Documentation Review</td>
+                        <td>'.stripcslashes($rowForm['total_time_review']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Date Visual Inspection Stared</td>
+                        <td>'.stripcslashes($rowForm['date_inspection_started']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Date Visual Inspection Finished</td>
+                        <td>'.stripcslashes($rowForm['date_inspection_finished']).'</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Total Amount of Time on Visual Inspection</td>
+                        <td>'.stripcslashes($rowForm['total_time_inspection']).'</td>
+                    </tr>
+
+                    <tr>
+                        <td style="background-color: #e1e5ec;">Scope</td>
+                        <td>'.stripcslashes($rowForm['audit_scope']).'</td>
+                    </tr>';
+
+                    if (!empty($rowForm['label'])) {
+                        $form_label_arr = explode(' | ', $rowForm['label']);
+                        $form_description_arr = explode(' | ', $rowForm['description']);
+                        foreach($form_label_arr as $key => $value) {
+                            $html .= '<tr>
+                                <td style="background-color: #e1e5ec;">'.$value.'</td>
+                                <td>'.stripcslashes($form_description_arr[$key]).'</td>
+                            </tr>';
+                        }
+                    }
+
+                    $score_setting_result = $rowForm['preliminary_audit'];
+                    if ($rowForm['final_audit'] > 0) { $score_setting_result = $rowForm['final_audit']; }
+
+                    if ($rowForm['score_type'] == 1) {
                         $html .= '<tr>
-                            <td style="background-color: #e1e5ec;">'.$value.'</td>
-                            <td>'.stripcslashes($form_description_arr[$key]).'</td>
+                            <td style="background-color: #e1e5ec;">Score Set: Customize</td>
+                            <td>';
+
+                                $form_score_data = array();
+                                if (!empty($rowForm['score_data'])) {
+                                    $form_score_data = json_decode($rowForm['score_data'],true);
+                                }
+
+                                $array_data = array();
+                                foreach ($form_score_data as $key => $value) {
+                                    $output = array(
+                                        'score_label' => $value['score_label'],
+                                        'score_rate' => $value['score_rate'],
+                                        'score_color' => $value['score_color'],
+                                    );
+                                    array_push($array_data, $output);
+                                }
+
+                                $ranges = [];
+
+                                // sort data result
+                                usort($array_data, function($a, $b) {
+                                    return $a['score_rate'] - $b['score_rate'];
+                                });
+
+                                // convert into json
+                                for ($i=0; $i < count($array_data); $i++) { 
+                                    $lo = $i == 0 ? 0 : $array_data[$i - 1]['score_rate'] + 1;
+                                    $hi = $array_data[$i]['score_rate'];
+                                    $color = $array_data[$i]['score_color'];
+                                    $label = $array_data[$i]['score_label'];
+
+                                    $ranges[] = [
+                                        'label' => $label,
+                                        'color' => $color,
+                                        'lo' => $lo,
+                                        'hi' => $hi
+                                    ];
+                                }
+
+                                // echo (json_encode($array_data));
+                                foreach ($ranges as $item) {
+                                    if ($score_setting_result >= $item['lo'] && $score_setting_result <= $item['hi']) {
+                                        $html .= '<b>'.$item['label'] .' ('.$score_setting_result.'%)</b>';
+                                    };
+                                }
+
+                            $html .= '</td>
+                        </tr>';
+                    } else {
+                        $html .= '<tr>
+                            <td style="background-color: #e1e5ec;">Score Set: Default (Non-Conformance / Conformance)</td>
+                            <td>
+                                <table cellpadding="7" cellspacing="0" border="1" nobr="true" width="100%">
+                                    <tr>
+                                        <th style="text-align: center;">Conformance</th>
+                                        <th style="text-align: center;">Non-Conformance</th>
+                                    </tr>
+                                    <tr>';
+
+                                        if (!empty($rowForm['score_result'])) {
+                                            $score_result_arr = explode(' | ', $rowForm['score_result']);
+                                            $html .= '<td style="text-align: center;">'.$score_result_arr[0].'</td>';
+                                            $html .= '<td style="text-align: center;">'.$score_result_arr[1].'</td>';
+                                        } else {
+                                            $html .= '<td style="text-align: center;">0</td>
+                                            <td style="text-align: center;">0</td>';
+                                        }
+                                        
+                                    $html .= '</tr>
+                                </table>
+                            </td>
                         </tr>';
                     }
-                }
-                
-            $html .= '</table>';
 
-            $pdf->writeHTML($html);
-            $pdf->lastPage();
+                $html .= '</table><br>
+                <table cellpadding="7" cellspacing="0" border="1" nobr="true" style="width: 100%;">';
 
+                    if (!empty($ia_sheet_id)) {
+                        $ia_sheet_id_arr = explode(' | ', $ia_sheet_id);
+                        foreach($ia_sheet_id_arr as $sheet_id) {
 
-            $pdf->AddPage('L');
-            $html = '<table cellpadding="7" cellspacing="0" border="1" nobr="true">';
-
-                if (!empty($ia_sheet_id)) {
-                    $ia_sheet_id_arr = explode(' | ', $ia_sheet_id);
-                    foreach($ia_sheet_id_arr as $sheet_id) {
-
-                        $selectSheet = mysqli_query( $conn,"SELECT * FROM tbl_ia_sheet WHERE deleted = 0 AND ID = $sheet_id" );
-                        if ( mysqli_num_rows($selectSheet) > 0 ) {
-                            $rowSheet = mysqli_fetch_array($selectSheet);
-                            $sheet_name = $rowSheet['name'];
-                        }
-
-                        $selectFormat = mysqli_query( $conn,"SELECT * FROM tbl_ia_format WHERE deleted = 0 AND sheet_id = $sheet_id ORDER BY order_id" );
-                        if ( mysqli_num_rows($selectFormat) > 0 ) {
-                            $format_count = 0;
-                            $format_header = '';
-                            while($rowFormat = mysqli_fetch_array($selectFormat)) {
-                                if ($rowFormat['type'] > 0) {
-                                    if ($rowFormat['type'] == 1 OR $rowFormat['type'] == 3 OR $rowFormat['type'] == 4) {
-                                        $format_header .= '<td><b>'.$rowFormat['label'].'</b></td>';
-                                        $format_count++;
-                                    } else if ($rowFormat['type'] == 2) {
-                                        $radio_arr = explode(",", $rowFormat['label']);
-                                        foreach ($radio_arr as $r) {
-                                            $format_header .= '<td><b>'.$r.'</b></td>';
-                                            $format_count++;
-                                        }
-                                    }
-                                }
+                            $selectSheet = mysqli_query( $conn,"SELECT * FROM tbl_ia_sheet WHERE deleted = 0 AND ID = $sheet_id" );
+                            if ( mysqli_num_rows($selectSheet) > 0 ) {
+                                $rowSheet = mysqli_fetch_array($selectSheet);
+                                $sheet_name = $rowSheet['name'];
                             }
-                        }
-                        $html .= '<tr style="background-color: #F9E491;">
-                            <td colspan="'.$format_count.'" style="text-align: center;"><b>'.$sheet_name.'</b></td>
-                        </tr>
-                        <tr style="background-color: #E1E5EC;">'.$format_header.' </tr>';
 
-                        $selectDataRow = mysqli_query( $conn,"SELECT * FROM tbl_ia_data WHERE parent_id = 0 AND deleted = 0 AND sheet_id = $sheet_id ORDER BY order_id" );
-                        if ( mysqli_num_rows($selectDataRow) > 0 ) {
-                            while($rowData = mysqli_fetch_array($selectDataRow)) {
-                                $data_ID = $rowData['ID'];
+                            $html .= '<tr style="background-color: #F9E491;" nobr="true">
+                                <td colspan="'.$colspan.'" style="text-align: center;"><b>'.$sheet_name.'</b></td>
+                            </tr>
+                            <tr style="background-color: #E1E5EC;">'.$sub_header.'</tr>';
 
-                                $include_arr = array();
-                                if ($rowData['include'] != NULL) { $include_arr = explode(" | ", $rowData['include']); }
+                            $selectDataRow = mysqli_query( $conn,"WITH RECURSIVE cte (rowID, rowOrder, rowParent, rowInclude, rowData) AS
+                                (
+                                    SELECT
+                                    t1.ID AS rowID,
+                                    t1.order_id AS rowOrder,
+                                    t1.parent_id AS rowParent,
+                                    t1.include AS rowInclude,
+                                    t1.data AS rowData
+                                    FROM tbl_ia_data AS t1
+                                    WHERE t1.parent_id = 0 
+                                    AND t1.deleted = 0 
+                                    AND LENGTH(t1.data) > 0 
+                                    AND t1.sheet_id = $sheet_id
 
-                                $data_arr = json_decode($rowData['data'],true);
+                                    UNION ALL
 
-                                $html .= '<tr id="tr_'.$data_ID.'">';
+                                    SELECT
+                                    t2.ID AS rowID,
+                                    t2.order_id AS rowOrder,
+                                    t2.parent_id AS rowParent,
+                                    t2.include AS rowInclude,
+                                    t2.data AS rowData
+                                    FROM tbl_ia_data AS t2
+                                    JOIN cte ON cte.rowID = t2.parent_id
+                                    WHERE t2.deleted = 0 
+                                    AND LENGTH(t2.data) > 0 
+                                    AND t2.sheet_id = $sheet_id
+                                )
+                                SELECT 
+                                rowID, rowOrder, rowParent, rowInclude, rowData
+                                FROM cte
+                                ORDER BY rowOrder ASC, rowID ASC" );
+                            if ( mysqli_num_rows($selectDataRow) > 0 ) {
+                                while($rowData = mysqli_fetch_array($selectDataRow)) {
+                                    $data_ID = $rowData['rowID'];
 
-                                    $selectFormat = mysqli_query( $conn,"SELECT * FROM tbl_ia_format WHERE deleted = 0 AND sheet_id = $sheet_id ORDER BY order_id" );
-                                    if ( mysqli_num_rows($selectFormat) > 0 ) {
-                                        while($rowFormat = mysqli_fetch_array($selectFormat)) {
-                                            $formatID = $rowFormat['ID'];
+                                    $include_arr = array();
+                                    if ($rowData['rowInclude'] != NULL) { $include_arr = explode(" | ", $rowData['rowInclude']); }
 
-                                            $type = $rowFormat['type'];
-                                            $type_arr = explode(" | ", $type);
+                                    $data_arr = json_decode($rowData['rowData'],true);
 
-                                            $label = $rowFormat['label'];
-                                            $label_arr = explode(" | ", $label);
+                                    $html .= '<tr id="tr_'.$data_ID.'">';
+                                        $type_arr = explode(" | ", $type);
+                                        $label_arr = explode(" | ", $label);
+                                        $label_name_arr = explode(" | ", $label_name);
+                                        
+                                        $i = 0;
+                                        foreach ($type_arr as $value) {
+                                            if ($value > 0) {
+                                                if ($value == 1 OR $value == 4) {
+                                                    if (in_array($label_arr[$i], $include_arr)) {
+                                                        $html .= '<td>';
+                                                            foreach($data_arr as $key => $val) {
+                                                                if ($label_arr[$i] == $val['ID']) {
+                                                                    if (!empty($val['content'])) {
+                                                                        $html .= html_entity_decode($val['content'] ?? '');
+                                                                    } else {
+                                                                        $formatID = $label_arr[$i];
+                                                                        $rowColumnData = '';
+                                                                        if (!empty($form_data)) {
+                                                                            $form_data_arr = json_decode($form_data,true);
 
-                                            if ($type > 0) {
-                                                if ($type == 1 OR $type == 3 OR $type == 4) {
-                                                    if (in_array($formatID, $include_arr)) {
-                                                        foreach($data_arr as $key => $value) {
-                                                            if ($formatID == $value['ID']) {
-                                                                if (!empty($value['content'])) {
-                                                                    $html .= '<td>'.$value['content'].'</td>';
-                                                                } else {
-                                                                    $rowColumnData = '';
-                                                                    if (!empty($form_data)) {
-                                                                        $form_data_arr = json_decode($form_data,true);
-
-                                                                        if (in_array($data_ID, array_column($form_data_arr, 'row'))) {
-                                                                            $rowColumnData = array_reduce($form_data_arr, function ($carry, $item) use ($data_ID, $formatID) {
-                                                                                if ($item['row'] === $data_ID && $item['content']['column'] === $formatID) {
-                                                                                    return $item['content']['data'];
-                                                                                }
-                                                                                return $carry;
-                                                                            });
-                                                                        }
-                                                                    }
-
-                                                                    if (!empty($rowColumnData)) {
-                                                                        $pattern = '/<img[^>]+>/i';
-                                                                        if (preg_match($pattern, $rowColumnData)) {
-                                                                            $pattern_src = '/(<img[^>]+)src=[\'"](?<src>[^\'"]+)/i';
-                                                                            if (preg_match($pattern_src, $rowColumnData, $matches)) {
-                                                                                $old_src = $matches['src'];
-                                                                                $new_src = '@'. preg_replace('#^data:image/[^;]+;base64,#', '', $old_src);
-                                                                                $replacement = '${1}src="' . $new_src . '';
-                                                                                $rowColumnData = preg_replace($pattern_src, $replacement, $rowColumnData);
+                                                                            if (in_array($data_ID, array_column($form_data_arr, 'row'))) {
+                                                                                $rowColumnData = array_reduce($form_data_arr, function ($carry, $item) use ($data_ID, $formatID) {
+                                                                                    if ($item['row'] === $data_ID && $item['content']['column'] === $formatID) {
+                                                                                        return $item['content']['data'];
+                                                                                    }
+                                                                                    return $carry;
+                                                                                });
                                                                             }
                                                                         }
-                                                                    }
-                                                                    $html .= '<td>';
+                                                                        if (!empty($rowColumnData)) {
 
-                                                                        if (!empty($rowColumnData)) { $html .= $rowColumnData; }
-                                                                        
-                                                                    $html .= '</td>';
+                                                                            // Reformat the result with images
+                                                                            $pattern = '/<img[^>]+>/i';
+                                                                            if (preg_match($pattern, $rowColumnData)) {
+                                                                                // $pattern_src = '/(<img[^>]+)src=[\'"](?<src>[^\'"]+)/i';
+                                                                                // if (preg_match($pattern_src, $rowColumnData, $matches)) {
+                                                                                //     $old_src = $matches['src'];
+                                                                                //     $new_src = '@'. preg_replace('#^data:image/[^;]+;base64,#', '', $old_src);
+                                                                                //     $replacement = '${1}src="' . $new_src . '';
+                                                                                //     $rowColumnData = preg_replace($pattern_src, $replacement, $rowColumnData);
+                                                                                // }
+                                                                            }
+
+                                                                            $html .= $rowColumnData;
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
-                                                        }
+                                                        $html .= '</td>';
                                                     } else {
                                                         $html .= '<td></td>';
                                                     }
-                                                } else if ($type == 2) {
-                                                    $radio_arr = explode(",", $label);
+                                                } else if ($value == 2) {
+                                                    $radio_arr = explode(",", $label_name_arr[$i]);
 
-                                                    if (in_array($formatID, $include_arr)) {
+                                                    if (in_array($label_arr[$i], $include_arr)) {
+                                                        $formatID = $label_arr[$i];
                                                         $rowColumnData = '';
                                                         if (!empty($form_data)) {
                                                             $form_data_arr = json_decode($form_data,true);
@@ -530,44 +611,63 @@
 
                                                         foreach ($radio_arr as $r) {
                                                             if ($rowColumnData === $r) {
-                                                                $html .= '<td>✔</td>';
+                                                                $html .= '<td style="text-align: center; font-weight: 700;">O</td>';
                                                             } else {
-                                                                $html .= '<td>—</td>';
+                                                                $html .= '<td style="text-align: center; ">-</td>';
                                                             }
                                                         }
                                                     } else {
                                                         $html .= '<td colspan="'.count($radio_arr).'"></td>';
                                                     }
+                                                } else if ($value == 3) {
+                                                    if (in_array($label_arr[$i], $include_arr)) {
+                                                        $html .= '<td style="text-align: center; ">';
+                                                            foreach($data_arr as $key => $val) {
+                                                                if ($label_arr[$i] == $val['ID']) {
+                                                                    if (!empty($val['content'])) {
+                                                                        $html .= html_entity_decode($val['content'] ?? '');
+                                                                    } else {
+                                                                        $formatID = $label_arr[$i];
+                                                                        $rowColumnData = '';
+                                                                        if (!empty($form_data)) {
+                                                                            $form_data_arr = json_decode($form_data,true);
+
+                                                                            if (in_array($data_ID, array_column($form_data_arr, 'row'))) {
+                                                                                $rowColumnData = array_reduce($form_data_arr, function ($carry, $item) use ($data_ID, $formatID) {
+                                                                                    if ($item['row'] === $data_ID && $item['content']['column'] === $formatID) {
+                                                                                        return $item['content']['data'];
+                                                                                    }
+                                                                                    return $carry;
+                                                                                });
+                                                                            }
+                                                                        }
+                                                                        if (!empty($rowColumnData)) {
+                                                                            $html .= $rowColumnData;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        $html .= '</td>';
+                                                    } else {
+                                                        $html .= '<td></td>';
+                                                    }
                                                 }
+                                                $i++;
                                             }
                                         }
-                                    }
-
-                                $html .= '</tr>';
-
-                                $html .= ai_childView($data_ID, $sheet_id, $type_arr, $label_arr, 1, $form_data);
+                                    $html .= '</tr>';
+                                }
                             }
                         }
                     }
-                }
 
-            $html .= '</table>';
-
-        }
+                $html .= '</table>
+            </body>
+        </html>';
     }
-    // output the HTML content
-    // $pdf->writeHTML($html, true, false, true, false, '');
-    $pdf->writeHTML($html);
 
-    // reset pointer to the last page
-    $pdf->lastPage();
+    
+	$mpdf->WriteHTML($html);
+	$mpdf->Output();
 
-    // ---------------------------------------------------------
-
-    //Close and output PDF document
-    // $pdf->Output($row["code"].'-'.$row["company"].'-'.date('Ymd'), 'I');
-    $pdf->Output($form_ia_title.'-'.date('Ymd').'.pdf', 'I');
-
-    //============================================================+
-    // END OF FILE
-    //============================================================+
+?>

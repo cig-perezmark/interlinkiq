@@ -104,6 +104,25 @@ if (isset($_POST['btnPrivatePatrolMoreUpdate'])) {
     mysqli_query($conn,"UPDATE tblEnterpiseDetails_PrivatePatrol set first_name='$first_name', last_name='$last_name', title='$title', cell='$cell', phone='$phone', fax='$fax', email='$email' WHERE ID='$ID'");  
     echo '<script> window.location.href = "enterprise-info";</script>';
 }
+if (isset($_POST['btnBSUpdate'])) { 
+    $ID = $_POST['ID'];
+   
+    $name = $_POST['name'];
+    
+	$files = $_FILES['file']['name'];
+	if (!empty($files)) {
+		$path = 'uploads/enterprise/';
+		$tmp = $_FILES['file']['tmp_name'];
+		$files = rand(1000,1000000) . ' - ' . $files;
+		$path = $path.$files;
+		move_uploaded_file($tmp,$path);
+	} else {
+        $files = $_POST['file_tmp'];
+	}
+    
+    mysqli_query($conn,"UPDATE tblEnterpiseDetails_BusinessStructure SET name='$name', files='$files' WHERE ID='$ID'");  
+    echo '<script> window.location.href = "enterprise-info";</script>';
+}
 if (isset($_POST['btnTrademarkUpdate'])) { 
     $ID = $_POST['ID'];
    
@@ -120,6 +139,33 @@ if (isset($_POST['btnTrademarkUpdate'])) {
 	}
     
     mysqli_query($conn,"UPDATE tblEnterpiseDetails_Trademark set trademark_name='$trademark_name', trade_name='$trade_name', files='$files', last_modified='$local_date' WHERE ID='$ID'");  
+    echo '<script> window.location.href = "enterprise-info";</script>';
+}
+if (isset($_POST['btnAgentUpdate'])) { 
+    $ID = $_POST['ID'];
+   
+    $country = $_POST['country'];
+    $name = $_POST['name'];
+    $phone = $_POST['phone'];
+    $email = $_POST['email'];
+    $address = $_POST['address'];
+    $website = $_POST['website'];
+    
+	$files = $_FILES['file']['name'];
+	if (!empty($files)) {
+		$path = 'uploads/enterprise/';
+		$tmp = $_FILES['file']['tmp_name'];
+		$files = rand(1000,1000000) . ' - ' . $files;
+		$path = $path.$files;
+		move_uploaded_file($tmp,$path);
+	}
+	
+    $date = $_POST['daterange'];
+    $date = explode(' - ', $date);
+    $date_start = $date[0];
+    $date_end = $date[1];
+    
+    mysqli_query($conn,"UPDATE tblEnterpiseDetails_Agent set country='$country', name='$name', phone='$phone', email='$email', address='$address', website='$website', files='$files', date_start='$date_start', date_end='$date_end' WHERE ID='$ID'");  
     echo '<script> window.location.href = "enterprise-info";</script>';
 }
 if (isset($_POST['btnAccountUpdate'])) { 
@@ -200,6 +246,24 @@ if (isset($_POST['btnPrivatePatrolMore'])) {
         echo '<script> window.location.href = "enterprise-info";</script>';
     }
 }
+if (isset($_POST['btnBS'])) {
+    $name = mysqli_real_escape_string($conn,$_POST['name']);
+    
+	$files = $_FILES['file']['name'];
+	if (!empty($files)) {
+		$path = 'uploads/enterprise/';
+		$tmp = $_FILES['file']['tmp_name'];
+		$files = rand(1000,1000000) . ' - ' . $files;
+		$path = $path.$files;
+		move_uploaded_file($tmp,$path);
+	}
+    
+    $sql = "INSERT INTO tblEnterpiseDetails_BusinessStructure (user_id, portal_user, name, files)
+    VALUES ('$user_id', '$portal_user', '$name', '$files')";
+    if(mysqli_query($conn, $sql)){
+        echo '<script> window.location.href = "enterprise-info";</script>';
+    }
+}
 if (isset($_POST['btnTrademarks'])) { 
     if (isset($_COOKIE['switchAccount'])) { $userID = $_COOKIE['switchAccount']; }
     else { $userID = $_COOKIE['ID']; }
@@ -216,8 +280,39 @@ if (isset($_POST['btnTrademarks'])) {
 		move_uploaded_file($tmp,$path);
 	}
     
-    $sql = "INSERT INTO tblEnterpiseDetails_Trademark (user_id, portal_user, trademark_name, trade_name, filesm last_modified)
+    $sql = "INSERT INTO tblEnterpiseDetails_Trademark (user_id, portal_user, trademark_name, trade_name, files, last_modified)
     VALUES ('$user_id', '$portal_user', '$trademark_name', '$trade_name', '$files', '$local_date')";
+    if(mysqli_query($conn, $sql)){
+        echo '<script> window.location.href = "enterprise-info";</script>';
+    }
+}
+if (isset($_POST['btnAgent'])) { 
+    if (isset($_COOKIE['switchAccount'])) { $userID = $_COOKIE['switchAccount']; }
+    else { $userID = $_COOKIE['ID']; }
+    
+    $country = mysqli_real_escape_string($conn,$_POST['country']);
+    $name = mysqli_real_escape_string($conn,$_POST['name']);
+    $phone = mysqli_real_escape_string($conn,$_POST['phone']);
+    $email = mysqli_real_escape_string($conn,$_POST['email']);
+    $address = mysqli_real_escape_string($conn,$_POST['address']);
+    $website = mysqli_real_escape_string($conn,$_POST['website']);
+    
+	$files = $_FILES['file']['name'];
+	if (!empty($files)) {
+		$path = 'uploads/enterprise/';
+		$tmp = $_FILES['file']['tmp_name'];
+		$files = rand(1000,1000000) . ' - ' . $files;
+		$path = $path.$files;
+		move_uploaded_file($tmp,$path);
+	}
+	
+    $date = $_POST['daterange'];
+    $date = explode(' - ', $date);
+    $date_start = $date[0];
+    $date_end = $date[1];
+    
+    $sql = "INSERT INTO tblEnterpiseDetails_Agent (user_id, portal_user, country, name, phone, email, address, website, files, date_start, date_end, date_added)
+    VALUES ('$user_id', '$portal_user', '$country', '$name', '$phone', '$email', '$address', '$website', '$files', '$date_start', '$date_end', '$local_date')";
     if(mysqli_query($conn, $sql)){
         echo '<script> window.location.href = "enterprise-info";</script>';
     }
@@ -753,9 +848,17 @@ if( isset($_GET['btnDelete_EI_Emergency']) ) {
     $id = $_GET['btnDelete_EI_Emergency'];
     $sql = mysqli_query( $conn,"UPDATE tblEnterpiseDetails_Emergency set deleted = 1 WHERE emerg_id = $id" );
 }
+if( isset($_GET['btnDelete_BS']) ) {
+    $ID = $_GET['btnDelete_BS'];
+    $sql = mysqli_query( $conn,"UPDATE tblEnterpiseDetails_BusinessStructure SET deleted = 1 WHERE ID = $ID" );
+}
 if( isset($_GET['btnDelete_Trademark']) ) {
     $ID = $_GET['btnDelete_Trademark'];
     $sql = mysqli_query( $conn,"UPDATE tblEnterpiseDetails_Trademark SET deleted = 1 WHERE ID = $ID" );
+}
+if( isset($_GET['btnDelete_Agent']) ) {
+    $ID = $_GET['btnDelete_Agent'];
+    $sql = mysqli_query( $conn,"UPDATE tblEnterpiseDetails_Agent SET deleted = 1 WHERE ID = $ID" );
 }
 if( isset($_GET['btnDelete_EI_Private']) ) {
     $ID = $_GET['btnDelete_EI_Private'];
@@ -1893,46 +1996,41 @@ if (isset($_GET['id']) && isset($_GET['DocumentTitle'])) {
          echo '<script> window.location.href = "enterprise-info#ED";</script>';
       }
  }
-if(isset($_POST["submitPROCESS"]))
-    {
+if(isset($_POST["submitPROCESS"])) {
        
-        $bPROCESS = '';
-        $cCategories = '';
-        $id = $_POST["ids"];
-        $BusinessPurpose = mysqli_real_escape_string($conn,$_POST["BusinessPurpose"]);
-        $enterpriseOperation = mysqli_real_escape_string($conn,$_POST["enterpriseOperation"]);
-        $facility_switch = mysqli_real_escape_string($conn,$_POST["facility_switch"]);
-        $enterpriseEmployees = mysqli_real_escape_string($conn,$_POST["enterpriseEmployees"]);
-        $NumberofEmployees = mysqli_real_escape_string($conn,$_POST["NumberofEmployees"]);
-        $enterpriseImporter = mysqli_real_escape_string($conn,$_POST["enterpriseImporter"]);
-        $Country_importer = mysqli_real_escape_string($conn,$_POST["Country_importer"]);
-        $enterpriseexporter = mysqli_real_escape_string($conn,$_POST["enterpriseexporter"]);
-        $Country_exporter = mysqli_real_escape_string($conn,$_POST["Country_exporter"]);
-        $enterpriseProducts = mysqli_real_escape_string($conn,$_POST["enterpriseProducts"]);
-        $ProductDesc = mysqli_real_escape_string($conn,$_POST["ProductDesc"]);
-        $enterpriseServices = mysqli_real_escape_string($conn,$_POST["enterpriseServices"]); 
-         $EnterpriseProcessSpecify = $_POST["EnterpriseProcessSpecify"];
+    $bPROCESS = '';
+    $cCategories = '';
+    $id = $_POST["ids"];
+    $BusinessPurpose = mysqli_real_escape_string($conn,$_POST["BusinessPurpose"]);
+    $enterpriseOperation = mysqli_real_escape_string($conn,$_POST["enterpriseOperation"]);
+    $facility_switch = mysqli_real_escape_string($conn,$_POST["facility_switch"]);
+    $enterpriseEmployees = mysqli_real_escape_string($conn,$_POST["enterpriseEmployees"]);
+    $NumberofEmployees = mysqli_real_escape_string($conn,$_POST["NumberofEmployees"]);
+    $enterpriseImporter = mysqli_real_escape_string($conn,$_POST["enterpriseImporter"]);
+    $Country_importer = mysqli_real_escape_string($conn,$_POST["Country_importer"]);
+    $enterpriseexporter = mysqli_real_escape_string($conn,$_POST["enterpriseexporter"]);
+    $Country_exporter = mysqli_real_escape_string($conn,$_POST["Country_exporter"]);
+    $enterpriseProducts = mysqli_real_escape_string($conn,$_POST["enterpriseProducts"]);
+    $ProductDesc = mysqli_real_escape_string($conn,$_POST["ProductDesc"]);
+    $enterpriseServices = mysqli_real_escape_string($conn,$_POST["enterpriseServices"]); 
+    $EnterpriseProcessSpecify = $_POST["EnterpriseProcessSpecify"];
        
-    if(!empty($_POST["Categories"]))
-    {
-    foreach($_POST["Categories"] as $Categories)
-        {
+    if(!empty($_POST["Categories"])) {
+        foreach($_POST["Categories"] as $Categories) {
             $cCategories .= $Categories . ', ';
         }
-       
     }
-     if(!empty($_POST["BusinessPROCESS"]))
-     {
-        foreach($_POST["BusinessPROCESS"] as $businessPROCESS)
-        {
+    $Categories_other = mysqli_real_escape_string($conn,$_POST["Categories_other"]);
+    
+    if(!empty($_POST["BusinessPROCESS"])) {
+        foreach($_POST["BusinessPROCESS"] as $businessPROCESS) {
             $bPROCESS .= $businessPROCESS . ', ';
         }
-            
     }
-            $bPROCESS = substr($bPROCESS, 0, -2);
-            $cCategories = substr($cCategories, 0, -2);
-            mysqli_query($conn,"update tblEnterpiseDetails set BusinessPROCESS ='$bPROCESS',Categories ='$cCategories', EnterpriseProcessSpecify = '$EnterpriseProcessSpecify', BusinessPurpose= '$BusinessPurpose',enterpriseOperation='$enterpriseOperation', facility_switch='$facility_switch', enterpriseEmployees='$enterpriseEmployees',NumberofEmployees='$NumberofEmployees',enterpriseImporter='$enterpriseImporter',Country_importer='$Country_importer',enterpriseexporter='$enterpriseexporter',Country_exporter='$Country_exporter',enterpriseProducts='$enterpriseProducts',ProductDesc='$ProductDesc',enterpriseServices='$enterpriseServices' where enterp_id='$id'");  
-            echo '<script> window.location.href = "enterprise-info#ED";</script>';
+    $bPROCESS = substr($bPROCESS, 0, -2);
+    $cCategories = substr($cCategories, 0, -2);
+    mysqli_query($conn,"update tblEnterpiseDetails set BusinessPROCESS ='$bPROCESS',Categories ='$cCategories', Categories_other ='$Categories_other', EnterpriseProcessSpecify = '$EnterpriseProcessSpecify', BusinessPurpose= '$BusinessPurpose',enterpriseOperation='$enterpriseOperation', facility_switch='$facility_switch', enterpriseEmployees='$enterpriseEmployees',NumberofEmployees='$NumberofEmployees',enterpriseImporter='$enterpriseImporter',Country_importer='$Country_importer',enterpriseexporter='$enterpriseexporter',Country_exporter='$Country_exporter',enterpriseProducts='$enterpriseProducts',ProductDesc='$ProductDesc',enterpriseServices='$enterpriseServices' where enterp_id='$id'");  
+    echo '<script> window.location.href = "enterprise-info#ED";</script>';
 }
 
  if(isset($_POST["submitBrandLogos"]))

@@ -127,6 +127,31 @@
         return $name;
     }
     
+    function get_name_by_id($id) {
+        global $conn;
+    
+        if ($conn === false) {
+            return "Database connection error";
+        }
+    
+        $sql = "SELECT CONCAT(first_name, ' ', last_name) AS name FROM tbl_user WHERE ID = ?";
+        $stmt = $conn->prepare($sql);
+    
+        if ($stmt === false) {
+            return "Error preparing statement: " . $conn->error;
+        }
+    
+        $stmt->bind_param("i", $id);
+        if (!$stmt->execute()) {
+            return "Error executing statement: " . $stmt->error;
+        }
+        $stmt->bind_result($name);
+        $stmt->fetch();
+        $stmt->close();
+    
+        return $name;
+    }
+    
     function format_date($date_str, $format) {
         if (!empty($date_str)) {
             return date($format, strtotime($date_str));
@@ -395,117 +420,214 @@
         echo json_encode($json_data);
     }
 
-    if(isset($_POST['query'])) { // get all contact
-        $output = '';
-        // $employeeid = $_COOKIE['ID'];
-        
-            // AND cr.crm_date_added >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+    // if(isset($_POST['query'])) { // get all contact
+    //     $output = '';
+    //     $employeeid = $_COOKIE['ID'];
+    //     $query = "SELECT
+    //         cr.crm_id, 
+    //         cr.userID, 
+    //         cr.account_rep, 
+    //         cr.account_name, 
+    //         cr.account_email,  
+    //         cr.Account_Source, 
+    //         cr.account_status,
+    //         cr.contact_phone,
+    //         cr.enterprise_id,
+    //         cr.flag,
+    //         chd.timestamp,
+    //         chd.performer_name,
+    //         CONCAT(u.first_name, ' ', u.last_name) AS uploader
+    //     FROM 
+    //         tbl_Customer_Relationship cr
+    //     LEFT JOIN 
+    //         (SELECT 
+    //              contact_id, MAX(history_id) AS max_history_data_id
+    //          FROM 
+    //              tbl_crm_history_data
+    //          GROUP BY 
+    //              contact_id) latest_history
+    //     ON 
+    //         cr.crm_id = latest_history.contact_id
+    //     LEFT JOIN 
+    //         tbl_crm_history_data chd
+    //     ON 
+    //         latest_history.contact_id = chd.contact_id
+    //         AND latest_history.max_history_data_id = chd.history_id
+    //     LEFT JOIN 
+    //         tbl_user u
+    //     ON 
+    //         chd.user_id = u.ID
+    //     WHERE 
+    //         LENGTH(cr.account_name) > 0 
+    //         AND cr.enterprise_id = $user_id
+    //         AND cr.userID = $employeeid
+    //     GROUP BY
+    //         cr.crm_id,
+    //         cr.userID,
+    //         cr.account_name,
+    //         cr.account_email,
+    //         cr.Account_Source,
+    //         cr.contact_phone,
+    //         cr.flag,
+    //         cr.enterprise_id,
+    //         cr.account_status
+    //     ORDER BY 
+    //         cr.crm_date_added DESC";
+    //     $result = mysqli_query($conn, $query);
+    //     if($result) {
+    //         if(mysqli_num_rows($result) > 0) {
+    //             while($row = mysqli_fetch_array($result)) {
+    //                 $userID = $row["userID"];
+    //                 $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+    //                 $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
+    //                 $activity_date = $date ? $date->format('F j, Y') : '';
+    //                 $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+    //                 $output .= '
+    //                 <tr class="contact-row">
+    //                     <td class="text-center">
+    //                         <label class="mt-checkbox '.$checkbox_display.'">
+    //                             <input type="checkbox" class="checkbox_action" value="'.$row["crm_id"].'"/>
+    //                             <span></span>
+    //                         </label>
+    //                     </td>    
+    //                     <td>'.$row["account_name"].'</td>
+    //                     <td>'.$row["account_email"].'</td>
+    //                     <td>'.$row["contact_phone"].'</td>
+    //                     <td>'.$row["Account_Source"].'</td>
+    //                     <td class="contact-status">'.$status.'</td>
+    //                     <td>'.$activity_date.'</td>
+    //                     <td>'.$row["uploader"].'</td>
+    //                     <td class="text-center">
+    //                         <div class="clearfix">
+    //                             <div class="">
+    //                                 <a target="_blank" class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+    //                                 <a target="_blank" class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+    //                                 <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+    //                             </div>
+    //                         </div>
+    //                     </td>
+    //                 </tr>';
+    //             }
+    //          echo $output;
+    //         }
+    //     }
+    // }
+    
+    if (isset($_POST['query'])){
         $employeeid = $_COOKIE['ID'];
-        $query = "SELECT
-            cr.crm_id, 
-            cr.userID, 
-            cr.account_rep, 
-            cr.account_name, 
-            cr.account_email,  
-            cr.Account_Source, 
-            cr.account_status,
-            cr.contact_phone,
-            cr.enterprise_id,
-            cr.flag,
-            chd.timestamp,
-            chd.performer_name,
-            CONCAT(u.first_name, ' ', u.last_name) AS uploader
-        FROM 
-            tbl_Customer_Relationship cr
-        LEFT JOIN 
-            (SELECT 
-                 contact_id, MAX(history_id) AS max_history_data_id
-             FROM 
-                 tbl_crm_history_data
-             GROUP BY 
-                 contact_id) latest_history
-        ON 
-            cr.crm_id = latest_history.contact_id
-        LEFT JOIN 
-            tbl_crm_history_data chd
-        ON 
-            latest_history.contact_id = chd.contact_id
-            AND latest_history.max_history_data_id = chd.history_id
-        LEFT JOIN 
-            tbl_user u
-        ON 
-            chd.user_id = u.ID
-        WHERE 
-            LENGTH(cr.account_name) > 0 
-            AND cr.enterprise_id = $user_id
-            AND cr.userID = $employeeid
-        GROUP BY
-            cr.crm_id,
-            cr.userID,
-            cr.account_name,
-            cr.account_email,
-            cr.Account_Source,
-            cr.contact_phone,
-            cr.flag,
-            cr.enterprise_id,
-            cr.account_status
-        ORDER BY 
-            cr.crm_date_added DESC";
-        $result = mysqli_query($conn, $query);
-        if($result) {
-            if(mysqli_num_rows($result) > 0) {
-                while($row = mysqli_fetch_array($result)) {
-                    $userID = $row["userID"];
-                    $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                    $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                    $activity_date = $date ? $date->format('F j, Y') : '';
-                    $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                    $output .= '
-                    <tr class="contact-row">
-                        <td class="text-center">
-                            <label class="mt-checkbox '.$checkbox_display.'">
-                                <input type="checkbox" class="checkbox_action" value="'.$row["crm_id"].'"/>
-                                <span></span>
-                            </label>
-                        </td>    
-                        <td>'.$row["account_name"].'</td>
-                        <td>'.$row["account_email"].'</td>
-                        <td>'.$row["contact_phone"].'</td>
-                        <td>'.$row["Account_Source"].'</td>
-                        <td class="contact-status">'.$status.'</td>
-                        <td>'.$activity_date.'</td>
-                        <td>'.$row["uploader"].'</td>
-                        <td class="text-center">
-                            <div class="clearfix">
-                                <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>';
-                }
-             echo $output;
+        $output = [];
+        
+        // Get the pagination parameters from the DataTables request
+        $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+        $length = isset($_POST['length']) ? intval($_POST['length']) : 10; // Default 10 records per page
+        $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
+        $order_column = isset($_POST['order'][0]['column']) ? $_POST['order'][0]['column'] : 0; // Default first column
+        $order_dir = isset($_POST['order'][0]['dir']) ? $_POST['order'][0]['dir'] : 'ASC'; // Default ascending order
+        
+        $columns = ['crm_id', 'account_name', 'account_email', 'account_phone', 'Account_Source', 'account_status', 'timestamp', 'performer_name', 'uploader'];
+        
+        // Building the base query
+        $query = "
+            SELECT
+                cr.crm_id, 
+                cr.userID, 
+                cr.account_name, 
+                cr.account_email,  
+                cr.Account_Source, 
+                cr.account_status,
+                cr.account_phone,
+                cr.enterprise_id,
+                cr.flag,
+                chd.timestamp,
+                chd.performer_name,
+                CONCAT(u.first_name, ' ', u.last_name) AS uploader
+            FROM 
+                tbl_Customer_Relationship cr
+            LEFT JOIN 
+                (SELECT 
+                     contact_id, MAX(history_id) AS max_history_data_id
+                 FROM 
+                     tbl_crm_history_data
+                 GROUP BY 
+                     contact_id) latest_history
+            ON 
+                cr.crm_id = latest_history.contact_id
+            LEFT JOIN 
+                tbl_crm_history_data chd
+            ON 
+                latest_history.contact_id = chd.contact_id
+                AND latest_history.max_history_data_id = chd.history_id
+            LEFT JOIN 
+                tbl_user u
+            ON 
+                chd.user_id = u.ID
+            WHERE 
+                LENGTH(cr.account_name) > 0 
+                AND cr.enterprise_id = ?";
+        
+        // Add sorting and pagination
+        $query .= " ORDER BY COALESCE(chd.timestamp, cr.crm_date_added) {$order_dir} LIMIT ?, ?";
+        
+        // Prepare and execute the query
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("iii", $user_id, $start, $length);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result && mysqli_num_rows($result) > 0) {
+            $data = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+                $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
+                $activity_date = $date ? $date->format('F j, Y') : '';
+                $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+                
+                $data[] = [
+                    'crm_id' => $row["crm_id"],
+                    'account_name' => $row["account_name"],
+                    'account_email' => $row["account_email"],
+                    'account_phone' => $row["account_phone"],
+                    'Account_Source' => $row["Account_Source"],
+                    'status' => $status,
+                    'activity_date' => $activity_date,
+                    'performer_name' => $row["performer_name"],
+                    'uploader' => $row["uploader"],
+                    'checkbox_display' => $checkbox_display,
+                ];
             }
+        
+            // Get total number of records (without LIMIT for pagination)
+            $count_query = "SELECT COUNT(*) AS total FROM tbl_Customer_Relationship WHERE enterprise_id = ?";
+            $count_stmt = $conn->prepare($count_query);
+            $count_stmt->bind_param("i", $user_id);
+            $count_stmt->execute();
+            $count_result = $count_stmt->get_result();
+            $total_data = $count_result->fetch_assoc()['total'];
+        
+            // Prepare the response as JSON
+            $json_data = [
+                "draw" => $draw,
+                "recordsTotal" => $total_data,
+                "recordsFiltered" => $total_data,
+                "data" => $data
+            ];
+        
+            echo json_encode($json_data);
+        } else {
+            // Return empty data if no records found
+            echo json_encode([
+                "draw" => $draw,
+                "recordsTotal" => 0,
+                "recordsFiltered" => 0,
+                "data" => []
+            ]);
         }
     }
     
     if (isset($_POST['search_contact'])) {
         $searchValue = $_POST['searchVal'];
         $request = $_REQUEST;
-
-        $columns = array(
-            0 => 'crm_id',
-            1 => 'account_name',
-            2 => 'account_email',
-            3 => 'contact_phone',
-            4 => 'Account_Source',
-            5 => 'account_status',
-            6 => 'activity_date',
-            7 => 'performer_name'
-        );
-
+    
         $sql = "SELECT 
                     cr.crm_id,
                     cr.account_rep, 
@@ -513,13 +635,16 @@
                     cr.account_email,  
                     cr.Account_Source, 
                     cr.account_status,
-                    cr.contact_phone,
+                    cr.account_phone,
                     cr.enterprise_id,
                     cr.flag,
-                    CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
-                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
-                    END as activity_date,
+                    COALESCE(
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END, 
+                        DATE_FORMAT(cr.crm_date_added, '%M %e, %Y')
+                    ) AS activity_date,
                     chd.performer_name
                 FROM tbl_Customer_Relationship AS cr
                 LEFT JOIN (
@@ -538,43 +663,51 @@
                     )
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
-            WHERE 
-                cr.account_name LIKE '%".$searchValue."%'
-                AND cr.enterprise_id = $user_id";
-
-        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+                WHERE 
+                    LENGTH(cr.account_name) > 0 
+                    AND cr.account_name LIKE ? 
+                    AND cr.enterprise_id = ?";
+    
+        $totalDataQuery = $conn->prepare("SELECT COUNT(*) AS total FROM tbl_Customer_Relationship WHERE LENGTH(account_name) > 0 AND account_email LIKE ? AND enterprise_id = ?");
+        $likeSearchValue = "%$searchValue%";
+        $totalDataQuery->bind_param("si", $likeSearchValue, $user_id);
+        $totalDataQuery->execute();
+        $totalDataResult = $totalDataQuery->get_result();
+        $totalData = $totalDataResult->fetch_assoc()['total'];
+    
         $totalFiltered = $totalData;
-
-        if (!empty($request['search']['value'])) {
-            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
-        }
-
-        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
-
-        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
-
-        $query = mysqli_query($conn, $sql);
-
-        $data = array();
-        while ($row = mysqli_fetch_assoc($query)) {
+    
+        $sql .= " ORDER BY COALESCE(chd.timestamp, cr.crm_date_added) " . $request['order'][0]['dir'] . " LIMIT ?, ?";
+        $stmt = $conn->prepare($sql);
+    
+        $start = intval($request['start']);
+        $length = intval($request['length']);
+    
+        $stmt->bind_param(
+            "siii", 
+            $likeSearchValue, 
+            $user_id, 
+            $start, 
+            $length
+        );
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
             $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
             $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
             $data[] = $row;
         }
-
+    
         $json_data = array(
             "draw" => intval($request['draw']),
             "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data
         );
-
+    
         echo json_encode($json_data);
     }
 
@@ -582,17 +715,6 @@
         $searchValue = $_POST['searchVal'];
         $request = $_REQUEST;
 
-       $columns = array(
-            0 => 'crm_id',
-            1 => 'account_name',
-            2 => 'account_email',
-            3 => 'contact_phone',
-            4 => 'Account_Source',
-            5 => 'account_status',
-            6 => 'activity_date',
-            7 => 'performer_name'
-        );
-
         $sql = "SELECT 
                     cr.crm_id,
                     cr.account_rep, 
@@ -600,13 +722,16 @@
                     cr.account_email,  
                     cr.Account_Source, 
                     cr.account_status,
-                    cr.contact_phone,
+                    cr.account_phone,
                     cr.enterprise_id,
                     cr.flag,
-                    CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
-                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
-                    END as activity_date,
+                    COALESCE(
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END, 
+                        DATE_FORMAT(cr.crm_date_added, '%M %e, %Y')
+                    ) AS activity_date,
                     chd.performer_name
                 FROM tbl_Customer_Relationship AS cr
                 LEFT JOIN (
@@ -625,60 +750,57 @@
                     )
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
-            WHERE 
-                cr.parent_account LIKE '%".$searchValue."%'
-                AND cr.enterprise_id = $user_id";
-
-        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+                WHERE 
+                    LENGTH(cr.account_name) > 0 
+                    AND cr.parent_account LIKE ? 
+                    AND cr.enterprise_id = ?";
+    
+        $totalDataQuery = $conn->prepare("SELECT COUNT(*) AS total FROM tbl_Customer_Relationship WHERE LENGTH(account_name) > 0 AND account_email LIKE ? AND enterprise_id = ?");
+        $likeSearchValue = "%$searchValue%";
+        $totalDataQuery->bind_param("si", $likeSearchValue, $user_id);
+        $totalDataQuery->execute();
+        $totalDataResult = $totalDataQuery->get_result();
+        $totalData = $totalDataResult->fetch_assoc()['total'];
+    
         $totalFiltered = $totalData;
-
-        if(!empty($request['search']['value'])) {
-            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
-        }
-
-        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
-
-        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
-
-        $query = mysqli_query($conn, $sql);
-
-        $data = array();
-        while($row = mysqli_fetch_assoc($query)) {
+    
+        $sql .= " ORDER BY COALESCE(chd.timestamp, cr.crm_date_added) " . $request['order'][0]['dir'] . " LIMIT ?, ?";
+        $stmt = $conn->prepare($sql);
+    
+        $start = intval($request['start']);
+        $length = intval($request['length']);
+    
+        $stmt->bind_param(
+            "siii", 
+            $likeSearchValue, 
+            $user_id, 
+            $start, 
+            $length
+        );
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
             $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
             $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
             $data[] = $row;
         }
-
+    
         $json_data = array(
             "draw" => intval($request['draw']),
             "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data
         );
-
+    
         echo json_encode($json_data);
     }
     
-    if (isset($_POST['search_contact_phone'])) {
+    if (isset($_POST['search_account_phone'])) {
         $searchValue = $_POST['searchPhoneVal'];
         $request = $_REQUEST;
-
-        $columns = array(
-            0 => 'crm_id',
-            1 => 'account_name',
-            2 => 'account_email',
-            3 => 'contact_phone',
-            4 => 'Account_Source',
-            5 => 'account_status',
-            6 => 'activity_date',
-            7 => 'performer_name'
-        );
 
         $sql = "SELECT 
                     cr.crm_id,
@@ -687,13 +809,16 @@
                     cr.account_email,  
                     cr.Account_Source, 
                     cr.account_status,
-                    cr.contact_phone,
+                    cr.account_phone,
                     cr.enterprise_id,
                     cr.flag,
-                    CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
-                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
-                    END as activity_date,
+                    COALESCE(
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END, 
+                        DATE_FORMAT(cr.crm_date_added, '%M %e, %Y')
+                    ) AS activity_date,
                     chd.performer_name
                 FROM tbl_Customer_Relationship AS cr
                 LEFT JOIN (
@@ -712,43 +837,51 @@
                     )
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
-            WHERE 
-                cr.account_phone LIKE '%".$searchValue."%'
-                AND cr.enterprise_id = $user_id";
-
-        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+                WHERE 
+                    LENGTH(cr.account_name) > 0 
+                    AND cr.account_phone LIKE ? 
+                    AND cr.enterprise_id = ?";
+    
+        $totalDataQuery = $conn->prepare("SELECT COUNT(*) AS total FROM tbl_Customer_Relationship WHERE LENGTH(account_name) > 0 AND account_email LIKE ? AND enterprise_id = ?");
+        $likeSearchValue = "%$searchValue%";
+        $totalDataQuery->bind_param("si", $likeSearchValue, $user_id);
+        $totalDataQuery->execute();
+        $totalDataResult = $totalDataQuery->get_result();
+        $totalData = $totalDataResult->fetch_assoc()['total'];
+    
         $totalFiltered = $totalData;
-
-        if (!empty($request['search']['value'])) {
-            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
-        }
-
-        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
-
-        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
-
-        $query = mysqli_query($conn, $sql);
-
-        $data = array();
-        while ($row = mysqli_fetch_assoc($query)) {
+    
+        $sql .= " ORDER BY COALESCE(chd.timestamp, cr.crm_date_added) " . $request['order'][0]['dir'] . " LIMIT ?, ?";
+        $stmt = $conn->prepare($sql);
+    
+        $start = intval($request['start']);
+        $length = intval($request['length']);
+    
+        $stmt->bind_param(
+            "siii", 
+            $likeSearchValue, 
+            $user_id, 
+            $start, 
+            $length
+        );
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
             $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
             $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
             $data[] = $row;
         }
-
+    
         $json_data = array(
             "draw" => intval($request['draw']),
             "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data
         );
-
+    
         echo json_encode($json_data);
     }
     
@@ -756,17 +889,6 @@
         $searchValue = $_POST['searchCountryVal'];
         $request = $_REQUEST;
 
-        $columns = array(
-            0 => 'crm_id',
-            1 => 'account_name',
-            2 => 'account_email',
-            3 => 'contact_phone',
-            4 => 'Account_Source',
-            5 => 'account_status',
-            6 => 'activity_date',
-            7 => 'performer_name'
-        );
-
         $sql = "SELECT 
                     cr.crm_id,
                     cr.account_rep, 
@@ -774,13 +896,16 @@
                     cr.account_email,  
                     cr.Account_Source, 
                     cr.account_status,
-                    cr.contact_phone,
+                    cr.account_phone,
                     cr.enterprise_id,
                     cr.flag,
-                    CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
-                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
-                    END as activity_date,
+                    COALESCE(
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END, 
+                        DATE_FORMAT(cr.crm_date_added, '%M %e, %Y')
+                    ) AS activity_date,
                     chd.performer_name
                 FROM tbl_Customer_Relationship AS cr
                 LEFT JOIN (
@@ -799,60 +924,58 @@
                     )
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
-            WHERE 
-                cr.account_country = $searchValue AND cr.enterprise_id = $user_id";
-
-        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+                WHERE 
+                    LENGTH(cr.account_name) > 0 
+                    AND cr.account_country LIKE ? 
+                    AND cr.enterprise_id = ?";
+    
+        $totalDataQuery = $conn->prepare("SELECT COUNT(*) AS total FROM tbl_Customer_Relationship WHERE LENGTH(account_name) > 0 AND account_email LIKE ? AND enterprise_id = ?");
+        $likeSearchValue = "%$searchValue%";
+        $totalDataQuery->bind_param("si", $likeSearchValue, $user_id);
+        $totalDataQuery->execute();
+        $totalDataResult = $totalDataQuery->get_result();
+        $totalData = $totalDataResult->fetch_assoc()['total'];
+    
         $totalFiltered = $totalData;
-
-        if (!empty($request['search']['value'])) {
-            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
-        }
-
-        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
-
-        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
-
-        $query = mysqli_query($conn, $sql);
-
-        $data = array();
-        while ($row = mysqli_fetch_assoc($query)) {
+    
+        $sql .= " ORDER BY COALESCE(chd.timestamp, cr.crm_date_added) " . $request['order'][0]['dir'] . " LIMIT ?, ?";
+        $stmt = $conn->prepare($sql);
+    
+        $start = intval($request['start']);
+        $length = intval($request['length']);
+    
+        $stmt->bind_param(
+            "siii", 
+            $likeSearchValue, 
+            $user_id, 
+            $start, 
+            $length
+        );
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
             $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
             $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
             $data[] = $row;
         }
-
+    
         $json_data = array(
             "draw" => intval($request['draw']),
             "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data
         );
-
+    
         echo json_encode($json_data);
     }
     
     if (isset($_POST['search_contact_email'])) {
         $searchValue = $_POST['searchEmailVal'];
         $request = $_REQUEST;
-
-        $columns = array(
-            0 => 'crm_id',
-            1 => 'account_name',
-            2 => 'account_email',
-            3 => 'contact_phone',
-            4 => 'Account_Source',
-            5 => 'account_status',
-            6 => 'activity_date',
-            7 => 'performer_name'
-        );
-
+    
         $sql = "SELECT 
                     cr.crm_id,
                     cr.account_rep, 
@@ -860,13 +983,16 @@
                     cr.account_email,  
                     cr.Account_Source, 
                     cr.account_status,
-                    cr.contact_phone,
+                    cr.account_phone,
                     cr.enterprise_id,
                     cr.flag,
-                    CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
-                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
-                    END as activity_date,
+                    COALESCE(
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END, 
+                        DATE_FORMAT(cr.crm_date_added, '%M %e, %Y')
+                    ) AS activity_date,
                     chd.performer_name
                 FROM tbl_Customer_Relationship AS cr
                 LEFT JOIN (
@@ -885,60 +1011,58 @@
                     )
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
-            WHERE 
-                cr.account_email LIKE '%".$searchValue."%' AND cr.enterprise_id = $user_id";
-
-        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+                WHERE 
+                    LENGTH(cr.account_name) > 0 
+                    AND cr.account_email LIKE ? 
+                    AND cr.enterprise_id = ?";
+    
+        $totalDataQuery = $conn->prepare("SELECT COUNT(*) AS total FROM tbl_Customer_Relationship WHERE LENGTH(account_name) > 0 AND account_email LIKE ? AND enterprise_id = ?");
+        $likeSearchValue = "%$searchValue%";
+        $totalDataQuery->bind_param("si", $likeSearchValue, $user_id);
+        $totalDataQuery->execute();
+        $totalDataResult = $totalDataQuery->get_result();
+        $totalData = $totalDataResult->fetch_assoc()['total'];
+    
         $totalFiltered = $totalData;
-
-        if (!empty($request['search']['value'])) {
-            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
-        }
-
-        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
-
-        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
-
-        $query = mysqli_query($conn, $sql);
-
-        $data = array();
-        while ($row = mysqli_fetch_assoc($query)) {
+    
+        $sql .= " ORDER BY COALESCE(chd.timestamp, cr.crm_date_added) " . $request['order'][0]['dir'] . " LIMIT ?, ?";
+        $stmt = $conn->prepare($sql);
+    
+        $start = intval($request['start']);
+        $length = intval($request['length']);
+    
+        $stmt->bind_param(
+            "siii", 
+            $likeSearchValue, 
+            $user_id, 
+            $start, 
+            $length
+        );
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
             $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
             $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
             $data[] = $row;
         }
-
+    
         $json_data = array(
             "draw" => intval($request['draw']),
             "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data
         );
-
+    
         echo json_encode($json_data);
     }
-    
-    if(isset($_POST['search_contact_source'])) {   
+
+    if (isset($_POST['search_contact_source'])) {   
         $searchValue = $_POST['searchSourceVal'];
         $request = $_REQUEST;
     
-        $columns = array(
-            0 => 'crm_id',
-            1 => 'account_name',
-            2 => 'account_email',
-            3 => 'contact_phone',
-            4 => 'Account_Source',
-            5 => 'account_status',
-            6 => 'activity_date',
-            7 => 'performer_name'
-        );
-    
         $sql = "SELECT 
                     cr.crm_id,
                     cr.account_rep, 
@@ -946,13 +1070,16 @@
                     cr.account_email,  
                     cr.Account_Source, 
                     cr.account_status,
-                    cr.contact_phone,
+                    cr.account_phone,
                     cr.enterprise_id,
                     cr.flag,
-                    CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
-                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
-                    END as activity_date,
+                    COALESCE(
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END, 
+                        DATE_FORMAT(cr.crm_date_added, '%M %e, %Y')
+                    ) AS activity_date,
                     chd.performer_name
                 FROM tbl_Customer_Relationship AS cr
                 LEFT JOIN (
@@ -971,31 +1098,39 @@
                     )
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
-            WHERE 
-                cr.Account_Source LIKE '%".$searchValue."%'
-                AND cr.enterprise_id = $user_id";
+                WHERE 
+                    LENGTH(cr.account_name) > 0 
+                    AND cr.Account_Source LIKE ? 
+                    AND cr.enterprise_id = ?";
     
-        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalDataQuery = $conn->prepare("SELECT COUNT(*) AS total FROM tbl_Customer_Relationship WHERE LENGTH(account_name) > 0 AND account_email LIKE ? AND enterprise_id = ?");
+        $likeSearchValue = "%$searchValue%";
+        $totalDataQuery->bind_param("si", $likeSearchValue, $user_id);
+        $totalDataQuery->execute();
+        $totalDataResult = $totalDataQuery->get_result();
+        $totalData = $totalDataResult->fetch_assoc()['total'];
+    
         $totalFiltered = $totalData;
     
-        if(!empty($request['search']['value'])) {
-            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
-            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
-        }
+        $sql .= " ORDER BY COALESCE(chd.timestamp, cr.crm_date_added) " . $request['order'][0]['dir'] . " LIMIT ?, ?";
+        $stmt = $conn->prepare($sql);
     
-        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
-        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
+        $start = intval($request['start']);
+        $length = intval($request['length']);
     
-        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
+        $stmt->bind_param(
+            "siii", 
+            $likeSearchValue, 
+            $user_id, 
+            $start, 
+            $length
+        );
     
-        $query = mysqli_query($conn, $sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
     
-        $data = array();
-        while($row = mysqli_fetch_assoc($query)) {
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
             $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
             $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
             $data[] = $row;
@@ -1010,7 +1145,93 @@
     
         echo json_encode($json_data);
     }
-
+    
+    if (isset($_POST['search_state'])) {
+        $searchValue = $_POST['searchVal'];
+        $request = $_REQUEST;
+    
+        $sql = "SELECT 
+                    cr.crm_id,
+                    cr.account_rep, 
+                    cr.account_name, 
+                    cr.account_email,  
+                    cr.Account_Source, 
+                    cr.account_status,
+                    cr.account_phone,
+                    cr.enterprise_id,
+                    cr.flag,
+                    COALESCE(
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END, 
+                        DATE_FORMAT(cr.crm_date_added, '%M %e, %Y')
+                    ) AS activity_date,
+                    chd.performer_name
+                FROM tbl_Customer_Relationship AS cr
+                LEFT JOIN (
+                    SELECT
+                        contact_id, 
+                        history_id,
+                        timestamp,
+                        type,
+                        performer_name
+                    FROM tbl_crm_history_data
+                    WHERE history_id IN (
+                        SELECT
+                            MAX(history_id)
+                        FROM tbl_crm_history_data
+                        GROUP BY contact_id
+                    )
+                ) AS chd
+                ON chd.contact_id = cr.crm_id
+                WHERE 
+                    LENGTH(cr.account_name) > 0 
+                    AND cr.account_state LIKE ? 
+                    AND cr.enterprise_id = ?";
+    
+        $totalDataQuery = $conn->prepare("SELECT COUNT(*) AS total FROM tbl_Customer_Relationship WHERE LENGTH(account_name) > 0 AND account_email LIKE ? AND enterprise_id = ?");
+        $likeSearchValue = "%$searchValue%";
+        $totalDataQuery->bind_param("si", $likeSearchValue, $user_id);
+        $totalDataQuery->execute();
+        $totalDataResult = $totalDataQuery->get_result();
+        $totalData = $totalDataResult->fetch_assoc()['total'];
+    
+        $totalFiltered = $totalData;
+    
+        $sql .= " ORDER BY COALESCE(chd.timestamp, cr.crm_date_added) " . $request['order'][0]['dir'] . " LIMIT ?, ?";
+        $stmt = $conn->prepare($sql);
+    
+        $start = intval($request['start']);
+        $length = intval($request['length']);
+    
+        $stmt->bind_param(
+            "siii", 
+            $likeSearchValue, 
+            $user_id, 
+            $start, 
+            $length
+        );
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+            $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+            $data[] = $row;
+        }
+    
+        $json_data = array(
+            "draw" => intval($request['draw']),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+    
+        echo json_encode($json_data);
+    }
     
     if(isset($_POST['filter_campaign'])) {
         $slug = $_POST['slug'];
@@ -1019,7 +1240,7 @@
                 0 => 'crm_id',
                 1 => 'account_name',
                 2 => 'account_email',
-                3 => 'contact_phone',
+                3 => 'account_phone',
                 4 => 'Account_Source',
                 5 => 'account_status',
                 6 => 'timestamp',
@@ -1034,7 +1255,7 @@
                         cr.account_email,  
                         cr.Account_Source, 
                         cr.account_status,
-                        cr.contact_phone,
+                        cr.account_phone,
                         cr.enterprise_id,
                         cr.flag,
                         CASE
@@ -1062,7 +1283,7 @@
                         cr.account_email,  
                         cr.Account_Source, 
                         cr.account_status,
-                        cr.contact_phone,
+                        cr.account_phone,
                         cr.enterprise_id,
                         cr.flag,
                         CASE
@@ -1098,7 +1319,8 @@
         $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
         $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
     
-        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
+        $sql .= " ORDER BY COALESCE(chd.timestamp, cr.crm_date_added) " . $request['order'][0]['dir'] . " LIMIT ".$request['start']." ,".$request['length']." ";
+        // $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
     
         $query = mysqli_query($conn, $sql);
 
@@ -1270,7 +1492,7 @@
     
         $idString = implode(',', $selectedIds);
     
-        $checkSql = "SELECT crm_id, account_email FROM tbl_Customer_Relationship WHERE crm_id IN ($idString)";
+        $checkSql = "SELECT crm_id, account_email, account_name FROM tbl_Customer_Relationship WHERE crm_id IN ($idString)";
         $checkResult = mysqli_query($conn, $checkSql);
     
         if (!$checkResult) {
@@ -1321,13 +1543,14 @@
             foreach ($records as $data) {
                 $encryptedToken = openssl_encrypt($data['crm_id'], $method, $key, $options, $iv);
                 $encodedToken = urlencode(base64_encode($encryptedToken));
+                $greetings = 'Greetings and Hello ' . $data['account_name'] . ',<br><br>';
                 $button = '
                     <div style="display: flex; ustify-content: center !important; margin: 3rem 0">
                         <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-decoration:none; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #000; background-color: #fff; border-color: #000; border-radius: 4px" href="'.$pageUrl.'/crm/unsubscribe.php?token='.$encodedToken.'">Unsubscribe me</a>
                     <div>
                 ';
                 
-                $campaign_body = $body . $button;
+                $campaign_body = $greetings . $body . $button;
                 $sql = "INSERT INTO tbl_Customer_Relationship_Campaign (
                         Campaign_from, 
                         Campaign_Name, 
@@ -1478,13 +1701,21 @@
         $stmt->close();
     }
     
-    if(isset($_POST['add_contact'])) {  
+    if (isset($_POST['add_contact'])) {  
+        // Check if account_name is provided
+        if (empty($_POST['account_name'])) {
+            $response = array('status' => 'error', 'message' => 'Account name is required');
+            echo json_encode($response);
+            exit;
+        }
+    
         $status = null;
-        if(empty($_POST['account_status'])) {
+        if (empty($_POST['account_status'])) {
             $status = 'In-Active';
         } else {
             $status = $_POST['account_status'];
         }
+        
         $userID = $_COOKIE['ID']; 
         $enterprise_id = $user_id;
         $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
@@ -1523,231 +1754,465 @@
         $account_linkedin = $_POST['account_linkedin'];
         $account_interlink = $_POST['account_interlink'];
         $Account_Source = $_POST['Account_Source'];
+        $duns = $_POST['duns'];
+        $fda_reg = $_POST['fda_reg_no'];
         $mutiple_added = 0;
         
         $to = $_POST['account_email'];
-    	$user = 'interlinkiq.com';
-    	$subject = 'Invitation to Connect via InterlinkIQ.com';
-    	$body = '<p>Hello '.$_POST['account_name'].',<br><br>
-    	
+        $user = 'interlinkiq.com';
+        $subject = 'Invitation to Connect via InterlinkIQ.com';
+        $body = '<p>Hello '.$_POST['account_name'].',<br><br>
+        
             You are cordially invited to join <a href="https://interlinkiq.com/">InterlinkIQ.com</a> to connect with customers and suppliers.<br>
             InterlinkIQ connectivity allows you to offer products, services, and share documents with customers, suppliers, contacts, and employees.
             <br><br>
-            IntelinkIQ.com</p>';
-    	
-    	$checkEmail = 'SELECT COUNT(*) FROM tbl_Customer_Relationship WHERE account_email = ? AND enterprise_id = ?';
-    	$checkEmailStmt = mysqli_prepare($conn, $checkEmail);
-    	
-    	if(!$checkEmailStmt) {
-    	    die('Error in preparing statement: ' . mysqli_error($conn));
-    	}
-    	
-    	mysqli_stmt_bind_param($checkEmailStmt, 'si', $account_email, $enterprise_id);
-    	mysqli_stmt_execute($checkEmailStmt);
-    	mysqli_stmt_bind_result($checkEmailStmt, $email);
-    	mysqli_stmt_fetch($checkEmailStmt);
-    	mysqli_stmt_close($checkEmailStmt);
-    	
-    	if(!empty($email)) {
-    	    $response = array('status' => 'error', 'message' => 'Email Already Exist');
-    	    echo json_encode($response);
-    	} else {
-    	    $sql = "INSERT INTO 
-                    tbl_Customer_Relationship (
-                        account_rep, 
-                        enterprise_id,
-                        account_name, 
-                        parent_account, 
-                        account_status, 
-                        account_email, 
-                        account_phone, 
-                        account_fax, 
-                        account_address, 
-                        account_country, 
-                        account_website, 
-                        account_facebook, 
-                        account_twitter, 
-                        account_linkedin, 
-                        account_interlink, 
-                        contact_name, 
-                        contact_title, 
-                        contact_report, 
-                        contact_email, 
-                        contact_phone, 
-                        contact_fax, 
-                        contact_address, 
-                        contact_website, 
-                        contact_facebook, 
-                        contact_twitter, 
-                        contact_linkedin, 
-                        contact_interlink, 
-                        account_product, 
-                        account_service, 
-                        account_industry, 
-                        account_certification, 
-                        account_category, 
-                        Account_Source, 
-                        userID, 
-                        mutiple_added, 
-                        crm_date_added ) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            $stmt = mysqli_prepare($conn, $sql);
-        
-            if (!$stmt) {
+            InterlinkIQ.com</p>';
+    
+        // Check if account_email is provided and exists in the database
+        if (!empty($account_email)) {
+            $checkEmail = 'SELECT COUNT(*) FROM tbl_Customer_Relationship WHERE account_email = ? AND enterprise_id = ?';
+            $checkEmailStmt = mysqli_prepare($conn, $checkEmail);
+    
+            if (!$checkEmailStmt) {
                 die('Error in preparing statement: ' . mysqli_error($conn));
             }
-
-            mysqli_stmt_bind_param($stmt, "sssssssssssssssssssssssssssssssssiis", 
-                $account_rep, 
-                $user_id,
-                $account_name, 
-                $parent_account, 
-                $account_status, 
-                $account_email, 
-                $account_phone, 
-                $account_fax, 
-                $account_address, 
-                $account_country, 
-                $account_website, 
-                $account_facebook, 
-                $account_twitter, 
-                $account_linkedin, 
-                $account_interlink, 
-                $contact_name, 
-                $contact_title, 
-                $contact_report, 
-                $contact_email, 
-                $contact_phone, 
-                $contact_fax, 
-                $contact_address, 
-                $contact_website, 
-                $contact_facebook, 
-                $contact_twitter, 
-                $contact_linkedin, 
-                $contact_interlink, 
-                $account_product, 
-                $account_service, 
-                $account_industry, 
-                $account_certification, 
-                $account_category, 
-                $Account_Source, 
-                $userID, 
-                $mutiple_added, 
-                $today);
-        
-            mysqli_stmt_execute($stmt);
-            $success = mysqli_stmt_affected_rows($stmt) > 0;
-            mysqli_stmt_close($stmt);
-        
-            if ($success) {
-                $mail = php_mailer($from, $to, $user, $subject, $body);
-                $response = array('status' => 'success', 'message' => 'A new contact added successfully');
-                echo json_encode($response);
-            } else {
-                $error_message = "Error: " . mysqli_error($conn);
-                error_log($error_message);
-                $response = array('status' => 'error', 'message' => 'An error occurred while adding a new contact');
-                echo json_encode($response);
-            }
-    	}
-         
-    }
     
-    function cleanInput($data) {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
+            mysqli_stmt_bind_param($checkEmailStmt, 'si', $account_email, $enterprise_id);
+            mysqli_stmt_execute($checkEmailStmt);
+            mysqli_stmt_bind_result($checkEmailStmt, $email);
+            mysqli_stmt_fetch($checkEmailStmt);
+            mysqli_stmt_close($checkEmailStmt);
+    
+            if (!empty($email)) {
+                $response = array('status' => 'error', 'message' => 'Email Already Exists');
+                echo json_encode($response);
+                exit;
+            }
+        }
+    
+        // Prepare and execute insertion query
+        $sql = "INSERT INTO 
+                tbl_Customer_Relationship (
+                    account_rep, 
+                    enterprise_id,
+                    account_name, 
+                    parent_account, 
+                    account_status, 
+                    account_email, 
+                    account_phone, 
+                    account_fax, 
+                    account_address, 
+                    account_country, 
+                    account_website, 
+                    account_facebook, 
+                    account_twitter, 
+                    account_linkedin, 
+                    account_interlink, 
+                    contact_name, 
+                    contact_title, 
+                    contact_report, 
+                    contact_email, 
+                    contact_phone, 
+                    contact_fax, 
+                    contact_address, 
+                    contact_website, 
+                    contact_facebook, 
+                    contact_twitter, 
+                    contact_linkedin, 
+                    contact_interlink, 
+                    account_product, 
+                    account_service, 
+                    account_industry, 
+                    account_certification, 
+                    account_category, 
+                    Account_Source, 
+                    duns, 
+                    fda_reg_no, 
+                    userID, 
+                    mutiple_added, 
+                    crm_date_added ) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+        $stmt = mysqli_prepare($conn, $sql);
+    
+        if (!$stmt) {
+            die('Error in preparing statement: ' . mysqli_error($conn));
+        }
+    
+        mysqli_stmt_bind_param($stmt, "sssssssssssssssssssssssssssssssssssiis",
+            $account_rep, 
+            $user_id,
+            $account_name, 
+            $parent_account, 
+            $account_status, 
+            $account_email, 
+            $account_phone, 
+            $account_fax, 
+            $account_address, 
+            $account_country, 
+            $account_website, 
+            $account_facebook, 
+            $account_twitter, 
+            $account_linkedin, 
+            $account_interlink, 
+            $contact_name, 
+            $contact_title, 
+            $contact_report, 
+            $contact_email, 
+            $contact_phone, 
+            $contact_fax, 
+            $contact_address, 
+            $contact_website, 
+            $contact_facebook, 
+            $contact_twitter, 
+            $contact_linkedin, 
+            $contact_interlink, 
+            $account_product, 
+            $account_service, 
+            $account_industry, 
+            $account_certification, 
+            $account_category, 
+            $Account_Source,
+            $duns,
+            $fda_reg,
+            $userID, 
+            $mutiple_added, 
+            $today);
+    
+        mysqli_stmt_execute($stmt);
+        if (mysqli_stmt_errno($stmt)) {
+            error_log("MySQL Error: " . mysqli_stmt_error($stmt));
+            $response = array('status' => 'error', 'message' => 'An error occurred while adding a new contact: ' . mysqli_stmt_error($stmt));
+            echo json_encode($response);
+            exit;
+        }
+        $success = mysqli_stmt_affected_rows($stmt) > 0;
+        mysqli_stmt_close($stmt);
+    
+        if ($success) {
+            // $mail = php_mailer($from, $to, $user, $subject, $body);
+            $response = array('status' => 'success', 'message' => 'A new contact added successfully');
+            echo json_encode($response);
+        } else {
+            $error_message = "Error: " . mysqli_error($conn);
+            error_log($error_message);
+            $response = array('status' => 'error', 'message' => 'An error occurred while adding a new contact');
+            echo json_encode($response);
+        }
     }
     
     if (isset($_POST['upload_multiple_contacts'])) {
-        $file = $_FILES["csvfile"]["tmp_name"];
+        $file = $_FILES['csvfile']['tmp_name'];
+        $batchSize = 1000;
         $skippedRows = [];
-        $successfulRows = [];
     
-        if (($handle = fopen($file, "r")) !== false) {
-            $stmt = $conn->prepare("INSERT INTO tbl_Customer_Relationship (account_rep, account_name, account_email, account_phone, Account_Source, userID, enterprise_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    
-            if (!$stmt) {
-                die("Error in preparing the statement: " . $conn->error);
+        if (($handle = fopen($file, 'r')) !== false) {
+            $conn->begin_transaction();
+        
+            $header = fgetcsv($handle); // Read the header row
+        
+            $insertSQLBase = "INSERT INTO tbl_temp_crm (account_rep, account_name, account_phone, account_email, account_fax, account_product, account_address, account_state, account_country, account_zip, Account_Source, account_website, userID, enterprise_id) VALUES ";
+        
+            $binded_employee_id = $_COOKIE['ID'];
+            $binded_employeer_id = $conn->real_escape_string($user_id);
+        
+            $existingContacts = [];
+        
+            // Fetch existing emails and phone numbers from the database
+            $result = $conn->query("SELECT account_email, account_phone FROM tbl_temp_crm WHERE enterprise_id = '$binded_employeer_id'");
+            while ($row = $result->fetch_assoc()) {
+                $existingContacts[$row['account_email'] ?: ''] = true;
+                $existingContacts[$row['account_phone'] ?: ''] = true;
             }
-    
-            $stmt->bind_param("sssssii", $account_rep, $account_name, $account_email, $account_phone, $account_source, $binded_employee_id, $binded_employeer_id);
-            $successfullyInsertedCount = 0;
-            $skippedExistingEmailCount = 0;
-        fgetcsv($handle);
-            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                $account_rep            = 'InterlinkIQ';
-                $account_name           = cleanInput($data[0]);
-                $account_email          = cleanInput($data[1]);
-                $account_phone          = cleanInput($data[2]);
-                $account_source         = cleanInput($data[3]);
-                $binded_employee_id     = $_COOKIE['ID']; // integer 
-                $binded_employeer_id    = $user_id; // integer
-    
-                $checkStmt = $conn->prepare("SELECT COUNT(*) FROM tbl_Customer_Relationship WHERE account_email = ? AND enterprise_id = ?");
-                if (!$checkStmt) {
-                    die("Error in preparing the statement: " . $conn->error);
+        
+            $batchData = [];
+            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                $account_rep = 'InterlinkIQ';
+                $account_name = cleanInput($data[0]);
+                $account_phone = cleanInput($data[1]);
+                $account_email = cleanInput($data[2]);
+                $account_fax = cleanInput($data[3]);
+                $account_product = cleanInput($data[4]);
+                $account_address = cleanInput($data[5]);
+                $account_state = cleanInput($data[6]);
+                $account_zip = cleanInput($data[7]);
+                $account_country = cleanInput($data[8]);
+                $account_source = cleanInput($data[9]);
+                $account_website = cleanInput($data[10]);
+        
+                $checkKey = $account_email ?: $account_phone;
+        
+                // Skip if there's a duplicate email or phone
+                if (isset($existingContacts[$checkKey])) {
+                    $reason = 'Duplicate email or phone';
+                    $skippedRows[] = ['data' => $data, 'reason' => $reason];
+                    continue;
                 }
-    
-                $checkStmt->bind_param("si", $account_email, $binded_employeer_id);
-                $checkStmt->execute();
-                $checkStmt->bind_result($emailCount);
-                $checkStmt->fetch();
-                $checkStmt->close();
-    
-                if ($emailCount == 0 && !empty(trim($account_email))) {
-                    if ($stmt->execute()) {
-                        $successfulRows[] = $data;
-                        $successfullyInsertedCount++;
-                    } else {
-                        die("Error in executing the statement: " . $stmt->error);
-                    }
-                } else {
-                    $skippedRows[] = $data;
-                    $skippedExistingEmailCount++;
+        
+                // Add to the existingContacts to avoid further duplicates
+                $existingContacts[$checkKey] = true;
+        
+                // Add the row to the batch data for insertion
+                $batchData[] = [
+                    $account_rep,
+                    $account_name,
+                    $account_phone,
+                    $account_email,
+                    $account_fax,
+                    $account_product,
+                    $account_address,
+                    $account_state,
+                    $account_country,
+                    $account_zip,
+                    $account_source,
+                    $account_website,
+                    $binded_employee_id,
+                    $binded_employeer_id
+                ];
+        
+                // Insert in batches if the batch size is reached
+                if (count($batchData) >= $batchSize) {
+                    insertBatch($conn, $batchData, $insertSQLBase);
+                    $batchData = [];
                 }
             }
-    
-            $stmt->close();
+        
+            // Process remaining batch data
+            if (count($batchData) > 0) {
+                insertBatch($conn, $batchData, $insertSQLBase);
+            }
+        
+            // Additional process: Move records to another table and delete from the current table
+            try {
+                // Insert records from tbl_temp_crm to tbl_Customer_Relationship
+                $insertQuery = "
+                    INSERT INTO tbl_Customer_Relationship (account_name, account_phone, account_email, account_fax, account_product, account_address, account_state, account_zip, account_country, Account_Source, account_website, userID)
+                        SELECT 
+                            account_name, 
+                            account_phone, 
+                            account_email, 
+                            account_fax, 
+                            account_product, 
+                            account_address, 
+                            account_state, 
+                            account_zip, 
+                            account_country, 
+                            Account_Source, 
+                            account_website, 
+                            userID
+                        FROM tbl_temp_crm AS temp
+                        WHERE NOT EXISTS (
+                            SELECT 1
+                            FROM tbl_Customer_Relationship AS cust
+                            WHERE cust.account_email = temp.account_email 
+                              AND cust.enterprise_id = temp.enterprise_id
+                        );
+                ";
+                $conn->query($insertQuery);
+        
+                // Delete all records from tbl_temp_crm
+                $deleteQuery = "DELETE FROM tbl_temp_crm;";
+                $conn->query($deleteQuery);
+            } catch (Exception $e) {
+                $conn->rollback();
+                fclose($handle);
+                echo json_encode(['error' => 'Error during record transfer: ' . $e->getMessage()]);
+                exit;
+            }
+        
+            $conn->commit();
             fclose($handle);
-    
-            $success_data = '';
-            foreach ($successfulRows as $success) {
-                $success_data .= '
-                    <tr>
-                        <td></td>
-                        <td>' . $success[0] . '</td>
-                        <td>' . $success[1] . '</td>
-                        <td>' . $success[2] . '</td>
-                        <td>' . $success[3] . '</td>
-                    </tr>';
-            }
-    
-            // Create HTML for skipped rows
-            $skipped_data = '';
-            foreach ($skippedRows as $skipped) {
-                $skipped_data .= '
-                    <tr>
-                        <td></td>
-                        <td>' . $skipped[0] . '</td>
-                        <td>' . $skipped[1] . '</td>
-                        <td>' . $skipped[2] . '</td>
-                        <td>' . $skipped[3] . '</td>
-                    </tr>';
-            }
-    
-            if ($skippedExistingEmailCount > 0) {
-                echo $response = 'error|Some entries failed to save to the record because the entries exist in the record or have issues with special characters|' . $success_data . '|' . $skipped_data;
-            } else {
-                echo $response = 'success|All contact entries added successfully|' . $success_data . '|' . $skipped_data;
-            }
+        
+            echo json_encode([
+                'status' => count($skippedRows) > 0 ? 'error' : 'success',
+                'message' => count($skippedRows) > 0 ? 'Some entries failed to save.' : 'All entries added successfully.',
+                'skippedRows' => $skippedRows
+            ]);
         } else {
             echo json_encode(['error' => 'Error opening the CSV file']);
         }
     }
+
     
+    /**
+     * Inserts batch data into the database.
+     */
+    function insertBatch($conn, $batchData, $insertSQLBase) {
+        $placeholders = [];
+        $values = [];
+    
+        foreach ($batchData as $row) {
+            $placeholders[] = "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $values = array_merge($values, $row);
+        }
+    
+        $insertSQL = $insertSQLBase . implode(", ", $placeholders);
+        $stmt = $conn->prepare($insertSQL);
+    
+        if (!$stmt) {
+            $conn->rollback(); // Rollback if statement preparation fails
+            die("Error preparing batch insert: " . $conn->error);
+        }
+    
+        $stmt->bind_param(str_repeat("ssssssssssssis", count($batchData)), ...$values);
+    
+        if (!$stmt->execute()) {
+            $conn->rollback(); // Rollback if execution fails
+            die("Error executing batch insert: " . $stmt->error);
+        }
+    
+        $stmt->close();
+    }
+    
+    function cleanInput($data) {
+        return htmlspecialchars(trim($data));
+    }
+
+    
+    // if (isset($_POST['upload_multiple_contacts'])) {
+    //     $file = $_FILES["csvfile"]["tmp_name"];
+    //     $skippedRows = [];
+    //     $successfulRows = [];
+        
+    //     // Open the file for reading
+    //     if (($handle = fopen($file, "r")) !== false) {
+    //         // Prepare the insert statement once, outside the loop
+    //         $stmt = $conn->prepare("INSERT INTO tbl_crm_clone(account_rep, account_name, account_phone, account_email, account_fax, account_product, account_address, account_state, account_country, Account_Source, account_website, userID, enterprise_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            
+    //         if (!$stmt) {
+    //             die("Error in preparing the statement: " . $conn->error);
+    //         }
+    
+    //         $checkStmt = $conn->prepare("SELECT COUNT(*) FROM tbl_Customer_Relationship WHERE account_email = ? AND enterprise_id = ?");
+    //         if (!$checkStmt) {
+    //             die("Error in preparing the statement: " . $conn->error);
+    //         }
+    
+    //         // Begin transaction for better performance
+    //         $conn->begin_transaction();
+    
+    //         // Skip the header row
+    //         fgetcsv($handle);
+    
+    //         // Initialize counters for successful and skipped rows
+    //         $successfullyInsertedCount = 0;
+    //         $skippedExistingEmailCount = 0;
+    
+    //         while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+    //             // Validate the row length (should have 11 columns)
+    //             if (count($data) < 11) {
+    //                 $skippedRows[] = ['data' => $data, 'reason' => 'Insufficient columns'];
+    //                 continue;
+    //             }
+    
+    //             // Process the data from each row
+    //             $account_rep = 'InterlinkIQ';
+    //             $account_name = cleanInput($data[0]);
+    //             $account_phone = cleanInput($data[1]);
+    //             $account_email = cleanInput($data[2]);
+    //             $account_fax = cleanInput($data[3]);
+    //             $account_product = cleanInput($data[4]);
+    //             $account_address = cleanInput($data[5]);
+    //             $account_state = cleanInput($data[6]);
+    //             $account_zip = cleanInput($data[7]);
+    //             $account_country = cleanInput($data[8]);
+    //             $account_source = cleanInput($data[9]);
+    //             $account_website = cleanInput($data[10]);
+    //             $binded_employee_id = $_COOKIE['ID'];
+    //             $binded_employeer_id = $user_id;
+                
+    //             // Default reason for skipped rows
+    //             $reason = '';
+    
+    //             // Only check the database if account_email is not empty
+    //             if (!empty(trim($account_email))) {
+    //                 // Check if email exists in the database
+    //                 $checkStmt->bind_param("si", $account_email, $binded_employeer_id);
+    //                 $checkStmt->execute();
+    //                 $checkStmt->bind_result($emailCount);
+    //                 $checkStmt->fetch();
+    //                 $checkStmt->close();
+    
+    //                 if ($emailCount == 0) {
+    //                     // Execute the insert statement
+    //                     $stmt->bind_param("sssssii", $account_rep, $account_name, $account_email, $account_phone, $account_source, $binded_employee_id, $binded_employeer_id);
+    //                     if ($stmt->execute()) {
+    //                         $successfulRows[] = $data;
+    //                         $successfullyInsertedCount++;
+    //                     } else {
+    //                         $skippedRows[] = ['data' => $data, 'reason' => 'Error in database insert'];
+    //                     }
+    //                 } else {
+    //                     $reason = 'Duplicate email';
+    //                     $skippedRows[] = ['data' => $data, 'reason' => $reason];
+    //                     $skippedExistingEmailCount++;
+    //                 }
+    //             } else {
+    //                 $reason = 'Empty email';
+    //                 $skippedRows[] = ['data' => $data, 'reason' => $reason];
+    //             }
+    //         }
+    
+    //         // Commit the transaction
+    //         $conn->commit();
+    
+    //         // Close the prepared statements
+    //         $stmt->close();
+    //         fclose($handle);
+    
+    //         // Prepare the success and skipped rows for output
+    //         $success_data = '';
+    //         foreach ($successfulRows as $success) {
+    //             $success_data .= '
+    //                 <tr>
+    //                     <td></td>
+    //                     <td>' . $success[0] . '</td>
+    //                     <td>' . $success[1] . '</td>
+    //                     <td>' . $success[2] . '</td>
+    //                     <td>' . $success[3] . '</td>
+    //                     <td>' . $success[4] . '</td>
+    //                     <td>' . $success[5] . '</td>
+    //                     <td>' . $success[6] . '</td>
+    //                     <td>' . $success[7] . '</td>
+    //                     <td>' . $success[8] . '</td>
+    //                     <td>' . $success[9] . '</td>
+    //                     <td>' . $success[10] . '</td>
+    //                 </tr>';
+    //         }
+    
+    //         // Create HTML for skipped rows
+    //         $skipped_data = '';
+    //         foreach ($skippedRows as $skipped) {
+    //             $reason = isset($skipped['reason']) ? $skipped['reason'] : 'No reason provided';
+    //             $skipped_data .= '
+    //                 <tr>
+    //                     <td></td>
+    //                     <td>' . $skipped[0] . '</td>
+    //                     <td>' . $skipped[1] . '</td>
+    //                     <td>' . $skipped[2] . '</td>
+    //                     <td>' . $skipped[3] . '</td>
+    //                     <td>' . $skipped[4] . '</td>
+    //                     <td>' . $skipped[5] . '</td>
+    //                     <td>' . $skipped[6] . '</td>
+    //                     <td>' . $skipped[7] . '</td>
+    //                     <td>' . $skipped[8] . '</td>
+    //                     <td>' . $skipped[9] . '</td>
+    //                     <td>' . $skipped[10] . '</td>
+    //                     <td>' . $skipped['reason'] . '</td>
+    //                 </tr>';
+    //         }
+    
+    //         // Return response based on the number of skipped rows
+    //         if ($skippedExistingEmailCount > 0) {
+    //             echo $response = 'error|Some entries failed to save to the record because the entries exist in the record or have issues with special characters|' . $success_data . '|' . $skipped_data;
+    //         } else {
+    //             echo $response = 'success|All contact entries added successfully|' . $success_data . '|' . $skipped_data;
+    //         }
+    //     } else {
+    //         echo json_encode(['error' => 'Error opening the CSV file']);
+    //     }
+    // }
+
     if (isset($_POST['get_activity_history'])) {
         $stmt = $conn->prepare("SELECT crm.performer_name, crm.action_taken, crm.type, crm.action_id, DATE_FORMAT(crm.timestamp, '%M %e') AS date, DATE_FORMAT(crm.timestamp, '%h:%i %p') AS time, user_info.avatar FROM tbl_crm_history_data AS crm JOIN tbl_user_info AS user_info ON crm.user_id = user_info.user_id WHERE crm.contact_id = ? ORDER BY crm.history_id DESC");
         if (!$stmt) {
@@ -1796,35 +2261,50 @@
         $stmt->close();
     }
     
-    if(isset($_POST['get_content_message'])) {
+    if (isset($_POST['get_content_message'])) {
         $type = $_POST['type'];
         $action_id = $_POST['action_id'];
         $table = null;
         $columns = null;
-        $retrieve_cols = null;
         $table_id = null;
     
-        if($type == 1) {
+        if ($type == 1) {
             $table = 'tbl_Customer_Relationship_Campaign';
             $columns = 'Campaign_Subject, Campaign_body, Frequency';
             $table_id = 'Campaign_Id';
-        } elseif($type == 2) {
+        } elseif ($type == 2) {
             $table = 'tbl_Customer_Relationship_Notes';
             $columns = 'Notes';
             $table_id = 'notes_id';
+        } elseif ($type == 3) {
+            $table = 'tbl_Customer_Relationship_Task';
+            $columns = 'assign_task, Assigned_to, user_cookies, Task_added, Deadline, Task_Status';
+            $table_id = 'crmt_id';
         }
     
         $sql = "SELECT $columns FROM $table WHERE $table_id = ?";
         $stmt = $conn->prepare($sql);
+    
+        if (!$stmt) {
+            echo "Error preparing statement: " . $conn->error;
+            exit;
+        }
+    
         $stmt->bind_param('i', $action_id);
         $stmt->execute();
+        $stmt->store_result(); // Store the result set
+    
+        // Bind the result columns based on type
         if ($type == 1) {
             $stmt->bind_result($subject, $body, $frequency);
         } elseif ($type == 2) {
             $stmt->bind_result($notes);
+        } elseif ($type == 3) {
+            $stmt->bind_result($task, $assigned_to, $owner, $assigned_at, $due_date, $status);
         }
+    
         if ($stmt->fetch()) {
-            if($type == 1) {
+            if ($type == 1) {
                 $frequencyStatus = [
                     1 => 'Once Per Day',
                     2 => 'Once Per Week',
@@ -1836,15 +2316,33 @@
                     8 => 'Once Per Two Months (Every Other Month)'
                 ];
                 $status = isset($frequencyStatus[$frequency]) ? $frequencyStatus[$frequency] : '';
-                echo '<h3 style="display:flex; justify-content:center; margin: 1rem 0; font-weight: bold">'.$subject . '</h3><br>';
-                echo '<div style="border: 2px dashed #4444; padding: 3rem;">'. $body . '</div><br>';
-                echo '<strong style="margin: 1rem 0;">Frequency:</strong> '. $status .'<br>';
-            } elseif($type == 2) {
-                echo $notes . '<br>';
+                echo '<h3 style="display:flex; justify-content:center; margin: 1rem 0; font-weight: bold">' . $subject . '</h3><br>';
+                echo '<div style="border: 2px dashed #4444; padding: 3rem;">' . $body . '</div><br>';
+                echo '<strong style="margin: 1rem 0;">Frequency:</strong> ' . $status . '<br>';
+            } elseif ($type == 2) {
+                echo '<div style="border: 2px dashed #4444; padding: 3rem 1rem;">
+                        '. $notes . '
+                      </div>';
+            } elseif ($type == 3) {
+                $assignee = (!empty(get_name($assigned_to))) ? get_name($assigned_to) : $assigned_to;
+                $originator = (!empty(get_name_by_id($owner))) ? get_name_by_id($owner) : $owner;
+                $task_status = $status == 1 ? 'Pending' : 'In-progress';
+                echo '<div style="border: 2px dashed #4444; padding: 3rem 1rem;">
+                        <p><strong>Task: </strong>' . $task . '</p>
+                        <p><strong>Assigned To: </strong>' . $assignee . '</p>
+                        <p><strong>Originator: </strong>' . $originator . '</p>
+                        <p><strong>Assigned At: </strong>' . date("F j, Y", strtotime($assigned_at)) . '</p>
+                        <p><strong>Due: </strong>' . date("F j, Y", strtotime($due_date)) . '</p>
+                        <p><strong>Status: </strong>' . $task_status . '</p>
+                      </div>';
             }
         } else {
             echo "No results found.";
         }
+    
+        // Free the result set
+        $stmt->free_result();
+        $stmt->close();
     }
     
     if(isset($_POST['get_counts'])) {
@@ -1962,6 +2460,99 @@
     
         // Return JSON response
         echo $json_counts;
+    }
+    
+    if(isset($_POST['get_history'])) {
+        $contact_id = mysqli_real_escape_string($conn, $_POST['contact_id']);
+        $action = mysqli_real_escape_string($conn, $_POST['action']);
+        $type = '';
+    
+        if ($action == 'campaigns-section') {
+            $type = 1;
+        } elseif ($action == 'notes-section') {
+            $type = 2;
+        } elseif ($action == 'task-section') {
+            $type = 3;
+        }
+    
+        // Check and decode `existing_ids`
+        $existing_ids = [];
+        if (isset($_POST['existing_ids'])) {
+            if (is_string($_POST['existing_ids'])) {
+                $existing_ids = json_decode($_POST['existing_ids'], true); // Decode JSON string
+            } elseif (is_array($_POST['existing_ids'])) {
+                $existing_ids = $_POST['existing_ids']; // Already an array
+            }
+        }
+    
+        $existing_ids_placeholder = '';
+        if (!empty($existing_ids)) {
+            // Prepare a placeholder for the SQL IN clause
+            $placeholders = implode(',', array_fill(0, count($existing_ids), '?'));
+            $existing_ids_placeholder = "AND action_id NOT IN ($placeholders)";
+        }
+    
+        // Prepare the query
+        $query = "SELECT contact_id, performer_name, action_taken, action_id, 
+                         DATE_FORMAT(timestamp, '%M %e') AS date, 
+                         DATE_FORMAT(timestamp, '%h:%i %p') AS time,
+                         type
+                  FROM tbl_crm_history_data 
+                  WHERE contact_id = ? AND type = ? $existing_ids_placeholder ORDER BY timestamp DESC";
+    
+        // Initialize the statement
+        $stmt = $conn->prepare($query);
+    
+        // Bind parameters
+        $types = str_repeat('i', count($existing_ids)) . 'ii';
+        $params = array_merge($existing_ids, [$contact_id, $type]);
+        $stmt->bind_param($types, ...$params);
+    
+        // Execute the query
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($contactid, $name, $action, $action_id, $date, $time, $action_type);
+    
+        // Collect data
+        $data = [];
+        while ($stmt->fetch()) {
+            $data[] = [
+                'id'        => $contactid,
+                'name'      => $name,
+                'action'    => $action,
+                'action_id' => $action_id,
+                'date'      => $date,
+                'type'      => $action_type,
+                'time'      => $time
+            ];
+        }
+    
+        echo json_encode(['newRecords' => $data]);
+    }
+
+    if(isset($_POST['get_task'])) {
+        $taskid = $_POST['taskid'];
+        $stmt = $conn->prepare("SELECT crmt_id, assign_task, Assigned_to, Task_Description, Task_added, Deadline, Task_Status, Date_Updated FROM tbl_Customer_Relationship_Task WHERE crmt_id = ?");
+        $stmt->bind_param('i', $taskid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($crmt_id, $assign_task, $Assigned_to, $Task_Description, $Task_added, $Deadline, $Task_Status, $Date_Updated);
+        $stmt->fetch();
+        $assigned = (!empty(get_name($Assigned_to))) ? get_name($Assigned_to) : $Assigned_to;
+
+        $data = [
+                    'id'            => $crmt_id,
+                    'name'          => $assign_task,
+                    'assignedto'    => $assigned,
+                    'email'         => $Assigned_to,
+                    'description'   => $Task_Description,
+                    'startdate'     => $Task_added,
+                    'duedate'       => $Deadline,
+                    'status'        => $Task_Status,
+                    'last_updated'  => $Date_Updated
+                ];
+
+        echo json_encode($data);
     }
     
     if(isset($_POST['get_campaigns_per_subject'])) {

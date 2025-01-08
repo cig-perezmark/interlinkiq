@@ -51,7 +51,7 @@
                                             <a href="#tab_actions_assigned" data-toggle="tab">List</a>
                                         </li>
                                         <li>
-                                            <a href="#tab_actions_completed" data-toggle="tab">Completed</a>
+                                            <a href="#tab_actions_completed" data-toggle="tab" onclick="btnTabComplete()">Completed</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -62,18 +62,18 @@
                                                 <table class="table table-bordered table-hover" id="tableDataServicesAssigned">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID#</th>
-                                                            <th>Category</th>
+                                                            <th style="width: 24px;">ID#</th>
+                                                            <th style="width: 60px;">Category</th>
                                                             <th>Service</th>
                                                             <th>Contact Info</th>
-                                                            <th style="width: 135px;" class="text-center">Date Requested</th>
-                                                            <th style="width: 135px;" class="text-center">Desire Due Date</th>
-                                                            <th style="width: 135px;" class="text-center">Status</th>
-                                                            <th style="width: 135px;" class="text-center">Assigned</th>
-                                                            <th style="width: 135px;"></th>
+                                                            <th class="text-center" style="width: 80px;">Date Requested</th>
+                                                            <th class="text-center" style="width: 80px;">Desire Due Date</th>
+                                                            <th class="text-center" style="width: 50px;">Status</th>
+                                                            <th class="text-center" style="width: 135px;">Assigned</th>
+                                                            <th style="width: 80px;"></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody style="word-break: break-all;">
                                                         <?php
                                                             // $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID AND (assigned_to_id IS NOT NULL OR assigned_to_id != '')" );
                                                             // if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0" ); }
@@ -191,30 +191,57 @@
                                                                         4 => '<span class="label label-sm label-danger">Unresolved</span>'
                                                                     );
 
+                                                                    $jt_file = '';
                                                                     $file_files = $row["s_files"];
                                                                     if (!empty($file_files)) {
-                                                                        $fileExtension = fileExtension($file_files);
-                                                                        $src = $fileExtension['src'];
-                                                                        $embed = $fileExtension['embed'];
-                                                                        $type = $fileExtension['type'];
-                                                                        $file_extension = $fileExtension['file_extension'];
-                                                                        $url = $base_url.'uploads/services/';
+
+                                                                        $files_arr = explode(" | ", $file_files);
+                                                                        if (count($files_arr) > 1) {
+
+                                                                            foreach ($files_arr as $f) {
+
+                                                                                $fileExtension = fileExtension($f);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/services/';
+
+                                                                                $jt_file .= '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($f).$embed.'" data-caption="&lt;a href=&quot;'.$url.rawurlencode($f).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; " data-fancybox="fancybox_'.$row["s_ID"].'" data-fancybox data-type="'.$type.'">View</a></p>';
+                                                                            }
+                                                                        } else {
+                                                                            $fileExtension = fileExtension($file_files);
+                                                                            $src = $fileExtension['src'];
+                                                                            $embed = $fileExtension['embed'];
+                                                                            $type = $fileExtension['type'];
+                                                                            $file_extension = $fileExtension['file_extension'];
+                                                                            $url = $base_url.'uploads/services/';
+
+                                                                            $jt_file = '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-caption="&lt;a href=&quot;'.$url.rawurlencode($file_files).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; " data-fancybox data-type="'.$type.'">View</a></p>';
+                                                                        }
                                                                     }
+                                                                    
+                                                                    $date_start = $row["s_last_modified"];
+                                                                    $date_start = new DateTime($date_start);
+                                                                    $date_start = $date_start->format('Y-m-d');
+                                                                    
+                                                                    $date_end = $row["s_due_date"];
+                                                                    $date_end = new DateTime($date_end);
+                                                                    $date_end = $date_end->format('Y-m-d');
 
                                                                     echo '<tr id="tr_'.$row["s_ID"].'">
                                                                         <td>'.$counter++.'</td>
                                                                         <td>'.$category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;"><b>'.htmlentities($row["s_title"] ?? '').'</b></p>
-                                                                            <p style="margin: 0;">'.htmlentities($row["s_description"] ?? '').'</p>';
-                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'.$file_files.'</a></p>' : '';
-                                                                        echo '</td>
+                                                                            <p style="margin: 0;">'.htmlentities($row["s_description"] ?? '').'</p>'.$jt_file.'
+                                                                        </td>
                                                                         <td>
                                                                             <p style="margin: 0;">'.htmlentities($row["s_contact"] ?? '').'</p>
                                                                             <p style="margin: 0;"><a href="mailto:'.htmlentities($row["s_email"] ?? '').'" target="_blank">'.htmlentities($row["s_email"] ?? '').'</a></p>
                                                                         </td>
-                                                                        <td class="text-center">'.$row["s_last_modified"].'</td>
-                                                                        <td class="text-center">'.$row["s_due_date"] .'</td>
+                                                                        <td class="text-center">'.$date_start.'</td>
+                                                                        <td class="text-center">'.$date_end.'</td>
                                                                         <td class="text-center">'; echo empty($row["s_assigned_to_id"]) ? 'Pending':$status[$status_id]; echo '</td>
                                                                         <td class="text-center">'.$row["ee_assigned_to"].'</td>
                                                                         <td class="text-center">
@@ -226,7 +253,7 @@
                                                                     </tr>';
                                                                 }
                                                             } else {
-                                                                echo '<tr class="text-center text-default"><td colspan="8">Empty Record</td></tr>';
+                                                                echo '<tr class="text-center text-default"><td colspan="9">Empty Record</td></tr>';
                                                             }
                                                         ?>
                                                     </tbody>
@@ -238,16 +265,16 @@
                                                 <table class="table table-bordered table-hover" id="tableDataServicesComplete">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID#</th>
-                                                            <th>Category</th>
+                                                            <th style="width: 24px;">ID#</th>
+                                                            <th style="width: 60px;">Category</th>
                                                             <th>Service</th>
                                                             <th>Contact Info</th>
-                                                            <th style="width: 135px;" class="text-center">Desire Due Date</th>
-                                                            <th style="width: 135px;" class="text-center">Assigned</th>
-                                                            <th style="width: 135px;" class="text-center">Completed</th>
+                                                            <th class="text-center" style="width: 80px;">Desire Due Date</th>
+                                                            <th class="text-center" style="width: 135px;">Assigned</th>
+                                                            <th class="text-center" style="width: 80px;">Completed</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody style="word-break: break-all;">
                                                         <?php
                                                             // if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0" ); }
                                                             // else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND FIND_IN_SET($current_userEmployeeID, REPLACE(assigned_to_id, ' ', ''))" ); }
@@ -353,35 +380,62 @@
                                                                         7 => 'Praise'
                                                                     );
 
+                                                                    $jt_file = '';
                                                                     $file_files = $row["s_files"];
                                                                     if (!empty($file_files)) {
-                                                                        $fileExtension = fileExtension($file_files);
-                                                                        $src = $fileExtension['src'];
-                                                                        $embed = $fileExtension['embed'];
-                                                                        $type = $fileExtension['type'];
-                                                                        $file_extension = $fileExtension['file_extension'];
-                                                                        $url = $base_url.'uploads/services/';
+
+                                                                        $files_arr = explode(" | ", $file_files);
+                                                                        if (count($files_arr) > 1) {
+
+                                                                            foreach ($files_arr as $f) {
+
+                                                                                $fileExtension = fileExtension($f);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/services/';
+
+                                                                                $jt_file .= '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($f).$embed.'" data-caption="&lt;a href=&quot;'.$url.rawurlencode($f).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; " data-fancybox="fancybox_'.$row["s_ID"].'" data-fancybox data-type="'.$type.'">View</a></p>';
+                                                                            }
+                                                                        } else {
+                                                                            $fileExtension = fileExtension($file_files);
+                                                                            $src = $fileExtension['src'];
+                                                                            $embed = $fileExtension['embed'];
+                                                                            $type = $fileExtension['type'];
+                                                                            $file_extension = $fileExtension['file_extension'];
+                                                                            $url = $base_url.'uploads/services/';
+
+                                                                            $jt_file = '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-caption="&lt;a href=&quot;'.$url.rawurlencode($file_files).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; " data-fancybox data-type="'.$type.'">View</a></p>';
+                                                                        }
                                                                     }
+                                                                    
+                                                                    $date_start = $row["s_last_modified"];
+                                                                    $date_start = new DateTime($date_start);
+                                                                    $date_start = $date_start->format('Y-m-d');
+                                                                    
+                                                                    $date_end = $row["s_due_date"];
+                                                                    $date_end = new DateTime($date_end);
+                                                                    $date_end = $date_end->format('Y-m-d');
 
                                                                     echo '<tr id="tr_'.$row["s_ID"].'">
                                                                         <td>'.$row["s_ID"].'</td>
                                                                         <td>'.$category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;">'.htmlentities($row["s_title"] ?? '').'</p>
-                                                                            <p style="margin: 0;">'.htmlentities($row["s_description"] ?? '').'</p>';
-                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'.$file_files.'</a></p>' : '';
-                                                                        echo '</td>
+                                                                            <p style="margin: 0;">'.htmlentities($row["s_description"] ?? '').'</p>'.$jt_file.'
+                                                                        </td>
                                                                         <td>
                                                                             <p style="margin: 0;">'.htmlentities($row["s_contact"] ?? '').'</p>
                                                                             <p style="margin: 0;"><a href="mailto:'.htmlentities($row["s_email"] ?? '').'" target="_blank">'.htmlentities($row["s_email"] ?? '').'</a></p>
                                                                         </td>
-                                                                        <td class="text-center">'.$row["s_due_date"].'</td>
+                                                                        <td class="text-center">'.$date_end.'</td>
                                                                         <td class="text-center">'.$row["ee_assigned_to"].'</td>
-                                                                        <td class="text-center">'.$row["s_last_modified"].'</td>
+                                                                        <td class="text-center">'.$date_start.'</td>
                                                                     </tr>';
                                                                 }
                                                             } else {
-                                                                echo '<tr class="text-center text-default"><td colspan="6">Empty Record</td></tr>';
+                                                                echo '<tr class="text-center text-default"><td colspan="7">Empty Record</td></tr>';
                                                             }
                                                         ?>
                                                     </tbody>
@@ -422,8 +476,13 @@
                     $('#modalView').modal('show');
                     btnView(i);
                 }
+                document.querySelectorAll('button[data-bs-toggle="tab"]').forEach((el) => {
+                    el.addEventListener('shown.bs.tab', () => {
+                        DataTable.tables({ visible: true, api: true }).columns.adjust();
+                    });
+                });
                 
-                $('#tableDataServicesAssigned, #tableDataServicesComplete').DataTable({
+                $('#tableDataServicesAssigned').DataTable({
                     dom: 'lBfrtip',
                     lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
                     buttons: [
@@ -452,10 +511,62 @@
                             }
                         },
                         'colvis'
+                    ],
+                    columnDefs: [
+                        {width: '24px', targets: 0},
+                        {width: '60px', targets: 1},
+                        {width: '135px', targets: 3},
+                        {width: '80px', targets: 4},
+                        {width: '80px', targets: 5},
+                        {width: '50px', targets: 6},
+                        {width: '135px', targets: 7},
+                        {width: '90px', targets: 8}
+                    ]
+                });
+                $('#tableDataServicesComplete').DataTable({
+                    dom: 'lBfrtip',
+                    lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                    buttons: [
+                        {
+                            extend: 'print',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'csv',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        'colvis'
+                    ],
+                    columnDefs: [
+                        {width: '24px', targets: 0},
+                        {width: '60px', targets: 1},
+                        {width: '135px', targets: 3},
+                        {width: '80px', targets: 4},
+                        {width: '135px', targets: 5},
+                        {width: '80px', targets: 6}
                     ]
                 });
             });
-            
+            function btnTabComplete() {
+                // $("#tableDataServicesComplete").DataTable().columns.adjust().draw();
+                // alert('sd');
+            }
             function btnDone(id) {
                 swal({
                     title: "Are you sure?",

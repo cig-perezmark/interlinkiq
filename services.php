@@ -67,12 +67,6 @@
                                                         <a data-toggle="modal" data-target="#modalInstruction" onclick="btnInstruction()">Add New Instruction</a>
                                                     </li>
                                                 <?php endif; ?>
-                                                <li>
-                                                    <a href="javascript:;">Option 3</a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;">Option 4</a>
-                                                </li>
                                             </ul>
                                         </div>
                                     </div>

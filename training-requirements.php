@@ -103,28 +103,6 @@
                                         <i class="icon-graduation font-dark"></i>
                                         <span class="caption-subject font-dark bold uppercase">Training Requirements</span>
                                     </div>
-                                    <div class="actions">
-                                        <div class="btn-group">
-                                            <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
-                                                <i class="fa fa-angle-down"></i>
-                                            </a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li>
-                                                    <a data-toggle="modal" href="#modalNew" onclick="btnNew(1)">Add New Training</a>
-                                                </li>
-                                                <li class="divider"> </li>
-                                                <li>
-                                                    <a href="javascript:;">Option 2</a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;">Option 3</a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;">Option 4</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="portlet-body">
                                     <?php
@@ -162,6 +140,7 @@
                                                             ON e.ID = u.employee_id
 
                                                             WHERE e.suspended = 0
+                                                            AND e.deleted = 0
                                                             AND e.status = 1
                                                             AND e.user_id = $switch_user_id
                                                             AND e.facility_switch = $facility_switch_user_id
@@ -342,6 +321,7 @@
                                                                     WHERE user_id = $switch_user_id
                                                                     AND facility_switch = $facility_switch_user_id
                                                                     AND status = 1
+                                                                    AND deleted = 0
                                                                 ) AS j
                                                                 ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
 
@@ -358,6 +338,7 @@
                                                                 AND e.facility_switch = $facility_switch_user_id
                                                                 AND e.suspended = 0 
                                                                 AND e.status = 1 
+                                                                AND e.deleted = 0
 
                                                                 GROUP BY e.ID
                                                             ) r

@@ -80,8 +80,33 @@
                                     </thead>
                                     <?php
                                     $i = 1;
-                                    $query = "SELECT BusinessPROCESS, businessname, businessemailAddress, name, Bldg, city, States, ZipCode from tblEnterpiseDetails left join countries on id = country where businessname !='' order by enterp_id desc";
-                                    $result = mysqli_query($conn, $query);
+                                    // $query = "SELECT BusinessPROCESS, businessname, businessemailAddress, name, Bldg, city, States, ZipCode from tblEnterpiseDetails left join countries on id = country where businessname !='' order by enterp_id desc";
+                                    $result = mysqli_query($conn, "
+                                        SELECT 
+                                        e.BusinessPROCESS, e.businessname, e.businessemailAddress, 
+                                        e.Bldg, e.city, e.States, e.ZipCode,
+                                        c.name
+                                        FROM tblEnterpiseDetails AS e
+                                        
+                                        LEFT JOIN (
+                                        	SELECT
+                                            id, name
+                                            FROM countries
+                                        ) AS c
+                                        ON c.id = e.country
+                                        
+                                        RIGHT JOIN (
+                                        	SELECT
+                                            ID
+                                            FROM tbl_user
+                                            WHERE deleted = 0
+                                        ) AS u
+                                        ON u.ID = e.users_entities 
+                                        
+                                        where businessname !='' 
+                                        
+                                        order by enterp_id desc
+                                    ");
                                     while($row = mysqli_fetch_array($result)) {?> 
                                     <tbody>
                                          <?php

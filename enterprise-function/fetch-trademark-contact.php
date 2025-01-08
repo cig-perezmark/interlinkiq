@@ -70,6 +70,7 @@
                         <label>Supporting Document</label>
                     </div>
                     <div class="col-md-12">
+                        <input type="hidden" name="file_tmp" value="'.$row["files"].'" />
                         <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="file" />
                         <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                     </div>

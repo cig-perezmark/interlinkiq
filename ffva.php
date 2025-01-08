@@ -219,7 +219,8 @@
                                                                 // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1) { $status = 'Reviewed'; }
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1) { $status = 'Approved by CIG'; }
-                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['approved_date'])) { $status = "Approved by Client"; }
+                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date'])) { $status = 'Reviewed by Client'; }
+                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date']) AND !empty($rowSupplier['approved_date']) AND $rowSupplier['approved_date'] == 1 AND !empty($rowSupplier['approved_date'])) { $status = 'Approved by Client'; }
 
                                                                 $data_last_modified = $rowSupplier['last_modified'];
                                                                 $data_last_modified = new DateTime($data_last_modified);
@@ -488,7 +489,8 @@
                                                                 // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1) { $status = 'Reviewed'; }
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1) { $status = 'Approved by CIG'; }
-                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['approved_date'])) { $status = "Approved by Client"; }
+                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date'])) { $status = 'Reviewed by Client'; }
+                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date']) AND !empty($rowSupplier['approved_date']) AND $rowSupplier['approved_date'] == 1 AND !empty($rowSupplier['approved_date'])) { $status = 'Approved by Client'; }
 
                                                                 $data_last_modified = $rowSupplier['last_modified'];
                                                                 $data_last_modified = new DateTime($data_last_modified);
@@ -2270,7 +2272,6 @@
                 $("canvas").height(150);
                 btnClear();
             }
-
             function btnClear(e) {
                 if (e) {
                     $(e).next('.signature').jSignature("clear");
@@ -2278,7 +2279,22 @@
                     $('.signature').jSignature("clear");
                 }
             }
+            function btnSendNotification(e, type, id) {
+                SendNotification = $(e).parent().parent().find('select').val();
 
+                if (SendNotification > 0) {
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnSendNotification="+SendNotification+"&t="+type+"&i="+id,
+                        dataType: "html",
+                        success: function(data){
+                            bootstrapGrowl("Notification Sent!");
+                        }
+                    });
+                } else {
+                    alert('Please Select');
+                }
+            }
             function btnHistory(id) {
                 $.ajax({
                     type: "GET",
@@ -2354,7 +2370,7 @@
                                 html += '<td>'+obj.ID+'</td>';
                                 html += '<td>'+obj.company+'</td>';
 
-                                if (obj.user_id == 5) {
+                                if (obj.user_id == 34 || obj.user_id == 1) {
                                     html += '<td class="text-center int_review_status"><a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('+obj.ID+', 1, 1)">View</a></td>';
                                     html += '<td class="text-center int_verify_status"></td>';
                                 }
@@ -2440,7 +2456,7 @@
                                 html += '<td>'+obj.ID+'</td>';
                                 html += '<td>'+obj.company+'</td>';
 
-                                if (obj.user_id == 5) {
+                                if (obj.user_id == 34 || obj.user_id == 1) {
                                     html += '<td class="text-center int_review_status"><a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('+obj.ID+', 1, 1)">View</a></td>';
                                     html += '<td class="text-center int_verify_status"></td>';
                                 }
@@ -2464,8 +2480,8 @@
                                     html += '</div>';
                                 html += '</td>';
                             html += '</tr>';
-                            $('#tableData_'+obj.tab+' tbody').append(html);
                             $('#tableData_'+obj.tab+' tbody #tr_'+obj.ffva_ID).remove();
+                            $('#tableData_'+obj.tab+' tbody').append(html);
                             $('#modalEdit').modal('hide');
                         } else {
                             msg = "Error!"

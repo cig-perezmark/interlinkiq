@@ -11,6 +11,11 @@ if (!empty($_COOKIE['switchAccount'])) {
     $user_id = employerID($portal_user);
 }
 
+$facility_switch_user_id2 = 0;
+if (isset($_COOKIE['facilityswitchAccount'])) {
+    $facility_switch_user_id2 = $_COOKIE['facilityswitchAccount'];
+}
+
 function employerID($ID) {
     global $conn;
 
@@ -108,6 +113,7 @@ $sql = "
         AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
         WHERE s1.page = 1 
         AND s1.is_deleted = 0 
+        AND s1.facility_switch = $facility_switch_user_id2
         AND s1.user_id = $user_id
         
         UNION ALL
@@ -152,6 +158,7 @@ $sql = "
         AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
         WHERE s2.page = 1 
         AND s2.is_deleted = 0 
+        AND s2.facility_switch = $facility_switch_user_id2
         AND s2.user_id = $user_id
     )
     SELECT

@@ -51,7 +51,7 @@ function yesNoRadio() {
             <th>Food Quality Auditing</th>
             <th>HACCP Training</th>
             <th>Food Safety Training Certificate</th>
-            <th>FSVPQI Certificate</th>
+            <th>GFSI Certificate</th>
             <!-- <th data-nosort="true">Actions</th> -->
         </tr>
     </thead>
@@ -220,7 +220,7 @@ function yesNoRadio() {
 
                     <div class="col-md-12 frfUplDoc">
                         <label class="mt-checkbox mt-checkbox-outline">
-                            <input type="checkbox" value="true" name="c_gfsi_certificate"> FSVPQI Certificate
+                            <input type="checkbox" value="true" name="c_gfsi_certificate"> GFSI Certificate
                             <span></span>
                         </label>
                         <div class="row">

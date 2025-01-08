@@ -590,20 +590,87 @@
         $exist_email = false;
         $exist_username = false;
         $isPasswordCorrect = false;
-        // $message = 'Incorrect details. Please try again!<br>If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
         $message = 'For further assistance, please contact <a href="mailto:csuccess@consultareinc.com" target="_blank">csuccess@consultareinc.com or call <a href="tel:1-202-982-3002" target="_blank">1-202-982-3002</a>.';
 
-        $selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE client = $client AND is_active = 1 AND email = '". $email ."'" );
+        $selectEmail = mysqli_query( $conn,"
+            SELECT
+            u_ID,
+            u_employee_id,
+            u_first_name,
+            u_last_name,
+            u_password,
+            u_password_status,
+            u_email,
+            u_is_verified,
+            u_is_active,
+            u_client,
+            c_url,
+            c_name,
+            user_company_id,
+            i.avatar AS enterprise_logo
+            FROM (
+                SELECT 
+                u.ID AS u_ID,
+                u.employee_id AS u_employee_id,
+                u.first_name AS u_first_name,
+                u.last_name AS u_last_name,
+                u.password AS u_password,
+                u.password_status AS u_password_status,
+                u.email AS u_email,
+                u.is_verified AS u_is_verified,
+                u.is_active AS u_is_active,
+                u.client AS u_client,
+                c.url AS c_url,
+                c.name AS c_name,
+                CASE WHEN u.employee_id = 0 THEN u.ID ELSE e.user_id END AS user_company_id
+                FROM tbl_user AS u
+
+                LEFT JOIN (
+                    SELECT
+                    ID,
+                    user_id
+                    FROM tbl_hr_employee
+                ) AS e
+                ON u.employee_id = e.ID
+
+                LEFT JOIN (
+                    SELECT
+                    *
+                    FROM tbl_user_client
+                ) AS c
+                ON u.client = c.ID
+
+                WHERE u.client = $client 
+                AND u.is_active = 1 
+                AND u.deleted = 0
+                AND u.email = '". $email ."'
+            ) r
+
+            LEFT JOIN (
+                SELECT
+                ID,
+                user_id,
+                avatar
+                FROM tbl_user_info
+            ) AS i
+            ON r.user_company_id = i.user_id
+        " );
         if ( mysqli_num_rows($selectEmail) > 0 ) {
             while($rowUser = mysqli_fetch_array($selectEmail)) {
-                $ID = $rowUser['ID'];
-                $first_name = htmlentities($rowUser['first_name']);
-                $last_name = htmlentities($rowUser['last_name']);
-                $password_verify = $rowUser['password'];
-                $client = $rowUser['client'];
-                $is_verified = $rowUser['is_verified'];
-                $is_active = $rowUser['is_active'];
-                $employee_id = $rowUser['employee_id'];
+                $ID = $rowUser['u_ID'];
+                $first_name = htmlentities($rowUser['u_first_name']);
+                $last_name = htmlentities($rowUser['u_last_name']);
+                $password_verify = $rowUser['u_password'];
+                $is_verified = $rowUser['u_is_verified'];
+                $is_active = $rowUser['u_is_active'];
+                $employee_id = $rowUser['u_employee_id'];
+                $user_company_id = $rowUser['user_company_id'];
+                $enterprise_logo = $rowUser['enterprise_logo'];
+
+                $client_url = 'login';
+                if ($rowUser['u_client'] > 0) {
+                    $client_url = $rowUser['c_url'];
+                }
 
                 $driver_license = '';
                 $selectUserInfo = mysqli_query( $conn,"SELECT * FROM tbl_user_info WHERE user_id = $ID" );
@@ -612,21 +679,27 @@
                     $driver_license = $rowUserInfo['driver_license'];
                 }
 
-                $isPasswordCorrect = password_verify($password, $password_verify);
-                if ($isPasswordCorrect == true) {
-                    if ($is_active == 1 and $is_verified == 1) {
-                        $exist = true;
-                        $message = "Log In successfully";
+                if ($rowUser['u_password_status'] == 0) {
+                    $isPasswordCorrect = password_verify($password, $password_verify);
+                    if ($isPasswordCorrect == true) {
+                        if ($is_active == 1 and $is_verified == 1) {
+                            $exist = true;
+                            $message = "Log In successfully";
 
-                        setcookie('ID', $ID, time() + (86400 * 1), "/");  // 86400 = 1 day
-                        setcookie('first_name', $first_name, time() + (86400 * 1), "/");  // 86400 = 1 day
-                        setcookie('last_name', $last_name, time() + (86400 * 1), "/");  // 86400 = 1 day
-                        setcookie('employee_id', $employee_id, time() + (86400 * 1), "/");  // 86400 = 1 day
-                        setcookie('client', $client, time() + (86400 * 1), "/");  // 86400 = 1 day
-                        setcookie('driver_license', $driver_license, time() + (86400 * 1), "/");  // 86400 = 1 day
-                    } else if ($is_active == 1 and $is_verified == 0) {
-                        $message = 'Please check your email to verify this account!<br>If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+                            setcookie('ID', $ID, time() + (86400 * 1), "/");  // 86400 = 1 day
+                            setcookie('first_name', $first_name, time() + (86400 * 1), "/");
+                            setcookie('last_name', $last_name, time() + (86400 * 1), "/");
+                            setcookie('employee_id', $employee_id, time() + (86400 * 1), "/");
+                            setcookie('client', $client, time() + (86400 * 1), "/");
+                            setcookie('user_company_id', $user_company_id, time() + (86400 * 1), "/");
+                            setcookie('enterprise_logo', $enterprise_logo, time() + (86400 * 1), "/");
+                            setcookie('driver_license', $driver_license, time() + (86400 * 1), "/");
+                        } else if ($is_active == 1 and $is_verified == 0) {
+                            $message = 'Please check your email to verify this account!<br>If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+                        }
                     }
+                } else {
+                    $message = 'Your account has been locked due to an outdated password. Please update your password by clicking <a href="'.$base_url.$client_url.'?p=1&i='.$ID.'&x=1"><strong>here</strong></a>';
                 }
             }
         }
@@ -806,11 +879,17 @@
     }
     if( isset($_POST['btnResetPassword']) ) {
         $ID = $_POST['ID'];
-        $code = $_POST['code'];
         $password = $_POST['npassword'];
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         $exist = false;
-        $message = 'Verification Code is Incorrect. Please try again! If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+
+        if (isset($_POST['ppassword'])) {
+            $ppassword = $_POST['ppassword'];
+            $message = 'You entered incorrect previous password. Please try again! If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+        } else {
+            $code = htmlentities($_POST['code']);
+            $message = 'Verification Code is Incorrect. Please try again! If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+        }
 
         $selectUser = mysqli_query( $conn,"
             SELECT
@@ -818,6 +897,7 @@
             u.email AS u_email,
             u.first_name AS u_first_name,
             u.last_name AS u_last_name,
+            u.password AS u_password,
             u.verification_code AS u_verification_code,
             u.client AS u_client,
             c.url AS c_url,
@@ -833,15 +913,24 @@
             ON u.client = c.ID
 
             WHERE u.is_active = 1
-            AND u.verification_code IS NOT NULL
+            -- AND u.verification_code IS NOT NULL
             AND u.ID = $ID
         " );
         if ( mysqli_num_rows($selectUser) > 0 ) {
             while($rowUser = mysqli_fetch_array($selectUser)) {
+                $u_password = $rowUser['u_password'];
                 $verification_code = $rowUser['u_verification_code'];
+                $verified = false;
 
-                if ($verification_code == $code) {
-                    mysqli_query( $conn,"UPDATE tbl_user set password = '". $password_hash ."' WHERE ID=$ID" );
+                if (isset($_POST['ppassword'])) {
+                    $isPasswordCorrect = password_verify($ppassword, $u_password);
+                    if ($isPasswordCorrect == true) { $verified = true; }
+                } else {
+                    if ($verification_code == $code) { $verified = true; }
+                }
+
+                if($verified == true) {
+                    mysqli_query( $conn,"UPDATE tbl_user set password = '". $password_hash ."', password_update = '". $local_date ."', password_status = 0 WHERE ID=$ID" );
 
                     $client_url = 'login';
                     if ($rowUser['u_client'] > 0) {
@@ -857,7 +946,7 @@
 
                     <a href="'.$base_url.$client_url.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">Login Here</a>';
 
-                    // php_mailer($to, $user, $subject, $body);
+                    php_mailer($to, $user, $subject, $body);
 
                     $exist = true;
                     $message = 'Password Updated! Kindly login with your updated details.';
@@ -946,37 +1035,44 @@
         $exist = false;
         $message = 'Email Address is already exist. Please try again!';
 
+        $is_active = 0;
+        if ($client > 0) { $is_active = 1; }
+
         $selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE email = '".$email."'");
         if ( mysqli_num_rows($selectEmail) > 0 ) { 
             $exist = true;
         } else {
-            if ($client > 0 AND $client != 10) {
-                // check if user register was invited (supplier/customer/employee)
-                $selectData = mysqli_query( $conn,"SELECT
-                    ID,
-                    email
-                    FROM tbl_supplier 
-                    WHERE is_deleted = 0
-                    AND email = '".$email."'
+            // check if user register was invited (supplier/customer/employee)
+            $selectData = mysqli_query( $conn,"SELECT
+                ID,
+                email
+                FROM tbl_supplier 
+                WHERE is_deleted = 0
+                AND email = '".$email."'
 
-                    UNION ALL
+                UNION ALL
 
-                    SELECT
-                    ID,
-                    email
-                    FROM tbl_hr_employee
-                    WHERE email = '".$email."'
-                " );
-                if ( mysqli_num_rows($selectData) == 0 ) {
+                SELECT
+                ID,
+                email
+                FROM tbl_hr_employee
+                WHERE email = '".$email."'
+            " );
+            if ( mysqli_num_rows($selectData) == 0 ) {
+                if ($client > 0 AND $client != 10) {
                     $message = 'Thank you for trying to create an account. Access is by invitation only. For further assistance, please contact <a href="mailto:csuccess@consultareinc.com" target="_blank">csuccess@consultareinc.com</a> or call <a href="tel:1-202-982-3002" target="_blank">1-202-982-3002</a>.';
                     $exist = true;
+                } else {
+                    $is_active = 1;
                 }
+            } else {
+                $is_active = 1;
             }
         }
 
         if ($exist == false) {
-            $sql = "INSERT INTO tbl_user (employee_id, first_name, last_name, email, password, client)
-            VALUES ( '$ID', '$first_name', '$last_name', '$email', '$password_hash', '$client')";
+            $sql = "INSERT INTO tbl_user (employee_id, first_name, last_name, email, password, client, is_active, date_registered)
+            VALUES ( '$ID', '$first_name', '$last_name', '$email', '$password_hash', '$client', '$is_active', '$local_date')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
                 $sql = "INSERT INTO tbl_user_info (user_id, mobile) VALUES ('$last_id', '$phone')";
@@ -1080,7 +1176,7 @@
                 $verification_code = $rowUser['verification_code'];
 
                 if ($verification_code == $code) {
-                    mysqli_query( $conn,"UPDATE tbl_user set password='". $password_hash ."' WHERE ID='". $ID ."'" );
+                    mysqli_query( $conn,"UPDATE tbl_user set password = '". $password_hash ."', password_update = '". $local_date ."', password_status = 0  WHERE ID = $ID" );
 
                     $to = $rowUser['email'];
                     $user = $rowUser['first_name'] .' '. $rowUser['last_name'];
@@ -1373,25 +1469,31 @@
         setcookie('ID', '', time() - 3600, '/'); // empty value and old timestamp
         
         unset($_COOKIE['first_name']);
-        setcookie('first_name', '', time() - 3600, '/'); // empty value and old timestamp
+        setcookie('first_name', '', time() - 3600, '/');
         
         unset($_COOKIE['last_name']);
-        setcookie('last_name', '', time() - 3600, '/'); // empty value and old timestamp
+        setcookie('last_name', '', time() - 3600, '/');
 
         unset($_COOKIE['locked']);
-        setcookie('locked', '', time() - 3600, '/'); // empty value and old timestamp
+        setcookie('locked', '', time() - 3600, '/');
 
         unset($_COOKIE['switchAccount']);
-        setcookie('switchAccount', '', time() - 3600, '/'); // empty value and old timestamp
+        setcookie('switchAccount', '', time() - 3600, '/');
 
         unset($_COOKIE['facilityswitchAccount']);
-        setcookie('facilityswitchAccount', '', time() - 3600, '/'); // empty value and old timestamp
+        setcookie('facilityswitchAccount', '', time() - 3600, '/');
         
         unset($_COOKIE['employee_id']);
-        setcookie('employee_id', '', time() - 3600, '/'); // empty value and old timestamp
+        setcookie('employee_id', '', time() - 3600, '/');
         
         unset($_COOKIE['driver_license']);
-        setcookie('driver_license', '', time() - 3600, '/'); // empty value and old timestamp
+        setcookie('driver_license', '', time() - 3600, '/');
+        
+        unset($_COOKIE['user_company_id']);
+        setcookie('user_company_id', '', time() - 3600, '/');
+        
+        unset($_COOKIE['enterprise_logo']);
+        setcookie('enterprise_logo', '', time() - 3600, '/');
 
         if(isset($_COOKIE['client'])) {
             unset($client_ID);
@@ -2352,7 +2454,7 @@
                     <option value="">Select</option>
                     <option value="1">Full-time</option>';
 
-                    echo $current_client == 1 ? '<option value="2">Part-Time</option>':'<option value="2">Part-Time Project</option>';
+                    echo $current_client == 1 ? '<option value="2">Part-Time</option>':'<option value="2">Part-Timer</option>';
                     if ($current_client == 0) {
                         echo 'option value="3">OJT</option>
                         <option value="4">Freelance</option>
@@ -2399,7 +2501,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="department_id[]" multiple="multiple">
                     <option value="">Select</option>';
 
-                    $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status=1 AND user_id = $switch_user_id" );
+                    $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE deleted = 0 AND status=1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                             echo '<option value="'. $rowDepartment["ID"] .'">'. htmlentities($rowDepartment["title"] ?? '') .'</option>';
@@ -2414,7 +2516,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple">';
 
-                    $selectJB = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_job_description WHERE status=1 AND user_id = $switch_user_id" );
+                    $selectJB = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_job_description WHERE deleted = 0 AND status = 1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectJB) > 0 ) {
                         while($rowJD = mysqli_fetch_array($selectJB)) {
                             echo '<option value="'. $rowJD["ID"] .'">'. htmlentities($rowJD["title"] ?? '') .'</option>';
@@ -2429,7 +2531,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="reporting_to_id">';
 
-                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE deleted = 0 AND status = 1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         echo '<option value="">Select</option>';
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -2554,7 +2656,7 @@
                             <select class="form-control mt-multiselect btn btn-default" name="type_id" required >
                                 <option value="">Select</option>
                                 <option value="1" '; if ($row['type_id'] == 1) { echo 'selected'; } echo '>Full-time</option>
-                                <option value="2" '; if ($row['type_id'] == 2) { echo 'selected'; } echo '>Part-Time'; echo $_COOKIE['client'] == 1 ? '':' Project'; echo '</option>';
+                                <option value="2" '; if ($row['type_id'] == 2) { echo 'selected'; } echo '>Part-Time'; echo $_COOKIE['client'] == 1 ? '':'r'; echo '</option>';
 
                                 if ($current_client == 0) {
                                     echo '<option value="3" '; if ($row['type_id'] == 3) { echo 'selected'; } echo '>OJT</option>
@@ -2602,7 +2704,7 @@
                             <select class="form-control mt-multiselect btn btn-default" name="department_id[]" multiple="multiple">';
 
                                 $array_Dept = explode(", ", $row["department_id"]);
-                                $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
+                                $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                 if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                     while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                                         if (in_array($rowDepartment["ID"], $array_Dept)) {
@@ -2624,7 +2726,7 @@
                             <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple">';
 
                                 $array_Job = explode(", ", $row["job_description_id"]);
-                                $resultJob = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
+                                $resultJob = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                 if ( mysqli_num_rows($resultJob) > 0 ) {
                                     while($rowJob = mysqli_fetch_array($resultJob)) {
                                         if (in_array($rowJob["ID"], $array_Job)) {
@@ -2645,7 +2747,7 @@
                         <div class="col-md-8">
                             <select class="form-control mt-multiselect btn btn-default" name="alternate">';
 
-                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id AND ID != $id AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND ID != $id AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                     echo '<option value="">Select</option>';
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -2667,7 +2769,7 @@
                         <div class="col-md-8">
                             <select class="form-control mt-multiselect btn btn-default" name="reporting_to_id">';
 
-                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id AND ID != $id AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND ID != $id AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                     echo '<option value="">Select</option>';
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -2715,7 +2817,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3">Re-invite?</label>
+                        <label class="control-label col-md-3">Send Invite?</label>
                         <div class="col-md-8">
                             <a href="javascript:;" class="btn btn-outline dark" data-toggle="modal" onclick="btnReinvite('.$id.')">Send</a>
                             <a href="javascript:;" class="btn purple-seance mt-clipboard" onclick="btnCopy('.$id.')">Copy Link</a>
@@ -3242,6 +3344,7 @@
                 *
                 FROM tbl_hr_job_description
                 WHERE status = 1
+                AND deleted = 0
                 AND user_id = $ID
                 AND facility_switch = $facility_switch_user_id
             ) AS jd2
@@ -3252,6 +3355,7 @@
                 *
                 FROM tbl_hr_employee
                 WHERE suspended = 0
+                AND deleted = 0
                 AND user_id = $ID
                 AND facility_switch = $facility_switch_user_id
                 AND status = 1
@@ -3263,6 +3367,7 @@
                 *
                 FROM tbl_hr_employee
                 WHERE suspended = 0
+                AND deleted = 0
                 AND user_id = $ID
                 AND facility_switch = $facility_switch_user_id
                 AND status = 1
@@ -3379,7 +3484,7 @@
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
                 } else {
                     if ($client_ID == 0) {
-                        $subject = 'You are invited!';
+                        $subject = 'InterlinkIQ-Consultare Inc. Group Invitation';
                         $body = 'Hi '. $data_first_name .',<br><br>
 
                         '.$data_company.', invites you to join <a href="'.$base_url.$client_url.'?r=1&i='.$ID.'" target="_blank">InterlinkIQ.com</a> to connect with your assigned duties, work, and tasks.
@@ -3523,7 +3628,7 @@
                         // php_mailer_1($to, $user, $subject, $body, $from, $name);
                     } else {
                         if ($client_ID == 0) {
-                            $subject = 'You are invited!';
+                            $subject = 'InterlinkIQ-Consultare Inc. Group Invitation';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
                             '.$data_company.', invites you to join <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">InterlinkIQ.com</a> to connect with your assigned duties, work, and tasks.
@@ -3566,7 +3671,7 @@
                     } else {
                         $employment_type = array(
                             1 => 'Full-time',
-                            2 => 'Part-Time Project',
+                            2 => 'Part-Timer',
                             3 => 'OJT',
                             4 => 'Freelance',
                             5 => 'Part-Time Apprentice',
@@ -3686,7 +3791,7 @@
             } else {
                 $employment_type = array(
                     1 => 'Full-time',
-                    2 => 'Part-Time Project',
+                    2 => 'Part-Timer',
                     3 => 'OJT',
                     4 => 'Freelance',
                     5 => 'Part-Time Apprentice',
@@ -4274,6 +4379,7 @@
                 job_description_id
                 FROM tbl_hr_trainings
                 WHERE status = 1
+                AND deleted = 0
                 AND user_id = $user_id
                 AND facility_switch = $facility_switch_user_id
                 AND deleted = 0
@@ -4281,6 +4387,7 @@
             ON FIND_IN_SET(j.ID, REPLACE(t.job_description_id, ' ', ''))
             WHERE j.status = $status
             AND FIND_IN_SET($id, REPLACE(j.department_id, ' ', ''))
+            AND j.deleted = 0
             AND j.user_id = $user_id
             AND j.facility_switch = $facility_switch_user_id
             GROUP BY j.ID
@@ -4393,7 +4500,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="department_id[]" multiple="multiple">';
 
                     $array_Dept = explode(", ", $row["department_id"]);
-                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
+                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                             if (in_array($rowDepartment["ID"], $array_Dept)) {
@@ -4415,7 +4522,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="reporting_to_id">';
 
                     $array_Job = explode(", ", $row["reporting_to_id"]);
-                    $resultJob = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
+                    $resultJob = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                     if ( mysqli_num_rows($resultJob) > 0 ) {
                         echo '<option value="">Select</option>';
                         while($rowJob = mysqli_fetch_array($resultJob)) {
@@ -4571,7 +4678,7 @@
                                     </thead>
                                     <tbody>';
 
-                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND job_description_id IN ($ID) AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
+                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $user_id AND job_description_id IN ($ID) AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                             $counting = 1;
                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -4971,7 +5078,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple" required>';
 
-                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
+                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                     if ( mysqli_num_rows($result) > 0 ) {
                         while($row = mysqli_fetch_array($result)) {
                             echo '<option value="'. $row["ID"] .'">'. htmlentities($row["title"] ?? '') .'</option>';
@@ -5033,7 +5140,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="quiz_id[]" multiple="multiple">';
 
-                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_set WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
+                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_set WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                     if ( mysqli_num_rows($result) > 0 ) {
                         while($row = mysqli_fetch_array($result)) {
                             echo '<option value="'. $row["ID"] .'">'. htmlentities($row["title"] ?? '') .'</option>';
@@ -5063,6 +5170,7 @@
     if( isset($_GET['modalView_HR_Trainings']) ) {
         $id = $_GET['modalView_HR_Trainings'];
         $c = $_GET['c'];
+        $t = $_GET['t'];
         
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
@@ -5089,6 +5197,7 @@
 
         echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
         <input class="form-control" type="hidden" name="c" value="'. $c .'" />
+        <input class="form-control" type="hidden" name="t" value="'. $t .'" />
         <div class="tabbable tabbable-tabdrop">
             <ul class="nav nav-tabs">
                 <li class="active">
@@ -5149,7 +5258,7 @@
                             <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple">';
                                 
                                 $array_jd = explode(", ", $row["job_description_id"]);
-                                $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
+                                $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                 if ( mysqli_num_rows($resultJD) > 0 ) {
                                     while($rowJD = mysqli_fetch_array($resultJD)) {
                                         if (in_array($rowJD["ID"], $array_jd)) {
@@ -5372,6 +5481,7 @@
                                         ON u.employee_id = e.ID
                                         
                                         WHERE e.suspended = 0
+                                        AND e.deleted = 0
                                         AND e.status = 1
                                         AND e.user_id = $user_id
                                         AND e.facility_switch = $facility_switch_user_id
@@ -5458,7 +5568,10 @@
         }
 
         $id = $_GET['modalView_HR_Trainings_Type'];
-        $result = mysqli_query( $conn,"SELECT
+        $tblActive = '';
+        $tblInactive = '';
+        $result = mysqli_query( $conn,"
+            SELECT
             t_ID,
             t_title,
             t_description,
@@ -5512,6 +5625,7 @@
 
                     WHERE e.suspended = 0
                     AND e.status = 1
+                    AND e.deleted = 0
                     AND e.facility_switch = $facility_switch_user_id
                     AND u.ID IS NOT NULL
                 ) AS e1
@@ -5545,8 +5659,10 @@
 
             GROUP BY t_ID
 
-            ORDER BY t_title ASC" );
+            ORDER BY t_title ASC
+        " );
         if ( mysqli_num_rows($result) > 0 ) {
+            $a=1;
             $i=1;
             while($row = mysqli_fetch_array($result)) {
                 $t_ID = htmlentities($row["t_ID"] ?? '');
@@ -5557,50 +5673,79 @@
                 $countEmployee = htmlentities($row["TOTAL_EMPLOYEE"] ?? '');
                 $percentage = 0;
                 
-                echo '<tr id="tr_'.$t_ID.'">
-                    <td>'.$i.'</td>
-                    <td>'.htmlentities($t_title ?? '').'</td>
-                    <td>'.htmlentities($t_description ?? '').'</td>';
+                if ($t_status == 0) {
+                    $tblInactive .= '<tr id="tr_'.$t_ID.'">
+                        <td>'.$i.'</td>
+                        <td>'.htmlentities($t_title ?? '').'</td>
+                        <td>'.htmlentities($t_description ?? '').'</td>';
 
-                    // $array_jd = explode(", ", $row["job_description_id"]);
-                    // $job_title = array();
-                    // foreach ($array_jd as $value) {
-                    //     $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID=$value " );
-                    //     while($rowJD = mysqli_fetch_array($resultJD)) {
-                    //         $job_title[] = $rowJD["title"];
-                    //     }
-                    // }
+                        if ($countEmployee > 0) {
+                            $percentage = (100 / $countEmployee) * $countApproved;
+                        } else {
+                            $countApproved = 0;
+                        }
 
-                    // echo '<td>'. implode(", ",$job_title) .'</td>';
+                        $tblInactive .= '<td class="text-center">'. intval($percentage) .'% ('. $countApproved .'/'. $countEmployee .')</td>';
 
-                    if ($countEmployee > 0) {
-                        $percentage = (100 / $countEmployee) * $countApproved;
-                    } else {
-                        $countApproved = 0;
-                    }
+                        if ( $t_status == 0 ) {
+                            $tblInactive .= '<td class="text-center"><span class="label label-sm label-danger">Inactive</span></td>';
+                        } else if ( $t_status == 1 ) {
+                            $tblInactive .= '<td class="text-center"><span class="label label-sm label-success">Active</span></td>';
+                        } else {
+                            $tblInactive .= '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';
+                        }
 
-                    echo ' <td class="text-center">'. intval($percentage) .'% ('. $countApproved .'/'. $countEmployee .')</td>';
-
-                    if ( $t_status == 0 ) {
-                        echo '<td class="text-center"><span class="label label-sm label-danger">Inactive</span></td>';
-                    } else if ( $t_status == 1 ) {
-                        echo '<td class="text-center"><span class="label label-sm label-success">Active</span></td>';
-                    } else {
-                        echo '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';
-                    }
-
-                    echo '<td class="text-center">
-                        <div class="mt-action-buttons">
-                            <div class="btn-group btn-group-circle">
-                                <a href="#modalView" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('.$t_ID.', '.$i.', \'modalView\')">View</a>
-                                <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDelete('.$t_ID.')">Delete</a>
+                        $tblInactive .= '<td class="text-center">
+                            <div class="mt-action-buttons">
+                                <div class="btn-group btn-group-circle">
+                                    <a href="#modalView" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('.$t_ID.', '.$i.', 2, \'modalView\')">View</a>
+                                    <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDelete('.$t_ID.')">Delete</a>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                </tr>';
-                $i++;
+                        </td>
+                    </tr>';
+                    $i++;
+                } else if ($t_status == 1) {
+                    $tblActive .= '<tr id="tr_'.$t_ID.'">
+                        <td>'.$a.'</td>
+                        <td>'.htmlentities($t_title ?? '').'</td>
+                        <td>'.htmlentities($t_description ?? '').'</td>';
+
+                        if ($countEmployee > 0) {
+                            $percentage = (100 / $countEmployee) * $countApproved;
+                        } else {
+                            $countApproved = 0;
+                        }
+
+                        $tblActive .= '<td class="text-center">'. intval($percentage) .'% ('. $countApproved .'/'. $countEmployee .')</td>';
+
+                        if ( $t_status == 0 ) {
+                            $tblActive .= '<td class="text-center"><span class="label label-sm label-danger">Inactive</span></td>';
+                        } else if ( $t_status == 1 ) {
+                            $tblActive .= '<td class="text-center"><span class="label label-sm label-success">Active</span></td>';
+                        } else {
+                            $tblActive .= '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';
+                        }
+
+                        $tblActive .= '<td class="text-center">
+                            <div class="mt-action-buttons">
+                                <div class="btn-group btn-group-circle">
+                                    <a href="#modalView" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('.$t_ID.', '.$a.', 1, \'modalView\')">View</a>
+                                    <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDelete('.$t_ID.')">Delete</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>';
+                    $a++;
+                }
             }
         }
+
+        $output = array(
+            "tblActive" => $tblActive,
+            "tblInactive" => $tblInactive
+        );
+        echo json_encode($output);
 
         mysqli_close($conn);
     }
@@ -5662,6 +5807,7 @@
 
                     WHERE e.suspended = 0
                     AND e.status = 1
+                    AND e.deleted = 0
                     AND e.facility_switch = $facility_switch_user_id
                     AND u.ID IS NOT NULL
                 ) AS e1
@@ -5771,7 +5917,7 @@
         if ($type == "other") {
             $type_other = $_POST['type_other'];
 
-            $sql = "INSERT INTO tbl_hr_trainings_type (user_id, portal_user, facility_switch name)
+            $sql = "INSERT INTO tbl_hr_trainings_type (user_id, portal_user, facility_switch, name)
             VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$type_other')";
             if (mysqli_query($conn, $sql)) {
                 $type = mysqli_insert_id($conn);
@@ -5866,7 +6012,7 @@
                     $countTraining = 0;
                     $countApproved = 0;
                     $countEmployee = 0;
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE facility_switch = $facility_switch_user_id" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND facility_switch = $facility_switch_user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             $found = null;
@@ -5917,6 +6063,7 @@
     if( isset($_POST['btnUpdate_HR_Trainings']) ) {
         $ID = $_POST['ID'];
         $c = $_POST['c'];
+        $t = $_POST['t'];
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
@@ -5931,8 +6078,8 @@
         if ($type == "other") {
             $type_other = $_POST['type_other'];
 
-            $sql = "INSERT INTO tbl_hr_trainings_type (user_id, portal_user, name)
-            VALUES ('$user_id', '$portal_user', '$type_other')";
+            $sql = "INSERT INTO tbl_hr_trainings_type (user_id, portal_user, facility_switch, name)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$type_other')";
             if (mysqli_query($conn, $sql)) {
                 $type = mysqli_insert_id($conn);
             }
@@ -6050,7 +6197,7 @@
                 $countTraining = 0;
                 $countApproved = 0;
                 $countEmployee = 0;
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE facility_switch = $facility_switch_user_id" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND facility_switch = $facility_switch_user_id" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $found = null;
@@ -6089,6 +6236,7 @@
                 $output = array(
                     'ID' => $ID,
                     'c' => $c,
+                    't' => $t,
                     'title' => stripcslashes(htmlentities($title ?? '')),
                     'description' => stripcslashes(htmlentities($description ?? '')),
                     'job_description_id' => implode(", ",$job_title),
@@ -6228,6 +6376,7 @@
                                         *
                                         FROM tbl_hr_job_description
                                         WHERE user_id = $user_id
+                                        AND deleted = 0
                                         AND status = 1
                                     ) AS j
                                     ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
@@ -6243,6 +6392,7 @@
 
                                     WHERE e.user_id = $user_id
                                     AND e.suspended = 0 
+                                    AND e.deleted = 0
                                     AND e.status = 1 
 
                                     GROUP BY e.ID
@@ -6397,6 +6547,7 @@
                                     *
                                     FROM tbl_hr_job_description
                                     WHERE user_id = $user_id
+                                    AND deleted = 0
                                     AND status = 1
                                 ) AS j
                                 ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
@@ -6411,6 +6562,7 @@
                                 ON u.employee_id = e.ID
 
                                 WHERE e.user_id = $user_id
+                                AND e.deleted = 0
                                 AND e.suspended = 0 
                                 AND e.status = 1 
 
@@ -6946,8 +7098,8 @@
         $item = "";
         if (!empty($_POST["item"])) { $item = implode(", ", $_POST["item"]); }
 
-        $sql = "INSERT INTO tbl_hr_quiz_set (user_id, portal_user, title, language, quiz_id, status, last_modified)
-        VALUES ('$user_id', '$portal_user', '$title', '$language', '$item', '$status', '$last_modified')";
+        $sql = "INSERT INTO tbl_hr_quiz_set (user_id, portal_user, facility_switch, title, language, quiz_id, status, last_modified)
+        VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$title', '$language', '$item', '$status', '$last_modified')";
 
         if (mysqli_query($conn, $sql)) {
             $last_id = mysqli_insert_id($conn);
@@ -7098,7 +7250,7 @@
                             <tbody>';
 
                                 $ID = $row["ID"];
-                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND FIND_IN_SET($ID, REPLACE(department_id, ' ', '')) AND facility_switch = $facility_switch_user_id ORDER BY last_name" );
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND FIND_IN_SET($ID, REPLACE(department_id, ' ', '')) AND facility_switch = $facility_switch_user_id ORDER BY last_name" );
                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                     $table_counter = 1;
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -7118,7 +7270,7 @@
                                         } else {
                                             $employment_type = array(
                                                 1 => 'Full-time',
-                                                2 => 'Part-Time Project',
+                                                2 => 'Part-Timer',
                                                 3 => 'OJT',
                                                 4 => 'Freelance',
                                                 5 => 'Part-Time Apprentice',
@@ -7344,7 +7496,7 @@
 
                 // $dept_id = $row["ID"];
                 $countDepartment = 0;
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE department_id = $ID " );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND department_id = $ID " );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $countDepartment++;
@@ -7412,7 +7564,7 @@
                     <a href="#tabProfile" data-toggle="tab">Profile</a>
                 </li>
                 <li>
-                    <a href="#tabQuestionaire" data-toggle="tab">Questionaire</a>
+                    <a href="#tabQuestionaire" data-toggle="tab">Questionnaire</a>
                 </li>
                 <li>
                     <a href="#tabActivities" data-toggle="tab">Activities</a>
@@ -7566,7 +7718,10 @@
                             </thead>
                             <tbody>';
 
-                                $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+                                $sql_organic = 'WHERE organic = 0';
+                                if ($user_id == 256) { $sql_organic = ''; }
+
+                                $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic" );
                                 if ( mysqli_num_rows($selectLikelihood) > 0 ) {
                                     while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                                         $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
@@ -7612,7 +7767,7 @@
                                                 <td>
                                                     <textarea class="form-control" name="likelihood_comment[]" placeholder="Enter comment here"></textarea>
                                                     <input type="file" class="form-control margin-top-15 hide" name="likelihood_file[]" />
-                                                    <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload File</button></p>
+                                                    <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload File</button></p>
                                                 </td>
                                                 <td class="radioRate">
                                                     <div class="mt-radio-list">';
@@ -7759,7 +7914,7 @@
                                             <td>
                                                 <textarea class="form-control" name="consequence_comment[]" placeholder="Enter comment here"></textarea>
                                                 <input type="file" class="form-control margin-top-15 hide" name="consequence_file[]" />
-                                                <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload File</button></p>
+                                                <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload File</button></p>
                                             </td>
                                             <td class="radioRate">
                                                 <div class="mt-radio-list">
@@ -8038,7 +8193,7 @@
                                 <select class="form-control mt-multiselect" name="reviewed_by">
                                     <option value="">Select Reviewer</option>';
 
-                                    $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                                    $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE deleted = 0 AND user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                             $employee_id = $rowEmployee['ID'];
@@ -8091,7 +8246,7 @@
                                 <select class="form-control mt-multiselect" name="approved_by">
                                     <option value="">Select Approver</option>';
 
-                                    $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                                    $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE deleted = 0 AND user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                             $employee_id = $rowEmployee['ID'];
@@ -8141,6 +8296,8 @@
         $result = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE ID = $id" );
         if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
+                $likelihood_user_Id = $row["user_id"];
+
                 $likelihood_answer = $row["likelihood_answer"];
                 $likelihood_answer_arr = explode(', ', $likelihood_answer);
 
@@ -8224,7 +8381,7 @@
                             <a href="#tabProfile_2" data-toggle="tab">Profile</a>
                         </li>
                         <li>
-                            <a href="#tabQuestionaire_2" data-toggle="tab">Questionaire</a>
+                            <a href="#tabQuestionaire_2" data-toggle="tab">Questionnaire</a>
                         </li>
                         <li>
                             <a href="#tabActivities_2" data-toggle="tab">Activities</a>
@@ -8378,8 +8535,11 @@
                                     </thead>
                                     <tbody>';
 
+                                        $sql_organic = 'WHERE organic = 0';
+                                        if ($likelihood_user_Id == 256) { $sql_organic = ''; }
+
                                         $index = 0;
-                                        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+                                        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic" );
                                         if ( mysqli_num_rows($selectLikelihood) > 0 ) {
                                             while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                                                 $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
@@ -8440,12 +8600,12 @@
                                                                 $files = $src.$url.rawurlencode($likelihood_file_arr[$index]).$embed;
 
                                                                 echo '<input type="hidden" name="likelihood_file_temporary[]" value="'.$likelihood_file_arr[$index].'" />
-                                                                <input type="file" class="form-control '; echo !empty($likelihood_file_arr[$index]) ? 'hide':''; echo '" name="likelihood_file[]" />
-                                                                <p class="'; echo !empty($likelihood_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                                <input type="file" class="form-control margin-top-15 '; echo !empty($likelihood_file_arr[$index]) ? 'hide':''; echo '" name="likelihood_file[]" />
+                                                                <p class="'; echo !empty($likelihood_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                                             } else {
                                                                 echo '<input type="hidden" name="likelihood_file_temporary[]" value="" />
                                                                 <input type="file" class="form-control margin-top-15 hide" name="likelihood_file[]" />
-                                                                <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload File</button></p>';
+                                                                <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload File</button></p>';
                                                             }
                                                         
                                                         echo '</td>
@@ -8536,11 +8696,11 @@
 
                                                             echo '<input type="hidden" name="likelihood_file_temporary_other[]" value="'.$likelihood_file_other[$index].'" />
                                                             <input type="file" class="form-control '; echo !empty($likelihood_file_other[$index]) ? 'hide':''; echo '" name="likelihood_file_other[]" />
-                                                            <p class="'; echo !empty($likelihood_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                            <p class="'; echo !empty($likelihood_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                                         } else {
                                                             echo '<input type="hidden" name="likelihood_file_temporary_other[]" value="" />
                                                             <input type="file" class="form-control margin-top-15 hide" name="likelihood_file_other[]" />
-                                                            <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload File</button></p>';
+                                                            <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload File</button></p>';
                                                         }
 
                                                     echo '</td>
@@ -8691,11 +8851,11 @@
 
                                                             echo '<input type="hidden" name="consequence_file_temporary[]" value="'.$consequence_file_arr[$index].'" />
                                                             <input type="file" class="form-control '; echo !empty($consequence_file_arr[$index]) ? 'hide':''; echo '" name="consequence_file[]" />
-                                                            <p class="'; echo !empty($consequence_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                            <p class="'; echo !empty($consequence_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                                         } else {
                                                             echo '<input type="hidden" name="consequence_file_temporary[]" value="" />
                                                             <input type="file" class="form-control margin-top-15 hide" name="consequence_file[]" />
-                                                            <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload File</button></p>';
+                                                            <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload File</button></p>';
                                                         }
                                                     
                                                     echo '</td>
@@ -8773,11 +8933,11 @@
 
                                                             echo '<input type="hidden" name="consequence_file_temporary_other[]" value="'.$consequence_file_other[$index].'" />
                                                             <input type="file" class="form-control '; echo !empty($consequence_file_other[$index]) ? 'hide':''; echo '" name="consequence_file_other[]" />
-                                                            <p class="'; echo !empty($consequence_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                            <p class="'; echo !empty($consequence_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                                         } else {
                                                             echo '<input type="hidden" name="consequence_file_temporary_other[]" value="" />
                                                             <input type="file" class="form-control margin-top-15 hide" name="consequence_file_other[]" />
-                                                            <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload File</button></p>';
+                                                            <p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload File</button></p>';
                                                         }
                                                     
                                                     echo '</td>
@@ -9102,27 +9262,32 @@
                                             <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
                                             <img src="'.$reviewed_signature.'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
                                             <input type="hidden" name="reviewed_signature_temp" value="'.$reviewed_signature.'" />
-                                        </div>';
-                                        echo '<select class="form-control mt-multiselect" name="reviewed_by">
-                                            <option value="">Select Reviewer</option>';
+                                        </div>
+                                        <div class="input-group">';
+                                            echo '<select class="form-control mt-multiselect" name="reviewed_by">
+                                                <option value="">Select Reviewer</option>';
 
-                                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
-                                            if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                                                    $employee_id = $rowEmployee['ID'];
+                                                $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                                                if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                                    while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                                        $employee_id = $rowEmployee['ID'];
 
-                                                    $selectUserEnterprise = mysqli_query( $conn,"SELECT * from tbl_user WHERE employee_id = $employee_id AND is_verified = 1 AND is_active = 1" );
-                                                    if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
-                                                        $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
-                                                        $currentEnt_userID = $rowUserEnt['ID'];
-                                                        $currentEnt_userFName = htmlentities($rowUserEnt['first_name'] ?? '');
-                                                        $currentEnt_userLName = htmlentities($rowUserEnt['last_name'] ?? '');
+                                                        $selectUserEnterprise = mysqli_query( $conn,"SELECT * from tbl_user WHERE employee_id = $employee_id AND is_verified = 1 AND is_active = 1" );
+                                                        if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
+                                                            $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
+                                                            $currentEnt_userID = $rowUserEnt['ID'];
+                                                            $currentEnt_userFName = htmlentities($rowUserEnt['first_name'] ?? '');
+                                                            $currentEnt_userLName = htmlentities($rowUserEnt['last_name'] ?? '');
 
-                                                        echo '<option value="'.$currentEnt_userID.'" '; echo $reviewed_by == $currentEnt_userID ? 'SELECTED':''; echo '>'.$currentEnt_userFName.' '.$currentEnt_userLName.'</option>';
+                                                            echo '<option value="'.$currentEnt_userID.'" '; echo $reviewed_by == $currentEnt_userID ? 'SELECTED':''; echo '>'.$currentEnt_userFName.' '.$currentEnt_userLName.'</option>';
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        echo '</select>
+                                            echo '</select>
+                                            <span class="input-group-btn">
+                                                <a href="javascript:;" class="btn btn-outline btn-info" onclick="btnSendNotification(this, 1, '.$id.')">Send Notification</a>
+                                            </span>
+                                        </div>
                                     </td>
                                     <td>Date:</td>
                                     <td><input type="date" class="form-control text-center" name="reviewed_date" value="'.$reviewed_date.'" /></td>
@@ -9160,27 +9325,32 @@
                                             <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
                                             <img src="'.$approved_signature.'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
                                             <input type="hidden" name="approved_signature_temp" value="'.$approved_signature.'" />
-                                        </div>';
-                                        echo '<select class="form-control mt-multiselect" name="approved_by">
-                                            <option value="">Select Approver</option>';
+                                        </div>
+                                        <div class="input-group">';
+                                            echo '<select class="form-control mt-multiselect" name="approved_by">
+                                                <option value="">Select Approver</option>';
 
-                                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
-                                            if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                                                    $employee_id = $rowEmployee['ID'];
+                                                $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                                                if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                                    while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                                        $employee_id = $rowEmployee['ID'];
 
-                                                    $selectUserEnterprise = mysqli_query( $conn,"SELECT * from tbl_user WHERE employee_id = $employee_id AND is_verified = 1 AND is_active = 1" );
-                                                    if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
-                                                        $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
-                                                        $currentEnt_userID = $rowUserEnt['ID'];
-                                                        $currentEnt_userFName = htmlentities($rowUserEnt['first_name'] ?? '');
-                                                        $currentEnt_userLName = htmlentities($rowUserEnt['last_name'] ?? '');
+                                                        $selectUserEnterprise = mysqli_query( $conn,"SELECT * from tbl_user WHERE employee_id = $employee_id AND is_verified = 1 AND is_active = 1" );
+                                                        if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
+                                                            $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
+                                                            $currentEnt_userID = $rowUserEnt['ID'];
+                                                            $currentEnt_userFName = htmlentities($rowUserEnt['first_name'] ?? '');
+                                                            $currentEnt_userLName = htmlentities($rowUserEnt['last_name'] ?? '');
 
-                                                        echo '<option value="'.$currentEnt_userID.'" '; echo $approved_by == $currentEnt_userID ? 'SELECTED':''; echo '>'.$currentEnt_userFName.' '.$currentEnt_userLName.'</option>';
+                                                            echo '<option value="'.$currentEnt_userID.'" '; echo $approved_by == $currentEnt_userID ? 'SELECTED':''; echo '>'.$currentEnt_userFName.' '.$currentEnt_userLName.'</option>';
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        echo '</select>
+                                            echo '</select>
+                                            <span class="input-group-btn">
+                                                <a href="javascript:;" class="btn btn-outline btn-info" onclick="btnSendNotification(this, 2, '.$id.')">Send Notification</a>
+                                            </span>
+                                        </div>
                                     </td>
                                     <td>Date:</td>
                                     <td><input type="date" class="form-control text-center" name="approved_date" value="'.$approved_date.'" /></td>
@@ -9204,6 +9374,8 @@
         $result = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE ID = $id" );
         if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
+                $likelihood_user_Id = $row["user_Id"];
+
                 $likelihood_answer = $row["likelihood_answer"];
                 $likelihood_answer_arr = explode(', ', $likelihood_answer);
 
@@ -9236,7 +9408,7 @@
                             <a href="#tabProfile_3" data-toggle="tab">Profile</a>
                         </li>
                         <li>
-                            <a href="#tabQuestionaire_3" data-toggle="tab">Questionaire</a>
+                            <a href="#tabQuestionaire_3" data-toggle="tab">Questionnaire</a>
                         </li>
                         <li>
                             <a href="#tabActivities_3" data-toggle="tab">Activities</a>
@@ -9365,8 +9537,11 @@
                                     </thead>
                                     <tbody>';
 
+                                        $sql_organic = 'WHERE organic = 0';
+                                        if ($likelihood_user_Id == 256) { $sql_organic = ''; }
+
                                         $index = 0;
-                                        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+                                        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic" );
                                         if ( mysqli_num_rows($selectLikelihood) > 0 ) {
                                             while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                                                 $likelihood_ID = $rowLikelihood["ID"];
@@ -9899,7 +10074,8 @@
                                 // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                                 if (!empty($rowSupplier['int_review_assigned']) AND $rowSupplier['int_review_status'] == 1) { $status = 'Reviewed'; }
                                 if (!empty($rowSupplier['int_review_assigned']) AND $rowSupplier['int_review_status'] == 1 AND !empty($rowSupplier['int_verify_assigned']) AND $rowSupplier['int_verify_status'] == 1) { $status = 'Approved by CIG'; }
-                                if (!empty($rowSupplier['int_review_assigned']) AND $rowSupplier['int_review_status'] == 1 AND !empty($rowSupplier['int_verify_assigned']) AND $rowSupplier['int_verify_status'] == 1 AND !empty($rowSupplier['approved_date'])) { $status = "Approved by Client"; }
+                                if (!empty($rowSupplier['int_review_assigned']) AND $rowSupplier['int_review_status'] == 1 AND !empty($rowSupplier['int_verify_assigned']) AND $rowSupplier['int_verify_status'] == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date'])) { $status = 'Reviewed by Client'; }
+                                if (!empty($rowSupplier['int_review_assigned']) AND $rowSupplier['int_review_status'] == 1 AND !empty($rowSupplier['int_verify_assigned']) AND $rowSupplier['int_verify_status'] == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date']) AND !empty($rowSupplier['approved_date']) AND $rowSupplier['approved_date'] == 1 AND !empty($rowSupplier['approved_date']) AND !empty($rowSupplier['approved_date'])) { $status = 'Approved by Client'; }
 
                                 $data_last_modified = $rowSupplier['last_modified'];
                                 $data_last_modified = new DateTime($data_last_modified);
@@ -9996,7 +10172,8 @@
                 // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                 if (!empty($int_review_assigned) AND $int_review_status == 1) { $status = 'Reviewed'; }
                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1) { $status = 'Approved by CIG'; }
-                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['approved_date'])) { $status = "Approved by Client"; }
+                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date'])) { $status = 'Reviewed by Client'; }
+                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date']) AND !empty($rowSupplier['approved_date']) AND $rowSupplier['approved_date'] == 1 AND !empty($rowSupplier['approved_date'])) { $status = 'Approved by Client'; }
 
                 $data_last_modified = $rowSupplier['last_modified'];
                 $data_last_modified = new DateTime($data_last_modified);
@@ -10019,7 +10196,11 @@
                 $count = 0;
                 $sum = 0;
                 $total_likelihood = 0;
-                $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+
+                $sql_organic = 'WHERE organic = 0';
+                if ($supplier_user_id == 256) { $sql_organic = ''; }
+
+                $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic" );
                 if ( mysqli_num_rows($selectLikelihood) > 0 ) {
                     while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                         $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
@@ -10116,14 +10297,16 @@
                 else if ($vulnerability == 3) { $vulnerability_result = '<span class="font-red-thunderbird bold">High Risk</span>'; }
                 else { $vulnerability_result = ""; }
                 
-                $file_files = $rowSupplier["files"];
-                if(!empty($file_files)) {
-                    $fileExtension = fileExtension($file_files);
+                $file = $rowSupplier["files"];
+                if(!empty($file)) {
+                    $fileExtension = fileExtension($file);
                     $src = $fileExtension['src'];
                     $embed = $fileExtension['embed'];
                     $type = $fileExtension['type'];
                     $file_extension = $fileExtension['file_extension'];
                     $url = $base_url.'uploads/ffva/';
+
+                    $file = $src.$url.rawurlencode($file).$embed;
                 }
 
                 echo '<tr id="tr_'.$supplier_id.'">
@@ -10368,7 +10551,7 @@
                     <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id">
                         <option value="">Select</option>';
 
-                        $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = 34 AND suspended = 0 AND status = 1 ORDER BY first_name" );
+                        $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE deleted = 0 AND user_id = 34 AND suspended = 0 AND status = 1 ORDER BY first_name" );
                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                 $employee_id = $rowEmployee['ID'];
@@ -10406,7 +10589,7 @@
                         <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id2" >
                             <option value="">Select</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = 34 AND suspended = 0 AND status = 1 ORDER BY first_name" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE deleted = 0 AND user_id = 34 AND suspended = 0 AND status = 1 ORDER BY first_name" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
@@ -10565,7 +10748,7 @@
                         <select class="form-control mt-multiselect" name="reviewed_by">
                             <option value="">Select Reviewer</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE deleted = 0 AND user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
@@ -10608,7 +10791,7 @@
                         <select class="form-control mt-multiselect" name="approved_by">
                             <option value="">Select Reviewer</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE deleted = 0 AND user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
@@ -10850,7 +11033,7 @@
                         <select class="form-control mt-multiselect" name="reviewed_by">
                             <option value="">Select Reviewer</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE deleted = 0 AND user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
@@ -10898,7 +11081,7 @@
                         <select class="form-control mt-multiselect" name="approved_by">
                             <option value="">Select Reviewer</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE deleted = 0 AND user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
@@ -10982,7 +11165,8 @@
                     // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                     if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1) { $status = 'Reviewed'; }
                     if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1) { $status = 'Approved by CIG'; }
-                    if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1 AND !empty($rowData['approved_date'])) { $status = "Approved by Client"; }
+                    if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1 AND !empty($rowData['reviewed_signature']) AND $rowData['reviewed_by'] > 0 AND !empty($rowData['reviewed_date'])) { $status = 'Reviewed by Client'; }
+                    if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1 AND !empty($rowData['reviewed_signature']) AND $rowData['reviewed_by'] > 0 AND !empty($rowData['reviewed_date']) AND !empty($rowData['approved_date']) AND $rowData['approved_date'] == 1 AND !empty($rowData['approved_date']) AND !empty($rowData['approved_date'])) { $status = 'Approved by Client'; }
 
                     $data_last_modified = $rowData['last_modified'];
                     $data_last_modified = new DateTime($data_last_modified);
@@ -11003,7 +11187,11 @@
                     $count = 0;
                     $sum = 0;
                     $total_likelihood = 0;
-                    $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+
+                    $sql_organic = 'WHERE organic = 0';
+                    if ($user_id == 256) { $sql_organic = ''; }
+
+                    $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic" );
                     if ( mysqli_num_rows($selectLikelihood) > 0 ) {
                         while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                             $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
@@ -11165,7 +11353,7 @@
         $likelihood_file_other_arr = array();
         if (!empty($_POST['likelihood_comment'])) { 
             $likelihood_comment = $_POST['likelihood_comment'];
-            $likelihood_comment = implode(' | ', $likelihood_comment);
+            $likelihood_comment = addslashes(implode(' | ', $likelihood_comment));
 
             for ($i=0; $i < count($_POST["likelihood_comment"]); $i++) {
                 $likelihood_file = addslashes($_FILES['likelihood_file']['name'][$i]);
@@ -11197,7 +11385,7 @@
         }
         if (!empty($_POST['likelihood_comment_other'])) { 
             $likelihood_comment_other = $_POST['likelihood_comment_other'];
-            $likelihood_comment_other = implode(' | ', $likelihood_comment_other);
+            $likelihood_comment_other = addslashes(implode(' | ', $likelihood_comment_other));
 
             for ($i=0; $i < count($_POST["likelihood_comment_other"]); $i++) {
                 $likelihood_file_other = addslashes($_FILES['likelihood_file_other']['name'][$i]);
@@ -11272,7 +11460,7 @@
         $consequence_file_other_arr = array();
         if (!empty($_POST['consequence_comment'])) { 
             $consequence_comment = $_POST['consequence_comment'];
-            $consequence_comment = implode(' | ', $consequence_comment);
+            $consequence_comment = addslashes(implode(' | ', $consequence_comment));
 
             for ($i=0; $i < count($_POST["consequence_comment"]); $i++) {
                 $consequence_file = addslashes($_FILES['consequence_file']['name'][$i]);
@@ -11304,7 +11492,7 @@
         }
         if (!empty($_POST['consequence_comment_other'])) { 
             $consequence_comment_other = $_POST['consequence_comment_other'];
-            $consequence_comment_other = implode(' | ', $consequence_comment_other);
+            $consequence_comment_other = addslashes(implode(' | ', $consequence_comment_other));
 
             for ($i=0; $i < count($_POST["consequence_comment_other"]); $i++) {
                 $consequence_file_other = addslashes($_FILES['consequence_file_other']['name'][$i]);
@@ -11472,7 +11660,8 @@
                     // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                     if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1) { $status = 'Reviewed'; }
                     if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1) { $status = 'Approved by CIG'; }
-                    if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1 AND !empty($rowData['approved_date'])) { $status = "Approved by Client"; }
+                    if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1 AND !empty($rowData['reviewed_signature']) AND $rowData['reviewed_by'] > 0 AND !empty($rowData['reviewed_date'])) { $status = 'Reviewed by Client'; }
+                    if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1 AND !empty($rowData['reviewed_signature']) AND $rowData['reviewed_by'] > 0 AND !empty($rowData['reviewed_date']) AND !empty($rowData['approved_date']) AND $rowData['approved_date'] == 1 AND !empty($rowData['approved_date']) AND !empty($rowData['approved_date'])) { $status = 'Approved by Client'; }
 
                     $data_last_modified = $rowData['last_modified'];
                     $data_last_modified = new DateTime($data_last_modified);
@@ -11489,12 +11678,15 @@
                     $consequence_rate_arr = explode(', ', $consequence_rate);
 
 
+                    $sql_organic = 'WHERE organic = 0';
+                    if ($user_id == 256) { $sql_organic = ''; }
+
                     // Likelihood
                     $index = 0;
                     $count = 0;
                     $sum = 0;
                     $total_likelihood = 0;
-                    $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+                    $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic " );
                     if ( mysqli_num_rows($selectLikelihood) > 0 ) {
                         while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                             $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
@@ -11609,7 +11801,8 @@
                     if ($notification == 1) {
                         // Reviewer
                         // if (!empty($reviewed_by) AND (empty($reviewed_signature) OR $reviewed_signature == $empty_signature)) {
-                        if (!empty($reviewed_by)) {
+                        // if (!empty($reviewed_by)) {
+                        if ($prepared_signature != $empty_signature AND $reviewed_signature == $empty_signature AND !empty($reviewed_by)) {
                             $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $reviewed_by" );
                             if ( mysqli_num_rows($selectDataUser) > 0 ) {
                                 $rowDataUser = mysqli_fetch_array($selectDataUser);
@@ -11620,50 +11813,57 @@
                                 $sender = $prepared_name;
                                 $to = $datauser_email;
                                 $user = $datauser_fullname;
-                                $subject = 'Food Fraud Vulnerability Assessment';
+                                $subject = 'FFVA Module - Client Review';
                                 $body = 'Hi '.$user.',<br><br>
 
                                 <b>Task</b><br>
-                                Interlink FFVA Module for Review<br><br>
+                                Interlink FFVA Module for Client Review<br><br>
 
                                 <b>Description</b><br>
                                 '.htmlentities($data_company ?? '').'<br><br>
 
                                 <b>Assigned by</b><br>
-                                Arnel Ryan<br><br>
+                                '.$prepared_name.'<br><br>
 
                                 <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
                                 <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
                     
-                                php_mailer_1($to, $user, $subject, $body, $from, $sender);
-                                $countSend++;
+                                // php_mailer_1($to, $user, $subject, $body, $from, $sender);
+                                // $countSend++;
                             }
                         }
 
                         // Approver
                         // if (!empty($approved_by) AND (empty($approved_signature) OR $approved_signature == $empty_signature)) {
-                        if (!empty($approved_by)) {
+                        // if (!empty($approved_by)) {
+                        if ($prepared_signature != $empty_signature AND $reviewed_signature != $empty_signature AND $approved_signature == $empty_signature AND !empty($reviewed_by) AND !empty($approved_by)) {
                             $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $approved_by" );
                             if ( mysqli_num_rows($selectDataUser) > 0 ) {
                                 $rowDataUser = mysqli_fetch_array($selectDataUser);
                                 $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
                                 $datauser_email = htmlentities($rowDataUser["email"] ?? '');
 
-                                $from = $prepared_email;
-                                $sender = $prepared_name;
+
+                                $resultUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $reviewed_by" );
+                                $rowUser = mysqli_fetch_array($resultUser);
+                                $reviewer_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                $reviewer_email = htmlentities($rowUser["email"] ?? '');
+
+                                $from = $reviewer_email;
+                                $sender = $reviewer_name;
                                 $to = $datauser_email;
                                 $user = $datauser_fullname;
-                                $subject = 'Food Fraud Vulnerability Assessment';
+                                $subject = 'FFVA Module - Client Approval';
                                 $body = 'Hi '.$user.',<br><br>
 
                                 <b>Task</b><br>
-                                Interlink FFVA Module for Approval<br><br>
+                                Interlink FFVA Module for Client Approval<br><br>
 
                                 <b>Description</b><br>
                                 '.htmlentities($data_company ?? '').'<br><br>
 
                                 <b>Assigned by</b><br>
-                                Arnel Ryan<br><br>
+                                '.$reviewer_name.'<br><br>
 
                                 <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
                                 <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
@@ -11671,7 +11871,7 @@
                                 // if ($countSend > 0) {
                                 //     php_mailer_2($to, $user, $subject, $body, $from, $sender);
                                 // } else {
-                                    php_mailer_1($to, $user, $subject, $body, $from, $sender);
+                                    // php_mailer_1($to, $user, $subject, $body, $from, $sender);
                                 // }
                             }
                         }
@@ -11694,6 +11894,7 @@
         $path = 'uploads/ffva/';
         $random = rand(1000,1000000);
         $ffva_ID = addslashes($_POST['ID']);
+        $changed = false;
 
         $tab = $_POST['tab'];
         $last_modified = date('Y-m-d');
@@ -11715,6 +11916,11 @@
         $code = addslashes($_POST['code']);
         $notification = $_POST['notification'];
 
+
+        $selectProfile = mysqli_query( $conn,"SELECT ID FROM tbl_ffva WHERE ID = $ffva_ID AND company = '".$company."' AND website = '".$website."' AND headquarters = '".$headquarters."' AND telephone = '".$telephone."' AND email = '".$email."' AND person = '".$person."' AND product = '".$product."' AND product = '".$product."' AND assessment = '".$assessment."' AND category_id = '".$category."' AND category_other = '".$category_other."' AND industry_id = '".$industry."' AND industry_other = '".$industry_other."' AND code = '".$code."'" );
+        if ( mysqli_num_rows($selectProfile) == 0 ) { $changed = true; }
+
+
         // Questionaire
         $likelihood_answer = "";
         $likelihood_answer_other = "";
@@ -11734,7 +11940,7 @@
         $likelihood_file_other_arr = array();
         if (!empty($_POST['likelihood_comment'])) { 
             $likelihood_comment = $_POST['likelihood_comment'];
-            $likelihood_comment = implode(' | ', $likelihood_comment);
+            $likelihood_comment = addslashes(implode(' | ', $likelihood_comment));
 
             for ($i=0; $i < count($_POST["likelihood_comment"]); $i++) {
                 if (!empty($_FILES['likelihood_file']['name'][$i])) {
@@ -11771,7 +11977,7 @@
         }
         if (!empty($_POST['likelihood_comment_other'])) { 
             $likelihood_comment_other = $_POST['likelihood_comment_other'];
-            $likelihood_comment_other = implode(' | ', $likelihood_comment_other);
+            $likelihood_comment_other = addslashes(implode(' | ', $likelihood_comment_other));
 
             for ($i=0; $i < count($_POST["likelihood_comment_other"]); $i++) {
                 if (!empty($_FILES['likelihood_file_other']['name'][$i])) {
@@ -11834,6 +12040,11 @@
         $likelihood_comment_summary = $_POST['likelihood_comment_summary'];
         $likelihood_note = $_POST['likelihood_note'];
 
+
+        $selectLikelihood = mysqli_query( $conn,"SELECT ID FROM tbl_ffva WHERE ID = $ffva_ID AND likelihood_answer = '".$likelihood_answer."' AND likelihood_answer_other = '".$likelihood_answer_other."' AND likelihood_comment = '".$likelihood_comment."' AND likelihood_comment_other = '".$likelihood_comment_other."' AND likelihood_file = '".$likelihood_file_arr."' AND likelihood_file_other = '".$likelihood_file_other_arr."' AND likelihood_rate = '".$likelihood_rate."' AND likelihood_rate_other = '".$likelihood_rate_other."' AND likelihood_element_other = '".$likelihood_element_other."' AND likelihood_question_other = '".$likelihood_question_other."' AND likelihood_comment_summary = '".$likelihood_comment_summary."' AND likelihood_note = '".$likelihood_note."'" );
+        if ( mysqli_num_rows($selectLikelihood) == 0 ) { $changed = true; }
+
+
         $consequence_answer = "";
         $consequence_answer_other = "";
         if (!empty($_POST['consequence_answer'])) { 
@@ -11851,7 +12062,7 @@
         $consequence_file_other_arr = array();
         if (!empty($_POST['consequence_comment'])) { 
             $consequence_comment = $_POST['consequence_comment'];
-            $consequence_comment = implode(' | ', $consequence_comment);
+            $consequence_comment = addslashes(implode(' | ', $consequence_comment));
 
             for ($i=0; $i < count($_POST["consequence_comment"]); $i++) {
                 if (!empty($_FILES['consequence_file']['name'][$i])) {
@@ -11888,7 +12099,7 @@
         }
         if (!empty($_POST['consequence_comment_other'])) { 
             $consequence_comment_other = $_POST['consequence_comment_other'];
-            $consequence_comment_other = implode(' | ', $consequence_comment_other);
+            $consequence_comment_other = addslashes(implode(' | ', $consequence_comment_other));
 
             for ($i=0; $i < count($_POST["consequence_comment_other"]); $i++) {
                 if (!empty($_FILES['consequence_file_other']['name'][$i])) {
@@ -11953,6 +12164,10 @@
             $consequence_note = $_POST['consequence_note'];
 
 
+            $selectConsequence = mysqli_query( $conn,"SELECT ID FROM tbl_ffva WHERE ID = $ffva_ID AND consequence_answer = '".$consequence_answer."' AND consequence_answer_other = '".$consequence_answer_other."' AND  consequence_comment = '".$consequence_comment."' AND  consequence_comment_other = '".$consequence_comment_other."' AND consequence_file = '".$consequence_file_arr."' AND consequence_file_other = '".$consequence_file_other_arr."' AND consequence_rate = '".$consequence_rate."' AND consequence_rate_other = '".$consequence_rate_other."' AND consequence_element_other = '".$consequence_element_other."' AND consequence_question_other = '".$consequence_question_other."' AND consequence_comment_summary = '".$consequence_comment_summary."'" );
+            if ( mysqli_num_rows($selectConsequence) == 0 ) { $changed = true; }
+
+
             // Activities
             $prevention = "";
             $prevention_other = "";
@@ -11986,6 +12201,10 @@
                 $mitigation_other = $_POST['mitigation_other'];
                 $mitigation_other = implode(', ', $mitigation_other);
             }
+
+
+            $selectActivities = mysqli_query( $conn,"SELECT ID FROM tbl_ffva WHERE ID = $ffva_ID AND prevention = '".$prevention."' AND prevention_other = '".$prevention_other."' AND detection = '".$detection."' AND detection_other = '".$detection_other."' AND mitigation = '".$mitigation."' AND mitigation_other = '".$mitigation_other."' " );
+            if ( mysqli_num_rows($selectActivities) == 0 ) { $changed = true; }
 
 
             // Assigned
@@ -12040,247 +12259,291 @@
                 }
             }
 
-            $sql = "INSERT INTO tbl_ffva (user_id, portal_user, facility_switch, type, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, notification, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, reviewed_by, reviewed_signature, reviewed_position, reviewed_date, approved_by, approved_signature, approved_position, approved_date, last_modified)
-            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$tab', '$company', '$website', '$headquarters', '$telephone', '$email', '$person', '$product', '$assessment', '$category', '$category_other', '$industry', '$industry_other', '$code', '$notification', '$likelihood_answer', '$likelihood_comment', '$likelihood_file_arr', '$likelihood_rate', '$likelihood_element_other', '$likelihood_question_other', '$likelihood_answer_other', '$likelihood_comment_other', '$likelihood_file_other_arr', '$likelihood_rate_other', '$likelihood_comment_summary', '$likelihood_note', '$consequence_answer', '$consequence_comment', '$consequence_file_arr', '$consequence_rate','$consequence_element_other', '$consequence_question_other', '$consequence_answer_other', '$consequence_comment_other', '$consequence_file_other_arr', '$consequence_rate_other', '$consequence_comment_summary', '$consequence_note', '$prevention', '$prevention_other', '$detection', '$detection_other', '$mitigation', '$mitigation_other', '$prepared_by', '$prepared_signature', '$prepared_position', '$prepared_date', '$reviewed_by', '$reviewed_signature', '$reviewed_position', '$reviewed_date', '$approved_by', '$approved_signature', '$approved_position', '$approved_date', '$last_modified')";
-            if (mysqli_query($conn, $sql)) {
-                $last_id = mysqli_insert_id($conn);
+            $last_id = $ffva_ID;
+            if ($changed == true) {
+                $sql = "INSERT INTO tbl_ffva (user_id, portal_user, facility_switch, type, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, notification, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, reviewed_by, reviewed_signature, reviewed_position, reviewed_date, approved_by, approved_signature, approved_position, approved_date, last_modified)
+                VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$tab', '$company', '$website', '$headquarters', '$telephone', '$email', '$person', '$product', '$assessment', '$category', '$category_other', '$industry', '$industry_other', '$code', '$notification', '$likelihood_answer', '$likelihood_comment', '$likelihood_file_arr', '$likelihood_rate', '$likelihood_element_other', '$likelihood_question_other', '$likelihood_answer_other', '$likelihood_comment_other', '$likelihood_file_other_arr', '$likelihood_rate_other', '$likelihood_comment_summary', '$likelihood_note', '$consequence_answer', '$consequence_comment', '$consequence_file_arr', '$consequence_rate','$consequence_element_other', '$consequence_question_other', '$consequence_answer_other', '$consequence_comment_other', '$consequence_file_other_arr', '$consequence_rate_other', '$consequence_comment_summary', '$consequence_note', '$prevention', '$prevention_other', '$detection', '$detection_other', '$mitigation', '$mitigation_other', '$prepared_by', '$prepared_signature', '$prepared_position', '$prepared_date', '$reviewed_by', '$reviewed_signature', '$reviewed_position', '$reviewed_date', '$approved_by', '$approved_signature', '$approved_position', '$approved_date', '$last_modified')";
+                if (mysqli_query($conn, $sql)) {
+                    $last_id = mysqli_insert_id($conn);
 
-                mysqli_query( $conn,"UPDATE tbl_ffva set updated = 1 WHERE ID = $ffva_ID" );
-
-                $selectData = mysqli_query( $conn,'SELECT * FROM tbl_ffva WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
-                if ( mysqli_num_rows($selectData) > 0 ) {
-                    $rowData = mysqli_fetch_array($selectData);
-                    $data_ID = $rowData['ID'];
-                    $data_int_review_status = htmlentities($rowData['int_review_status'] ?? '');
-                    $data_int_verify_status = htmlentities($rowData['int_verify_status'] ?? '');
-                    $data_company = htmlentities($rowData['company'] ?? '');
-                    if ($tab == 2) { $data_company = htmlentities($rowData['product'] ?? ''); }
-
-                    $data_status = htmlentities($rowData['status'] ?? '');
-                    $status = "Drafted";
-                    // if (empty($int_review_assigned)) { $status = 'Drafted'; }
-                    if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1) { $status = 'Reviewed'; }
-                    if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1) { $status = 'Approved by CIG'; }
-                    if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1 AND !empty($rowData['approved_date'])) { $status = "Approved by Client"; }
-
-                    $data_last_modified = $rowData['last_modified'];
-                    $data_last_modified = new DateTime($data_last_modified);
-                    $data_last_modified = $data_last_modified->format('M d, Y');
-                                                            
-                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($data_last_modified)) );
-                    $due_date = new DateTime($due_date);
-                    $due_date = $due_date->format('M d, Y');
-
-                    $likelihood_rate = $rowData["likelihood_rate"];
-                    $likelihood_rate_arr = explode(', ', $likelihood_rate);
-
-                    $consequence_rate = $rowData["consequence_rate"];
-                    $consequence_rate_arr = explode(', ', $consequence_rate);
-
-
-                    // Likelihood
-                    $index = 0;
-                    $count = 0;
-                    $sum = 0;
-                    $total_likelihood = 0;
-                    $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
-                    if ( mysqli_num_rows($selectLikelihood) > 0 ) {
-                        while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
-                            $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
-                            if (in_array($rowData["type"], $likelihood_type_arr)) {
-                                $sum += $likelihood_rate_arr[$index];
-                                $index++;
-                                $count++;
-                            }
-                        }
-                    }
-
-                    if (!empty($rowData["likelihood_element_other"])) {
-                        $likelihood_element_other = explode(' | ', $rowData["likelihood_element_other"]);
-                        $likelihood_rate_other = explode(', ', $rowData["likelihood_rate_other"]);
-
-                        $index = 0;
-                        foreach ($likelihood_element_other as $value) {
-                            $sum += $likelihood_rate_other[$index];
-                            $index++;
-                            $count++;
-                        }
-                    }
-
-                    $total_likelihood = $sum / $count;
-
-
-                    // Consequence
-                    $index = 0;
-                    $count = 0;
-                    $sum = 0;
-                    $total_consequence = 0;
-                    $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence" );
-                    if ( mysqli_num_rows($selectConsequence) > 0 ) {
-                        while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
-                            $sum += $consequence_rate_arr[$index];
-                            $index++;
-                            $count++;
-                        }
-                    }
-
-                    if (!empty($rowData["consequence_element_other"])) {
-                        $consequence_element_other = explode(' | ', $rowData["consequence_element_other"]);
-                        $consequence_rate_other = explode(', ', $rowData["consequence_rate_other"]);
-
-                        $index = 0;
-                        foreach ($consequence_element_other as $value) {
-                            $sum += $consequence_rate_other[$index];
-                            $index++;
-                            $count++;
-                        }
-                    }
-
-                    $total_consequence = $sum / $count;
-
-
-                    // Matrix
-                    $plot_x = 1;
-                    $plot_y = 1;
-
-                    if (round($total_likelihood) > 0) { $plot_x = round($total_likelihood); }
-                    if (round($total_consequence) > 0) { $plot_y = round($total_consequence); }
-
-                    if ($plot_x == 1 && $plot_y == 1) { $vulnerability = 1; }
-                    else if ($plot_x == 1 && $plot_y == 2) { $vulnerability = 1; }
-                    else if ($plot_x == 1 && $plot_y == 3) { $vulnerability = 1; }
-                    else if ($plot_x == 1 && $plot_y == 4) { $vulnerability = 2; }
-                    else if ($plot_x == 1 && $plot_y == 5) { $vulnerability = 2; }
-                    else if ($plot_x == 2 && $plot_y == 1) { $vulnerability = 1; }
-                    else if ($plot_x == 2 && $plot_y == 2) { $vulnerability = 1; }
-                    else if ($plot_x == 2 && $plot_y == 3) { $vulnerability = 2; }
-                    else if ($plot_x == 2 && $plot_y == 4) { $vulnerability = 2; }
-                    else if ($plot_x == 2 && $plot_y == 5) { $vulnerability = 3; }
-                    else if ($plot_x == 3 && $plot_y == 1) { $vulnerability = 2; }
-                    else if ($plot_x == 3 && $plot_y == 2) { $vulnerability = 2; }
-                    else if ($plot_x == 3 && $plot_y == 3) { $vulnerability = 2; }
-                    else if ($plot_x == 3 && $plot_y == 4) { $vulnerability = 3; }
-                    else if ($plot_x == 3 && $plot_y == 5) { $vulnerability = 3; }
-                    else if ($plot_x == 4 && $plot_y == 1) { $vulnerability = 2; }
-                    else if ($plot_x == 4 && $plot_y == 2) { $vulnerability = 2; }
-                    else if ($plot_x == 4 && $plot_y == 3) { $vulnerability = 3; }
-                    else if ($plot_x == 4 && $plot_y == 4) { $vulnerability = 3; }
-                    else if ($plot_x == 4 && $plot_y == 5) { $vulnerability = 3; }
-                    else if ($plot_x == 5 && $plot_y == 1) { $vulnerability = 3; }
-                    else if ($plot_x == 5 && $plot_y == 2) { $vulnerability = 3; }
-                    else if ($plot_x == 5 && $plot_y == 3) { $vulnerability = 3; }
-                    else if ($plot_x == 5 && $plot_y == 4) { $vulnerability = 3; }
-                    else if ($plot_x == 5 && $plot_y == 5) { $vulnerability = 3; }
-                    else { $vulnerability = 0; }
-
-                    if ($vulnerability == 1) { $vulnerability_result = '<span class="font-green-jungle bold">Low Risk</span>'; }
-                    else if ($vulnerability == 2) { $vulnerability_result = '<span class="font-yellow-gold bold">Medium Risk</span>'; }
-                    else if ($vulnerability == 3) { $vulnerability_result = '<span class="font-red-thunderbird bold">High Risk</span>'; }
-                    else { $vulnerability_result = ""; }
-
-                    // $selectDataPrev = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE ID = $ffva_ID" );
-                    // if ( mysqli_num_rows($selectDataPrev) > 0 ) {
-                    //  $rowDataPrev = mysqli_fetch_array($selectDataPrev);
-                    //  $dataPrev_int_review_assigned = $rowDataPrev['int_review_assigned'];
-                    //  $dataPrev_int_review_status = $rowDataPrev['int_review_status'];
-                    //  $dataPrev_int_review_comment = $rowDataPrev['int_review_comment'];
-                    //  $dataPrev_int_verify_assigned = $rowDataPrev['int_verify_assigned'];
-                    //  $dataPrev_int_verify_status = $rowDataPrev['int_verify_status'];
-                    //  $dataPrev_int_verify_comment = $rowDataPrev['int_verify_comment'];
-
-                    //  mysqli_query( $conn,"UPDATE tbl_ffva set int_review_assigned = '".$dataPrev_int_review_assigned."', int_review_status = '".$dataPrev_int_review_status."', int_review_comment = '".$dataPrev_int_review_comment."', int_verify_assigned = '".$dataPrev_int_verify_assigned."', int_verify_status = '".$dataPrev_int_verify_status."', int_verify_comment = '".$dataPrev_int_verify_comment."' WHERE ID = $data_ID" );
-                    // }
-
-                    $output = array(
-                        "ID" => $data_ID,
-                        "company" => htmlentities($data_company ?? ''),
-                        "status" => $status,
-                        "last_modified" => $data_last_modified,
-                        "vulnerability_result" => $vulnerability_result,
-                        "due_date" => $due_date,
-                        "tab" => $tab,
-                        "ffva_ID" => $ffva_ID,
-                        "user_id" => $user_id
-                    );
-
-                    $resultUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $prepared_by" );
-                    $rowUser = mysqli_fetch_array($resultUser);
-                    $prepared_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
-                    $prepared_email = htmlentities($rowUser["email"] ?? '');
-                    $countSend = 0;
-
-                    // if ($data_int_verify_status == 1 AND $notification == 1) {
-                    if ($notification == 1) {
-                        // Reviewer
-                        if (!empty($reviewed_by)) {
-                            $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $reviewed_by" );
-                            if ( mysqli_num_rows($selectDataUser) > 0 ) {
-                                $rowDataUser = mysqli_fetch_array($selectDataUser);
-                                $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
-                                $datauser_email = htmlentities($rowDataUser["email"] ?? '');
-
-                                $from = $prepared_email;
-                                $sender = $prepared_name;
-                                $to = $datauser_email;
-                                $user = $datauser_fullname;
-                                $subject = 'Food Fraud Vulnerability Assessment';
-                                $body = 'Hi '.$user.',<br><br>
-
-                                <b>Task</b><br>
-                                Interlink FFVA Module for Review<br><br>
-
-                                <b>Description</b><br>
-                                '.htmlentities($data_company ?? '').'<br><br>
-
-                                <b>Assigned by</b><br>
-                                Arnel Ryan<br><br>
-
-                                <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
-                                <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
-                    
-                                php_mailer_1($to, $user, $subject, $body, $from, $sender);
-                                $countSend++;
-                            }
-                        }
-
-                        // Approver
-                        if (!empty($approved_by)) {
-                            $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $approved_by" );
-                            if ( mysqli_num_rows($selectDataUser) > 0 ) {
-                                $rowDataUser = mysqli_fetch_array($selectDataUser);
-                                $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
-                                $datauser_email = htmlentities($rowDataUser["email"] ?? '');
-
-                                $from = $prepared_email;
-                                $sender = $prepared_name;
-                                $to = $datauser_email;
-                                $user = $datauser_fullname;
-                                $subject = 'Food Fraud Vulnerability Assessment';
-                                $body = 'Hi '.$user.',<br><br>
-
-                                <b>Task</b><br>
-                                Interlink FFVA Module for Approval<br><br>
-
-                                <b>Description</b><br>
-                                '.htmlentities($data_company ?? '').'<br><br>
-
-                                <b>Assigned by</b><br>
-                                Arnel Ryan<br><br>
-
-                                <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
-                                <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
-                    
-                                // if ($countSend > 0) {
-                                //     php_mailer_2($to, $user, $subject, $body, $from, $sender);
-                                // } else {
-                                    php_mailer_1($to, $user, $subject, $body, $from, $sender);
-                                // }
-                            }
-                        }
-                    }
-
-                    echo json_encode($output);
+                    mysqli_query( $conn,"UPDATE tbl_ffva set updated = 1 WHERE ID = $ffva_ID" );
                 }
+            } else {
+                mysqli_query( $conn,"UPDATE tbl_ffva SET notification = '".$notification."', prepared_by = '".$prepared_by."', prepared_signature = '".$prepared_signature."', prepared_position = '".$prepared_position."', prepared_date = '".$prepared_date."', reviewed_by = '".$reviewed_by."', reviewed_signature = '".$reviewed_signature."', reviewed_position = '".$reviewed_position."', reviewed_date = '".$reviewed_date."', approved_by = '".$approved_by."', approved_signature = '".$approved_signature."', approved_position = '".$approved_position."', approved_date = '".$approved_date."' WHERE ID = $ffva_ID" );
+            }
+
+            $selectData = mysqli_query( $conn,'SELECT * FROM tbl_ffva WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $rowData = mysqli_fetch_array($selectData);
+                $data_ID = $rowData['ID'];
+                $data_int_review_status = htmlentities($rowData['int_review_status'] ?? '');
+                $data_int_verify_status = htmlentities($rowData['int_verify_status'] ?? '');
+                $data_company = htmlentities($rowData['company'] ?? '');
+                if ($tab == 2) { $data_company = htmlentities($rowData['product'] ?? ''); }
+
+                $data_status = htmlentities($rowData['status'] ?? '');
+                $status = "Drafted";
+                // if (empty($int_review_assigned)) { $status = 'Drafted'; }
+                if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1) { $status = 'Reviewed'; }
+                if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1) { $status = 'Approved by CIG'; }
+                if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1 AND !empty($rowData['reviewed_signature']) AND $rowData['reviewed_by'] > 0 AND !empty($rowData['reviewed_date'])) { $status = 'Reviewed by Client'; }
+                if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1 AND !empty($rowData['int_verify_assigned']) AND $rowData['int_verify_status'] == 1 AND !empty($rowData['reviewed_signature']) AND $rowData['reviewed_by'] > 0 AND !empty($rowData['reviewed_date']) AND !empty($rowData['approved_date']) AND $rowData['approved_date'] == 1 AND !empty($rowData['approved_date']) AND !empty($rowData['approved_date'])) { $status = 'Approved by Client'; }
+
+                $data_last_modified = $rowData['last_modified'];
+                $data_last_modified = new DateTime($data_last_modified);
+                $data_last_modified = $data_last_modified->format('M d, Y');
+                                                        
+                $due_date = date('Y-m-d', strtotime('+1 year', strtotime($data_last_modified)) );
+                $due_date = new DateTime($due_date);
+                $due_date = $due_date->format('M d, Y');
+
+                $likelihood_rate = $rowData["likelihood_rate"];
+                $likelihood_rate_arr = explode(', ', $likelihood_rate);
+
+                $consequence_rate = $rowData["consequence_rate"];
+                $consequence_rate_arr = explode(', ', $consequence_rate);
+
+
+                $sql_organic = 'WHERE organic = 0';
+                if ($user_id == 256) { $sql_organic = ''; }
+
+                // Likelihood
+                $index = 0;
+                $count = 0;
+                $sum = 0;
+                $total_likelihood = 0;
+                $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic" );
+                if ( mysqli_num_rows($selectLikelihood) > 0 ) {
+                    while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
+                        $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
+                        if (in_array($rowData["type"], $likelihood_type_arr)) {
+                            $sum += $likelihood_rate_arr[$index];
+                            $index++;
+                            $count++;
+                        }
+                    }
+                }
+
+                if (!empty($rowData["likelihood_element_other"])) {
+                    $likelihood_element_other = explode(' | ', $rowData["likelihood_element_other"]);
+                    $likelihood_rate_other = explode(', ', $rowData["likelihood_rate_other"]);
+
+                    $index = 0;
+                    foreach ($likelihood_element_other as $value) {
+                        $sum += $likelihood_rate_other[$index];
+                        $index++;
+                        $count++;
+                    }
+                }
+
+                $total_likelihood = $sum / $count;
+
+
+                // Consequence
+                $index = 0;
+                $count = 0;
+                $sum = 0;
+                $total_consequence = 0;
+                $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence" );
+                if ( mysqli_num_rows($selectConsequence) > 0 ) {
+                    while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
+                        $sum += $consequence_rate_arr[$index];
+                        $index++;
+                        $count++;
+                    }
+                }
+
+                if (!empty($rowData["consequence_element_other"])) {
+                    $consequence_element_other = explode(' | ', $rowData["consequence_element_other"]);
+                    $consequence_rate_other = explode(', ', $rowData["consequence_rate_other"]);
+
+                    $index = 0;
+                    foreach ($consequence_element_other as $value) {
+                        $sum += $consequence_rate_other[$index];
+                        $index++;
+                        $count++;
+                    }
+                }
+
+                $total_consequence = $sum / $count;
+
+
+                // Matrix
+                $plot_x = 1;
+                $plot_y = 1;
+
+                if (round($total_likelihood) > 0) { $plot_x = round($total_likelihood); }
+                if (round($total_consequence) > 0) { $plot_y = round($total_consequence); }
+
+                if ($plot_x == 1 && $plot_y == 1) { $vulnerability = 1; }
+                else if ($plot_x == 1 && $plot_y == 2) { $vulnerability = 1; }
+                else if ($plot_x == 1 && $plot_y == 3) { $vulnerability = 1; }
+                else if ($plot_x == 1 && $plot_y == 4) { $vulnerability = 2; }
+                else if ($plot_x == 1 && $plot_y == 5) { $vulnerability = 2; }
+                else if ($plot_x == 2 && $plot_y == 1) { $vulnerability = 1; }
+                else if ($plot_x == 2 && $plot_y == 2) { $vulnerability = 1; }
+                else if ($plot_x == 2 && $plot_y == 3) { $vulnerability = 2; }
+                else if ($plot_x == 2 && $plot_y == 4) { $vulnerability = 2; }
+                else if ($plot_x == 2 && $plot_y == 5) { $vulnerability = 3; }
+                else if ($plot_x == 3 && $plot_y == 1) { $vulnerability = 2; }
+                else if ($plot_x == 3 && $plot_y == 2) { $vulnerability = 2; }
+                else if ($plot_x == 3 && $plot_y == 3) { $vulnerability = 2; }
+                else if ($plot_x == 3 && $plot_y == 4) { $vulnerability = 3; }
+                else if ($plot_x == 3 && $plot_y == 5) { $vulnerability = 3; }
+                else if ($plot_x == 4 && $plot_y == 1) { $vulnerability = 2; }
+                else if ($plot_x == 4 && $plot_y == 2) { $vulnerability = 2; }
+                else if ($plot_x == 4 && $plot_y == 3) { $vulnerability = 3; }
+                else if ($plot_x == 4 && $plot_y == 4) { $vulnerability = 3; }
+                else if ($plot_x == 4 && $plot_y == 5) { $vulnerability = 3; }
+                else if ($plot_x == 5 && $plot_y == 1) { $vulnerability = 3; }
+                else if ($plot_x == 5 && $plot_y == 2) { $vulnerability = 3; }
+                else if ($plot_x == 5 && $plot_y == 3) { $vulnerability = 3; }
+                else if ($plot_x == 5 && $plot_y == 4) { $vulnerability = 3; }
+                else if ($plot_x == 5 && $plot_y == 5) { $vulnerability = 3; }
+                else { $vulnerability = 0; }
+
+                if ($vulnerability == 1) { $vulnerability_result = '<span class="font-green-jungle bold">Low Risk</span>'; }
+                else if ($vulnerability == 2) { $vulnerability_result = '<span class="font-yellow-gold bold">Medium Risk</span>'; }
+                else if ($vulnerability == 3) { $vulnerability_result = '<span class="font-red-thunderbird bold">High Risk</span>'; }
+                else { $vulnerability_result = ""; }
+
+                $output = array(
+                    "ID" => $data_ID,
+                    "company" => htmlentities($data_company ?? ''),
+                    "status" => $status,
+                    "last_modified" => $data_last_modified,
+                    "vulnerability_result" => $vulnerability_result,
+                    "due_date" => $due_date,
+                    "tab" => $tab,
+                    "ffva_ID" => $ffva_ID,
+                    "user_id" => $user_id
+                );
+
+                $resultUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $prepared_by" );
+                $rowUser = mysqli_fetch_array($resultUser);
+                $prepared_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                $prepared_email = htmlentities($rowUser["email"] ?? '');
+                $countSend = 0;
+
+                if ($notification == 1) {
+                    // Reviewer
+                    if ($prepared_signature != $empty_signature AND $reviewed_signature == $empty_signature AND !empty($reviewed_by)) {
+                        $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $reviewed_by" );
+                        if ( mysqli_num_rows($selectDataUser) > 0 ) {
+                            $rowDataUser = mysqli_fetch_array($selectDataUser);
+                            $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
+                            $datauser_email = htmlentities($rowDataUser["email"] ?? '');
+
+                            $from = $prepared_email;
+                            $sender = $prepared_name;
+                            $to = $datauser_email;
+                            $user = $datauser_fullname;
+                            $subject = 'FFVA Module - Client Review';
+                            $body = 'Hi '.$user.',<br><br>
+
+                            <b>Task</b><br>
+                            Interlink FFVA Module for Client Review<br><br>
+
+                            <b>Description</b><br>
+                            '.htmlentities($data_company ?? '').'<br><br>
+
+                            <b>Assigned by</b><br>
+                            '.$prepared_name.'<br><br>
+
+                            <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
+                            <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
+                
+                            // php_mailer_1($to, $user, $subject, $body, $from, $sender);
+                            // $countSend++;
+                        }
+                    }
+
+                    // Approver
+                    if ($prepared_signature != $empty_signature AND $reviewed_signature != $empty_signature AND $approved_signature == $empty_signature AND !empty($reviewed_by) AND !empty($approved_by)) {
+                        $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $approved_by" );
+                        if ( mysqli_num_rows($selectDataUser) > 0 ) {
+                            $rowDataUser = mysqli_fetch_array($selectDataUser);
+                            $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
+                            $datauser_email = htmlentities($rowDataUser["email"] ?? '');
+
+
+                            $resultUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $reviewed_by" );
+                            $rowUser = mysqli_fetch_array($resultUser);
+                            $reviewer_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                            $reviewer_email = htmlentities($rowUser["email"] ?? '');
+
+
+                            $from = $reviewer_email;
+                            $sender = $reviewer_name;
+                            $to = $datauser_email;
+                            $user = $datauser_fullname;
+                            $subject = 'FFVA Module - Client Approval';
+                            $body = 'Hi '.$user.',<br><br>
+
+                            <b>Task</b><br>
+                            Interlink FFVA Module for Client Approval<br><br>
+
+                            <b>Description</b><br>
+                            '.htmlentities($data_company ?? '').'<br><br>
+
+                            <b>Assigned by</b><br>
+                            '.$reviewer_name.'<br><br>
+
+                            <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
+                            <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
+                
+                            // if ($countSend > 0) {
+                            //     php_mailer_2($to, $user, $subject, $body, $from, $sender);
+                            // } else {
+                                // php_mailer_1($to, $user, $subject, $body, $from, $sender);
+                            // }
+                        }
+                    }
+                }
+
+                if ($tab == 2 AND $user_id == 1211 AND ($portal_user == $reviewed_by OR $portal_user == $approved_by) ) {
+                    $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $portal_user" );
+                    if ( mysqli_num_rows($selectDataUser) > 0 ) {
+                        $rowDataUser = mysqli_fetch_array($selectDataUser);
+                        $datauser_email = htmlentities($rowDataUser["email"] ?? '');
+
+                        $sender_name = 'Interlink IQ';
+                        $sender_email = 'services@interlinkiq.com';
+                        $sender[$sender_email] = $sender_name;
+
+                        $recipients_name = 'Zoraida Cruz';
+                        $recipients_email = 'zoraida@consultareinc.com';
+                        $recipients[$recipients_email] = $recipients_name;
+
+                        $recipients_name = 'Triciia Leah Velasco';
+                        $recipients_email = 'triccialeah.velasco.qms@gmail.com';
+                        $recipients[$recipients_email] = $recipients_name;
+
+                        $recipients_name = 'Sophia Baria';
+                        $recipients_email = 'sophia.baria.qms@gmail.com';
+                        $recipients[$recipients_email] = $recipients_name;
+
+                        $recipients_name = 'Ginalyn Acedera';
+                        $recipients_email = 'ginalyn.acedera.qms@gmail.com';
+                        $recipients[$recipients_email] = $recipients_name;
+
+                        $subject = 'FFVA Module - Client Update';
+                        $body = 'Hi GII-QMS team,<br><br>
+
+                        <b>Task</b><br>
+                        Interlink FFVA Module for Internal Review<br><br>
+
+                        <b>Description</b><br>
+                        '.stripcslashes($product).'<br><br>
+
+                        <b>Assigned by:</b><br>
+                        '.$datauser_email;
+
+                        // php_mailer_dynamic($sender, $recipients, $subject, $body);
+                    }
+                }
+
+                echo json_encode($output);
             }
         }
     }
@@ -12464,7 +12727,7 @@
 
             <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
             
-            php_mailer_1($to, $user, $subject, $body, $from, $name);
+            // php_mailer_1($to, $user, $subject, $body, $from, $name);
         }
 
 
@@ -12516,11 +12779,11 @@
 
             <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
-            if ($mail_sent == 0) {
-                php_mailer_1($to, $user, $subject, $body, $from, $name); 
-                $mail_sent++;
-            }
-            else { php_mailer_2($to, $user, $subject, $body, $from, $name); }
+            // if ($mail_sent == 0) {
+            //     php_mailer_1($to, $user, $subject, $body, $from, $name); 
+            //     $mail_sent++;
+            // }
+            // else { php_mailer_2($to, $user, $subject, $body, $from, $name); }
 
 
             if (!empty($row_int_verify_assigned)) {
@@ -12545,11 +12808,11 @@
 
                 <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
 
-                if ($mail_sent == 0) {
-                    php_mailer_1($to2, $user2, $subject2, $body2, $to, $user);
-                    $mail_sent++;
-                }
-                else { php_mailer_2($to2, $user2, $subject2, $body2, $to, $user); }
+                // if ($mail_sent == 0) {
+                //     php_mailer_1($to2, $user2, $subject2, $body2, $to, $user);
+                //     $mail_sent++;
+                // }
+                // else { php_mailer_2($to2, $user2, $subject2, $body2, $to, $user); }
             }
         }
         else if ($status == 2) {
@@ -12568,11 +12831,11 @@
 
             <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
 
-            if ($mail_sent == 0) {
-                php_mailer_1($to, $user, $subject, $body, $from, $name);
-                $mail_sent++;
-            }
-            else { php_mailer_2($to, $user, $subject, $body, $from, $name); }
+            // if ($mail_sent == 0) {
+            //     php_mailer_1($to, $user, $subject, $body, $from, $name);
+            //     $mail_sent++;
+            // }
+            // else { php_mailer_2($to, $user, $subject, $body, $from, $name); }
         }
 
         $selectFFVA = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE ID = $ID" );
@@ -12621,11 +12884,11 @@
 
                         <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
-                        if ($mail_sent == 0) {
-                            php_mailer_1($to, $user, $subject, $body, $from, $sender);
-                            $mail_sent++;
-                        }
-                        else { php_mailer_2($to, $user, $subject, $body, $from, $sender); }
+                        // if ($mail_sent == 0) {
+                        //     php_mailer_1($to, $user, $subject, $body, $from, $sender);
+                        //     $mail_sent++;
+                        // }
+                        // else { php_mailer_2($to, $user, $subject, $body, $from, $sender); }
                     }
                 }
 
@@ -12662,11 +12925,11 @@
 
                         <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
-                        if ($mail_sent == 0) {
-                            php_mailer_1($to, $user, $subject, $body, $from, $sender);
-                            $mail_sent++;
-                        }
-                        else { php_mailer_2($to, $user, $subject, $body, $from, $sender); }
+                        // if ($mail_sent == 0) {
+                        //     php_mailer_1($to, $user, $subject, $body, $from, $sender);
+                        //     $mail_sent++;
+                        // }
+                        // else { php_mailer_2($to, $user, $subject, $body, $from, $sender); }
                     }
                 }
             }
@@ -12974,6 +13237,77 @@
             }
         }
     }
+    if( isset($_GET['btnSendNotification']) ) {
+        $ID = $_GET['btnSendNotification'];
+        $t = $_GET['t'];
+        $i = $_GET['i'];
+
+        if ($t == 1) { $t = "Review"; }
+        else if ($t == 2) { $t = "Approval"; }
+
+        $selectData = mysqli_query( $conn,"SELECT
+            f.type As f_type,
+            f.company AS f_company,
+            f.product AS f_product,
+            CASE WHEN f.type = 2 THEN f.product ELSE f.company END AS f_description,
+            u.first_name AS f_first_name,
+            u.last_name AS f_last_name,
+            u.email AS f_email,
+            t.first_name AS t_first_name,
+            t.last_name AS t_last_name,
+            t.email AS t_email
+            FROM tbl_ffva AS f
+
+            INNER JOIN (
+                SELECT
+                *
+                FROM tbl_user
+            ) AS u
+            ON f.prepared_by = u.ID
+
+            INNER JOIN (
+                SELECT
+                *
+                FROM tbl_user
+            ) AS t
+            ON t.ID = $ID
+
+            WHERE f.ID = $i
+        " );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            $rowData = mysqli_fetch_array($selectData);
+
+            $f_fullname = htmlentities($rowData["f_first_name"] ?? '') .' '. htmlentities($rowData["f_last_name"] ?? '');
+            $f_email = htmlentities($rowData["f_email"] ?? '');
+
+            $t_fullname = htmlentities($rowData["t_first_name"] ?? '') .' '. htmlentities($rowData["t_last_name"] ?? '');
+            $t_email = htmlentities($rowData["t_email"] ?? '');
+            
+
+            $f_description = htmlentities($rowData["f_description"] ?? '');
+            $from = $f_email;
+            $sender = $f_fullname;
+            $to = $t_email;
+            $user = $t_fullname;
+
+            $subject = 'FFVA Module - Client '.$t;
+            $body = 'Hi '.$user.',<br><br>
+
+            <b>Task</b><br>
+            Interlink FFVA Module for Client '.$t.'<br><br>
+
+            <b>Description</b><br>
+            '.$f_description.'<br><br>
+
+            <b>Assigned by</b><br>
+            '.$f_fullname.'<br><br>
+
+            <a href="'.$base_url.'ffva?v='.$i.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
+            <a href="'.$base_url.'pdf_ffva?id='.$i.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
+
+            php_mailer_1($to, $user, $subject, $body, $from, $sender);
+        }
+    }
     
     
     // CUSTOMER PAGE
@@ -13229,7 +13563,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Category</label>
-                                <select class="form-control '; echo $page == 1 ? 'hide':''; echo '" name="category" onchange="changedCategory(this)" required>
+                                <select class="form-control '; echo $page == 1 ? 'hide':''; echo '" name="category" onchange="changedCategory(this, 2)" required>
                                     <option value="">Select</option>';
                                     
                                         $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
@@ -13239,7 +13573,8 @@
                                             }
                                         }
                                     
-                                echo '</select>';
+                                echo '</select>
+                                <input type="text" class="form-control margin-top-15" name="supplier_category_other" id="supplier_category_other_2" placeholder="Specify others" style="display: none;" />';
 
                                 if ($page == 1) { echo '<input class="form-control" type="text" value="'.$enterprise_category.'" readonly />'; }
                                 
@@ -13258,7 +13593,8 @@
                                             }
                                         }
                                     
-                                echo '</select>';
+                                echo '</select>
+                                <input type="text" class="form-control margin-top-15" name="supplier_industry_other" id="supplier_industry_other_2" placeholder="Specify others" style="display: none;" />';
 
                                 if ($page == 1) { echo '<input class="form-control" type="text" value="'.$enterprise_industry.'" readonly />'; }
                                 
@@ -13709,7 +14045,9 @@
                     if ($page == 2) {
                         echo '<div class="mt-checkbox-list">';
                             
-                            $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
+                            $sql_supplier = '';
+                            if ($user_id == 1649 OR $current_client == 16) { $sql_supplier = ' WHERE client = 16 '; }
+                            $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement $sql_supplier ORDER BY name" );
                             if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                                 while($rowReq = mysqli_fetch_array($selectRequirement2)) {
                                     echo '<label class="mt-checkbox mt-checkbox-outline"> '.$rowReq["name"].'
@@ -13958,7 +14296,7 @@
                                                             echo '<input type="text" class="form-control" name="document_comment[]" placeholder="Comment" />';
                                                             if ($page == 2) {
                                                                 echo '<div class="row margin-top-10 '; echo $current_userEmployerID == 34 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106 ? '':'hide'; echo '">
-                                                                    <div class="col-md-6">
+                                                                    <div class="col-md-3">
                                                                         <div class="form-group">
                                                                             <label class="control-label">Reviewed By</label>';
 
@@ -13994,7 +14332,13 @@
 
                                                                         echo '</div>
                                                                     </div>
-                                                                    <div class="col-md-6">
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Reviewed Date</label>
+                                                                            <input type="date" class="form-control" name="document_reviewed_date[]" value="" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
                                                                         <div class="form-group">
                                                                             <label class="control-label">Approved By</label>';
 
@@ -14029,6 +14373,12 @@
                                                                             }
 
                                                                         echo '</div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Approved Date</label>
+                                                                            <input type="date" class="form-control" name="document_approved_date[]" value="" />
+                                                                        </div>
                                                                     </div>
                                                                 </div>';
                                                             }
@@ -14255,7 +14605,7 @@
                                                     echo '<input type="text" class="form-control" name="document_other_comment[]" placeholder="Comment" />';
                                                     if ($page == 2) {
                                                         echo '<div class="row margin-top-10 '; echo $current_userEmployerID == 34 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106 ? '':'hide'; echo '">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Reviewed By</label>';
 
@@ -14291,7 +14641,13 @@
 
                                                                 echo '</div>
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Reviewed Date</label>
+                                                                    <input type="date" class="form-control" name="document_other_reviewed_date[]" value="" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Approved By</label>';
 
@@ -14326,6 +14682,12 @@
                                                                     }
 
                                                                 echo '</div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Approved Date</label>
+                                                                    <input type="date" class="form-control" name="document_other_approved_date[]" value="" />
+                                                                </div>
                                                             </div>
                                                         </div>';
                                                     }
@@ -14809,7 +15171,7 @@
                                 <label class="control-label">Department</label>
                                 <select class="form-control mt-multiselect department_id" name="department_id[]" onchange="changeDepartment(this, 2)" multiple="multiple">';
                                     
-                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title");
+                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title");
                                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                                             $dept_ID = $rowDepartment["ID"];
@@ -14833,7 +15195,7 @@
                                     
                                     if (!empty($department_id)) {
                                         foreach ($department_id_arr as $value) {
-                                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY first_name");
+                                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND department_id = $value AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY first_name");
                                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                     $emp_ID = $rowEmployee["ID"];
@@ -14853,7 +15215,7 @@
                                             }
                                         }
                                     } else {
-                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY first_name");
+                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY first_name");
                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                 $emp_ID = $rowEmployee["ID"];
@@ -16059,6 +16421,7 @@
                     ON e.ID = u.employee_id
 
                     WHERE e.suspended = 0 
+                    AND e.deleted = 0
                     AND e.status = 1 
                     AND e.user_id = $user_id
                     AND e.facility_switch = $facility_switch_user_id
@@ -16077,10 +16440,314 @@
                     <td class="text-center">'.intval($compliance).'%</td>
                     <td>'.$name.'</td>
                     <td>'.implode(', ', $employee_arr).'</td>
-                    <td>'.$d_name.'</td>
-                    <td>'.$m_name.'</td>
+                    <td class="text-center">';
+
+                        if (empty(!$d_name)) {
+                            echo '<a href="#modalReportView" class="btn btn-link" data-toggle="modal" onclick="btnReportView('.$ID.', 1)">View</a>';
+                        }
+
+                    echo '</td>
+                    <td class="text-center">';
+
+                        if (empty(!$m_name)) {
+                            echo '<a href="#modalReportView" class="btn btn-link" data-toggle="modal" onclick="btnReportView('.$ID.', 2)">View</a>';
+                        }
+
+                    echo '</td>
                 </tr>';
             }
+        }
+    }
+    if( isset($_GET['modalView_Customer_ReportView']) ) {
+        $ID = $_GET['modalView_Customer_ReportView'];
+        $t = $_GET['t'];
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $current_dateNow_o = date('Y/m/d');
+        $current_dateNow = new DateTime($current_dateNow_o);
+        $current_dateNow = $current_dateNow->format('M d, Y');
+
+        if ($t == 1) {
+            $selectData = mysqli_query( $conn,"
+                SELECT 
+                sr.name COLLATE utf8mb4_general_ci AS d_name,
+                d1.file AS d_file,
+                d1.filetype AS d_filetype,
+                d1.file_date AS d_file_date,
+                d1.file_due AS d_file_due
+                FROM tbl_supplier AS s1
+
+                RIGHT JOIN (
+                    SELECT
+                    * 
+                    FROM tbl_supplier_document 
+                    WHERE type = 0
+                    AND ID IN (
+                        SELECT
+                        MAX(ID)
+                        FROM tbl_supplier_document
+                        WHERE type = 0
+                        GROUP BY name, supplier_id
+                    )
+                ) AS d1
+                ON s1.ID = d1.supplier_ID
+                AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
+
+                LEFT JOIN (
+                    SELECT
+                    ID,
+                    name
+                    FROM tbl_supplier_requirement
+                ) AS sr
+                ON d1.name = sr.ID
+
+                WHERE s1.ID = $ID
+
+                UNION ALL
+
+                SELECT 
+                d2.name AS d_name,
+                d2.file AS d_file,
+                d2.filetype AS d_filetype,
+                d2.file_date AS d_file_date,
+                d2.file_due AS d_file_due
+                FROM tbl_supplier AS s2
+
+                RIGHT JOIN (
+                    SELECT
+                    * 
+                    FROM tbl_supplier_document 
+                    WHERE type = 1
+                    AND ID IN (
+                        SELECT
+                        MAX(ID)
+                        FROM tbl_supplier_document
+                        WHERE type = 1
+                        GROUP BY name, supplier_id
+                    )
+                ) AS d2
+                ON s2.ID = d2.supplier_ID
+                AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
+
+                WHERE s2.ID = $ID
+            " );
+        } else if ($t == 2) {
+            $selectData = mysqli_query( $conn,"
+                SELECT 
+                m.ID AS m_ID,
+                m.material_name AS m_material_name,
+                m.spec_file AS m_spec_file,
+                m.spec_date_from AS m_spec_date_from,
+                m.spec_date_to AS m_spec_date_to,
+                m.other AS m_other
+                FROM tbl_supplier AS s
+
+                RIGHT JOIN (
+                    SELECT
+                    ID,
+                    material_name,
+                    spec_file,
+                    spec_date_from,
+                    spec_date_to,
+                    other
+                    FROM tbl_supplier_material
+                ) AS m
+                ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', '')  ) > 0
+
+                WHERE s.ID = $ID
+
+                ORDER BY m.material_name
+            " );
+        }
+
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            if ($t == 1) {
+                echo '<thead>
+                    <tr>
+                        <th>Name</th>
+                        <th class="text-center">File</th>
+                        <th class="text-center">Date Start</th>
+                        <th class="text-center">Date Due</th>
+                    </tr>
+                </thead>
+                <tbody>';
+            } else if ($t == 2) {
+                echo '<thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Document</th>
+                        <th class="text-center">File</th>
+                        <th class="text-center">Date Start</th>
+                        <th class="text-center">Date Due</th>
+                    </tr>
+                </thead>
+                <tbody>';
+            }
+
+            while($row = mysqli_fetch_array($selectData)) {
+
+                if ($t == 1) {
+                    $name = htmlentities($row["d_name"] ?? '');
+                    $doc_filetype = $row["d_filetype"];
+
+                    $doc_file_date = $row["d_file_date"];
+                    if (!empty($doc_file_date)) {
+                        $doc_file_date = new DateTime($doc_file_date);
+                        $doc_file_date_o = $doc_file_date->format('Y/m/d');
+                        $doc_file_date = $doc_file_date->format('m/d/Y');
+                    }
+
+                    $doc_file_due = $row["d_file_due"];
+                    if (!empty($doc_file_due)) {
+                        $doc_file_due = new DateTime($doc_file_due);
+                        $doc_file_due_o = $doc_file_due->format('Y/m/d');
+                        $doc_file_due_o_nearly = date('Y/m/d', strtotime($doc_file_due_o. ' - 30 days'));
+                        $doc_file_due = $doc_file_due->format('m/d/Y');
+                    };
+
+                    $doc_stat = '';
+                    if (!empty($doc_file_date) AND !empty($doc_file_due)) {
+                        if ($doc_file_date_o < $current_dateNow_o && $doc_file_due_o < $current_dateNow_o) {
+                            $doc_stat = 'text-danger';
+                        } else {
+                            if ($doc_file_date_o <= $current_dateNow_o && $doc_file_due_o_nearly <= $current_dateNow_o) {
+                                $doc_stat = 'text-warning';
+                            }
+                        }
+                    }
+
+                    $doc_file = $row["d_file"];
+                    if (!empty($doc_file)) {
+                        $type = 'iframe';
+                        if ($doc_filetype == 1) {
+                            $fileExtension = fileExtension($doc_file);
+                            $src = $fileExtension['src'];
+                            $embed = $fileExtension['embed'];
+                            $type = $fileExtension['type'];
+                            $file_extension = $fileExtension['file_extension'];
+                            $url = $base_url.'uploads/supplier/';
+
+                            $doc_file = $src.$url.rawurlencode($doc_file).$embed;
+                        } else {
+                            $doc_file = preg_replace('#[^/]*$#', '', $doc_file).'preview';
+                        }
+
+                        $doc_file =  '<a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn-link">View</a>';
+                    }
+
+                    echo '<tr>
+                        <td class="'.$doc_stat.'">'.$name.'</td>
+                        <td class="text-center">'.$doc_file.'</td>
+                        <td class="text-center">'.$doc_file_date.'</td>
+                        <td class="text-center">'.$doc_file_due.'</td>
+                    </tr>';
+                } else if ($t == 2) {
+                    $name = htmlentities($row["m_material_name"] ?? '');
+
+                    $doc_file_date = $row["m_spec_date_from"];
+                    if (!empty($doc_file_date)) {
+                        $doc_file_date = new DateTime($doc_file_date);
+                        $doc_file_date_o = $doc_file_date->format('Y/m/d');
+                        $doc_file_date = $doc_file_date->format('m/d/Y');
+                    }
+
+                    $doc_file_due = $row["m_spec_date_to"];
+                    if (!empty($doc_file_due)) {
+                        $doc_file_due = new DateTime($doc_file_due);
+                        $doc_file_due_o = $doc_file_due->format('Y/m/d');
+                        $doc_file_due_o_nearly = date('Y/m/d', strtotime($doc_file_due_o. ' - 30 days'));
+                        $doc_file_due = $doc_file_due->format('m/d/Y');
+                    };
+
+                    $doc_stat = '';
+                    if (!empty($doc_file_date) AND !empty($doc_file_due)) {
+                        if ($doc_file_date_o < $current_dateNow_o && $doc_file_due_o < $current_dateNow_o) {
+                            $doc_stat = 'text-danger';
+                        } else {
+                            if ($doc_file_date_o <= $current_dateNow_o && $doc_file_due_o_nearly <= $current_dateNow_o) {
+                                $doc_stat = 'text-warning';
+                            }
+                        }
+                    }
+
+                    $doc_file = $row["m_spec_file"];
+                    if (!empty($doc_file)) {
+                        $type = 'iframe';
+                        $fileExtension = fileExtension($doc_file);
+                        $src = $fileExtension['src'];
+                        $embed = $fileExtension['embed'];
+                        $type = $fileExtension['type'];
+                        $file_extension = $fileExtension['file_extension'];
+                        $url = $base_url.'uploads/supplier/';
+
+                        $doc_file = $src.$url.rawurlencode($doc_file).$embed;
+                        $doc_file =  '<a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn-link">View</a>';
+                    }
+
+                    $other_tr = '';
+                    $other = $row['m_other'];
+                    $other_arr = json_decode($other,true);
+                    $other_count = count($other_arr) + 1;
+                    if (!empty($other)) {
+                        foreach ($other_arr as $key => $value) {
+                            $other_name = htmlentities($value['name'] ?? '');
+
+                            $other_from = $value['from'];
+                            if (!empty($other_from)) {
+                                $other_from = new DateTime($other_from);
+                                $other_from = $other_from->format('m/d/Y');
+                            }
+                            
+                            $other_to = $value['to'];
+                            if (!empty($other_to)) {
+                                $other_to = new DateTime($other_to);
+                                $other_to = $other_to->format('m/d/Y');
+                            }
+
+                            $material_file_doc = $value['material_file_doc'];
+                            if (!empty($material_file_doc)) {
+                                $fileExtension = fileExtension($material_file_doc);
+                                $src = $fileExtension['src'];
+                                $embed = $fileExtension['embed'];
+                                $type = $fileExtension['type'];
+                                $file_extension = $fileExtension['file_extension'];
+                                $url = $base_url.'uploads/supplier/';
+
+                                $material_file_doc = $src.$url.rawurlencode($material_file_doc).$embed;
+                                $material_file_doc =  '<a href="'.$material_file_doc.'" data-src="'.$material_file_doc.'" '.$datafancybox.' data-type="'.$type.'" class="btn-link">View</a>';
+                            }
+
+                            $other_tr .= '<tr>
+                                <td class="'.$doc_stat.'">'.$other_name.'</td>
+                                <td class="text-center">'.$material_file_doc.'</td>
+                                <td class="text-center">'.$other_from.'</td>
+                                <td class="text-center">'.$other_to.'</td>
+                            </tr>';
+                        }
+                    }
+
+
+                    echo '<tr>
+                        <td rowspan="'.$other_count.'">'.$name.'</td>
+                        <td>Specification</td>
+                        <td class="text-center">'.$doc_file.'</td>
+                        <td class="text-center">'.$doc_file_date.'</td>
+                        <td class="text-center">'.$doc_file_due.'</td>
+                    </tr>';
+
+                    echo $other_tr;
+                }
+            }
+
+            echo '</tbody>';
         }
     }
     if( isset($_GET['modalView_Customer_Industry']) ) {
@@ -16348,7 +17015,7 @@
                                         if ($page == 1) {
                                             if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                                 echo '<div class="row margin-top-10">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="control-label">Reviewed By</label>';
 
@@ -16383,7 +17050,13 @@
 
                                                         echo '</div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Reviewed Date</label>
+                                                            <input type="date" class="form-control" name="document_reviewed_date[]" value="" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="control-label">Approved By</label>';
 
@@ -16417,6 +17090,12 @@
                                                             }
 
                                                         echo '</div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Approved Date</label>
+                                                            <input type="date" class="form-control" name="document_approved_date[]" value="" />
+                                                        </div>
                                                     </div>
                                                 </div>';
                                             }
@@ -16607,7 +17286,7 @@
             $department_id = implode(", ", $_POST['department_id']);
             $department_id_arr = explode(", ", $department_id);
             foreach ($department_id_arr as $value) {
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $current_userEmployerID AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND department_id = $value AND user_id = $current_userEmployerID AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $emp_ID = $rowEmployee["ID"];
@@ -16622,7 +17301,7 @@
                 }
             }
         } else {
-            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $current_userEmployerID AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
+            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $current_userEmployerID AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                     $emp_ID = $rowEmployee["ID"];
@@ -16773,21 +17452,16 @@
                     <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
                 </ol>
 
-                Kindly see the link below for our Customer Management Tutorial Video<br><br>
+                Kindly see the link below for the comprehensive user guides:<br><br>
 
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                        <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
+                        <td colspan="2" style="border: 1px solid; padding: 5px; text-align: center;"><b>Master Any Module with Ease: Your Ultimate User Guide</b></td>
                     </tr>
                     <tr>
-                        <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                        <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid; padding: 5px;">Free Access - Supplier Requirements Management Module</td>
-                        <td style="border: 1px solid; padding: 5px;">https://youtu.be/nv2oM9hbN-Y</td>
-                    </tr>
+                        <td style="border: 1px solid; padding: 5px;">User Guide Link</td>
+                        <td style="border: 1px solid; padding: 5px;">https://interlinkiq.com/user-guide/</td>
+                    </tr>                        
                 </table><br><br>
 
                 Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
@@ -16839,13 +17513,33 @@
         $current_dateNow = $current_dateNow->format('M d, Y');
 
         $name = addslashes($_POST['name']);
-        $category = $_POST['category'];
-        $industry = $_POST['industry'];
         $path = 'uploads/supplier/';
         $random = rand(1000,1000000);
         $audit_arr_item = array();
         $audit_filesize = 0;
         $process = true;
+
+        $category = $_POST['category'];
+        if ($category == 41) {
+            $supplier_category_other = $_POST['supplier_category_other'];
+
+            $sql_industry = "INSERT INTO tbl_supplier_category (client, name)
+            VALUES ('$client_ID', '$supplier_category_other')";
+            if (mysqli_query($conn, $sql_industry)) {
+                $category = mysqli_insert_id($conn);
+            }
+        }
+
+        $industry = $_POST['industry'];
+        if ($industry == 34) {
+            $supplier_industry_other = $_POST['supplier_industry_other'];
+
+            $sql_industry = "INSERT INTO tbl_supplier_industry (client, name)
+            VALUES ('0', '$supplier_industry_other')";
+            if (mysqli_query($conn, $sql_industry)) {
+                $industry = mysqli_insert_id($conn);
+            }
+        }
 
         $address = array();
         array_push($address, $_POST['countries']);
@@ -16916,7 +17610,7 @@
                     'size' =>  $audit_filesize,
                     'date' =>  $local_date
                 );
-                array_push($arr_item, $output);
+                array_push($audit_arr_item, $output);
             }
         } else {
             array_push($audit_report, '');
@@ -17001,7 +17695,7 @@
 
         if ($process == true) {
             $sql = "INSERT INTO tbl_supplier (user_id, portal_user, facility_switch, page, name, address, phone, fax, email, website, category, industry, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, reviewed_by, reviewed_date, reviewed_due, department_id, employee_id, status, notification, nda, frequency, frequency_custom, facility, last_modified)
-            VALUES ('$user_id', '$portal_user', $facility_switch_user_id', '2', '$name', '$address', '$phone', '$fax', '$email', '$website', '$category', '$industry', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$department_id', '$employee_id', '$status', '$notification', '$nda', '$supplier_frequency', '$supplier_frequency_custom', '$facility', '$date')";
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '2', '$name', '$address', '$phone', '$fax', '$email', '$website', '$category', '$industry', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$department_id', '$employee_id', '$status', '$notification', '$nda', '$supplier_frequency', '$supplier_frequency_custom', '$facility', '$date')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -17013,6 +17707,7 @@
                     $data_user_id = $rowData["user_id"];
                     $data_name = htmlentities($rowData['name'] ?? '');
                     $data_document_other = $rowData['document_other'];
+                    $data_material = $rowData['material'];
                     $data_reviewed_due = $rowData['reviewed_due'];
                     $data_status = $rowData["status"];
                     $data_notification = $rowData["notification"];
@@ -17468,6 +18163,8 @@
                     if ($data_notification == 1) {
                         $data_company = "";
                         $data_email = "";
+                        $body_SAP = '';
+
                         $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                         if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                             $rowEnterprise = mysqli_fetch_array($selectEnterprise);
@@ -17479,7 +18176,7 @@
                         $user = $name;
 
                         if ($client_ID == 0) {
-                            $subject = 'You are invited!';
+                            $subject = 'InterlinkIQ-Consultare Inc. Group Invitation!';
                             $body = 'Hi '.$user.',<br><br>
                 
                             Your supplier '.$data_company.', invites you to <a href="'.$base_url.$client_url.'" target="_blank">'.$client_name.'</a> to connect and share documents to comply with Customers\' Supplier Approval Program Requirements.<br><br>
@@ -17508,49 +18205,44 @@
                             $body = 'Hi '.$user.' Food Safety Team,<br><br>';
 
                             if ($user_id == 254) {
-                                $body .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
+                                $body_SAP .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
                             } else {
-                                $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
+                                $body_SAP .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
                             }
 
-                            $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
+                            $body_SAP .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
 
-                            if ($_POST['supplier_countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
+                            if ($_POST['supplier_countries'] != 'US') { $body_SAP .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
 
-                            $body .= '.<br><ol>';
+                            $body_SAP .= '.<br><ol>';
 
                             $requirement_arr = explode(" | ", $requirement_email);
                             foreach ($requirement_arr as $value) {
-                                $body .= '<li>'.$value.'</li>';
+                                $body_SAP .= '<li>'.$value.'</li>';
                             }
 
-                            $body .= '</ol>
+                            $body_SAP .= '</ol>
 
                             Follow the instructions below:<br><br>
 
                             To update Compliance:<br>
                             <ol>
-                                <li>Go to <a href="'.$base_url.'" target="_blank">https://interlinkiq.com/</a> and click Log in. Enter your Username and Password.</li>
+                                <li>Go to <a href="'.$base_url.$client_url.'" target="_blank">'.$client_name.'</a> and click Log in. Enter your Username and Password.</li>
                                 <li>Once successfully logged in, click the Enterprise Module.</li>
                                 <li>Click Customer Module to view the list of your Customer.</li>
                                 <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
                             </ol>
 
-                            Kindly see the link below for our Customer Management Tutorial Video<br><br>
+                            Kindly see the link below for the comprehensive user guides:<br><br>
 
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
-                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
+                                    <td colspan="2" style="border: 1px solid; padding: 5px; text-align: center;"><b>Master Any Module with Ease: Your Ultimate User Guide</b></td>
                                 </tr>
                                 <tr>
-                                    <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                    <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid; padding: 5px;">Free Access - Supplier Requirements Management Module</td>
-                                    <td style="border: 1px solid; padding: 5px;">https://youtu.be/nv2oM9hbN-Y</td>
-                                </tr>
+                                    <td style="border: 1px solid; padding: 5px;">User Guide Link</td>
+                                    <td style="border: 1px solid; padding: 5px;">https://interlinkiq.com/user-guide/</td>
+                                </tr>                        
                             </table><br><br>
 
                             Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
@@ -17558,7 +18250,7 @@
                             InterlinkIQ.com Team<br><br>
                             Consultare Inc.';
                 
-                            php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
+                            php_mailer_2($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                         }
             
                         // Contact Section
@@ -17577,7 +18269,7 @@
                                         $subject = 'You are invited!';
 
                                         if ($client_ID == 0) {
-                                            $subject = 'You are invited!';
+                                            $subject = 'InterlinkIQ-Consultare Inc. Group Invitation';
                                             $body = 'Hi '.$user.',<br><br>
                                 
                                             Your supplier '.$data_company.', invites you to <a href="'.$base_url.$client_url.'" target="_blank">'.$client_name.'</a> to connect and share documents to comply with Customers\' Supplier Approval Program Requirements.<br><br>
@@ -17605,59 +18297,8 @@
                                             $user = $contact_name;
                                             $subject = 'Customers Supplier Approval Requirements!';
                                             $body = 'Hi '.$user.' Food Safety Team,<br><br>';
-
-                                            if ($user_id == 254) {
-                                                $body .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
-                                            } else {
-                                                $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
-                                            }
-
-                                            $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
-
-                                            if ($_POST['supplier_countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
-
-                                            $body .= '.<br><ol>';
-
-                                            $requirement_arr = explode(" | ", $requirement_email);
-                                            foreach ($requirement_arr as $value) {
-                                                $body .= '<li>'.$value.'</li>';
-                                            }
-
-                                            $body .= '</ol>
-
-                                            Follow the instructions below:<br><br>
-
-                                            To update Compliance:<br>
-                                            <ol>
-                                                <li>Go to <a href="'.$base_url.'" target="_blank">https://interlinkiq.com/</a> and click Log in. Enter your Username and Password.</li>
-                                                <li>Once successfully logged in, click the Enterprise Module.</li>
-                                                <li>Click Customer Module to view the list of your Customer.</li>
-                                                <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
-                                            </ol>
-
-                                            Kindly see the link below for our Customer Management Tutorial Video<br><br>
-
-                                            <table style="width: 100%; border-collapse: collapse;">
-                                                <tr>
-                                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                                    <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="border: 1px solid; padding: 5px;">Free Access - Supplier Requirements Management Module</td>
-                                                    <td style="border: 1px solid; padding: 5px;">https://youtu.be/nv2oM9hbN-Y</td>
-                                                </tr>
-                                            </table><br><br>
-
-                                            Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
-
-                                            InterlinkIQ.com Team<br><br>
-                                            Consultare Inc.';
                                 
-                                            php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
+                                            php_mailer_2($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                                         }
                                     }
                                 }
@@ -17667,6 +18308,7 @@
                     
                     echo json_encode($result);
                 }
+
             }
             mysqli_close($conn);
         }
@@ -17705,8 +18347,28 @@
         }
 
         $name = addslashes($_POST['name']);
+
         $category = $_POST['category'];
+        if ($category == 41) {
+            $supplier_category_other = $_POST['supplier_category_other'];
+
+            $sql_industry = "INSERT INTO tbl_supplier_category (client, name)
+            VALUES ('$client_ID', '$supplier_category_other')";
+            if (mysqli_query($conn, $sql_industry)) {
+                $category = mysqli_insert_id($conn);
+            }
+        }
+
         $industry = $_POST['industry'];
+        if ($industry == 34) {
+            $supplier_industry_other = $_POST['supplier_industry_other'];
+
+            $sql_industry = "INSERT INTO tbl_supplier_industry (client, name)
+            VALUES ('0', '$supplier_industry_other')";
+            if (mysqli_query($conn, $sql_industry)) {
+                $industry = mysqli_insert_id($conn);
+            }
+        }
 
         $address = array();
         array_push($address, $_POST['countries']);
@@ -17796,7 +18458,7 @@
                     'size' =>  $audit_filesize,
                     'date' =>  $local_date
                 );
-                array_push($arr_item, $output);
+                array_push($audit_arr_item, $output);
             }
         } else {
             array_push($audit_report, $_POST['audit_report_file_tmp']);
@@ -17910,6 +18572,7 @@
                     $data_user_id = $rowData["user_id"];
                     $data_name = $rowData['name'];
                     $data_document_other = $rowData['document_other'];
+                    $data_material = $rowData['material'];
                     $data_reviewed_due = $rowData['reviewed_due'];
                     $data_status = $rowData["status"];
                     $data_notification = $rowData["notification"];
@@ -18052,7 +18715,9 @@
                                     if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                         $document_reviewed = $_POST["document_reviewed"][$i];
                                         $document_approved = $_POST["document_approved"][$i];
-                                        mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."' WHERE ID='". $sup_doc_id ."'" );
+                                        $document_reviewed_date = $_POST["document_reviewed_date"][$i];
+                                        $document_approved_date = $_POST["document_approved_date"][$i];
+                                        mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."', reviewed_date='". $document_reviewed_date ."', approved_date='". $document_approved_date ."' WHERE ID='". $sup_doc_id ."'" );
                                     }
 
                                     if (!empty($file_docs)) { mysqli_query( $conn,"UPDATE tbl_supplier_document set file='". $file_docs ."', filetype = '".$document_filetype."', filesize = '".$filesize."', file_history = '".$file_history."' WHERE ID='". $sup_doc_id ."'" ); }
@@ -18180,7 +18845,9 @@
                                     if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                         $document_reviewed = $_POST["document_other_reviewed"][$i];
                                         $document_approved = $_POST["document_other_approved"][$i];
-                                        mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."' WHERE ID='". $sup_doc_id ."'" );
+                                        $document_reviewed_date = $_POST["document_other_reviewed_date"][$i];
+                                        $document_approved_date = $_POST["document_other_approved_date"][$i];
+                                        mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."', reviewed_date='". $document_reviewed_date ."', approved_date='". $document_approved_date ."' WHERE ID='". $sup_doc_id ."'" );
                                     }
                                 
                                     if (!empty($file_docs)) { mysqli_query( $conn,"UPDATE tbl_supplier_document set file='". $file_docs ."', filetype = '".$document_filetype."', filesize = '".$filesize."', file_history = '".$file_history."' WHERE ID='". $sup_doc_id ."'" ); }
@@ -18551,49 +19218,44 @@
                             $body = 'Hi '.$user.' Food Safety Team,<br><br>';
 
                             if ($user_id == 254) {
-                                $body .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
+                                $body_SAP .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
                             } else {
-                                $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
+                                $body_SAP .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
                             }
 
-                            $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
+                            $body_SAP .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
 
-                            if ($_POST['countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
+                            if ($_POST['countries'] != 'US') { $body_SAP .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
 
-                            $body .= '.<br><ol>';
+                            $body_SAP .= '.<br><ol>';
 
                             $requirement_arr = explode(" | ", $requirement_email);
                             foreach ($requirement_arr as $value) {
-                                $body .= '<li>'.$value.'</li>';
+                                $body_SAP .= '<li>'.$value.'</li>';
                             }
 
-                            $body .= '</ol>
+                            $body_SAP .= '</ol>
 
                             Follow the instructions below:<br><br>
 
                             To update Compliance:<br>
                             <ol>
-                                <li>Go to <a href="'.$base_url.'" target="_blank">https://interlinkiq.com/</a> and click Log in. Enter your Username and Password.</li>
+                                <li>Go to <a href="'.$base_url.$client_url.'" target="_blank">'.$client_name.'</a> and click Log in. Enter your Username and Password.</li>
                                 <li>Once successfully logged in, click the Enterprise Module.</li>
                                 <li>Click Customer Module to view the list of your Customer.</li>
                                 <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
                             </ol>
 
-                            Kindly see the link below for our Customer Management Tutorial Video<br><br>
+                            Kindly see the link below for the comprehensive user guides:<br><br>
 
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
-                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
+                                    <td colspan="2" style="border: 1px solid; padding: 5px; text-align: center;"><b>Master Any Module with Ease: Your Ultimate User Guide</b></td>
                                 </tr>
                                 <tr>
-                                    <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                    <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid; padding: 5px;">Free Access - Customer Requirements Management Module</td>
-                                    <td style="border: 1px solid; padding: 5px;">https://youtu.be/9XklXwGBr7E</td>
-                                </tr>
+                                    <td style="border: 1px solid; padding: 5px;">User Guide Link</td>
+                                    <td style="border: 1px solid; padding: 5px;">https://interlinkiq.com/user-guide/</td>
+                                </tr>                        
                             </table><br><br>
 
                             Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
@@ -18601,13 +19263,7 @@
                             InterlinkIQ.com Team<br><br>
                             Consultare Inc.';
 
-                            if ($mail_sent > 0) {
-                                php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
-                                $mail_sent++;
-                            } else {
-                                php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
-                                $mail_sent++;
-                            }
+                            php_mailer_1($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                         }
             
                         // Contact Section
@@ -18688,15 +19344,8 @@
                                         Consultare Inc.';
 
                                         if ($has_changes > 0) {
-                                            if ($mail_sent > 0) {
-                                                php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
-                                                $mail_sent++;
-                                            } else {
-                                                php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
-                                                $mail_sent++;
-                                            }
+                                            php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
                                         }
-
 
 
                                         // Adding SAP Requirements
@@ -18706,64 +19355,7 @@
                                             $subject = 'Supplier Approval Requirements!';
                                             $body = 'Hi '.$user.' Food Safety Team,<br><br>';
 
-                                            if ($user_id == 254) {
-                                                $body .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
-                                            } else {
-                                                $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
-                                            }
-
-                                            $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
-
-                                            if ($_POST['countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
-
-                                            $body .= '.<br><ol>';
-
-                                            $requirement_arr = explode(" | ", $requirement_email);
-                                            foreach ($requirement_arr as $value) {
-                                                $body .= '<li>'.$value.'</li>';
-                                            }
-
-                                            $body .= '</ol>
-
-                                            Follow the instructions below:<br><br>
-
-                                            To update Compliance:<br>
-                                            <ol>
-                                                <li>Go to <a href="'.$base_url.'" target="_blank">https://interlinkiq.com/</a> and click Log in. Enter your Username and Password.</li>
-                                                <li>Once successfully logged in, click the Enterprise Module.</li>
-                                                <li>Click Customer Module to view the list of your Customer.</li>
-                                                <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
-                                            </ol>
-
-                                            Kindly see the link below for our Customer Management Tutorial Video<br><br>
-
-                                            <table style="width: 100%; border-collapse: collapse;">
-                                                <tr>
-                                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                                    <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="border: 1px solid; padding: 5px;">Free Access - Customer Requirements Management Module</td>
-                                                    <td style="border: 1px solid; padding: 5px;">https://youtu.be/9XklXwGBr7E</td>
-                                                </tr>
-                                            </table><br><br>
-
-                                            Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
-
-                                            InterlinkIQ.com Team<br><br>
-                                            Consultare Inc.';
-
-                                            if ($mail_sent > 0) {
-                                                php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
-                                                $mail_sent++;
-                                            } else {
-                                                php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
-                                                $mail_sent++;
-                                            }
+                                            php_mailer_1($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                                         }
                                     }
                                 }
@@ -19824,10 +20416,22 @@
             $category = $row["category"];
             $industry = $row["industry"];
 
-            $address = $row["address"];
-            $address_arr = explode(" | ", $address);
-            if (COUNT($address_arr) < 5) {
-                $address_arr = explode(", ", $address);
+            $address = htmlentities($row["address"] ?? '');
+            $address_arr = array();
+            $address_arr[0] = '';
+            $address_arr[1] = $address;
+            $address_arr[2] = '';
+            $address_arr[3] = '';
+            $address_arr[4] = '';
+            if (!empty($address)) {
+                if (str_contains($address, '|')) {
+                    $address_arr = explode(" | ", $address);
+                } else if (str_contains($address, ',')) {
+                    
+                    if (count(explode(", ", $address)) == 5) {
+                        $address_arr = explode(", ", $address);
+                    }
+                }
             }
 
             $document = '';
@@ -20063,8 +20667,8 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Category</label>
-                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_category" onchange="changedCategory(this)">
-                                    <option value="">Select</option>';
+                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_category" onchange="changedCategory(this, 2)">
+                                    <option value="0">Select</option>';
                                     
                                         $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
                                         if ( mysqli_num_rows($selectCategory) > 0 ) {
@@ -20073,7 +20677,8 @@
                                             }
                                         }
                                     
-                                echo '</select>';
+                                echo '</select>
+                                <input type="text" class="form-control margin-top-15" name="supplier_category_other" id="supplier_category_other_2" placeholder="Specify others" style="display: none;" />';
 
                                 if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_category.'" readonly />'; }
                                 
@@ -20083,7 +20688,7 @@
                             <div class="form-group">
                                 <label class="control-label">Industry</label>
                                 <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_industry" onchange="changeIndustry(this.value, 2, '.$id.')">
-                                    <option value="">Select</option>';
+                                    <option value="0">Select</option>';
 
                                     $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_supplier_industry WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
                                     if ( mysqli_num_rows($selectIndustry) > 0 ) {
@@ -20092,7 +20697,8 @@
                                         }
                                     }
 
-                                echo '</select>';
+                                echo '</select>
+                                <input type="text" class="form-control margin-top-15" name="supplier_industry_other" id="supplier_industry_other_2" placeholder="Specify others" style="display: none;" />';
 
                                 if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_industry.'" readonly />'; }
 
@@ -20624,7 +21230,9 @@
 
                     echo '<div class="mt-checkbox-list">';
                         
-                        $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = 0 ORDER BY name" );
+                        $sql_supplier = '';
+                        if ($user_id == 1649 OR $current_client == 16) { $sql_supplier = 'client = 16 AND '; }
+                        $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE $sql_supplier organic = 0 ORDER BY name" );
                         if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                             while($rowReq = mysqli_fetch_array($selectRequirement2)) {
                                 echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($rowReq["name"] ?? '').'
@@ -20636,7 +21244,7 @@
                         if (!empty($document_other)) {
                             $count_other = 0;
                             foreach ($document_other_arr as $value) {
-                                $selectDocument = mysqli_query( $conn,"SELECT * FROM tbl_supplier_document WHERE user_id = $user_id AND supplier_id = $id AND type = 1 AND name = '".$value."'" );
+                                $selectDocument = mysqli_query( $conn,"SELECT * FROM tbl_supplier_document WHERE supplier_id = $id AND type = 1 AND name = '".$value."'" );
                                 if ( mysqli_num_rows($selectDocument) > 0 ) {
                                     $rowDocument = mysqli_fetch_array($selectDocument);
                                     $doc_id = $rowDocument["ID"];
@@ -20873,7 +21481,7 @@
                                                             if ($page == 1) {
                                                                 if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                                                     echo '<div class="row margin-top-10">
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-md-3">
                                                                             <div class="form-group">
                                                                                 <label class="control-label">Reviewed By</label>';
 
@@ -20909,7 +21517,13 @@
 
                                                                             echo '</div>
                                                                         </div>
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Reviewed Date</label>
+                                                                                <input type="date" class="form-control" name="document_reviewed_date[]" value="" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
                                                                             <div class="form-group">
                                                                                 <label class="control-label">Approved By</label>';
 
@@ -20945,6 +21559,12 @@
 
                                                                             echo '</div>
                                                                         </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Approved Date</label>
+                                                                                <input type="date" class="form-control" name="document_approved_date[]" value="" />
+                                                                            </div>
+                                                                        </div>
                                                                     </div>';
                                                                 }
                                                             }
@@ -20960,7 +21580,7 @@
                                 if (!empty($document_other)) {
                                     $count_other = 0;
                                     foreach ($document_other_arr as $value) {
-                                        $selectDocument = mysqli_query( $conn,"SELECT * FROM tbl_supplier_document WHERE user_id = $user_id AND supplier_id = $id AND type = 1 AND name = '".$value."'" );
+                                        $selectDocument = mysqli_query( $conn,"SELECT * FROM tbl_supplier_document WHERE supplier_id = $id AND type = 1 AND name = '".$value."'" );
                                         if ( mysqli_num_rows($selectDocument) > 0 ) {
                                             $rowDocument = mysqli_fetch_array($selectDocument);
                                             $doc_id = $rowDocument["ID"];
@@ -21172,7 +21792,7 @@
                                                     if ($page == 1) {
                                                         if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                                             echo '<div class="row margin-top-10">
-                                                                <div class="col-md-6">
+                                                                <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label class="control-label">Reviewed By</label>';
 
@@ -21208,7 +21828,13 @@
 
                                                                     echo '</div>
                                                                 </div>
-                                                                <div class="col-md-6">
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Reviewed Date</label>
+                                                                        <input type="date" class="form-control" name="document_other_reviewed_date[]" value="" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label class="control-label">Approved By</label>';
 
@@ -21243,6 +21869,12 @@
                                                                         }
 
                                                                     echo '</div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Approved Date</label>
+                                                                        <input type="date" class="form-control" name="document_other_approved_date[]" value="" />
+                                                                    </div>
                                                                 </div>
                                                             </div>';
                                                         }
@@ -22140,7 +22772,7 @@
                                                 if ($page == 1) {
                                                     if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                                         echo '<div class="row margin-top-10">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Reviewed By</label>';
 
@@ -22170,7 +22802,13 @@
 
                                                                 echo '</div>
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Reviewed Date</label>
+                                                                    <input type="date" class="form-control" name="document_reviewed_date[]" value="" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Approved By</label>';
 
@@ -22199,6 +22837,12 @@
                                                                     }
 
                                                                 echo '</div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Approved Date</label>
+                                                                    <input type="date" class="form-control" name="document_approved_date[]" value="" />
+                                                                </div>
                                                             </div>
                                                         </div>';
                                                     }
@@ -22395,7 +23039,7 @@
                                         if ($page == 1) {
                                             if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464) {
                                                 echo '<div class="row margin-top-10">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="control-label">Reviewed By</label>';
 
@@ -22425,7 +23069,13 @@
 
                                                         echo '</div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Reviewed Date</label>
+                                                            <input type="date" class="form-control" name="document_other_reviewed_date[]" value="" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="control-label">Approved By</label>';
 
@@ -22454,6 +23104,12 @@
                                                             }
 
                                                         echo '</div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Approved Date</label>
+                                                            <input type="date" class="form-control" name="document_other_approved_date[]" value="" />
+                                                        </div>
                                                     </div>
                                                 </div>';
                                             }
@@ -22961,21 +23617,16 @@
                     <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
                 </ol>
 
-                Kindly see the link below for our Customer Management Tutorial Video<br><br>
+                Kindly see the link below for the comprehensive user guides:<br><br>
 
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                        <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
+                        <td colspan="2" style="border: 1px solid; padding: 5px; text-align: center;"><b>Master Any Module with Ease: Your Ultimate User Guide</b></td>
                     </tr>
                     <tr>
-                        <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                        <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid; padding: 5px;">Free Access - Customer Requirements Management Module</td>
-                        <td style="border: 1px solid; padding: 5px;">https://youtu.be/9XklXwGBr7E</td>
-                    </tr>
+                        <td style="border: 1px solid; padding: 5px;">User Guide Link</td>
+                        <td style="border: 1px solid; padding: 5px;">https://interlinkiq.com/user-guide/</td>
+                    </tr>                        
                 </table><br><br>
 
                 Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
@@ -23032,13 +23683,33 @@
 
         $supplier_name = addslashes($_POST['supplier_name']);
         $vendor_code = $_POST['vendor_code'];
-        $supplier_category = $_POST['supplier_category'];
-        $supplier_industry = $_POST['supplier_industry'];
         $path = 'uploads/supplier/';
         $random = rand(1000,1000000);
         $audit_arr_item = array();
         $audit_filesize = 0;
         $process = true;
+
+        $supplier_category = $_POST['supplier_category'];
+        if ($supplier_category == 41) {
+            $supplier_category_other = $_POST['supplier_category_other'];
+
+            $sql_industry = "INSERT INTO tbl_supplier_category (client, name)
+            VALUES ('$client_ID', '$supplier_category_other')";
+            if (mysqli_query($conn, $sql_industry)) {
+                $supplier_category = mysqli_insert_id($conn);
+            }
+        }
+
+        $supplier_industry = $_POST['supplier_industry'];
+        if ($supplier_industry == 34) {
+            $supplier_industry_other = $_POST['supplier_industry_other'];
+
+            $sql_industry = "INSERT INTO tbl_supplier_industry (client, name)
+            VALUES ('$client_ID', '$supplier_industry_other')";
+            if (mysqli_query($conn, $sql_industry)) {
+                $supplier_industry = mysqli_insert_id($conn);
+            }
+        }
 
         $supplier_address = array();
         array_push($supplier_address, $_POST['supplier_countries']);
@@ -23206,8 +23877,10 @@
                     $data_ID = $rowData['ID'];
                     $data_page = $rowData['page'];
                     $data_user_id = $rowData["user_id"];
+                    $data_vendor_code = htmlentities($rowData['vendor_code'] ?? '');
                     $data_name = htmlentities($rowData['name'] ?? '');
                     $data_document_other = $rowData['document_other'];
+                    $data_material = $rowData['material'];
                     $data_reviewed_due = $rowData['reviewed_due'];
                     $data_status = $rowData["status"];
                     $data_notification = $rowData["notification"];
@@ -23457,21 +24130,6 @@
                     if ($process == true) {
 
                         // Requirement Section
-                        // $requirement = array();
-                        // $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement" );
-                        // while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
-                        //     $data_document_arr = explode(", ", $rowData["document"]);
-                        //     foreach ($data_document_arr as $value) {
-                        //         if ( $value == $rowRequirement["ID"] ) {
-                        //             array_push($requirement, $rowRequirement["name"]);
-                        //         }
-                        //     }
-                        // }
-                        // $requirement = implode(', ', $requirement);
-                        // if (!empty($data_document_other)) { $requirement .= ", ". $data_document_other; }
-
-
-                        // Requirement Section
                         $requirement = array();
                         $requirement_email = "";
                         // $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement" );
@@ -23666,6 +24324,7 @@
                         $output = array(
                             "ID" => $data_ID,
                             "page" => $data_page,
+                            "supplier_code" => htmlentities($data_vendor_code ?? ''),
                             "supplier_name" => htmlentities($data_name ?? ''),
                             "category" => htmlentities($data_category ?? ''),
                             "material" => htmlentities($data_material ?? ''),
@@ -23683,6 +24342,8 @@
                         if ($data_notification == 1) {
                             $data_company = "";
                             $data_email = "";
+                            $body_SAP = '';
+
                             $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
@@ -23722,50 +24383,59 @@
                                 $body = 'Hi '.$user.' Food Safety Team,<br><br>';
 
                                 if ($user_id == 254) {
-                                    $data_company = 'Jensen Meat Company (JMC)';
-                                    $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
+                                    $body_SAP .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>
+
+                                    We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
                                 } else {
-                                    $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
+                                    $body_SAP .= 'We are a compliance company and a third-party service provider working with '.$data_company.' which manufactures some of the '.$user.'\'s products.';
+
+                                    if (!empty($data_materia)) {
+                                        $body_SAP .= 'And, your company was identified as a supplier of the ingredients listed below.
+                                        <ol>';
+                                            $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE FIND_IN_SET(ID, REPLACE('$data_materia', ' ', ''))" );
+                                            if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                                $rowMaterial = mysqli_fetch_array($selectMaterial);
+                                                $data_material_name = htmlentities($rowMaterial["material_name"] ?? '');
+                                                $body .= '<li>'.$data_material_name.'</li>';
+                                            }
+                                        $body_SAP .= '</ol><br><br>';
+                                    }
+
+                                    $body_SAP .= 'With regards, we are requesting certain documents from your firm to comply with the Supplier Approval Program (SAP) and/or Foreign Supplier Verification Program (FSVP) requirement. 
+                                    Kindly refer to the table below for the list of requirements / SAP 21 CFR 117 Subpart G - Supply Chain Program';
                                 }
 
-                                $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
+                                if ($_POST['supplier_countries'] != 'US') { $body_SAP .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
 
-                                if ($_POST['supplier_countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
-
-                                $body .= '.<br><ol>';
+                                $body_SAP .= '.<br><ol>';
 
                                 $requirement_arr = explode(" | ", $requirement_email);
                                 foreach ($requirement_arr as $value) {
-                                    $body .= '<li>'.$value.'</li>';
+                                    $body_SAP .= '<li>'.$value.'</li>';
                                 }
 
-                                $body .= '</ol>
+                                $body_SAP .= '</ol>
 
                                 Follow the instructions below:<br><br>
 
                                 To update Compliance:<br>
                                 <ol>
-                                    <li>Go to <a href="'.$base_url.'" target="_blank">https://interlinkiq.com/</a> and click Log in. Enter your Username and Password.</li>
+                                    <li>Go to <a href="'.$base_url.$client_url.'" target="_blank">'.$client_name.'</a> and click Log in. Enter your Username and Password.</li>
                                     <li>Once successfully logged in, click the Enterprise Module.</li>
                                     <li>Click Customer Module to view the list of your Customer.</li>
                                     <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
                                 </ol>
 
-                                Kindly see the link below for our Customer Management Tutorial Video<br><br>
+                                Kindly see the link below for the comprehensive user guides:<br><br>
 
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <tr>
-                                        <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                        <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
+                                        <td colspan="2" style="border: 1px solid; padding: 5px; text-align: center;"><b>Master Any Module with Ease: Your Ultimate User Guide</b></td>
                                     </tr>
                                     <tr>
-                                        <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                        <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border: 1px solid; padding: 5px;">Free Access - Customer Requirements Management Module</td>
-                                        <td style="border: 1px solid; padding: 5px;">https://youtu.be/9XklXwGBr7E</td>
-                                    </tr>
+                                        <td style="border: 1px solid; padding: 5px;">User Guide Link</td>
+                                        <td style="border: 1px solid; padding: 5px;">https://interlinkiq.com/user-guide/</td>
+                                    </tr>                        
                                 </table><br><br>
 
                                 Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
@@ -23773,7 +24443,7 @@
                                 InterlinkIQ.com Team<br><br>
                                 Consultare Inc.';
                     
-                                php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
+                                php_mailer_2($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                             }
                 
                             // Contact Section
@@ -23818,60 +24488,8 @@
                                                 $user = $contact_name;
                                                 $subject = 'Supplier Approval Requirements!';
                                                 $body = 'Hi '.$user.' Food Safety Team,<br><br>';
-
-                                                if ($user_id == 254) {
-                                                    $data_company = 'Jensen Meat Company (JMC)';
-                                                    $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
-                                                } else {
-                                                    $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
-                                                }
-
-                                                $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
-
-                                                if ($_POST['supplier_countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
-
-                                                $body .= '.<br><ol>';
-
-                                                $requirement_arr = explode(" | ", $requirement_email);
-                                                foreach ($requirement_arr as $value) {
-                                                    $body .= '<li>'.$value.'</li>';
-                                                }
-
-                                                $body .= '</ol>
-
-                                                Follow the instructions below:<br><br>
-
-                                                To update Compliance:<br>
-                                                <ol>
-                                                    <li>Go to <a href="'.$base_url.'" target="_blank">https://interlinkiq.com/</a> and click Log in. Enter your Username and Password.</li>
-                                                    <li>Once successfully logged in, click the Enterprise Module.</li>
-                                                    <li>Click Customer Module to view the list of your Customer.</li>
-                                                    <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
-                                                </ol>
-
-                                                Kindly see the link below for our Customer Management Tutorial Video<br><br>
-
-                                                <table style="width: 100%; border-collapse: collapse;">
-                                                    <tr>
-                                                        <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                                        <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                                        <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="border: 1px solid; padding: 5px;">Free Access - Customer Requirements Management Module</td>
-                                                        <td style="border: 1px solid; padding: 5px;">https://youtu.be/9XklXwGBr7E</td>
-                                                    </tr>
-                                                </table><br><br>
-
-                                                Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
-
-                                                InterlinkIQ.com Team<br><br>
-                                                Consultare Inc.';
                                     
-                                                php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
+                                                php_mailer_2($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                                             }
                                         }
                                     }
@@ -23922,8 +24540,28 @@
 
         $supplier_name = addslashes($_POST['supplier_name']);
         $vendor_code = $_POST['vendor_code'];
+
         $supplier_category = $_POST['supplier_category'];
+        if ($supplier_category == 41) {
+            $supplier_category_other = $_POST['supplier_category_other'];
+
+            $sql_industry = "INSERT INTO tbl_supplier_category (client, name)
+            VALUES ('$client_ID', '$supplier_category_other')";
+            if (mysqli_query($conn, $sql_industry)) {
+                $supplier_category = mysqli_insert_id($conn);
+            }
+        }
+
         $supplier_industry = $_POST['supplier_industry'];
+        if ($supplier_industry == 34) {
+            $supplier_industry_other = $_POST['supplier_industry_other'];
+
+            $sql_industry = "INSERT INTO tbl_supplier_industry (client, name)
+            VALUES ('$client_ID', '$supplier_industry_other')";
+            if (mysqli_query($conn, $sql_industry)) {
+                $supplier_industry = mysqli_insert_id($conn);
+            }
+        }
 
         $supplier_address = array();
         array_push($supplier_address, $_POST['supplier_countries']);
@@ -23977,20 +24615,6 @@
 
         $service = "";
         if (!empty($_POST["service_id"])) { $service = implode(", ", $_POST["service_id"]); }
-
-        // $selectSupplier = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE ID = $ID" );
-        // if ( mysqli_num_rows($selectSupplier) > 0 ) {
-        //     $rowSupplier = mysqli_fetch_array($selectSupplier);
-
-        //     $current_audit_report = $rowSupplier['audit_report'];
-        //     $current_audit_report_arr = explode(" | ", $current_audit_report);
-
-        //     $current_audit_certificate = $rowSupplier['audit_certificate'];
-        //     $current_audit_certificate_arr = explode(" | ", $current_audit_certificate);
-
-        //     $current_audit_action = $rowSupplier['audit_action'];
-        //     $current_audit_action_arr = explode(" | ", $current_audit_action);
-        // }
 
         $audit_report = array();
         $audit_report_validity = $_POST['audit_report_validity'];
@@ -24125,8 +24749,10 @@
                 $data_ID = $rowData['ID'];
                 $data_page = $rowData['page'];
                 $data_user_id = $rowData["user_id"];
+                $data_vendor_code = htmlentities($rowData['vendor_code'] ?? '');
                 $data_name = htmlentities($rowData['name'] ?? '');
                 $data_document_other = $rowData['document_other'];
+                $data_material = $rowData['material'];
                 $data_reviewed_due = $rowData['reviewed_due'];
                 $data_status = $rowData["status"];
                 $data_notification = $rowData["notification"];
@@ -24273,7 +24899,9 @@
                                 if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                     $document_reviewed = $_POST["document_reviewed"][$i];
                                     $document_approved = $_POST["document_approved"][$i];
-                                    mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."' WHERE ID='". $sup_doc_id ."'" );
+                                    $document_reviewed_date = $_POST["document_reviewed_date"][$i];
+                                    $document_approved_date = $_POST["document_approved_date"][$i];
+                                    mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."', reviewed_date='". $document_reviewed_date ."', approved_date='". $document_approved_date ."' WHERE ID='". $sup_doc_id ."'" );
                                 }
 
                                 if (!empty($file_docs)) { mysqli_query( $conn,"UPDATE tbl_supplier_document set file='". $file_docs ."', filetype = '".$document_filetype."', filesize = '".$filesize."', file_history = '".$file_history."' WHERE ID='". $sup_doc_id ."'" ); }
@@ -24397,7 +25025,9 @@
                                 if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                     $document_reviewed = $_POST["document_other_reviewed"][$i];
                                     $document_approved = $_POST["document_other_approved"][$i];
-                                    mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."' WHERE ID='". $sup_doc_id ."'" );
+                                    $document_reviewed_date = $_POST["document_other_reviewed_date"][$i];
+                                    $document_approved_date = $_POST["document_other_approved_date"][$i];
+                                    mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."', reviewed_date='". $document_reviewed_date ."', approved_date='". $document_approved_date ."' WHERE ID='". $sup_doc_id ."'" );
                                 }
                             
                                 if (!empty($file_docs)) { mysqli_query( $conn,"UPDATE tbl_supplier_document set file='". $file_docs ."', filetype = '".$document_filetype."', filesize = '".$filesize."', file_history = '".$file_history."' WHERE ID='". $sup_doc_id ."'" ); }
@@ -24426,24 +25056,11 @@
                 }
 
                 // Requirement Section
-                // $requirement = array();
-                // $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement" );
-                // while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
-                //     $data_document_arr = explode(", ", $rowData["document"]);
-                //     foreach ($data_document_arr as $value) {
-                //         if ( $value == $rowRequirement["ID"] ) {
-                //             array_push($requirement, $rowRequirement["name"]);
-                //         }
-                //     }
-                // }
-                // $requirement = implode(', ', $requirement);
-                // if (!empty($data_document_other)) { $requirement .= ", ". $data_document_other; }
-
-                // Requirement Section
                 $requirement = array();
                 $requirement_email = "";
                 // $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement" );
-                $selectRequirement = mysqli_query( $conn,"SELECT
+                $selectRequirement = mysqli_query( $conn,"
+                    SELECT
                     d_ID,
                     d_name,
                     d_file,
@@ -24480,7 +25097,8 @@
                     ) AS s
                     ON FIND_IN_SET(o.r_ID, REPLACE(REPLACE(s.document, ' ', ''), '|',','  )  ) > 0
 
-                    WHERE s.ID = $data_ID" );
+                    WHERE s.ID = $data_ID
+                " );
                 while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                     array_push($requirement, $rowRequirement["r_name"]);
 
@@ -24663,6 +25281,7 @@
                 $output = array(
                     "ID" => $data_ID,
                     "page" => $data_page,
+                    "supplier_code" => htmlentities($data_vendor_code ?? ''),
                     "supplier_name" => htmlentities($data_name ?? ''),
                     "category" => htmlentities($data_category ?? ''),
                     "material" => htmlentities($data_material ?? ''),
@@ -24680,6 +25299,8 @@
                 if ($data_notification == 1) {
                     $data_company = "";
                     $data_email = "";
+                    $body_SAP = '';
+
                     $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                     if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                         $rowEnterprise = mysqli_fetch_array($selectEnterprise);
@@ -24772,56 +25393,58 @@
                         $body = 'Hi '.$user.' Food Safety Team,<br><br>';
 
                         if ($user_id == 254) {
-                            $body .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
-                            $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
+                            $body_SAP .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>
+
+                            We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
                         } else {
-                            $body .= 'We are a compliance company and a third-party service provider working with '.$data_company.'
-                                which manufactures some of the '.$user.'\'s products.
-                                And, your company was identified as a supplier of the ingredients listed below.
-                                 
-                                With regards, we are requesting certain documents from your firm to comply with the SAP requirement.
-                                Kindly refer to the table below for the list of requirements';
+                            $body_SAP .= 'We are a compliance company and a third-party service provider working with '.$data_company.' which manufactures some of the '.$user.'\'s products.';
+
+                            if (!empty($data_materia)) {
+                                $body_SAP .= 'And, your company was identified as a supplier of the ingredients listed below.
+                                <ol>';
+                                    $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE FIND_IN_SET(ID, REPLACE('$data_materia', ' ', ''))" );
+                                    if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                        $rowMaterial = mysqli_fetch_array($selectMaterial);
+                                        $data_material_name = htmlentities($rowMaterial["material_name"] ?? '');
+                                        $body .= '<li>'.$data_material_name.'</li>';
+                                    }
+                                $body_SAP .= '</ol><br><br>';
+                            }
+
+                            $body_SAP .= 'With regards, we are requesting certain documents from your firm to comply with the Supplier Approval Program (SAP) and/or Foreign Supplier Verification Program (FSVP) requirement. 
+                            Kindly refer to the table below for the list of requirements / SAP 21 CFR 117 Subpart G - Supply Chain Program';
                         }
-                        // else {
-                        //  $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
-                        //     $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
-                        // }
 
-                        if ($_POST['supplier_countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
+                        if ($_POST['supplier_countries'] != 'US') { $body_SAP .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
 
-                        $body .= '.<br><ol>';
+                        $body_SAP .= '.<br><ol>';
 
                         $requirement_arr = explode(" | ", $requirement_email);
                         foreach ($requirement_arr as $value) {
-                            $body .= '<li>'.$value.'</li>';
+                            $body_SAP .= '<li>'.$value.'</li>';
                         }
 
-                        $body .= '</ol>
+                        $body_SAP .= '</ol>
 
                         Follow the instructions below:<br><br>
 
                         To update Compliance:<br>
                         <ol>
-                            <li>Go to <a href="'.$base_url.'" target="_blank">https://interlinkiq.com/</a> and click Log in. Enter your Username and Password.</li>
+                            <li>Go to <a href="'.$base_url.$client_url.'" target="_blank">'.$client_name.'</a> and click Log in. Enter your Username and Password.</li>
                             <li>Click Customer Module to view the list of your Customer.</li>
                             <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
                         </ol>
 
-                        Kindly see the link below for our Customer Management Tutorial Video<br><br>
+                        Kindly see the link below for the comprehensive user guides:<br><br>
 
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
+                                <td colspan="2" style="border: 1px solid; padding: 5px; text-align: center;"><b>Master Any Module with Ease: Your Ultimate User Guide</b></td>
                             </tr>
                             <tr>
-                                <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                            </tr>
-                            <tr>
-                                <td style="border: 1px solid; padding: 5px;">Free Access - Customer Requirements Management Module</td>
-                                <td style="border: 1px solid; padding: 5px;">https://youtu.be/9XklXwGBr7E</td>
-                            </tr>
+                                <td style="border: 1px solid; padding: 5px;">User Guide Link</td>
+                                <td style="border: 1px solid; padding: 5px;">https://interlinkiq.com/user-guide/</td>
+                            </tr>                        
                         </table><br><br>
 
                         Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
@@ -24829,13 +25452,7 @@
                         InterlinkIQ.com Team<br><br>
                         Consultare Inc. Group';
 
-                        if ($mail_sent > 0) {
-                            php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
-                            $mail_sent++;
-                        } else {
-                            php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
-                            $mail_sent++;
-                        }
+                        php_mailer_1($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                     }
         
                     // Contact Section
@@ -24916,15 +25533,8 @@
                                     Consultare Inc. Group';
 
                                     if ($has_changes > 0) {
-                                        if ($mail_sent > 0) {
-                                            php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
-                                            $mail_sent++;
-                                        } else {
-                                            php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
-                                            $mail_sent++;
-                                        }
+                                        php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
                                     }
-
 
 
                                     // Adding SAP Requirements
@@ -24934,64 +25544,7 @@
                                         $subject = 'Supplier Approval Requirements!';
                                         $body = 'Hi '.$user.' Food Safety Team,<br><br>';
 
-                                        if ($user_id == 254) {
-                                            $body .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
-                                        } else {
-                                            $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
-                                        }
-
-                                        $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
-
-                                        if ($_POST['supplier_countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
-
-                                        $body .= '.<br><ol>';
-
-                                        $requirement_arr = explode(" | ", $requirement_email);
-                                        foreach ($requirement_arr as $value) {
-                                            $body .= '<li>'.$value.'</li>';
-                                        }
-
-                                        $body .= '</ol>
-
-                                        Follow the instructions below:<br><br>
-
-                                        To update Compliance:<br>
-                                        <ol>
-                                            <li>Go to <a href="'.$base_url.'" target="_blank">https://interlinkiq.com/</a> and click Log in. Enter your Username and Password.</li>
-                                            <li>Once successfully logged in, click the Enterprise Module.</li>
-                                            <li>Click Customer Module to view the list of your Customer.</li>
-                                            <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
-                                        </ol>
-
-                                        Kindly see the link below for our Customer Management Tutorial Video<br><br>
-
-                                        <table style="width: 100%; border-collapse: collapse;">
-                                            <tr>
-                                                <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                                <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                                <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="border: 1px solid; padding: 5px;">Free Access - Customer Requirements Management Module</td>
-                                                <td style="border: 1px solid; padding: 5px;">https://youtu.be/9XklXwGBr7E</td>
-                                            </tr>
-                                        </table><br><br>
-
-                                        Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
-
-                                        InterlinkIQ.com Team<br><br>
-                                        Consultare Inc. Group';
-
-                                        if ($mail_sent > 0) {
-                                            php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
-                                            $mail_sent++;
-                                        } else {
-                                            php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
-                                            $mail_sent++;
-                                        }
+                                        php_mailer_1($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                                     }
                                 }
                             }
@@ -25161,7 +25714,9 @@
                                     if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                         $document_reviewed = $_POST["document_reviewed"][$i];
                                         $document_approved = $_POST["document_approved"][$i];
-                                        mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."' WHERE ID='". $sup_doc_id ."'" );
+                                        $document_reviewed_date = $_POST["document_reviewed_date"][$i];
+                                        $document_approved_date = $_POST["document_approved_date"][$i];
+                                        mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."', reviewed_date='". $document_reviewed_date ."', approved_date='". $document_approved_date ."' WHERE ID='". $sup_doc_id ."'" );
                                     }
 
                                     if (!empty($file_docs)) { mysqli_query( $conn,"UPDATE tbl_supplier_document set file='". $file_docs ."', filetype = '".$document_filetype."' WHERE ID='". $sup_doc_id ."'" ); }
@@ -25264,7 +25819,9 @@
                                     if ($current_userEmployerID == 34 OR $current_userEmployerID == 27 OR $current_userEmployerID == 464 OR $current_userEmployerID == 1106) {
                                         $document_reviewed = $_POST["document_other_reviewed"][$i];
                                         $document_approved = $_POST["document_other_approved"][$i];
-                                        mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."' WHERE ID='". $sup_doc_id ."'" );
+                                        $document_reviewed_date = $_POST["document_other_reviewed_date"][$i];
+                                        $document_approved_date = $_POST["document_other_approved_date"][$i];
+                                        mysqli_query( $conn,"UPDATE tbl_supplier_document set reviewed_by='". $document_reviewed ."', approved_by='". $document_approved ."', reviewed_date='". $document_reviewed_date ."', approved_date='". $document_approved_date ."' WHERE ID='". $sup_doc_id ."'" );
                                     }
                                 
                                     if (!empty($file_docs)) { mysqli_query( $conn,"UPDATE tbl_supplier_document set file='". $file_docs ."', filetype='". $document_filetype ."' WHERE ID='". $sup_doc_id ."'" ); }
@@ -25467,6 +26024,7 @@
                     if ($data_notification == 1) {
                         $data_company = "";
                         $data_email = "";
+                        $body_SAP = '';
                         $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                         if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                             $rowEnterprise = mysqli_fetch_array($selectEnterprise);
@@ -25558,23 +26116,23 @@
                             $body = 'Hi '.$user.' Food Safety Team,<br><br>';
 
                             if ($user_id == 254) {
-                                $body .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
+                                $body_SAP .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
                             } else {
-                                $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
+                                $body_SAP .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
                             }
 
-                            $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
+                            $body_SAP .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
 
-                            if ($_POST['supplier_countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
+                            if ($_POST['supplier_countries'] != 'US') { $body_SAP .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
 
-                            $body .= '.<br><ol>';
+                            $body_SAP .= '.<br><ol>';
 
                             $requirement_arr = explode(" | ", $requirement_email);
                             foreach ($requirement_arr as $value) {
-                                $body .= '<li>'.$value.'</li>';
+                                $body_SAP .= '<li>'.$value.'</li>';
                             }
 
-                            $body .= '</ol>
+                            $body_SAP .= '</ol>
 
                             Follow the instructions below:<br><br>
 
@@ -25586,21 +26144,16 @@
                                 <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
                             </ol>
 
-                            Kindly see the link below for our Customer Management Tutorial Video<br><br>
+                            Kindly see the link below for the comprehensive user guides:<br><br>
 
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
-                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
+                                    <td colspan="2" style="border: 1px solid; padding: 5px; text-align: center;"><b>Master Any Module with Ease: Your Ultimate User Guide</b></td>
                                 </tr>
                                 <tr>
-                                    <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                    <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid; padding: 5px;">Free Access - Customer Requirements Management Module</td>
-                                    <td style="border: 1px solid; padding: 5px;">https://youtu.be/9XklXwGBr7E</td>
-                                </tr>
+                                    <td style="border: 1px solid; padding: 5px;">User Guide Link</td>
+                                    <td style="border: 1px solid; padding: 5px;">https://interlinkiq.com/user-guide/</td>
+                                </tr>                        
                             </table><br><br>
 
                             Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
@@ -25608,13 +26161,7 @@
                             InterlinkIQ.com Team<br><br>
                             Consultare Inc.';
 
-                            if ($mail_sent > 0) {
-                                // php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
-                                $mail_sent++;
-                            } else {
-                                // php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
-                                $mail_sent++;
-                            }
+                            php_mailer_1($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                         }
             
                         // Contact Section
@@ -25636,74 +26183,9 @@
                                         Here are some updates on tasks you\'re a collaborator on:
                                         <ul>';
 
-                                        $has_changes = 0;
-                                        $temp_document_output = json_decode($temp_document, true);
-                                        foreach ($temp_document_output as $key => $key_value) {
-                                            $doc_ID = $key_value['doc_ID'];
-                                            $doc_file = $key_value['doc_file'];
-                                            $doc_reviewedby = $key_value['doc_reviewedby'];
-                                            $doc_approvedby = $key_value['doc_approvedby'];
-
-                                            $selectDataTemp_Docs = mysqli_query( $conn,"SELECT * FROM tbl_supplier_document WHERE ID = $doc_ID" );
-                                            if ( mysqli_num_rows($selectDataTemp_Docs) > 0 ) {
-                                                $rowDataTemp_Docs = mysqli_fetch_array($selectDataTemp_Docs);
-                                                $user_change_name = $rowDataTemp_Docs['name'];
-                                                if ($rowDataTemp_Docs['type'] == 0) {
-                                                    $selectDataTemp_DocsReqName = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE ID = $user_change_name" );
-                                                    if ( mysqli_num_rows($selectDataTemp_DocsReqName) > 0 ) {
-                                                        $rowDataTemp_DocsReqName = mysqli_fetch_array($selectDataTemp_DocsReqName);
-                                                        $user_change_name = $rowDataTemp_DocsReqName['name'];
-                                                    }
-                                                }
-
-                                                $user_change_file = $rowDataTemp_Docs['file'];
-                                                $user_change_filename = $rowDataTemp_Docs['filename'];
-                                                $user_change_reviewed_by = $rowDataTemp_Docs['reviewed_by'];
-                                                $user_change_approved_by = $rowDataTemp_Docs['approved_by'];
-
-                                                if (!empty($user_change_file) AND $user_change_file != $doc_file) {
-                                                    $body .= '<li>'.$user_change_name.' was Complied by '.$portal_user_name.'</li>';
-                                                    $has_changes++;
-                                                }
-                                                if ($user_change_reviewed_by > 0 AND $user_change_reviewed_by != $doc_reviewedby) {
-                                                    $selectDataTemp_Docs_Reviewed = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_change_reviewed_by" );
-                                                    if ( mysqli_num_rows($selectDataTemp_Docs_Reviewed) > 0 ) {
-                                                        $rowDataTemp_Docs_Reviewed = mysqli_fetch_array($selectDataTemp_Docs_Reviewed);
-                                                        $reviewed_user_name = $rowDataTemp_Docs_Reviewed['first_name'] .' '. $rowDataTemp_Docs_Reviewed['last_name'];
-
-                                                        $body .= '<li>'.$user_change_name.' was Reviewed by '.$reviewed_user_name.'</li>';
-                                                        $has_changes++;
-                                                    }
-                                                }
-                                                if ($user_change_approved_by > 0 AND $user_change_approved_by != $doc_approvedby) {
-                                                    $selectDataTemp_Docs_Approved = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_change_approved_by" );
-                                                    if ( mysqli_num_rows($selectDataTemp_Docs_Approved) > 0 ) {
-                                                        $rowDataTemp_Docs_Approved = mysqli_fetch_array($selectDataTemp_Docs_Approved);
-                                                        $approved_user_name = $rowDataTemp_Docs_Approved['first_name'] .' '. $rowDataTemp_Docs_Approved['last_name'];
-
-                                                        $body .= '<li>'.$user_change_name.' was Reviewed by '.$approved_user_name.'</li>';
-                                                        $has_changes++;
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        $body .= '</ul>
-                                        Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
-
-                                        InterlinkIQ.com Team<br>
-                                        Consultare Inc.';
-
                                         if ($has_changes > 0) {
-                                            if ($mail_sent > 0) {
-                                                // php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
-                                                $mail_sent++;
-                                            } else {
-                                                // php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
-                                                $mail_sent++;
-                                            }
+                                            php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
                                         }
-
 
 
                                         // Adding SAP Requirements
@@ -25713,64 +26195,7 @@
                                             $subject = 'Supplier Approval Requirements!';
                                             $body = 'Hi '.$user.' Food Safety Team,<br><br>';
 
-                                            if ($user_id == 254) {
-                                                $body .= 'We are working with Jensen Meat Company (JMC) as part of their Supplier Approval Program (SAP). The '.$user.' has been identified as a Supplier/Service Provider of Jensen Meat Company – Plant Based.<br><br>';
-                                            } else {
-                                                $body .= 'We are working with '.$data_company.' as part of their Supplier Approval Program (SAP). Your company has been identified as a Supplier/Service Provider of '.$data_company.'.<br><br>';
-                                            }
-
-                                            $body .= 'We are requesting certain documents from your firm to comply with the SAP 21 CFR 117 Subpart G - Supply-Chain Program';
-
-                                            if ($_POST['supplier_countries'] != 'US') { $body .= ' / FSVP 21 CFR Subpart L - Foreign Supplier Verification Programs for Food Importers requirement'; }
-
-                                            $body .= '.<br><ol>';
-
-                                            $requirement_arr = explode(" | ", $requirement_email);
-                                            foreach ($requirement_arr as $value) {
-                                                $body .= '<li>'.$value.'</li>';
-                                            }
-
-                                            $body .= '</ol>
-
-                                            Follow the instructions below:<br><br>
-
-                                            To update Compliance:<br>
-                                            <ol>
-                                                <li>Go to <a href="'.$base_url.'" target="_blank">https://interlinkiq.com/</a> and click Log in. Enter your Username and Password.</li>
-                                                <li>Once successfully logged in, click the Enterprise Module.</li>
-                                                <li>Click Customer Module to view the list of your Customer.</li>
-                                                <li>Click View and go to Requirements Tab; comply by uploading the documents required in the list.</li>
-                                            </ol>
-
-                                            Kindly see the link below for our Customer Management Tutorial Video<br><br>
-
-                                            <table style="width: 100%; border-collapse: collapse;">
-                                                <tr>
-                                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Tutorial Video</b></td>
-                                                    <td style="border: 1px solid; padding: 5px; text-align: center;"><b>Video Link</b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="border: 1px solid; padding: 5px;">Free Access - Enterprise Management Module</td>
-                                                    <td style="border: 1px solid; padding: 5px;">https://www.youtube.com/watch?v=pyhPjZKTlaE</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="border: 1px solid; padding: 5px;">Free Access - Customer Requirements Management Module</td>
-                                                    <td style="border: 1px solid; padding: 5px;">https://youtu.be/9XklXwGBr7E</td>
-                                                </tr>
-                                            </table><br><br>
-
-                                            Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
-
-                                            InterlinkIQ.com Team<br><br>
-                                            Consultare Inc.';
-
-                                            if ($mail_sent > 0) {
-                                                // php_mailer_2($to, $user, $subject, $body, $data_email, $data_company);
-                                                $mail_sent++;
-                                            } else {
-                                                // php_mailer_1($to, $user, $subject, $body, $data_email, $data_company);
-                                                $mail_sent++;
-                                            }
+                                            php_mailer_1($to, $user, $subject, $body.$body_SAP, $data_email, $data_company);
                                         }
                                     }
                                 }
@@ -26892,7 +27317,88 @@
             </div>
         </div>
         <div class="mt-repeater">
-            <div data-repeater-list="material_other">';
+            <div data-repeater-list="material_other">
+                <div class="mt-repeater-item mt-repeater-item-hide row" data-repeater-item>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">File Name</label>
+                            <input class="form-control" type="text" name="material_file_name" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="hidden" name="material_file_doc_temp" />
+                            <label class="control-label">File Document</label>
+                            <input class="form-control" type="file" name="material_file_doc" />
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="control-label">Documentation Dates</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control daterange daterange_empty" name="material_file_daterange" />
+                                <span class="input-group-btn">
+                                    <button class="btn default date-range-toggle" type="button" onclick="widget_date_clears(this)">
+                                        <i class="fa fa-close"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <div class="input-group input-large date-picker input-daterange hide">
+                                <input type="date" class="form-control" name="material_file_from" />
+                                <span class="input-group-addon"> to </span>
+                                <input type="date" class="form-control" name="material_file_to" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <label style="visibility: hidden; display: block;">Remove</label>
+                        <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Reviewer</label>';
+
+                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                            $rowUser = mysqli_fetch_array($selectUser);
+                            $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                            if ($s == 1) { $name = 'Compliance Team'; }
+
+                            echo '<select class="form-control" name="reviewer">
+                                <option value="0">Select</option>
+                                <option value="'.$portal_user.'">'.$name.'</option>
+                            </select>';
+
+                        echo '</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Date</label>
+                            <input type="date" class="form-control" name="reviewer_date" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Approver</label>';
+
+                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                            $rowUser = mysqli_fetch_array($selectUser);
+                            $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                            if ($s == 1) { $name = 'Compliance Team'; }
+
+                            echo '<select class="form-control" name="approver">
+                                <option value="0">Select</option>
+                                <option value="'.$portal_user.'">'.$name.'</option>
+                            </select>';
+                            
+                        echo '</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Date</label>
+                            <input type="date" class="form-control" name="approver_date" />
+                        </div>
+                    </div>
+                </div>';
 
                 $other = $row['other'];
                 $other_arr = json_decode($other,true);
@@ -27112,62 +27618,64 @@
         }
 
         $material_other_arr = array();
-        if (count($_POST['material_other']) > 0) {
-            for ($i=0; $i < count($_POST['material_other']); $i++) {
-                $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-                $material_file_from = '';
-                $material_file_to = '';
-                $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
-                if (!empty($material_file_daterange)) {
-                    $material_file_daterange = explode(' - ', $material_file_daterange);
-                    $material_file_from = $material_file_daterange[0];
-                    $material_file_to = $material_file_daterange[1];
-                }
-
-                $material_file_doc = $_FILES['material_other']['name'][$i];
-                $material_file_doc_final = implode('*', $material_file_doc);
-
-                if (!empty($material_file_doc_final)) {
-                    $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
-                    $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
-                    $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                    $ext = strtolower(pathinfo($material_file_doc_final, PATHINFO_EXTENSION));
-
-                    $mime = mime_content_type($material_file_doc_tmp);
-                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                    
-                    $material_file_doc_final = $random.' - '.$material_file_doc_final;
-                    $material_file_doc_path = $path.$material_file_doc_final;
-
-                    if(!in_array($mime, $mime_array)) {
-                        move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
-
-                        $filesize += $spec_filesize_other;
-
-                        $output = array (
-                            'type'  =>  0,
-                            'name' =>  $material_file_doc_final,
-                            'size' =>  $spec_filesize_other,
-                            'date' =>  $local_date
-                        );
-                        array_push($arr_item, $output);
-                    } else {
-                        $process = false;
+        if (isset($_POST['material_other'])) {
+            if (count($_POST['material_other']) > 0) {
+                for ($i=0; $i < count($_POST['material_other']); $i++) {
+                    $material_file_name = $_POST['material_other'][$i]['material_file_name'];
+                    $material_file_from = '';
+                    $material_file_to = '';
+                    $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
+                    if (!empty($material_file_daterange)) {
+                        $material_file_daterange = explode(' - ', $material_file_daterange);
+                        $material_file_from = $material_file_daterange[0];
+                        $material_file_to = $material_file_daterange[1];
                     }
-                }
 
-                if (!empty($material_file_doc_final) AND !empty($material_file_from) AND !empty($material_file_to)) {
-                    $material_other_data = array (
-                        'name' => $material_file_name,
-                        'material_file_doc' => $material_file_doc_final,
-                        'from' => $material_file_from,
-                        'to' => $material_file_to,
-                        'reviewer' => 0,
-                        'approver' => 0,
-                        'reviewer_date' => '',
-                        'approver_date' => ''
-                    );
-                    array_push( $material_other_arr, $material_other_data );
+                    $material_file_doc = $_FILES['material_other']['name'][$i];
+                    $material_file_doc_final = implode('*', $material_file_doc);
+
+                    if (!empty($material_file_doc_final)) {
+                        $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
+                        $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($material_file_doc_final, PATHINFO_EXTENSION));
+
+                        $mime = mime_content_type($material_file_doc_tmp);
+                        $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                        
+                        $material_file_doc_final = $random.' - '.$material_file_doc_final;
+                        $material_file_doc_path = $path.$material_file_doc_final;
+
+                        if(!in_array($mime, $mime_array)) {
+                            move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
+
+                            $filesize += $spec_filesize_other;
+
+                            $output = array (
+                                'type'  =>  0,
+                                'name' =>  $material_file_doc_final,
+                                'size' =>  $spec_filesize_other,
+                                'date' =>  $local_date
+                            );
+                            array_push($arr_item, $output);
+                        } else {
+                            $process = false;
+                        }
+                    }
+
+                    if (!empty($material_file_doc_final) AND !empty($material_file_from) AND !empty($material_file_to)) {
+                        $material_other_data = array (
+                            'name' => $material_file_name,
+                            'material_file_doc' => $material_file_doc_final,
+                            'from' => $material_file_from,
+                            'to' => $material_file_to,
+                            'reviewer' => 0,
+                            'approver' => 0,
+                            'reviewer_date' => '',
+                            'approver_date' => ''
+                        );
+                        array_push( $material_other_arr, $material_other_data );
+                    }
                 }
             }
         }
@@ -27262,66 +27770,68 @@
         }
 
         $material_other_arr = array();
-        if (count($_POST['material_other']) > 0) {
-            for ($i=0; $i < count($_POST['material_other']); $i++) {
-                $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-                $material_file_reviewer = $_POST['material_other'][$i]['reviewer'];
-                $material_file_approver = $_POST['material_other'][$i]['approver'];
-                $material_file_reviewer_date = $_POST['material_other'][$i]['reviewer_date'];
-                $material_file_approver_date = $_POST['material_other'][$i]['approver_date'];
+        if (isset($_POST['material_other'])) {
+            if (count($_POST['material_other']) > 0) {
+                for ($i=0; $i < count($_POST['material_other']); $i++) {
+                    $material_file_name = $_POST['material_other'][$i]['material_file_name'];
+                    $material_file_reviewer = $_POST['material_other'][$i]['reviewer'];
+                    $material_file_approver = $_POST['material_other'][$i]['approver'];
+                    $material_file_reviewer_date = $_POST['material_other'][$i]['reviewer_date'];
+                    $material_file_approver_date = $_POST['material_other'][$i]['approver_date'];
 
-                $material_file_from = '';
-                $material_file_to = '';
-                $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
-                if (!empty($material_file_daterange)) {
-                    $material_file_daterange = explode(' - ', $material_file_daterange);
-                    $material_file_from = $material_file_daterange[0];
-                    $material_file_to = $material_file_daterange[1];
-                }
-
-                $material_file_doc_final = $_POST['material_other'][$i]['material_file_doc_temp'];
-                $material_file_doc = $_FILES['material_other']['name'][$i];
-                $material_file_doc = implode('*', $material_file_doc);
-                if (!empty($material_file_doc)) {
-                    $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
-                    $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
-                    $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                    $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
-
-                    $mime = mime_content_type($material_file_doc_tmp);
-                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                    
-                    $material_file_doc_final = $random.' - '.$material_file_doc;
-                    $material_file_doc_path = $path.$material_file_doc_final;
-
-                    if(!in_array($mime, $mime_array)) {
-                        move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
-
-                        $filesize += $spec_filesize_other;
-
-                        $output = array (
-                            'type'  =>  0,
-                            'name' =>  $material_file_doc_final,
-                            'size' =>  $spec_filesize_other,
-                            'date' =>  $local_date
-                        );
-                        array_push($arr_item, $output);
-                    } else {
-                        $process = false;
+                    $material_file_from = '';
+                    $material_file_to = '';
+                    $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
+                    if (!empty($material_file_daterange)) {
+                        $material_file_daterange = explode(' - ', $material_file_daterange);
+                        $material_file_from = $material_file_daterange[0];
+                        $material_file_to = $material_file_daterange[1];
                     }
-                }
 
-                $material_other_data = array (
-                    'name' => $material_file_name,
-                    'material_file_doc' =>$material_file_doc_final,
-                    'from' =>$material_file_from,
-                    'to' =>$material_file_to,
-                    'reviewer' =>$material_file_reviewer,
-                    'approver' =>$material_file_approver,
-                    'reviewer_date' =>$material_file_reviewer_date,
-                    'approver_date' =>$material_file_approver_date
-                );
-                array_push( $material_other_arr, $material_other_data );
+                    $material_file_doc_final = $_POST['material_other'][$i]['material_file_doc_temp'];
+                    $material_file_doc = $_FILES['material_other']['name'][$i];
+                    $material_file_doc = implode('*', $material_file_doc);
+                    if (!empty($material_file_doc)) {
+                        $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
+                        $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
+
+                        $mime = mime_content_type($material_file_doc_tmp);
+                        $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                        
+                        $material_file_doc_final = $random.' - '.$material_file_doc;
+                        $material_file_doc_path = $path.$material_file_doc_final;
+
+                        if(!in_array($mime, $mime_array)) {
+                            move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
+
+                            $filesize += $spec_filesize_other;
+
+                            $output = array (
+                                'type'  =>  0,
+                                'name' =>  $material_file_doc_final,
+                                'size' =>  $spec_filesize_other,
+                                'date' =>  $local_date
+                            );
+                            array_push($arr_item, $output);
+                        } else {
+                            $process = false;
+                        }
+                    }
+
+                    $material_other_data = array (
+                        'name' => $material_file_name,
+                        'material_file_doc' =>$material_file_doc_final,
+                        'from' =>$material_file_from,
+                        'to' =>$material_file_to,
+                        'reviewer' =>$material_file_reviewer,
+                        'approver' =>$material_file_approver,
+                        'reviewer_date' =>$material_file_reviewer_date,
+                        'approver_date' =>$material_file_approver_date
+                    );
+                    array_push( $material_other_arr, $material_other_data );
+                }
             }
         }
         $material_other = json_encode($material_other_arr);
@@ -28371,7 +28881,7 @@
 
         echo '<div class="row">
             <div class="col-md-5">
-                <img class="img-responsive" src="'.$base_url.'uploads/avatar/'.$user_avatar.'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/230x150/EFEFEF/AAAAAA.png?text=no+image\';" style="width: 230px; height: 150px; object-fit: contain; margin: auto;">
+                <img class="img-responsive" src="'.$base_url.'uploads/avatar/'.$user_avatar.'" onerror="this.onerror=null;this.src=\'https://placehold.co/230x150/EFEFEF/AAAAAA?text=no+imagee\';" style="width: 230px; height: 150px; object-fit: contain; margin: auto;">
                 <div class="profile-usertitle">
                     <div class="profile-usertitle-name">'.$user_fullname.'</div>
                     <div class="profile-usertitle-job hide"> Developer </div>
@@ -28893,7 +29403,7 @@
         echo '<input type="hidden" name="modal" value="'.$modal.'" />
         <input type="hidden" name="timestamp_id" value="'.$timestamp_id.'" />
         <div class="form-group">
-            <label class="col-md-2 control-label">Sheet Name</label>
+            <label class="col-md-2 control-label">Section Name</label>
             <div class="col-md-9">
                 <input class="form-control" type="text" name="name" required />
             </div>
@@ -28917,7 +29427,7 @@
                                         <select class="form-control" disabled>
                                             <option value="0" '; echo $format_type == 0 ? 'SELECTED':''; echo '>Select Type</option>
                                             <option value="1" '; echo $format_type == 1 ? 'SELECTED':''; echo '>Text</option>
-                                            <option value="2" '; echo $format_type == 2 ? 'SELECTED':''; echo '>Radio Button</option>
+                                            <option value="2" '; echo $format_type == 2 ? 'SELECTED':''; echo '>Yes, No, NA</option>
                                             <option value="3" '; echo $format_type == 3 ? 'SELECTED':''; echo '>Date</option>
                                         </select>
                                     </div>
@@ -28927,7 +29437,7 @@
                                             echo '<input type="hidden" name="type[]" value="'.$format_type.'" /><input type="hidden" name="formatID[]" value="'.$format_ID.'" /><input type="text" class="form-control" name="label[]" placeholder="Label" value="'.$format_label.'" required />';
                                         } else if ($format_type == 2) {
                                             echo '<input type="hidden" name="type[]" value="'.$format_type.'" /><input type="hidden" name="formatID[]" value="'.$format_ID.'" />
-                                            <input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" value="'.$format_label.'" onkeydown="if (event.keyCode == 13) { this.nextElementSibling.focus(); return false; }" required />';
+                                            <input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" value="'.$format_label.'" onkeydown="if (event.keyCode == 13) { this.nextElementSibling.focus(); return false; }" readonly />';
                                         }
 
                                     echo '</div>
@@ -28943,7 +29453,7 @@
                                 <select class="form-control" name="type[]" onchange="selectType(this)">
                                     <option value="0" SELECTED>Select Type</option>
                                     <option value="1">Text</option>
-                                    <option value="2">Radio Button</option>
+                                    <option value="2">Yes, No, NA</option>
                                     <option value="3">Date</option>
                                 </select>
                             </div>
@@ -28974,7 +29484,7 @@
             <input type="hidden" name="modal" value="'.$modal.'" />
             <input type="hidden" name="timestamp_id" value="'.$timestamp_id.'" />
             <div class="form-group">
-                <label class="col-md-2 control-label">Sheet Name</label>
+                <label class="col-md-2 control-label">Section Name</label>
                 <div class="col-md-9">
                     <input class="form-control" type="text" name="name" value="'.$name.'" required />
                 </div>
@@ -28997,7 +29507,7 @@
                                             <select class="form-control" disabled>
                                                 <option value="0" '; echo $format_type == 0 ? 'SELECTED':''; echo '>Select Type</option>
                                                 <option value="1" '; echo $format_type == 1 ? 'SELECTED':''; echo '>Text</option>
-                                                <option value="2" '; echo $format_type == 2 ? 'SELECTED':''; echo '>Radio Button</option>
+                                                <option value="2" '; echo $format_type == 2 ? 'SELECTED':''; echo '>Yes, No, NA</option>
                                                 <option value="3" '; echo $format_type == 3 ? 'SELECTED':''; echo '>Date</option>
                                             </select>
                                         </div>
@@ -29007,7 +29517,7 @@
                                                 echo '<input type="hidden" name="type[]" value="'.$format_type.'" /><input type="hidden" name="formatID[]" value="'.$format_ID.'" /><input type="text" class="form-control" name="label[]" placeholder="Label" value="'.$format_label.'" required />';
                                             } else if ($format_type == 2) {
                                                 echo '<input type="hidden" name="type[]" value="'.$format_type.'" /><input type="hidden" name="formatID[]" value="'.$format_ID.'" />
-                                                <input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" value="'.$format_label.'" onkeydown="if (event.keyCode == 13) { this.nextElementSibling.focus(); return false; }" required />';
+                                                <input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" value="'.$format_label.'" onkeydown="if (event.keyCode == 13) { this.nextElementSibling.focus(); return false; }" readonly />';
                                             }
 
                                         echo '</div>
@@ -29044,7 +29554,7 @@
             while($rowTemplate = mysqli_fetch_array($selectTemplate)) {
                 $format_ID = $rowTemplate['ID'];
                 $format_type = $rowTemplate['type'];
-                $format_label = $rowTemplate['label'];
+                $format_label = htmlentities($rowTemplate['label'] ?? '');
 
                 $data_sub .= '<th>Included? (Y/N)</th>';
                 if ($format_type == 1 OR $format_type == 3 OR $format_type == 4) {
@@ -29055,7 +29565,7 @@
 
                     $data_header2 .= '<th>'.$format_label.'</th>';
                 } else if ($format_type == 2) {
-                    $data_header .= '<th>Radio Button: '.$format_label.'</th>';
+                    $data_header .= '<th>Yes, No, NA: '.$format_label.'</th>';
                     $data_row .= '<td>Y</td>';
 
                     $radio_arr = explode(",", $format_label);
@@ -29147,7 +29657,7 @@
                                             echo '<td>';
                                                 foreach($data_arr as $key => $val) {
                                                     if ($label_arr[$i] == $val['ID']) {
-                                                        echo $val['content'];
+                                                        echo html_entity_decode($val['content'] ?? '');
                                                     }
                                                 }
                                             echo '</td>';
@@ -29203,7 +29713,7 @@
                 $type = $row['type'];
                 $type_arr = explode(" | ", $type);
 
-                $label = $row['label'];
+                $label = htmlentities($row['label'] ?? '');
                 $label_arr = explode(" | ", $label);
 
                 if ($type > 0) {
@@ -29218,6 +29728,12 @@
                                     </label>
                                 </div>
                                 <textarea class="summernote hide summernoteOpen" id="summernote_1_'.$formatID.'" name="rowData[]"></textarea>
+                                <div class="mt-checkbox-list margin-top-10">
+                                    <label class="mt-checkbox mt-checkbox-outline m-0"> Required?
+                                        <input type="checkbox" value="'.$formatID.'" name="rowRequired[]" />
+                                        <span></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>';
                     } else if ($type == 2) {
@@ -29234,7 +29750,7 @@
                                     <option value="0">No</option>
                                     <option value="1">Yes</option>
                                 </select>
-                                <i class="help-block hide">(Include radio button for: '.$label.')</i>
+                                <i class="help-block hide">(Include Yes, No, NA for: '.$label.')</i>
                             </div>
                         </div>';
                     } else if ($type == 3) {
@@ -29247,7 +29763,7 @@
                                         <span></span>
                                     </label>
                                 </div>
-                                <input type="date" class="form-control" name="rowData[]" style="display: none;" />
+                                <input type="date" class="form-control hide" name="rowData[]" style="display: none;" />
                             </div>
                         </div>';
                     } else if ($type == 4) {
@@ -29282,6 +29798,9 @@
             $include_arr = array();
             if ($rowData['include'] != NULL) { $include_arr = explode(" | ", $rowData['include']); }
 
+            $required_arr = array();
+            if ($rowData['required'] != NULL) { $required_arr = explode(" | ", $rowData['required']); }
+
             $data_arr = json_decode($rowData['data'],true);
 
             echo '<input type="hidden" name="sheet_id" value="'.$data_sheet_id.'" />
@@ -29295,7 +29814,7 @@
                 while($row = mysqli_fetch_array($selectDataFormat)) {
                     $formatID = $row['ID'];
                     $type = $row['type'];
-                    $label = $row['label'];
+                    $label = htmlentities($row['label'] ?? '');
 
                     $data_content = '';
                     foreach($data_arr as $key => $value) {
@@ -29316,6 +29835,12 @@
                                         </label>
                                     </div>
                                     <textarea class="summernote hide '; echo in_array($formatID, $include_arr) ? 'summernoteOpen':''; echo '" id="summernote_2_'.$formatID.'" name="rowData[]">'.$data_content.'</textarea>
+                                    <div class="mt-checkbox-list margin-top-10">
+                                        <label class="mt-checkbox mt-checkbox-outline m-0"> Required?
+                                            <input type="checkbox" value="'.$formatID.'" name="rowRequired[]" '; echo in_array($formatID, $required_arr) ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>';
                         } else if ($type == 2) {
@@ -29332,7 +29857,7 @@
                                         <option value="0" '; echo $data_content == 0 ? 'SELECTED':''; echo '>No</option>
                                         <option value="1" '; echo $data_content == 1 ? 'SELECTED':''; echo '>Yes</option>
                                     </select>
-                                    <i class="help-block hide">(Include radio button for: '.$label.')</i>
+                                    <i class="help-block hide">(Include Yes, No, NA for: '.$label.')</i>
                                 </div>
                             </div>';
                         } else if ($type == 3) {
@@ -29345,7 +29870,7 @@
                                             <span></span>
                                         </label>
                                     </div>
-                                    <input type="date" class="form-control" name="rowData[]" '; echo in_array($formatID, $include_arr) ? '':'style="display: none;"'; echo ' value="'.$data_content.'" />
+                                    <input type="date" class="form-control hide" name="rowData[]" '; echo in_array($formatID, $include_arr) ? '':'style="display: none;"'; echo ' value="'.$data_content.'" />
                                 </div>
                             </div>';
                         } else if ($type == 4) {
@@ -29486,7 +30011,7 @@
                                         if ($format_type == 1 OR $format_type == 3 OR $format_type == 4) {
                                             echo '<th colspan="2">'.$format_label.'</th>';
                                         } else if ($format_type == 2) {
-                                            echo '<th>Radio Button: '.$format_label.'</th>';
+                                            echo '<th>Yes, No, NA: '.$format_label.'</th>';
                                         }
                                     }
                                 }
@@ -29781,6 +30306,7 @@
                                     ON u.employee_ID = e.ID
 
                                     WHERE e.suspended = 0
+                                    AND e.deleted = 0
                                     AND e.status = 1
                                     AND e.user_id = $user_ID" );
                                 if ( mysqli_num_rows($selectUser2) > 0 ) {
@@ -30686,8 +31212,8 @@
             $user_id = employerID($portal_user);
         }
         $last_modified = date('Y-m-d');
-        $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, action, page, activity, last_modified)
-        VALUES ('$user_id', '$portal_user', '3', '1', '$ID', '$last_modified')";
+        $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, facility_switch, action, page, activity, last_modified)
+        VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '3', '1', '$ID', '$last_modified')";
         mysqli_query($conn, $sql_history);
     }
     if( isset($_GET['btnDelete_Form']) ) {
@@ -30704,8 +31230,8 @@
             $user_id = employerID($portal_user);
         }
         $last_modified = date('Y-m-d');
-        $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, action, page, activity, last_modified)
-        VALUES ('$user_id', '$portal_user', '3', '2', '$ID', '$last_modified')";
+        $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, facility_switch, action, page, activity, last_modified)
+        VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '3', '2', '$ID', '$last_modified')";
         mysqli_query($conn, $sql_history);
     }
     if( isset($_GET['btnClose_Form']) ) {
@@ -30722,8 +31248,8 @@
             $user_id = employerID($portal_user);
         }
         $last_modified = date('Y-m-d');
-        $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, action, page, activity, last_modified)
-        VALUES ('$user_id', '$portal_user', '4', '2', '$ID', '$last_modified')";
+        $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, facility_switch, action, page, activity, last_modified)
+        VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '4', '2', '$ID', '$last_modified')";
         mysqli_query($conn, $sql_history);
     }
     if( isset($_POST['btnSave_Sheet']) ) {
@@ -30796,9 +31322,9 @@
 
                             $data_export_sub .= '<th>Included? (Y/N)</th>';
                             if ($value == 1 OR $value == 3 OR $value == 4) {
-                                $data_thead .= '<th>'.$label_arr[$i].'</th>';
+                                $data_thead .= '<th>'.htmlentities($label_arr[$i] ?? '' ).'</th>';
 
-                                $data_export_header .= '<th colspan="2">'.$label_arr[$i].'</th>';
+                                $data_export_header .= '<th colspan="2">'.htmlentities($label_arr[$i] ?? '' ).'</th>';
                                 $data_export_sub .= '<th>Content</th>';
                                 $data_export_row .= '<td>Y</td>';
                                 $data_export_row .= '<td>Sample Text</td>';
@@ -30808,7 +31334,7 @@
                                     $data_thead .= '<th>'.$r.'</th>';
                                 }
 
-                                $data_export_header .= '<th>Radio Button: '.$label_arr[$i].'</th>';
+                                $data_export_header .= '<th>Yes, No, NA: '.htmlentities($label_arr[$i] ?? '' ).'</th>';
                                 $data_export_row .= '<td>Y</td>';
                             }
                             $i++;
@@ -30826,7 +31352,7 @@
                     foreach ($type_arr as $value) {
                         if ($value > 0) {
                             if ($value == 1 OR $value == 3 OR $value == 4) {
-                                $data_thead .= '<th>'.$label_arr[$i].'</th>';
+                                $data_thead .= '<th>'.htmlentities($label_arr[$i] ?? '' ).'</th>';
                             } else if ($value == 2) {
                                 $radio_arr = explode(",", $label_arr[$i]);
                                 foreach ($radio_arr as $r) {
@@ -30856,7 +31382,7 @@
                 "ID" => $last_id,
                 "modal" => $modal,
                 "timestamp_id" => $timestamp_id,
-                "name" => stripcslashes($name),
+                "name" => stripcslashes(htmlentities($name ?? '')),
                 "data" => $data,
                 "data_thead" => $data_thead,
                 "data_export" => $data_export
@@ -30933,9 +31459,9 @@
 
                             $data_export_sub .= '<th>Included? (Y/N)</th>';
                             if ($value == 1 OR $value == 3 OR $value == 4) {
-                                $data_thead .= '<th>'.$label_arr[$i].'</th>';
+                                $data_thead .= '<th>'.htmlentities($label_arr[$i] ?? '' ).'</th>';
 
-                                $data_export_header .= '<th colspan="2">'.$label_arr[$i].'</th>';
+                                $data_export_header .= '<th colspan="2">'.htmlentities($label_arr[$i] ?? '' ).'</th>';
                                 $data_export_sub .= '<th>Content</th>';
                                 $data_export_row .= '<td>Y</td>';
                                 $data_export_row .= '<td>Sample Text</td>';
@@ -30945,7 +31471,7 @@
                                     $data_thead .= '<th>'.$r.'</th>';
                                 }
 
-                                $data_export_header .= '<th>Radio Button: '.$label_arr[$i].'</th>';
+                                $data_export_header .= '<th>Yes, No, NA: '.htmlentities($label_arr[$i] ?? '' ).'</th>';
                                 $data_export_row .= '<td>Y</td>';
                             }
                             $i++;
@@ -31027,7 +31553,7 @@
                 "ID" => $ID,
                 "modal" => $modal,
                 "timestamp_id" => $timestamp_id,
-                "name" => stripcslashes($name),
+                "name" => stripcslashes(htmlentities($name ?? '')),
                 "data" => $data,
                 "data_thead" => $data_thead,
                 "data_export" => $data_export
@@ -31058,9 +31584,16 @@
         $data_result = array();
         $rowInclude = array();
         $include_arr = array();
+        $rowRequired = '';
+        $required_arr = array();
         if (!empty($_POST['rowInclude'])) {
             $rowInclude = implode(' | ', $_POST['rowInclude']);
             $include_arr = explode(" | ", $rowInclude);
+
+            if (!empty($_POST['rowRequired'])) {
+                $rowRequired = implode(' | ', $_POST['rowRequired']);
+                $required_arr = explode(" | ", $rowRequired);
+            }
 
             $selectData = mysqli_query( $conn,"SELECT * FROM tbl_ia_format WHERE deleted = 0 AND timestamp_id = $timestamp_id ORDER BY order_id" );
             if ( mysqli_num_rows($selectData) > 0 ) {
@@ -31071,7 +31604,7 @@
                     if (in_array($formatID, $include_arr)) {
                         $data_output = array (
                             'ID' => $formatID,
-                            'content' => addslashes($data_arr[$x])
+                            'content' => htmlentities($data_arr[$x] ?? '')
                         );
                         array_push($data_result, $data_output);
                     }
@@ -31080,8 +31613,8 @@
             }
             $data_content = json_encode($data_result, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-            $sql = "INSERT INTO tbl_ia_data (sheet_id, parent_id, include, data)
-            VALUES ('$sheet_id', '$parent_id', '$rowInclude', '$data_content')";
+            $sql = "INSERT INTO tbl_ia_data (sheet_id, parent_id, include, data, required)
+            VALUES ('$sheet_id', '$parent_id', '$rowInclude', '$data_content', '$rowRequired')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -31109,7 +31642,7 @@
                                     if (in_array($formatID, $include_arr)) {
                                         foreach($data_result as $key => $value) {
                                             if ($formatID == $value['ID']) {
-                                                $data .= '<td>'.$value['content'].'</td>';
+                                                $data .= '<td>'.html_entity_decode($value['content'] ?? '').'</td>';
                                             }
                                         }
                                     } else {
@@ -31162,9 +31695,18 @@
         $rowData = implode(' | ', $_POST['rowData']);
         $data_arr = explode(" | ", $rowData);
 
-        $rowInclude = implode(' | ', $_POST['rowInclude']);
         $include_arr = array();
-        if ($rowInclude != NULL) { $include_arr = explode(" | ", $rowInclude); }
+        if (!empty($_POST['rowInclude'])) {
+            $rowInclude = implode(' | ', $_POST['rowInclude']);
+            if ($rowInclude != NULL) { $include_arr = explode(" | ", $rowInclude); }
+        }
+
+        $rowRequired = '';
+        $required_arr = array();
+        if (!empty($_POST['rowRequired'])) {
+            $rowRequired = implode(' | ', $_POST['rowRequired']);
+            if ($rowRequired != NULL) { $required_arr = explode(" | ", $rowRequired); }
+        }
 
         $data_result = array();
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_ia_format WHERE deleted = 0 AND timestamp_id = $timestamp_id ORDER BY order_id" );
@@ -31176,7 +31718,7 @@
                 if (in_array($formatID, $include_arr)) {
                     $data_output = array (
                         'ID' => $formatID,
-                        'content' => addslashes($data_arr[$x])
+                        'content' => htmlentities($data_arr[$x] ?? '')
                     );
                     array_push($data_result, $data_output);
                 }
@@ -31185,7 +31727,7 @@
         }
         $data_content = json_encode($data_result, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-        mysqli_query( $conn,"UPDATE tbl_ia_data set include='". $rowInclude ."', data='". $data_content ."' WHERE ID='". $parent_id ."'" );
+        mysqli_query( $conn,"UPDATE tbl_ia_data set include='". $rowInclude ."', data='". $data_content ."', required='". $rowRequired ."' WHERE ID='". $parent_id ."'" );
         if (!mysqli_error($conn)) {
             $data = '<td class="text-center">
                 <a href="#modalEditRow" data-toggle="modal" class="btn btn-xs dark" onclick="btnEditRow('.$sheet_id.', '.$parent_id.', '.$modal.', '.$timestamp_id.')"><i class="fa fa-pencil"></i></a>
@@ -31209,7 +31751,7 @@
                             if (in_array($formatID, $include_arr)) {
                                 foreach($data_result as $key => $value) {
                                     if ($formatID == $value['ID']) {
-                                        $data .= '<td>'.$value['content'].'</td>';
+                                        $data .= '<td>'.html_entity_decode($value['content'] ?? '').'</td>';
                                     }
                                 }
                             } else {
@@ -31259,13 +31801,13 @@
         $sheetID = '';
         if (!empty($_POST['sheetID'])) { $sheetID = implode(' | ', $_POST['sheetID']); }
 
-        $sql = "INSERT INTO tbl_ia (user_id, portal_user, timestamp_id, title, description, sheet_id, last_modified)
-        VALUES ('$user_id', '$portal_user', '$timestamp_id', '$title', '$description', '$sheetID', '$date')";
+        $sql = "INSERT INTO tbl_ia (user_id, portal_user, facility_switch, timestamp_id, title, description, sheet_id, last_modified)
+        VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$timestamp_id', '$title', '$description', '$sheetID', '$date')";
         if (mysqli_query($conn, $sql)) {
             $last_id = mysqli_insert_id($conn);
 
-            $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, action, page, activity, last_modified)
-            VALUES ('$user_id', '$portal_user', '1', '1', '$last_id', '$last_modified')";
+            $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, facility_switch, action, page, activity, last_modified)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '1', '1', '$last_id', '$last_modified')";
             mysqli_query($conn, $sql_history);
 
             $date = new DateTime($date);
@@ -31321,11 +31863,11 @@
         if (!empty($_POST['sheetID'])) { $sheetID = implode(' | ', $_POST['sheetID']); }
 
 
-        mysqli_query( $conn,"UPDATE tbl_ia set title='". $title ."', description='". $description ."', sheet_id='". $sheetID ."' WHERE ID='". $ID ."'" );
+        mysqli_query( $conn,"UPDATE tbl_ia set title='". $title ."', description='". $description ."', sheet_id='". $sheetID ."', last_modified='". $date ."' WHERE ID='". $ID ."'" );
         if (!mysqli_error($conn)) {
 
-            $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, action, page, activity, last_modified)
-            VALUES ('$user_id', '$portal_user', '2', '1', '$ID', '$last_modified')";
+            $sql_history = "INSERT INTO tbl_ia_history (user_id, portal_user, facility_switch, action, page, activity, last_modified)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '2', '1', '$ID', '$last_modified')";
             mysqli_query($conn, $sql_history);
 
             $date = new DateTime($date);
@@ -31462,8 +32004,8 @@
                 }
 
                 // Select and Clone IA
-                $sql_ia = "INSERT INTO tbl_ia (user_id, portal_user, timestamp_id, title, description, sheet_id, last_modified, is_generated)
-                SELECT '$user', '$user', '$timestamp_id_new', title, description, '$sheet_ID_new_arr_data', '$last_modified', 0
+                $sql_ia = "INSERT INTO tbl_ia (user_id, portal_user, facility_switch, timestamp_id, title, description, sheet_id, last_modified, is_generated)
+                SELECT '$user', '$user', '$facility_switch_user_id', '$timestamp_id_new', title, description, '$sheet_ID_new_arr_data', '$last_modified', 0
                 FROM tbl_ia
                 WHERE ID = $ID";
                 if (mysqli_query($conn, $sql_ia)) {
@@ -31628,8 +32170,8 @@
             $file = 'data:image/png;base64,' . base64_encode($base_data);
         }
 
-        $sql = "INSERT INTO tbl_ia_form (user_id, portal_user, ia_id, organization, audit_type, inspected_by, auditee, verified_by, date_start, date_end, audit_scope, file, score_type, score_data, label, description, operation, shipper, operation_type, audit_ex, addendum, product_observed, similar_product, product_applied, auditor, cert_valid, date_review_started, date_review_finished, total_time_review, date_inspection_started, date_inspection_finished, total_time_inspection)
-        VALUES ('$user_id', '$portal_user', '$ID', '$organization', '$audit_type', '$inspected_by', '$auditee', '$verified_by', '$date_start', '$date_end', '$audit_scope', '$file', '$score_type', '$score_data', '$label', '$description', '$operation', '$shipper', '$operation_type', '$audit_ex', '$addendum', '$product_observed', '$similar_product', '$product_applied', '$auditor', '$cert_valid', '$date_review_started', '$date_review_finished', '$total_time_review', '$date_inspection_started', '$date_inspection_finished', '$total_time_inspection')";
+        $sql = "INSERT INTO tbl_ia_form (user_id, portal_user, facility_switch, ia_id, organization, audit_type, inspected_by, auditee, verified_by, date_start, date_end, audit_scope, file, score_type, score_data, label, description, operation, shipper, operation_type, audit_ex, addendum, product_observed, similar_product, product_applied, auditor, cert_valid, date_review_started, date_review_finished, total_time_review, date_inspection_started, date_inspection_finished, total_time_inspection)
+        VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$ID', '$organization', '$audit_type', '$inspected_by', '$auditee', '$verified_by', '$date_start', '$date_end', '$audit_scope', '$file', '$score_type', '$score_data', '$label', '$description', '$operation', '$shipper', '$operation_type', '$audit_ex', '$addendum', '$product_observed', '$similar_product', '$product_applied', '$auditor', '$cert_valid', '$date_review_started', '$date_review_finished', '$total_time_review', '$date_inspection_started', '$date_inspection_finished', '$total_time_inspection')";
         if (mysqli_query($conn, $sql)) {
             $last_id = mysqli_insert_id($conn);
 
@@ -31643,8 +32185,8 @@
             $new_sheet_id = array();
 
             // CLone IA
-            $sql_ia = "INSERT INTO tbl_ia (user_id, portal_user, title, description, sheet_id, last_modified, is_generated)
-            SELECT user_id, $portal_user, title, description, sheet_id, '$last_modified', 1
+            $sql_ia = "INSERT INTO tbl_ia (user_id, portal_user, facility_switch, title, description, sheet_id, last_modified, is_generated)
+            SELECT user_id, $portal_user, $facility_switch_user_id, title, description, sheet_id, '$last_modified', 1
             FROM tbl_ia
             WHERE ID = $ID";
             if (mysqli_query($conn, $sql_ia)) {
@@ -31668,7 +32210,7 @@
                         <td>'.$audit_scope.'</td>
                         <td class="text-center">
                             <a href="#modalEditForm" data-toggle="modal" class="btn btn-xs dark m-0" onclick="btnEditForm('.$last_id.')" title="Edit"><i class="fa fa-pencil"></i></a>
-                            <a href="'.$base_url.'pdf_dom?id='.$last_id.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+                            <a href="'.$base_url.'pdf_ia?id='.$last_id.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
                             <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$last_id.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                             <a href="javascript:;" class="btn btn-xs btn-info m-0" onclick="btnCloseForm(this, '.$last_id.')" title="Close"><i class="fa fa-check"></i></a>
                         </td>
@@ -31812,7 +32354,7 @@
                                 }
                             }
 
-                            // Compute Each Radio Button per Sheet
+                            // Compute Each Yes, No, NA per Sheet
                             $selectFormat2 = mysqli_query( $conn,"SELECT * FROM tbl_ia_format WHERE deleted = 0 AND type = 2 AND sheet_id = $value_sheet_id ORDER BY order_id" );
                             if ( mysqli_num_rows($selectFormat2) > 0 ) {
                                 while($rowFormat2 = mysqli_fetch_array($selectFormat2)) {
@@ -31953,7 +32495,7 @@
                 <td>'.$audit_scope.'</td>
                 <td class="text-center">
                     <a href="#modalEditForm" data-toggle="modal" class="btn btn-xs dark m-0" onclick="btnEditForm('.$ID.')" title="Edit"><i class="fa fa-pencil"></i></a>
-                    <a href="'.$base_url.'pdf_dom?id='.$ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+                    <a href="'.$base_url.'pdf_ia?id='.$ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
                     <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                     <a href="javascript:;" class="btn btn-xs btn-info m-0" onclick="btnCloseForm(this, '.$ID.')" title="Close"><i class="fa fa-check"></i></a>
                 </td>';
@@ -32012,7 +32554,7 @@
                             }
                         }
 
-                        // Compute Each Radio Button per Sheet
+                        // Compute Each Yes, No, NA per Sheet
                         $selectFormat2 = mysqli_query( $conn,"SELECT * FROM tbl_ia_format WHERE deleted = 0 AND type = 2 AND sheet_id = $sheet_id ORDER BY order_id" );
                         if ( mysqli_num_rows($selectFormat2) > 0 ) {
                             while($rowFormat2 = mysqli_fetch_array($selectFormat2)) {
@@ -32289,7 +32831,7 @@
                     <label class="control-label">Assigned To</label>
                     <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple" >';
 
-                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
+                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                 $rowEmployeeID = htmlentities($rowEmployee["ID"] ?? '');
@@ -33418,6 +33960,7 @@
             $row = mysqli_fetch_array($selectData);
             $data_id = htmlentities($row['ID'] ?? '');
             $data_department_id = htmlentities($row['department_id'] ?? '');
+            $data_src = $row['src'];
             $data_record = htmlentities($row['record'] ?? '');
             $data_files_date = htmlentities($row['files_date'] ?? '');
             $data_description = htmlentities($row['description'] ?? '');
@@ -33454,29 +33997,52 @@
                     <label class="control-label">Department</label>
                     <select class="form-control select2" name="department_id" onchange="changeDepartment(this, 2)" style="width: 100%;" required>
                         <option value="">Select</option>';
+                            
+                            $resultDepartment = mysqli_query($conn,"
+                                SELECT
+                                ID,
+                                name,
+                                src
+                                FROM (
+                                    SELECT 
+                                    ad.ID, 
+                                    ad.name,
+                                    '1' AS src
 
-                            $resultDepartment = mysqli_query($conn,"SELECT 
-                                d.ID AS d_ID,
-                                d.name AS d_name
-                                FROM tbl_archiving_department AS d
+                                    FROM tbl_archiving_department AS ad
 
-                                LEFT JOIN (
-                                    SELECT
-                                    *
-                                    FROM tbl_archiving
-                                ) AS a
-                                ON a.department_id = d.ID
+                                    RIGHT JOIN (
+                                        SELECT 
+                                        ID,
+                                        department_id
+                                        FROM tbl_archiving
+                                        WHERE user_id = $user_id
+                                        AND src = 1
+                                    ) AS a
+                                    ON ad.ID = a.department_id
 
-                                WHERE a.user_id = $user_id
+                                    UNION ALL
 
-                                GROUP BY d.name
+                                    SELECT 
+                                    d.ID,
+                                    d.title AS name,
+                                    '2' AS src
+                                    FROM tbl_hr_department AS d
 
-                                ORDER BY d.name");
+                                    WHERE d.deleted = 0 
+                                    AND d.status = 1 
+                                    AND d.user_id = $user_id
+                                    AND d.facility_switch = $facility_switch_user_id
+                                ) r
+                                GROUP BY r.ID, r.src
+                                ORDER BY r.name
+                            ");
                             while($rowDept = mysqli_fetch_array($resultDepartment)) {
-                                $ID = htmlentities($rowDept['d_ID'] ?? '');
-                                $name = htmlentities($rowDept['d_name'] ?? '');
+                                $ID = htmlentities($rowDept['ID'] ?? '');
+                                $name = htmlentities($rowDept['name'] ?? '');
+                                $src = $rowDept['src'];
 
-                                echo '<option value="'. $ID .'" '; echo $ID == $data_department_id ? 'SELECTED':''; echo'>'. $name .'</option>';
+                                echo '<option value="'.$ID.' | '.$src.'" '; if($ID == $data_department_id AND $src == $data_src) { echo 'SELECTED'; } echo '>'.$name.'</option>';
                             }
 
                         echo '<option value="other">Other</option>
@@ -33803,14 +34369,22 @@
             $user_id = employerID($portal_user);
         }
 
-        $department_id = $_POST['department_id'];
-        if ($department_id == "other") {
-            $department_id_other = $_POST['department_id_other'];
+        $department_id = 0;
+        $src = 1;
+        if (!empty($_POST['department_id'])) {
+            if ($_POST['department_id'] == "other") {
+                $department_id_other = $_POST['department_id_other'];
 
-            $sql = "INSERT INTO tbl_archiving_department (name)
-            VALUES ( '$department_id_other')";
-            if (mysqli_query($conn, $sql)) {
-                $department_id = mysqli_insert_id($conn);
+                $sql = "INSERT INTO tbl_archiving_department (name)
+                VALUES ( '$department_id_other')";
+                if (mysqli_query($conn, $sql)) {
+                    $department_id = mysqli_insert_id($conn);
+                    $src = 1;
+                }
+            } else {
+                $arr_dept = explode(' | ', $_POST['department_id']);
+                $department_id = $arr_dept[0];
+                $src = $arr_dept[1];
             }
         }
 
@@ -33845,8 +34419,8 @@
             array_push($arr_item, $output);
             $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-            $sql = "INSERT INTO tbl_archiving (user_id, portal_user, department_id, record, description, files, filetype, filesize, file_history, files_date, notes)
-            VALUES ( '$user_id', '$portal_user', '$department_id', '$record', '$description', '$files', '$filetype', '$filesize', '$file_history', '$files_date', '$notes')";
+            $sql = "INSERT INTO tbl_archiving (user_id, portal_user, department_id, src, record, description, files, filetype, filesize, file_history, files_date, notes)
+            VALUES ( '$user_id', '$portal_user', '$department_id', '$src', '$record', '$description', '$files', '$filetype', '$filesize', '$file_history', '$files_date', '$notes')";
             
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
@@ -33878,14 +34452,22 @@
             $user_id = employerID($portal_user);
         }
 
-        $department_id = $_POST['department_id'];
-        if ($department_id == "other") {
-            $department_id_other = $_POST['department_id_other'];
+        $department_id = 0;
+        $src = 1;
+        if (!empty($_POST['department_id'])) {
+            if ($_POST['department_id'] == "other") {
+                $department_id_other = $_POST['department_id_other'];
 
-            $sql = "INSERT INTO tbl_archiving_department (name)
-            VALUES ( '$department_id_other')";
-            if (mysqli_query($conn, $sql)) {
-                $department_id = mysqli_insert_id($conn);
+                $sql = "INSERT INTO tbl_archiving_department (name)
+                VALUES ( '$department_id_other')";
+                if (mysqli_query($conn, $sql)) {
+                    $department_id = mysqli_insert_id($conn);
+                    $src = 1;
+                }
+            } else {
+                $arr_dept = explode(' | ', $_POST['department_id']);
+                $department_id = $arr_dept[0];
+                $src = $arr_dept[1];
             }
         }
 
@@ -33896,7 +34478,7 @@
         $notes = addslashes($_POST['notes']);
         $process = true;
 
-        mysqli_query( $conn,"UPDATE tbl_archiving set portal_user='". $portal_user ."', department_id='". $department_id ."', record='". $record ."', description='". $description ."', files_date='". $files_date ."', notes='". $notes ."' WHERE ID='". $ID ."'" );
+        mysqli_query( $conn,"UPDATE tbl_archiving set portal_user='". $portal_user ."', department_id='". $department_id ."', src='". $src ."', record='". $record ."', description='". $description ."', files_date='". $files_date ."', notes='". $notes ."' WHERE ID='". $ID ."'" );
 
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_archiving WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
@@ -34361,13 +34943,35 @@
             $assigned_to_id = $row['assigned_to_id'];
             $status = $row['type'];
 
-            $files = $row["files"];
-            $fileExtension = fileExtension($files);
-            $src = $fileExtension['src'];
-            $embed = $fileExtension['embed'];
-            $type = $fileExtension['type'];
-            $file_extension = $fileExtension['file_extension'];
-            $url = $base_url.'uploads/services/';
+            $jt_file = '';
+            $file = $row["files"];
+            if (!empty($file)) {
+
+                $files_arr = explode(" | ", $file);
+                if (count($files_arr) > 1) {
+
+                    foreach ($files_arr as $f) {
+
+                        $fileExtension = fileExtension($f);
+                        $src = $fileExtension['src'];
+                        $embed = $fileExtension['embed'];
+                        $type = $fileExtension['type'];
+                        $file_extension = $fileExtension['file_extension'];
+                        $url = $base_url.'uploads/services/';
+
+                        $jt_file .= '<p style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($f).$embed.'" data-fancybox="fancybox_'.$row["ID"].'" data-fancybox data-type="'.$type.'">'.$f.'</a></p>';
+                    }
+                } else {
+                    $fileExtension = fileExtension($file);
+                    $src = $fileExtension['src'];
+                    $embed = $fileExtension['embed'];
+                    $type = $fileExtension['type'];
+                    $file_extension = $fileExtension['file_extension'];
+                    $url = $base_url.'uploads/services/';
+
+                    $jt_file = '<p style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($file).$embed.'" data-fancybox data-type="'.$type.'">'.$file.'</a></p>';
+                }
+            }
         }
 
         echo '<input class="form-control" type="hidden" name="ID" value="'.$id.'" />
@@ -34419,7 +35023,7 @@
         <div class="form-group">
             <label class="col-md-3 control-label">Attached File</label>
             <div class="col-md-8">
-                <label control-label" style="padding-top: 7px;"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'">'.$files.'</a></label>
+                <label control-label" style="padding-top: 7px;">'.$jt_file .'</label>
             </div>
         </div>
         <div class="form-group" id="serviceDesiredDueDate">
@@ -34450,7 +35054,7 @@
                 <div class="col-md-8">
                     <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">';
 
-                        $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = 34 AND suspended = 0 AND status = 1 ORDER BY first_name" );
+                        $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE deleted = 0 AND user_id = $user_id AND suspended = 0 AND status = 1 ORDER BY first_name" );
                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                 $employee_id = $rowEmployee['ID'];
@@ -34516,7 +35120,7 @@
                             }
 
                             echo '<li class="in">
-                                <img class="avatar" src="uploads/avatar/'.$comment_avatar.'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image\';" />
+                                <img class="avatar" src="uploads/avatar/'.$comment_avatar.'" onerror="this.onerror=null;this.src=\'https://placehold.co/150x15/EFEFEF/AAAAAA?text=no+image\';" />
                                 <div class="message">
                                     <span class="arrow"> </span>
                                     <span class="name">'.$comment_name.'</span>
@@ -34631,17 +35235,86 @@
         $last_modified = date("Y-m-d");
         $process = true;
 
-        $files = $_FILES['file']['name'];
-        if (!empty($files)) {
-            $fileValidation = fileValidation(0, 'file', 'services/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+
+        // $files = $_FILES['file']['name'];
+        // if (!empty($files)) {
+        //     $fileValidation = fileValidation(0, 'file', 'services/');
+        //     $files = $fileValidation['files'];
+        //     $filesize = $fileValidation['size'];
+        //     $process = $fileValidation['valid'];
+        // }
+
+
+        // Count # of uploaded files in array
+        $files_arr = array();
+        $files_output = array();
+        $totalFile = count($_FILES['file']['name']);
+        if ($totalFile > 0) {
+            $random = rand(1000,1000000);
+
+            // Loop through each file
+            for( $i=0 ; $i < $totalFile ; $i++ ) {
+                $files = addslashes($_FILES['file']['name'][$i]);
+                $size = $_FILES['file']['size'][$i];
+                $tmp = addslashes($_FILES['file']['tmp_name'][$i]);
+                $path = 'uploads/services/';
+
+                if(!empty($files)) {
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    if (!$finfo) {
+                        return false; // If finfo_open fails, consider the file invalid
+                    }
+                    $mime = finfo_file($finfo, $tmp);
+                    finfo_close($finfo);
+
+                    $mime_array = array(
+                        'text/x-php',
+                        'text/plain', 
+                        'text/plain', 
+                        'text/css', 
+                        'text/html', 
+                        'text/javascript', 
+                        'application/json', 
+                        'application/x-httpd-php', 
+                        'application/rtf', 
+                        'application/x-sh', 
+                        'font/ttf', 
+                        'font/woff', 
+                        'font/woff2', 
+                        'application/xhtml+xml', 
+                        'application/xml', 
+                        'text/xml', 
+                        'application/atom+xml', 
+                        'application/vnd.mozilla.xul+xml', 
+                        'application/x-msdownload'
+                    );
+
+                    //Make sure we have a file path
+                    if ($tmp != "" AND !in_array($mime, $mime_array)){
+
+                        $files = $random . ' - ' . $files;
+                        $path = $path.$files;
+
+                        if(move_uploaded_file(stripcslashes($tmp),stripcslashes($path))) {
+                            $output = array(
+                                "files" => $files,
+                                "size" => $size,
+                                "mime" => $mime
+                            );
+
+                            array_push($files_arr, $files);
+                            array_push($files_output, $output);
+                        }
+                    }
+                }
+            }
         }
+        $files_arr = implode(' | ', $files_arr);
+        $files_output = json_encode($files_output, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_services (user_id, category, name, title, description, files, contact, email, due_date, last_modified)
-            VALUES ('$ID', '$category', '$c_name', '$title', '$description', '$files', '$contact', '$email', '$due_date', '$last_modified')";
+            $sql = "INSERT INTO tbl_services (user_id, category, name, title, description, files, files_output, contact, email, due_date, last_modified)
+            VALUES ('$ID', '$category', '$c_name', '$title', '$description', '$files_arr', '$files_output', '$contact', '$email', '$due_date', '$last_modified')";
             
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
@@ -34668,14 +35341,27 @@
                         7 => 'Praise'
                     );
 
-                    if (!empty($files)) {
-                        $fileExtension = fileExtension($files);
-                        $src = $fileExtension['src'];
-                        $embed = $fileExtension['embed'];
-                        $type = $fileExtension['type'];
-                        $file_extension = $fileExtension['file_extension'];
-                        $url = $base_url.'uploads/services/';
-                        $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
+                    if (!empty($files_arr)) {
+                        // $fileExtension = fileExtension($files);
+                        // $src = $fileExtension['src'];
+                        // $embed = $fileExtension['embed'];
+                        // $type = $fileExtension['type'];
+                        // $file_extension = $fileExtension['file_extension'];
+                        // $url = $base_url.'uploads/services/';
+                        // $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
+
+                        $files_arr = explode(" | ", $files_arr);
+                        foreach ($files_arr as $f) {
+
+                            $fileExtension = fileExtension($f);
+                            $src = $fileExtension['src'];
+                            $embed = $fileExtension['embed'];
+                            $type = $fileExtension['type'];
+                            $file_extension = $fileExtension['file_extension'];
+                            $url = $base_url.'uploads/services/';
+
+                            $files .= '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($f).$embed.'" data-fancybox="fancybox_'.$row["s_ID"].'" data-fancybox data-type="'.$type.'">View</a></p>';
+                        }
                     }
 
                     $counterup_tbl = counterup_tbl('supplier');
@@ -34695,6 +35381,8 @@
                     $sender['services@interlinkiq.com'] = 'Interlink IQ';
                     $recipients['csuccess@consultareinc.com'] = 'Customer Success';
                     $recipients['chris@consultareinc.com'] = 'Christopher Santianez';
+                    $recipients['cherry@consultareinc.com'] = 'Cherry Rose Damayo';
+                    $recipients['mjtayros.it@gmail.com'] = 'Marc Jhonel Tayros';
                     $subject = 'New Job Ticket';
                     $body = 'Good day!<br><br>
 
@@ -34936,8 +35624,3415 @@
 
 
     // PRODUCT PAGE
+    if( isset($_GET['modalView_Vendor']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $searchTerm = $_GET['term'];
+        $userData = array();
+        $selectData = mysqli_query( $conn,"
+            SELECT 
+            s.ID AS s_ID,
+            s.name,
+            s.vendor_id,
+            s.vendor_code,
+            s.address,
+            s.phone,
+            s.fax,
+            s.email,
+            i.avatar,
+            c.ID AS c_ID,
+            c.business,
+            c.size,
+            c.location,
+            c.geographic,
+            c.retail,
+            c.diversity,
+            c.responsibility
+            FROM tbl_supplier AS s
+
+            LEFT JOIN (
+                SELECT
+                *
+                FROM tbl_user
+            ) AS u
+            ON s.email = u.email
+
+            LEFT JOIN (
+                SELECT
+                *
+                FROM tbl_user_info
+            ) AS i
+            ON u.ID = i.user_id
+
+            LEFT JOIN (
+                SELECT
+                *
+                FROM tbl_supplier_company
+            ) AS c
+            ON s.ID = c.supplier_id
+
+            WHERE s.page = 1
+            AND s.is_deleted = 0
+            AND s.user_id = $user_id
+            AND s.facility_switch = $facility_switch_user_id
+            AND s.name LIKE '%".$searchTerm."%'
+        " );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            while($row = mysqli_fetch_assoc($selectData)){
+                $name = htmlentities($row['name'] ?? '');
+                $code = htmlentities($row['vendor_code'] ?? '');
+
+                $avatar = '//placehold.co/50x50/EFEFEF/AAAAAA?text=no+image';
+                if (!empty($row['avatar'])) {
+                    $avatar = '/uploads/avatar/'.$row['avatar'];
+                }
+                
+                $data['vendor_s_ID'] = $row['s_ID'];
+                $data['vendor_c_ID'] = $row['c_ID'];
+                $data['vendor_id'] = $row['vendor_id'];
+                $data['vendor_code'] = $code;
+                $data['address'] = $row['address'];
+                $data['phone'] = $row['phone'];
+                $data['fax'] = $row['fax'];
+                $data['email'] = $row['email'];
+                $data['business'] = $row['business'];
+                $data['size'] = $row['size'];
+                $data['location'] = $row['location'];
+                $data['geographic'] = $row['geographic'];
+                $data['retail'] = $row['retail'];
+                $data['diversity'] = $row['diversity'];
+                $data['responsibility'] = $row['responsibility'];
+                $data['value'] = $name;
+                $data['label'] = '
+                    <div class="mt-action" style="padding: 0;">
+                        <div class="mt-action-body" style="padding-right: 6px;padding-left: 0;">
+                            <div class="mt-action-row">
+                                <div class="mt-action-info">
+                                    <div class="mt-action-icon" style="padding: 6px;">
+                                        <img src="'.$avatar.'" style="width: 50px; height: 50px; object-fit: contain;">
+                                    </div>
+                                    <div class="mt-action-details" style="vertical-align: middle;">
+                                        <p class="mt-action-desc" style="margin: 0;">
+                                            <span class="font-dark"><b>'.$name.'</b></span><br>
+                                            '.$code.'
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>';
+
+                array_push($userData, $data);
+            }
+        }
+
+        echo json_encode($userData);
+    }
     if( isset($_GET['modalView_Products']) ) {
+        $ID = $_GET['modalView_Products'];
+        $s = $_GET['s'];
+
+        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_products WHERE ID = $ID" );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            $rowData = mysqli_fetch_array($selectData);
+
+            // Vendor Details
+            $vendor_s_ID = $rowData['vendor_s_ID'];
+            $vendor_c_ID = '';
+            $vendor_id = '';
+            $vendor_name = '';
+            $vendor_code = '';
+            $vendor_address = '';
+            $vendor_contact_name = '';
+            $vendor_phone = '';
+            $vendor_fax = '';
+            $vendor_email = '';
+            $vendor_business = '';
+            $vendor_size = '';
+            $vendor_location = '';
+            $vendor_geographic = '';
+            $vendor_retail = '';
+            $vendor_diversity = '';
+            $vendor_responsibility = '';
+
+            $selectDataSupplier = mysqli_query( $conn,"
+                SELECT 
+                s.ID AS s_ID,
+                s.name,
+                s.vendor_id,
+                s.vendor_code,
+                s.address,
+                s.phone,
+                s.fax,
+                s.email,
+                i.avatar,
+                c.ID AS c_ID,
+                c.business,
+                c.size,
+                c.location,
+                c.geographic,
+                c.retail,
+                c.diversity,
+                c.responsibility
+                FROM tbl_supplier AS s
+
+                LEFT JOIN (
+                    SELECT
+                    *
+                    FROM tbl_user
+                ) AS u
+                ON s.email = u.email
+
+                LEFT JOIN (
+                    SELECT
+                    *
+                    FROM tbl_user_info
+                ) AS i
+                ON u.ID = i.user_id
+
+                LEFT JOIN (
+                    SELECT
+                    *
+                    FROM tbl_supplier_company
+                ) AS c
+                ON s.ID = c.supplier_id
+
+                WHERE s.page = 1
+                AND s.is_deleted = 0
+                AND s.ID = $vendor_s_ID
+            " );
+            if ( mysqli_num_rows($selectDataSupplier) > 0 ) {
+                $rowDataSupplier = mysqli_fetch_assoc($selectDataSupplier);
+                $vendor_s_ID = htmlentities($rowDataSupplier['s_ID'] ?? '');
+                $vendor_c_ID = htmlentities($rowDataSupplier['c_ID'] ?? '');
+                $vendor_id = htmlentities($rowDataSupplier['vendor_id'] ?? '');
+                $vendor_name = htmlentities($rowDataSupplier['name'] ?? '');
+                $vendor_code = htmlentities($rowDataSupplier['vendor_code'] ?? '');
+                $vendor_address = htmlentities($rowDataSupplier['address'] ?? '');
+                $vendor_phone = htmlentities($rowDataSupplier['phone'] ?? '');
+                $vendor_fax = htmlentities($rowDataSupplier['fax'] ?? '');
+                $vendor_email = htmlentities($rowDataSupplier['email'] ?? '');
+                $vendor_business = htmlentities($rowDataSupplier['business'] ?? '');
+                $vendor_size = htmlentities($rowDataSupplier['size'] ?? '');
+                $vendor_location = htmlentities($rowDataSupplier['location'] ?? '');
+                $vendor_geographic = htmlentities($rowDataSupplier['geographic'] ?? '');
+                $vendor_retail = htmlentities($rowDataSupplier['retail'] ?? '');
+                $vendor_diversity = htmlentities($rowDataSupplier['diversity'] ?? '');
+                $vendor_responsibility = htmlentities($rowDataSupplier['responsibility'] ?? '');
+            }
+
+
+
+            // Product Overview
+            $user_id = $rowData['user_id'];
+            $data_image = $rowData['image'];
+            $data_image_array = explode(", ", $data_image);
+            $image_main = "//placehold.co/400x250/EFEFEF/AAAAAA?text=no+image";
+            $image_angle = "//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image";
+
+            $name = htmlentities($rowData['name'] ?? '');
+            $category_group_id = htmlentities($rowData['category_group'] ?? '');
+            $code = htmlentities($rowData['code'] ?? '');
+            $leads = htmlentities($rowData['leads'] ?? '');
+            $lead_type = htmlentities($rowData['lead_type'] ?? '');
+            $private_label = htmlentities($rowData['private_label'] ?? '');
+            $cost = htmlentities($rowData['cost'] ?? '');
+            $incoterms = htmlentities($rowData['incoterms'] ?? '');
+            $moq = htmlentities($rowData['moq'] ?? '');
+            $imports = htmlentities($rowData['imports'] ?? '');
+            $description = htmlentities($rowData['description'] ?? '');
+            $feature = htmlentities($rowData['feature'] ?? '');
+            $ingredients = htmlentities($rowData['ingredients'] ?? '');
+            $claims = htmlentities($rowData['claims'] ?? '');
+            $intended = htmlentities($rowData['intended'] ?? '');
+            $intended_consumers = htmlentities($rowData['intended_consumers'] ?? '');
+            $allergen = htmlentities($rowData['allergen'] ?? '');
+            $flavor = htmlentities($rowData['flavor'] ?? '');
+            $size_uom = htmlentities($rowData['size_uom'] ?? '');
+            $size_uom_type = htmlentities($rowData['size_uom_type'] ?? '');
+            $shelf = htmlentities($rowData['shelf'] ?? '');
+            $shelf_type = htmlentities($rowData['shelf_type'] ?? '');
+            $temperature = htmlentities($rowData['temperature'] ?? '');
+            $retail_accounts = htmlentities($rowData['retail_accounts'] ?? '');
+            $competing_brands = htmlentities($rowData['competing_brands'] ?? '');
+
+
+
+            // Packaging
+            $packaging_1 = htmlentities($rowData['packaging_1'] ?? '');
+            $packaging_1_image = htmlentities($rowData['packaging_1_image'] ?? '');
+            $packaging_1_dimension = htmlentities($rowData['packaging_1_dimension'] ?? '');
+            $packaging_1_upc = htmlentities($rowData['packaging_1_upc'] ?? '');
+            $packaging_1_cube = htmlentities($rowData['packaging_1_cube'] ?? '');
+            $packaging_1_weight = htmlentities($rowData['packaging_1_weight'] ?? '');
+            $packaging_1_unit = htmlentities($rowData['packaging_1_unit'] ?? '');
+            $packaging_1_size_uom = htmlentities($rowData['packaging_1_size_uom'] ?? '');
+            $packaging_1_size_uom_type = htmlentities($rowData['packaging_1_size_uom_type'] ?? '');
+
+            $packaging_2 = htmlentities($rowData['packaging_2'] ?? '');
+            $packaging_2_image = htmlentities($rowData['packaging_2_image'] ?? '');
+            $packaging_2_dimension = htmlentities($rowData['packaging_2_dimension'] ?? '');
+            $packaging_2_upc = htmlentities($rowData['packaging_2_upc'] ?? '');
+            $packaging_2_cube = htmlentities($rowData['packaging_2_cube'] ?? '');
+            $packaging_2_weight = htmlentities($rowData['packaging_2_weight'] ?? '');
+            $packaging_2_unit = htmlentities($rowData['packaging_2_unit'] ?? '');
+            $packaging_2_size_uom = htmlentities($rowData['packaging_2_size_uom'] ?? '');
+            $packaging_2_size_uom_type = htmlentities($rowData['packaging_2_size_uom_type'] ?? '');
+
+            $packaging_3 = htmlentities($rowData['packaging_3'] ?? '');
+            $packaging_3_image = htmlentities($rowData['packaging_3_image'] ?? '');
+            $packaging_3_dimension = htmlentities($rowData['packaging_3_dimension'] ?? '');
+            $packaging_3_upc = htmlentities($rowData['packaging_3_upc'] ?? '');
+            $packaging_3_cube = htmlentities($rowData['packaging_3_cube'] ?? '');
+            $packaging_3_weight = htmlentities($rowData['packaging_3_weight'] ?? '');
+            $packaging_3_unit = htmlentities($rowData['packaging_3_unit'] ?? '');
+            $packaging_3_size_uom = htmlentities($rowData['packaging_3_size_uom'] ?? '');
+            $packaging_3_size_uom_type = htmlentities($rowData['packaging_3_size_uom_type'] ?? '');
+
+            $pallet_type = htmlentities($rowData['pallet_type'] ?? '');
+            $pallet_dimension = htmlentities($rowData['pallet_dimension'] ?? '');
+            $pallet_upc = htmlentities($rowData['pallet_upc'] ?? '');
+            $pallet_cube = htmlentities($rowData['pallet_cube'] ?? '');
+            $pallet_weight = htmlentities($rowData['pallet_weight'] ?? '');
+            $pallet_unit = htmlentities($rowData['pallet_unit'] ?? '');
+            $pallet_boxes = htmlentities($rowData['pallet_boxes'] ?? '');
+
+            $production_day = htmlentities($rowData['production_day'] ?? '');
+            $production_week = htmlentities($rowData['production_week'] ?? '');
+            $production_cost = htmlentities($rowData['production_cost'] ?? '');
+            $production_profit = htmlentities($rowData['production_profit'] ?? '');
+
+            $cost_operation = htmlentities($rowData['cost_operation'] ?? '');
+            $cost_rent = htmlentities($rowData['cost_rent'] ?? '');
+            $cost_material = htmlentities($rowData['cost_material'] ?? '');
+            $cost_financing = htmlentities($rowData['cost_financing'] ?? '');
+            $cost_transportation = htmlentities($rowData['cost_transportation'] ?? '');
+
+            $mock_recall = htmlentities($rowData['mock_recall'] ?? '');
+            $product_trace = htmlentities($rowData['product_trace'] ?? '');
+
+
+
+            // Manufacturer
+            $manu_name = htmlentities($rowData['manu_name'] ?? '');
+            $manu_phone = htmlentities($rowData['manu_phone'] ?? '');
+            $manu_contact = htmlentities($rowData['manu_contact'] ?? '');
+            $manu_address = htmlentities($rowData['manu_address'] ?? '');
+            $manu_email = htmlentities($rowData['manu_email'] ?? '');
+            $manu_website = htmlentities($rowData['manu_website'] ?? '');
+            $manu_reg_no = htmlentities($rowData['manu_reg_no'] ?? '');
+            $manu_dunn_no = htmlentities($rowData['manu_dunn_no'] ?? '');
+
+            $broker_name = htmlentities($rowData['broker_name'] ?? '');
+            $broker_phone = htmlentities($rowData['broker_phone'] ?? '');
+            $broker_contact = htmlentities($rowData['broker_contact'] ?? '');
+            $broker_address = htmlentities($rowData['broker_address'] ?? '');
+            $broker_email = htmlentities($rowData['broker_email'] ?? '');
+            $broker_website = htmlentities($rowData['broker_website'] ?? '');
+            $broker_reg_no = htmlentities($rowData['broker_reg_no'] ?? '');
+            $broker_dunn_no = htmlentities($rowData['broker_dunn_no'] ?? '');
+
+            $agent_company = htmlentities($rowData['agent_company'] ?? '');
+            $agent_phone = htmlentities($rowData['agent_phone'] ?? '');
+            $agent_contact = htmlentities($rowData['agent_contact'] ?? '');
+            $agent_address = htmlentities($rowData['agent_address'] ?? '');
+            $agent_email = htmlentities($rowData['agent_email'] ?? '');
+            $agent_website = htmlentities($rowData['agent_website'] ?? '');
+
+            $importer_name = htmlentities($rowData['importer_name'] ?? '');
+            $importer_phone = htmlentities($rowData['importer_phone'] ?? '');
+            $importer_contact = htmlentities($rowData['importer_contact'] ?? '');
+            $importer_address = htmlentities($rowData['importer_address'] ?? '');
+            $importer_email = htmlentities($rowData['importer_email'] ?? '');
+            $importer_website = htmlentities($rowData['importer_website'] ?? '');
+            $importer_reg_no = htmlentities($rowData['importer_reg_no'] ?? '');
+            $importer_dunn_no = htmlentities($rowData['importer_dunn_no'] ?? '');
+
+            $fsvp_date_review = htmlentities($rowData['fsvp_date_review'] ?? '');
+            $fsvp_date_audit = htmlentities($rowData['fsvp_date_audit'] ?? '');
+            $fsvp_seasonal = htmlentities($rowData['fsvp_seasonal'] ?? '');
+            $fsvp_date_available = htmlentities($rowData['fsvp_date_available'] ?? '');
+
+
+            echo '<div class="tabbable tabbable-tabdrop">
+                <input class="form-control" type="hidden" name="ID" value="'.$ID.'" />
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tabVendor2" data-toggle="tab">Vendor Details</a>
+                    </li>
+                    <li>
+                        <a href="#tabBasic2" data-toggle="tab">Product Overview</a>
+                    </li>
+                    <li>
+                        <a href="#tabCharacteristics2" data-toggle="tab">Product Characteristics</a>
+                    </li>
+                    <li>
+                        <a href="#tabPackaging2" data-toggle="tab">Packaging</a>
+                    </li>
+                    <li>
+                        <a href="#tabDocs2" data-toggle="tab">Documents</a>
+                    </li>
+                    <li>
+                        <a href="#tabManufactured2" data-toggle="tab">Manufacturer</a>
+                    </li>
+                </ul>
+                <div class="tab-content margin-top-20">
+                    <div class="tab-pane active" id="tabVendor2">
+                        <input class="form-control" type="hidden" name="vendor_s_ID" id="vendor_s_ID2" value="'.$vendor_s_ID.'" />
+                        <input class="form-control" type="hidden" name="vendor_c_ID" id="vendor_c_ID2" value="'.$vendor_c_ID.'" />
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Vendor ID</label>
+                                    <input class="form-control" type="text" name="vendor_id" id="vendor_id2" value="'.$vendor_id.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Vendor Name</label>
+                                    <input class="form-control" type="text" name="vendor_name" id="vendor_name2" value="'.$vendor_name.'" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Vendor/Item Code</label>
+                                    <input class="form-control" type="text" name="vendor_code" id="vendor_code2" value="'.$vendor_code.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label class="control-label">Address</label>
+                                    <input class="form-control" type="text" name="vendor_address" id="vendor_address2" value="'.$vendor_address.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Contact Name</label>
+                                    <input class="form-control" type="text" name="vendor_contact_name" id="vendor_contact_name2" value="'.$vendor_contact_name.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Phone</label>
+                                    <input class="form-control" type="text" name="vendor_phone" id="vendor_phone2" value="'.$vendor_phone.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Fax</label>
+                                    <input class="form-control" type="text" name="vendor_fax" id="vendor_fax2" value="'.$vendor_fax.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Email Address</label>
+                                    <input class="form-control" type="text" name="vendor_email" id="vendor_email2" value="'.$vendor_email.'" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4><strong>Company Background</strong></h4>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label class="control-label">Company Primary Business Description</label>
+                                    <input class="form-control" type="text" name="vendor_business" id="vendor_business2" value="'.$vendor_business.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="control-label">Company Size</label>
+                                    <input class="form-control" type="text" name="vendor_size" id="vendor_size2" value="'.$vendor_size.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label class="control-label">Locations</label>
+                                    <input class="form-control" type="text" name="vendor_location" id="vendor_location2" value="'.$vendor_location.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="control-label">Geographic Distribution Points</label>
+                                    <input class="form-control" type="text" name="vendor_geographic" id="vendor_geographic2" value="'.$vendor_geographic.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">Retail Accounts Listing</label>
+                                    <input class="form-control" type="text" name="vendor_retail" id="vendor_retail2" value="'.$vendor_retail.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label class="control-label">Corporate Diversity Program Statement</label>
+                                    <input class="form-control" type="text" name="vendor_diversity" id="vendor_diversity2" value="'.$vendor_diversity.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="control-label">Corporate Responsibility Program Statement</label>
+                                    <input class="form-control" type="text" name="vendor_responsibility" id="vendor_responsibility2" value="'.$vendor_responsibility.'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabBasic2">
+                        <div class="row margin-bottom-20">
+                            <div class="col-md-6 productMain">
+                                <p><strong>Main Product View</strong></p>
+                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                    <div class="fileinput-new thumbnail">';
+
+                                        if (!empty($data_image_array[0])) {
+                                            echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[0] .'" class="img-responsive" alt="Avatar" />';
+                                        } else {
+                                            echo '<img src="'. $image_main .'" class="img-responsive" alt="Avatar" />';
+                                        }
+
+                                    echo '</div>
+                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                    <div>
+                                        <span class="btn default btn-file btn-xs">
+                                            <span class="fileinput-new"> Select image </span>
+                                            <span class="fileinput-exists"> Change </span>
+                                            <input class="form-control" type="file" name="image_main" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                        </span>
+                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 productAngle">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <p><strong>Top View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[1])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[1] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_top" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <p><strong>Front View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[2])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[2] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_front" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <p><strong>Left View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[3])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[3] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_left" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row margin-top-20">
+                                    <div class="col-sm-4">
+                                        <p><strong>Bottom View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[4])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[4] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_bottom" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <p><strong>Back View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[5])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[5] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_back" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <p><strong>Right View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[6])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[6] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_right" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label">Product Name</label>
+                                    <input class="form-control" type="text" name="name" value="'.$name.'" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Category Group Description</label>
+                                    <select class="form-control" name="category_group">
+                                        <option value="0">Select</option>';
+
+                                        $selectCategory = mysqli_query( $conn,"
+                                            SELECT 
+                                            g.id AS group_id,
+                                            g.name AS group_name,
+                                            d.id AS desciption_id,
+                                            d.name AS desciption_name
+                                            FROM tbl_products_category_group AS g
+
+                                            LEFT JOIN (
+                                                SELECT
+                                                *
+                                                FROM tbl_products_category_group_description
+                                                WHERE deleted = 0
+                                            ) AS d
+                                            ON g.ID = d.category_id
+
+                                            WHERE g.deleted = 0
+                                        " );
+                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                            $category_group = array();
+                                            $category_group_prev = 0;
+                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
+
+                                                if (!in_array($rowCategory['group_id'], $category_group)) {
+                                                    array_push($category_group, $rowCategory['group_id']);
+
+                                                    if ($category_group_prev > 0 AND $category_group_prev != $rowCategory['group_id']) {
+                                                        echo '</optgroup>';
+                                                    }
+                                                    $category_group_prev = $rowCategory['group_id'];
+
+                                                    echo '<optgroup label="'.$rowCategory['group_name'].'">';
+                                                }
+
+                                                echo '<option value="'.$rowCategory['desciption_id'].'" '; echo $category_group_id == $rowCategory['desciption_id'] ? 'SELECTED':''; echo '>'.$rowCategory['desciption_name'].'</option>';
+                                            }
+                                        }
+
+                                    echo '</select>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">Product / Item Code</label>
+                                            <input class="form-control" type="text" name="code" value="'.$code.'" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label class="control-label">Lead Time</label>
+                                            <div class="input-group">
+                                                <input class="form-control" type="number" name="leads" value="'.$leads.'" min="0" />
+                                                <div class="input-group-addon" style="padding: 0;">
+                                                    <select name="lead_type" style="border: 0; background: transparent;">
+                                                        <option value="0" '; echo $lead_type == 0 ? 'SELECTED':''; echo '>Day</option>
+                                                        <option value="1" '; echo $lead_type == 1 ? 'SELECTED':''; echo '>Week</option>
+                                                        <option value="2" '; echo $lead_type == 2 ? 'SELECTED':''; echo '>Month</option>
+                                                        <option value="3" '; echo $lead_type == 3 ? 'SELECTED':''; echo '>Year</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Private Label</label>
+                                            <select class="form-control" name="private_label">
+                                                <option value="0" '; echo $private_label == 0 ? 'SELECTED':''; echo '>No</option>
+                                                <option value="1" '; echo $private_label == 1 ? 'SELECTED':''; echo '>Yes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Cost</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">$</span>
+                                                <input class="form-control" type="number" name="cost" min="0" value="'.$cost.'" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Incoterms</label>
+                                            <select class="form-control" name="incoterms">
+                                                <option value="0">Select</option>';
+
+                                                $selectIncoterms = mysqli_query( $conn,"SELECT * from tbl_products_incoterms WHERE deleted = 0" );
+                                                if ( mysqli_num_rows($selectIncoterms) > 0 ) {
+                                                    while($rowIncoterms = mysqli_fetch_array($selectIncoterms)) {
+                                                        echo '<option value="'.$rowIncoterms['ID'].'" '; echo $incoterms == $rowIncoterms['ID'] ? 'SELECTED':''; echo '>'.$rowIncoterms['name'].'</option>';
+                                                    }
+                                                }
+
+                                            echo '</select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">MOQ</label>
+                                            <input class="form-control" type="number" name="moq" min="0" value="'.$moq.'" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Imports</label>
+                                            <select class="form-control" name="imports">
+                                                <option value="0" '; echo $imports == 0 ? 'SELECTED':''; echo '>No</option>
+                                                <option value="1" '; echo $imports == 1 ? 'SELECTED':''; echo '>Yes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Brand Logo</label>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[7])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[7] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_brand" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>QR Code</label>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[8])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[8] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_qr" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Product Description</label>
+                                    <textarea class="form-control" name="description" required >'.nl2br($description).'</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Product Characteristics</label>
+                                    <textarea class="form-control" name="feature">'.nl2br($feature).'</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">Ingredients List</label>
+                                    <textarea class="form-control" name="ingredients">'.nl2br($ingredients).'</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Product Claims</label>
+                                    <select class="form-control mt-multiselect btn btn-default" name="claims[]" multiple="multiple">';
+
+                                        $claims_array = explode(", ", $claims);
+                                        $selectClaims = mysqli_query( $conn,"SELECT * FROM tbl_products_claims WHERE deleted = 0 ORDER BY name" );
+                                        if ( mysqli_num_rows($selectClaims) > 0 ) {
+                                            while($rowClaims = mysqli_fetch_array($selectClaims)) {
+                                                echo '<option value="'.$rowClaims['ID'].'" '; echo in_array($rowClaims['ID'], $claims_array) ? 'SELECTED' : ''; echo '>'.$rowClaims['name'].'</option>';
+                                            }
+                                        }
+
+                                    echo '</select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Intended Use</label>
+                                    <select class="form-control" name="intended">
+                                        <option value="0">Select</option>';
+
+                                        $selectIntended = mysqli_query( $conn,"SELECT * FROM tbl_products_intended WHERE deleted = 0 ORDER BY name" );
+                                        if ( mysqli_num_rows($selectIntended) > 0 ) {
+                                            while($rowIntended = mysqli_fetch_array($selectIntended)) {
+                                                $intended_ID = $rowIntended["ID"];
+                                                $intended_name = $rowIntended["name"];
+
+                                                echo '<option value="'.$intended_ID.'" '; echo $intended == $intended_ID ? 'SELECTED':''; echo '>'.$intended_name.'</option>';
+                                            }
+                                        }
+
+                                    echo '</select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Intended Consumers</label>
+                                    <input class="form-control" type="text" name="intended_consumers" value="'.$intended_consumers.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Allergens</label>
+                                    <select class="form-control mt-multiselect btn btn-default" name="allergen[]" multiple="multiple">';
+
+                                        $allergen_array = explode(", ", $allergen);
+                                        $selectAllergens = mysqli_query( $conn,"SELECT * FROM tbl_products_allergens ORDER BY name" );
+                                        if ( mysqli_num_rows($selectAllergens) > 0 ) {
+                                            while($rowAllergens = mysqli_fetch_array($selectAllergens)) {
+                                                echo '<option value="'.$rowAllergens['ID'].'" '; echo in_array($rowAllergens['ID'], $allergen_array) ? 'SELECTED' : ''; echo '>'.$rowAllergens['name'].'</option>';
+                                            }
+                                        }
+
+                                    echo '</select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Available Flavors</label>
+                                    <input class="form-control" type="text" name="flavor" value="'.$flavor.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Size/UOM</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" name="size_uom" min="0" value="'.$size_uom.'" />
+                                        <div class="input-group-addon" style="padding: 0;">
+                                            <select name="size_uom_type" style="border: 0; background: transparent;">';
+
+                                                $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                    while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                        echo '<option value="'.$rowUOM['ID'].'" '; echo $size_uom_type == $rowUOM['ID'] ? 'SELECTED':''; echo '>'.$rowUOM['name'].'</option>';
+                                                    }
+                                                }
+
+                                            echo '</select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Shelf Life</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" name="shelf" min="0" value="'.$shelf.'" />
+                                        <div class="input-group-addon" style="padding: 0;">
+                                            <select name="shelf_type" style="border: 0; background: transparent;">
+                                                <option value="0">Day</option>
+                                                <option value="1" '; echo $shelf_type == 1 ? 'SELECTED':''; echo '>Week</option>
+                                                <option value="2" '; echo $shelf_type == 2 ? 'SELECTED':''; echo '>Month</option>
+                                                <option value="3" '; echo $shelf_type == 3 ? 'SELECTED':''; echo '>Year</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Temperature</label>
+                                    <input class="form-control" type="text" name="temperature" value="'.$temperature.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Retail Accounts</label>
+                                    <textarea class="form-control" name="retail_accounts">'.$retail_accounts.'</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Competing Brands</label>
+                                    <textarea class="form-control" name="competing_brands">'.$competing_brands.'</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabCharacteristics2">
+                        <h4>
+                            <strong>Product Description, including Important Food Safety Characteristics</strong>';
+
+                            $pictogram = 'prod_desc';
+                            if ($user_id == 163) {
+                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                            } else {
+                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                    $files = '';
+                                    $type = 'iframe';
+                                    if (!empty($rowPictogram["files"])) {
+                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                        $str_filename = '';
+
+                                        foreach($arr_filename as $val_filename) {
+                                            $str_filename = $val_filename;
+                                        }
+                                        foreach($arr_filetype as $val_filetype) {
+                                            $str_filetype = $val_filetype;
+                                        }
+
+                                        $files = $rowPictogram["files"];
+                                        if ($rowPictogram["filetype"] == 1) {
+                                            $fileExtension = fileExtension($files);
+                                            $src = $fileExtension['src'];
+                                            $embed = $fileExtension['embed'];
+                                            $type = $fileExtension['type'];
+                                            $file_extension = $fileExtension['file_extension'];
+                                            $url = $base_url.'uploads/pictogram/';
+
+                                            $files = $src.$url.rawurlencode($files).$embed;
+                                        } else if ($rowPictogram["filetype"] == 3) {
+                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        }
+                                    }
+
+                                    if (!empty($files)) {
+                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                    }
+                                }
+                            }
+
+                        echo '</h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Organoleptic/Sensory Characteristics</label>
+                                    <div class="chars-container">';
+                                        $data = json_decode($rowData['physical_characteristics']) ?? null;
+                                        if(isset($data) && is_array($data)) foreach($data as $v) {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" value="'.$v.'" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        } else {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        }
+                                    echo '</div>
+                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physical_chars[]" data-placeholder="e.g. Color, Flavor, Texture, Form" onclick="addMoreChars(this)">
+                                        <i class="fa fa-plus"></i> Add more
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Physico - Chemical Characteristics</label>
+                                    <div class="chars-container">';
+                                        $data = json_decode($rowData['physico_chemical_characteristics']) ?? null;
+                                        if(isset($data) && is_array($data)) foreach($data as $v) {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." value="'.$v.'" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        } else {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        }
+                                    echo '</div>
+                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physico_chem_char[]" data-placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." onclick="addMoreChars(this)">
+                                        <i class="fa fa-plus"></i> Add more
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Microbiological Characteristics</label>
+                                    <div class="chars-container">';
+                                        $data = json_decode($rowData['microbiological_characteristics']) ?? null;
+                                        if(isset($data) && is_array($data)) foreach($data as $v) {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" value="'.$v.'" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        } else {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        }
+                                    echo '</div>
+                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="microbial_char[]" data-placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" onclick="addMoreChars(this)">
+                                        <i class="fa fa-plus"></i> Add more
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabPackaging2">
+                        <h4><strong>Primary</strong></h4>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>&nbsp;</label>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($packaging_1_image)) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $packaging_1_image .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="packaging_1_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Unit</label>
+                                            <select class="form-control" name="packaging_1">
+                                                <option value="0">Select</option>';
+
+                                                $selectPrimary = mysqli_query( $conn,"SELECT * from tbl_products_primary WHERE deleted = 0" );
+                                                if ( mysqli_num_rows($selectPrimary) > 0 ) {
+                                                    while($rowPrimary = mysqli_fetch_array($selectPrimary)) {
+                                                        echo '<option value="'.$rowPrimary['ID'].'" '; echo $packaging_1 == $rowPrimary['ID'] ? 'SELECTED':''; echo '>'.$rowPrimary['name'].'</option>';
+                                                    }
+                                                }
+
+                                            echo '</select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Dimension</label>
+                                            <input class="form-control" type="text" name="packaging_1_dimension" value="'.$packaging_1_dimension.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">UPC</label>
+                                            <input class="form-control" type="text" name="packaging_1_upc" value="'.$packaging_1_upc.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Cube</label>
+                                            <input class="form-control" type="text" name="packaging_1_cube" value="'.$packaging_1_cube.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">Ship Weight</label>
+                                            <input class="form-control" type="text" name="packaging_1_weight" value="'.$packaging_1_weight.'" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">No. of Units</label>
+                                            <input class="form-control" type="text" name="packaging_1_unit" value="'.$packaging_1_unit.'" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">Size/UOM</label>
+                                            <div class="input-group">
+                                                <input class="form-control" type="number" name="packaging_1_size_uom" value="'.$packaging_1_size_uom.'" min="0" />
+                                                <div class="input-group-addon" style="padding: 0;">
+                                                    <select name="packaging_1_size_uom_type" style="border: 0; background: transparent;">';
+
+                                                        $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                        if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                            while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                echo '<option value="'.$rowUOM['ID'].'" '; echo $packaging_1_size_uom_type == $rowUOM['ID'] ? 'SELECTED':''; echo '>'.$rowUOM['name'].'</option>';
+                                                            }
+                                                        }
+
+                                                    echo '</select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+
+                        <h4><strong>Secondary</strong></h4>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>&nbsp;</label>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($packaging_2_image)) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $packaging_2_image .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="packaging_2_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Case</label>
+                                            <select class="form-control" name="packaging_2">
+                                                <option value="0">Select</option>';
+
+                                                $selectSecondary = mysqli_query( $conn,"SELECT * from tbl_products_secondary WHERE deleted = 0" );
+                                                if ( mysqli_num_rows($selectSecondary) > 0 ) {
+                                                    while($rowSecondary = mysqli_fetch_array($selectSecondary)) {
+                                                        echo '<option value="'.$rowSecondary['ID'].'" '; echo $packaging_2 == $rowSecondary['ID'] ? 'SELECTED':''; echo '>'.$rowSecondary['name'].'</option>';
+                                                    }
+                                                }
+
+                                            echo '</select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Dimension</label>
+                                            <input class="form-control" type="text" name="packaging_2_dimension" value="'.$packaging_2_dimension.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">UPC</label>
+                                            <input class="form-control" type="text" name="packaging_2_upc" value="'.$packaging_2_upc.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Cube</label>
+                                            <input class="form-control" type="text" name="packaging_2_cube" value="'.$packaging_2_cube.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">Ship Weight</label>
+                                            <input class="form-control" type="text" name="packaging_2_weight" value="'.$packaging_2_weight.'" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">No. of Units</label>
+                                            <input class="form-control" type="text" name="packaging_2_unit" value="'.$packaging_2_unit.'" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">Size/UOM</label>
+                                            <div class="input-group">
+                                                <input class="form-control" type="number" name="packaging_2_size_uom" value="'.$packaging_2_size_uom.'" min="0" />
+                                                <div class="input-group-addon" style="padding: 0;">
+                                                    <select name="packaging_2_size_uom_type" style="border: 0; background: transparent;">';
+
+                                                        $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                        if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                            while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                echo '<option value="'.$rowUOM['ID'].'" '; echo $packaging_2_size_uom_type == $rowUOM['ID'] ? 'SELECTED':''; echo '>'.$rowUOM['name'].'</option>';
+                                                            }
+                                                        }
+
+                                                    echo '</select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+
+                        <h4><strong>Tertiary</strong></h4>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>&nbsp;</label>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($packaging_3_image)) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $packaging_3_image .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="packaging_3_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Master Pack</label>
+                                            <select class="form-control" name="packaging_3">
+                                                <option value="0">Select</option>';
+
+                                                $selectTertiary = mysqli_query( $conn,"SELECT * from tbl_products_tertiary WHERE deleted = 0" );
+                                                if ( mysqli_num_rows($selectTertiary) > 0 ) {
+                                                    while($rowTertiary = mysqli_fetch_array($selectTertiary)) {
+                                                        echo '<option value="'.$rowTertiary['ID'].'" '; echo $packaging_3 == $rowTertiary['ID'] ? 'SELECTED':''; echo '>'.$rowTertiary['name'].'</option>';
+                                                    }
+                                                }
+
+                                            echo '</select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Dimension</label>
+                                            <input class="form-control" type="text" name="packaging_3_dimension" value="'.$packaging_3_dimension.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">UPC</label>
+                                            <input class="form-control" type="text" name="packaging_3_upc" value="'.$packaging_3_upc.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Cube</label>
+                                            <input class="form-control" type="text" name="packaging_3_cube" value="'.$packaging_3_cube.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">Ship Weight</label>
+                                            <input class="form-control" type="text" name="packaging_3_weight" value="'.$packaging_3_weight.'" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">No. of Units</label>
+                                            <input class="form-control" type="text" name="packaging_3_unit" value="'.$packaging_3_unit.'" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">Size/UOM</label>
+                                            <div class="input-group">
+                                                <input class="form-control" type="number" name="packaging_3_size_uom" value="'.$packaging_3_size_uom.'" min="0" />
+                                                <div class="input-group-addon" style="padding: 0;">
+                                                    <select name="packaging_3_size_uom_type" style="border: 0; background: transparent;">';
+
+                                                        $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                        if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                            while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                echo '<option value="'.$rowUOM['ID'].'" '; echo $packaging_3_size_uom_type == $rowUOM['ID'] ? 'SELECTED':''; echo '>'.$rowUOM['name'].'</option>';
+                                                            }
+                                                        }
+
+                                                    echo '</select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+
+                        <h4><strong>Pallet Configuration</strong></h4>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>&nbsp;</label>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">
+                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                            </div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="pallet_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Pallet Type</label>
+                                            <select class="form-control" name="pallet_type">
+                                                <option value="0">Select</option>';
+
+                                                $selectPallet = mysqli_query( $conn,"
+                                                    SELECT 
+                                                    p.id AS group_id,
+                                                    p.name AS group_name,
+                                                    t.id AS desciption_id,
+                                                    t.name AS desciption_name
+                                                    FROM tbl_products_pallet AS p
+
+                                                    LEFT JOIN (
+                                                        SELECT
+                                                        *
+                                                        FROM tbl_products_pallet_type
+                                                        WHERE deleted = 0
+                                                    ) AS t
+                                                    ON p.ID = t.pallet_id
+
+                                                    WHERE p.deleted = 0
+                                                " );
+                                                if ( mysqli_num_rows($selectPallet) > 0 ) {
+                                                    $pallet_arr = array();
+                                                    $pallet_arr_prev = 0;
+                                                    while($rowPallet = mysqli_fetch_array($selectPallet)) {
+
+                                                        if (!in_array($rowPallet['group_id'], $pallet_arr)) {
+                                                            array_push($pallet_arr, $rowPallet['group_id']);
+
+                                                            if ($pallet_arr_prev > 0 AND $pallet_arr_prev != $rowPallet['group_id']) {
+                                                                echo '</optgroup>';
+                                                            }
+                                                            $pallet_arr_prev = $rowPallet['group_id'];
+
+                                                            echo '<optgroup label="'.$rowPallet['group_name'].'">';
+                                                        }
+
+                                                        echo '<option value="'.$rowPallet['desciption_id'].'" '; echo $pallet_type == $rowPallet['desciption_id'] ? 'SELECTED':''; echo '>'.$rowPallet['desciption_name'].'</option>';
+                                                    }
+                                                }
+
+                                            echo '</select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Dimension</label>
+                                            <input class="form-control" type="text" name="pallet_dimension" value="'.$pallet_dimension.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">UPC</label>
+                                            <input class="form-control" type="text" name="pallet_upc" value="'.$pallet_upc.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Cube</label>
+                                            <input class="form-control" type="text" name="pallet_cube" value="'.$pallet_cube.'" placeholder="H x L x W" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">Ship Weight</label>
+                                            <input class="form-control" type="text" name="pallet_weight" value="'.$pallet_weight.'" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">No. of Units</label>
+                                            <input class="form-control" type="text" name="pallet_unit" value="'.$pallet_unit.'" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label">No. of Cartons/Boxes</label>
+                                            <input class="form-control" type="text" name="pallet_boxes" value="'.$pallet_boxes.'" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+
+                        <h4><strong>Production</strong></h4>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">No. of Units / Day</label>
+                                    <input class="form-control" type="text" name="production_day" value="'.$production_day.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">No. of Units / Week</label>
+                                    <input class="form-control" type="text" name="production_week" value="'.$production_week.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Production Cost</label>
+                                    <input class="form-control" type="text" name="production_cost" value="'.$production_cost.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Profit %</label>
+                                    <input class="form-control" type="text" name="production_profit" value="'.$production_profit.'" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4><strong>Cost Calculation</strong></h4>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Operation</label>
+                                    <input class="form-control" type="text" name="cost_operation" value="'.$cost_operation.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Rent, Utilities</label>
+                                    <input class="form-control" type="text" name="cost_rent" value="'.$cost_rent.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Materials</label>
+                                    <input class="form-control" type="text" name="cost_material" value="'.$cost_material.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Financing </label>
+                                    <input class="form-control" type="text" name="cost_financing" value="'.$cost_financing.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Transportation </label>
+                                    <input class="form-control" type="text" name="cost_transportation" value="'.$cost_transportation.'" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, \'Lead Time\', 1)">Add Lead Times</a>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-hover tbl-data-1-1">
+                                        <thead>
+                                            <tr>
+                                                <th>Material Name</th>
+                                                <th style="width: 100px;">Lead Time</th>
+                                                <th style="width: 100px;">% in Formula</th>
+                                                <th style="width: 100px;">Cost</th>
+                                                <th class="text-center" style="width: 135px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+
+                                            $materials = htmlentities($rowData['materials'] ?? '');
+                                            if (!empty($materials)) {
+                                                $selectProductData = mysqli_query( $conn,"SELECT * FROM tbl_products_lead_time WHERE deleted = 0 AND FIND_IN_SET(ID, REPLACE('$materials', ' ', ''))" );
+                                                if ( mysqli_num_rows($selectProductData) > 0 ) {
+                                                    while($rowProductData = mysqli_fetch_array($selectProductData)) {
+
+                                                        $lead_time_type = $rowProductData['type'];
+                                                        $dat_type = array(
+                                                            0 => 'Day',
+                                                            1 => 'Week',
+                                                            2 => 'Month',
+                                                            3 => 'Year',
+                                                        );
+
+                                                        echo '<tr id="tr_'.$rowProductData['ID'].'">
+                                                            <td>'.htmlentities($rowProductData['name']).'</td>
+                                                            <td>'.htmlentities($rowProductData['lead_time']).' '.$dat_type[$lead_time_type].'</td>
+                                                            <td>$'.htmlentities($rowProductData['formula']).' %</td>
+                                                            <td>$'.htmlentities($rowProductData['cost']).'</td>
+                                                            <td class="text-center">
+                                                                <input type="hidden" name="data_1[]" value="'.$rowProductData['ID'].'" />
+                                                                <div class="btn-group btn-group-circle">
+                                                                    <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$rowProductData['ID'].', 2, 1)">Edit</a>
+                                                                    <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$rowProductData['ID'].', this)">Delete</a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                            }
+
+                                        echo '</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabDocs2">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>
+                                    <strong>Regulatory</strong>
+                                    <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(2, \'Requirements\', 5)"><i class="fa fa-plus"></i></a>
+                                </h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-hover tbl-data-2-5">
+                                        <thead>
+                                            <tr>
+                                                <th>Requirements Name</th>
+                                                <th class="text-center" style="width: 100px;">File</th>
+                                                <th class="text-center" style="width: 100px;">Document Date</th>
+                                                <th class="text-center" style="width: 100px;">Review Due Date</th>
+                                                <th class="text-center" style="width: 135px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+
+                                            $docs_regulatory = htmlentities($rowData['docs_regulatory'] ?? '');
+                                            if (!empty($docs_regulatory)) {
+                                                $selectProductData = mysqli_query( $conn,"SELECT * FROM tbl_products_data WHERE deleted = 0 AND section = 5 AND FIND_IN_SET(ID, REPLACE('$docs_regulatory', ' ', ''))" );
+                                                if ( mysqli_num_rows($selectProductData) > 0 ) {
+                                                    while($rowProductData = mysqli_fetch_array($selectProductData)) {
+
+                                                        $files = $rowProductData['files'];
+                                                        if (!empty($files)) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/products/';
+                                                            $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
+                                                        }
+
+                                                        echo '<tr id="tr_'.$rowProductData['ID'].'">
+                                                            <td>'.htmlentities($rowProductData['name']).'</td>
+                                                            <td class="text-center">'.$files.'</td>
+                                                            <td class="text-center">'.$rowProductData['date_start'].'</td>
+                                                            <td class="text-center">'.$rowProductData['date_end'].'</td>
+                                                            <td class="text-center">
+                                                                <input type="hidden" name="data_5[]" value="'.$rowProductData['ID'].'" />
+                                                                <div class="btn-group btn-group-circle">
+                                                                    <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$rowProductData['ID'].', 2, 5)">Edit</a>
+                                                                    <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$rowProductData['ID'].', this)">Delete</a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                            }
+
+                                        echo '</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>
+                                    <strong>Product Certification & Document</strong>
+                                    <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(2, \'Documents\', 6)"><i class="fa fa-plus"></i></a>
+                                </h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-hover tbl-data-2-6">
+                                        <thead>
+                                            <tr>
+                                                <th>Document Name</th>
+                                                <th class="text-center" style="width: 100px;">File</th>
+                                                <th class="text-center" style="width: 100px;">Document Date</th>
+                                                <th class="text-center" style="width: 100px;">Review Due Date</th>
+                                                <th class="text-center" style="width: 135px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+
+                                            $docs_certificate = htmlentities($rowData['docs_certificate'] ?? '');
+                                            if (!empty($docs_certificate)) {
+                                                $selectProductData = mysqli_query( $conn,"SELECT * FROM tbl_products_data WHERE deleted = 0 AND section = 6 AND FIND_IN_SET(ID, REPLACE('$docs_certificate', ' ', ''))" );
+                                                if ( mysqli_num_rows($selectProductData) > 0 ) {
+                                                    while($rowProductData = mysqli_fetch_array($selectProductData)) {
+
+                                                        $files = $rowProductData['files'];
+                                                        if (!empty($files)) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/products/';
+                                                            $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
+                                                        }
+
+                                                        echo '<tr id="tr_'.$rowProductData['ID'].'">
+                                                            <td>'.htmlentities($rowProductData['name']).'</td>
+                                                            <td class="text-center">'.$files.'</td>
+                                                            <td class="text-center">'.$rowProductData['date_start'].'</td>
+                                                            <td class="text-center">'.$rowProductData['date_end'].'</td>
+                                                            <td class="text-center">
+                                                                <input type="hidden" name="data_6[]" value="'.$rowProductData['ID'].'" />
+                                                                <div class="btn-group btn-group-circle">
+                                                                    <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$rowProductData['ID'].', 2, 6)">Edit</a>
+                                                                    <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$rowProductData['ID'].', this)">Delete</a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                            }
+
+                                        echo '</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>
+                                    <strong>Lab</strong>
+                                    <a href="#modalNewLab" data-toggle="modal" class="btn green" onclick="btnNew_Lab(2)"><i class="fa fa-plus"></i></a>
+                                </h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-hover" id="tableLab_2">
+                                        <thead>
+                                            <tr>
+                                                <th>Lot #</th>
+                                                <th>Lab</th>
+                                                <th>Analysis</th>
+                                                <th>Method</th>
+                                                <th>Sample Size</th>
+                                                <th>Unit</th>
+                                                <th class="text-center">Date Sent for Lab</th>
+                                                <th class="text-center">Date Received</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+
+                                            $selectLabs = mysqli_query( $conn,"SELECT * FROM tbl_products_lab WHERE deleted = 0 AND product_id = $ID" );
+                                            if ( mysqli_num_rows($selectLabs) > 0 ) {
+                                                while($rowLabs = mysqli_fetch_array($selectLabs)) {
+                                                    echo '<tr id="tr_'.$rowLabs["ID"].'">
+                                                        <td>'.htmlentities($rowLabs["lot"]).'</td>
+                                                        <td>'.htmlentities($rowLabs["lab"]).'</td>
+                                                        <td>'.htmlentities($rowLabs["analysis"]).'</td>
+                                                        <td>'.htmlentities($rowLabs["method"]).'</td>
+                                                        <td>'.htmlentities($rowLabs["sample_size"]).'</td>
+                                                        <td>'.htmlentities($rowLabs["unit"]).'</td>
+                                                        <td class="text-center">'.$rowLabs["date_sent"].'</td>
+                                                        <td class="text-center">'.$rowLabs["date_received"].'</td>
+                                                        <td class="text-center">
+                                                            <input type="hidden" name="labs[]" value="'.$rowLabs["ID"].'" />
+                                                            <div class="btn-group btn-group-circle">
+                                                                <a href="#modalEditLab" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Lab('.$rowLabs["ID"].', 2)">Edit</a>
+                                                                <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Lab('.$rowLabs["ID"].', this)">Delete</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>';
+                                                }
+                                            }
+
+                                        echo '</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4><strong>Exercises</strong></h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Mock Recall Exercise</label>
+                                    <input class="form-control" type="date" name="mock_recall" value="'.$mock_recall.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Product Trace Exercise</label>
+                                    <input class="form-control" type="date" name="product_trace" value="'.$product_trace.'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabManufactured2">
+                        <h4><strong>Manufactured By</strong></h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Manufacturer Name</label>
+                                    <input class="form-control" type="text" name="manu_name" value="'.$manu_name.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Phone</label>
+                                    <input class="form-control" type="text" name="manu_phone" value="'.$manu_phone.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Contact</label>
+                                    <input class="form-control" type="text" name="manu_contact" value="'.$manu_contact.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Facility Address</label>
+                                    <input class="form-control" type="text" name="manu_address" value="'.$manu_address.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Email</label>
+                                    <input class="form-control" type="email" name="manu_email" value="'.$manu_email.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Website</label>
+                                    <input class="form-control" type="text" name="manu_website" value="'.$manu_website.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Facility Registration No.</label>
+                                    <input class="form-control" type="text" name="manu_reg_no" value="'.$manu_reg_no.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Dunn No.</label>
+                                    <input class="form-control" type="text" name="manu_dunn_no" value="'.$manu_dunn_no.'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(2, \'Certificate\', 2)">Add Certificate</a>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-hover tbl-data-2-2">
+                                        <thead>
+                                            <tr>
+                                                <th>Certification Name</th>
+                                                <th class="text-center" style="width: 100px;">File</th>
+                                                <th class="text-center" style="width: 100px;">Certification Date</th>
+                                                <th class="text-center" style="width: 100px;">Due Date</th>
+                                                <th class="text-center" style="width: 135px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+
+                                            $manu_certificate = htmlentities($rowData['manu_certificate'] ?? '');
+                                            if (!empty($manu_certificate)) {
+                                                $selectProductData = mysqli_query( $conn,"SELECT * FROM tbl_products_data WHERE deleted = 0 AND section = 2 AND FIND_IN_SET(ID, REPLACE('$manu_certificate', ' ', ''))" );
+                                                if ( mysqli_num_rows($selectProductData) > 0 ) {
+                                                    while($rowProductData = mysqli_fetch_array($selectProductData)) {
+
+                                                        $files = $rowProductData['files'];
+                                                        if (!empty($files)) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/products/';
+                                                            $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
+                                                        }
+
+                                                        echo '<tr id="tr_'.$rowProductData['ID'].'">
+                                                            <td>'.htmlentities($rowProductData['name']).'</td>
+                                                            <td class="text-center">'.$files.'</td>
+                                                            <td class="text-center">'.$rowProductData['date_start'].'</td>
+                                                            <td class="text-center">'.$rowProductData['date_end'].'</td>
+                                                            <td class="text-center">
+                                                                <input type="hidden" name="data_2[]" value="'.$rowProductData['ID'].'" />
+                                                                <div class="btn-group btn-group-circle">
+                                                                    <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$rowProductData['ID'].', 2, 2)">Edit</a>
+                                                                    <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$rowProductData['ID'].', this)">Delete</a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                            }
+
+                                        echo '</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4><strong>Broker Info</strong></h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Company Name</label>
+                                    <input class="form-control" type="text" name="broker_name" value="'.$broker_name.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Phone</label>
+                                    <input class="form-control" type="text" name="broker_phone" value="'.$broker_phone.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Contact</label>
+                                    <input class="form-control" type="text" name="broker_contact" value="'.$broker_contact.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Address</label>
+                                    <input class="form-control" type="text" name="broker_address" value="'.$broker_address.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Email</label>
+                                    <input class="form-control" type="email" name="broker_email" value="'.$broker_email.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Website</label>
+                                    <input class="form-control" type="text" name="broker_website" value="'.$broker_website.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Facility Registration No.</label>
+                                    <input class="form-control" type="text" name="broker_reg_no" value="'.$broker_reg_no.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Dunn No.</label>
+                                    <input class="form-control" type="text" name="broker_dunn_no" value="'.$broker_dunn_no.'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(2, \'Certificate\', 3)">Add Certificate</a>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-hover tbl-data-2-3">
+                                        <thead>
+                                            <tr>
+                                                <th>Certification Name</th>
+                                                <th class="text-center" style="width: 100px;">File</th>
+                                                <th class="text-center" style="width: 100px;">Certification Date</th>
+                                                <th class="text-center" style="width: 100px;">Due Date</th>
+                                                <th class="text-center" style="width: 135px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+
+                                            $broker_certificate = htmlentities($rowData['broker_certificate'] ?? '');
+                                            if (!empty($broker_certificate)) {
+                                                $selectProductData = mysqli_query( $conn,"SELECT * FROM tbl_products_data WHERE deleted = 0 AND section = 3 AND FIND_IN_SET(ID, REPLACE('$broker_certificate', ' ', ''))" );
+                                                if ( mysqli_num_rows($selectProductData) > 0 ) {
+                                                    while($rowProductData = mysqli_fetch_array($selectProductData)) {
+
+                                                        $files = $rowProductData['files'];
+                                                        if (!empty($files)) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/products/';
+                                                            $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
+                                                        }
+
+                                                        echo '<tr id="tr_'.$rowProductData['ID'].'">
+                                                            <td>'.htmlentities($rowProductData['name']).'</td>
+                                                            <td class="text-center">'.$files.'</td>
+                                                            <td class="text-center">'.$rowProductData['date_start'].'</td>
+                                                            <td class="text-center">'.$rowProductData['date_end'].'</td>
+                                                            <td class="text-center">
+                                                                <input type="hidden" name="data_3[]" value="'.$rowProductData['ID'].'" />
+                                                                <div class="btn-group btn-group-circle">
+                                                                    <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$rowProductData['ID'].', 2, 3)">Edit</a>
+                                                                    <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$rowProductData['ID'].', this)">Delete</a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                            }
+
+                                        echo '</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4><strong>US Agent Name</strong></h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Company Name</label>
+                                    <input class="form-control" type="text" name="agent_company" value="'.$agent_company.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Phone</label>
+                                    <input class="form-control" type="text" name="agent_phone" value="'.$agent_phone.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Contact</label>
+                                    <input class="form-control" type="text" name="agent_contact" value="'.$agent_contact.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Address</label>
+                                    <input class="form-control" type="text" name="agent_address" value="'.$agent_address.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Email</label>
+                                    <input class="form-control" type="email" name="agent_email" value="'.$agent_email.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Website</label>
+                                    <input class="form-control" type="text" name="agent_website" value="'.$agent_website.'" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4><strong>Importer Info</strong></h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Importer Name</label>
+                                    <input class="form-control" type="text" name="importer_name" value="'.$importer_name.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Phone</label>
+                                    <input class="form-control" type="text" name="importer_phone" value="'.$importer_phone.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Contact</label>
+                                    <input class="form-control" type="text" name="importer_contact" value="'.$importer_contact.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Address</label>
+                                    <input class="form-control" type="text" name="importer_address" value="'.$importer_address.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Email</label>
+                                    <input class="form-control" type="email" name="importer_email" value="'.$importer_email.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Website</label>
+                                    <input class="form-control" type="text" name="importer_website" value="'.$importer_website.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Facility Registration No.</label>
+                                    <input class="form-control" type="text" name="importer_reg_no" value="'.$importer_reg_no.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Dunn No.</label>
+                                    <input class="form-control" type="text" name="importer_dunn_no" value="'.$importer_dunn_no.'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(2, \'Certificate\', 4)">Add Certificate</a>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-hover tbl-data-2-4">
+                                        <thead>
+                                            <tr>
+                                                <th>Certification Name</th>
+                                                <th class="text-center" style="width: 100px;">File</th>
+                                                <th class="text-center" style="width: 100px;">Certification Date</th>
+                                                <th class="text-center" style="width: 100px;">Due Date</th>
+                                                <th class="text-center" style="width: 135px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+
+                                            $importer_certificate = htmlentities($rowData['importer_certificate'] ?? '');
+                                            if (!empty($importer_certificate)) {
+                                                $selectProductData = mysqli_query( $conn,"SELECT * FROM tbl_products_data WHERE deleted = 0 AND section = 4 AND FIND_IN_SET(ID, REPLACE('$importer_certificate', ' ', ''))" );
+                                                if ( mysqli_num_rows($selectProductData) > 0 ) {
+                                                    while($rowProductData = mysqli_fetch_array($selectProductData)) {
+
+                                                        $files = $rowProductData['files'];
+                                                        if (!empty($files)) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/products/';
+                                                            $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
+                                                        }
+
+                                                        echo '<tr id="tr_'.$rowProductData['ID'].'">
+                                                            <td>'.htmlentities($rowProductData['name']).'</td>
+                                                            <td class="text-center">'.$files.'</td>
+                                                            <td class="text-center">'.$rowProductData['date_start'].'</td>
+                                                            <td class="text-center">'.$rowProductData['date_end'].'</td>
+                                                            <td class="text-center">
+                                                                <input type="hidden" name="data_4[]" value="'.$rowProductData['ID'].'" />
+                                                                <div class="btn-group btn-group-circle">
+                                                                    <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$rowProductData['ID'].', 2, 4)">Edit</a>
+                                                                    <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$rowProductData['ID'].', this)">Delete</a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                            }
+
+                                        echo '</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4><strong>FSVP Requirements</strong></h4>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Date of FSVP Review</label>
+                                    <input class="form-control" type="date" name="fsvp_date_review" value="'.$fsvp_date_review.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Last Date of FDA FSVP Audit</label>
+                                    <input class="form-control" type="date" name="fsvp_date_audit" value="'.$fsvp_date_audit.'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Seasonal</label>
+                                    <select class="form-control" name="fsvp_seasonal">
+                                        <option value="0" '; echo $fsvp_seasonal == 0 ? 'SELECTED':''; echo '>No</option>
+                                        <option value="1" '; echo $fsvp_seasonal == 1 ? 'SELECTED':''; echo '>Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">If Yes, Available Date</label>
+                                    <input class="form-control" type="date" name="fsvp_date_available" value="'.$fsvp_date_available.'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>';
+        }
+
+        mysqli_close($conn);
+    }
+    if( isset($_POST['btnSave_Products']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+
+        // Vendor Details
+        $vendor_s_ID = addslashes($_POST['vendor_s_ID']);
+        $vendor_c_ID = addslashes($_POST['vendor_c_ID']);
+
+        $vendor_id = addslashes($_POST['vendor_id']);
+        $vendor_name = addslashes($_POST['vendor_name']);
+        $vendor_code = addslashes($_POST['vendor_code']);
+        $vendor_address = addslashes($_POST['vendor_address']);
+        $vendor_contact_name = addslashes($_POST['vendor_contact_name']);
+        $vendor_phone = addslashes($_POST['vendor_phone']);
+        $vendor_fax = addslashes($_POST['vendor_fax']);
+        $vendor_email = addslashes($_POST['vendor_email']);
+
+        $vendor_business = addslashes($_POST['vendor_business']);
+        $vendor_size = addslashes($_POST['vendor_size']);
+        $vendor_location = addslashes($_POST['vendor_location']);
+        $vendor_geographic = addslashes($_POST['vendor_geographic']);
+        $vendor_retail = addslashes($_POST['vendor_retail']);
+        $vendor_diversity = addslashes($_POST['vendor_diversity']);
+        $vendor_responsibility = addslashes($_POST['vendor_responsibility']);
+
+        if (!empty($vendor_s_ID)) {
+            mysqli_query( $conn,"UPDATE tbl_supplier SET vendor_id='".$vendor_id."', vendor_code='".$vendor_code."', name='".$vendor_name."', address='".$vendor_address."', phone='".$vendor_phone."', fax='".$vendor_fax."', email='".$vendor_email."' WHERE ID='".$vendor_s_ID."'" );
+        } else {
+            $sqlVendor = "INSERT INTO tbl_supplier (user_id, portal_user, facility_switch, page, vendor_id, name, vendor_code, address, phone, fax, email)
+            VALUES ( '$user_id', '$portal_user', '$facility_switch_user_id', '1', '$vendor_id', '$vendor_name', '$vendor_code', '$vendor_address', '$vendor_phone', '$vendor_fax', '$vendor_email')";
+            if (mysqli_query($conn, $sqlVendor)) {
+                $vendor_s_ID = mysqli_insert_id($conn);
+            }
+        }
+
+        if (!empty($vendor_c_ID)) {
+            mysqli_query( $conn,"UPDATE tbl_supplier_company SET supplier_id='".$vendor_s_ID."', business='".$vendor_business."', size='".$vendor_size."', location='".$vendor_location."', geographic='".$vendor_geographic."', retail='".$vendor_retail."', diversity='".$vendor_diversity."', responsibility='".$vendor_responsibility."' WHERE ID='".$vendor_c_ID."'" );
+        } else {
+            $sqlCompany = "INSERT INTO tbl_supplier_company (supplier_id, business, size, location, geographic, retail, diversity, responsibility)
+            VALUES ( '$vendor_s_ID', '$vendor_business', '$vendor_size', '$vendor_location', '$vendor_geographic', '$vendor_retail', '$vendor_diversity', '$vendor_responsibility')";
+            if (mysqli_query($conn, $sqlCompany)) {
+                $vendor_c_ID = mysqli_insert_id($conn);
+            }
+        }
+
+
+        // Product Overview
+        $image_array = array();
+        $arr_item = array();
+        $file_history = '';
+        $filesize = 0;
+        $process = true;
+
+
+        $image_main = addslashes($_FILES['image_main']['name']);
+        if (!empty($image_main)) {
+            $fileValidation = fileValidation(1, 'image_main', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $image_main = $files;
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $image_main = '';
+                $process = false;
+            }
+        } else {
+            array_push($image_array, '');
+        }
+
+        $image_top = addslashes($_FILES['image_top']['name']);
+        if (!empty($image_top)) {
+            $fileValidation = fileValidation(1, 'image_top', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, '');
+        }
+
+        $image_front = addslashes($_FILES['image_front']['name']);
+        if (!empty($image_front)) {
+            $fileValidation = fileValidation(1, 'image_front', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, '');
+        }
+
+        $image_left = addslashes($_FILES['image_left']['name']);
+        if (!empty($image_left)) {
+            $fileValidation = fileValidation(1, 'image_left', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, '');
+        }
+
+        $image_bottom = addslashes($_FILES['image_bottom']['name']);
+        if (!empty($image_bottom)) {
+            $fileValidation = fileValidation(1, 'image_bottom', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, '');
+        }
+
+        $image_back = addslashes($_FILES['image_back']['name']);
+        if (!empty($image_back)) {
+            $fileValidation = fileValidation(1, 'image_back', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, '');
+        }
+
+        $image_right = addslashes($_FILES['image_right']['name']);
+        if (!empty($image_right)) {
+            $fileValidation = fileValidation(1, 'image_right', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, '');
+        }
+
+        $image_brand = addslashes($_FILES['image_brand']['name']);
+        if (!empty($image_brand)) {
+            $fileValidation = fileValidation(1, 'image_brand', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, '');
+        }
+
+        $image_qr = addslashes($_FILES['image_qr']['name']);
+        if (!empty($image_qr)) {
+            $fileValidation = fileValidation(1, 'image_qr', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, '');
+        }
+        $image_array = implode(", ",$image_array);
+
+        $name = addslashes($_POST['name']);
+        $category_group = addslashes($_POST['category_group']);
+        $code = addslashes($_POST['code']);
+        $leads = addslashes($_POST['leads']);
+        $lead_type = addslashes($_POST['lead_type']);
+        $private_label = addslashes($_POST['private_label']);
+        $cost = addslashes($_POST['cost']);
+        $incoterms = $_POST['incoterms'];
+        $moq = addslashes($_POST['moq']);
+        $imports = $_POST['imports'];
+        $description = addslashes($_POST['description']);
+        $feature = addslashes($_POST['feature']);
+        $ingredients = addslashes($_POST['ingredients']);
+
+        $claims = "";
+        if (!empty($_POST["claims"])) { $claims = implode(", ", $_POST["claims"]); }
+
+        $intended = $_POST['intended'];
+        $intended_consumers = addslashes($_POST['intended_consumers']);
+
+        $allergen = "";
+        if (!empty($_POST["allergen"])) { $allergen = implode(", ", $_POST["allergen"]); }
+
+        $flavor = addslashes($_POST['flavor']);
+        $size_uom = addslashes($_POST['size_uom']);
+        $size_uom_type = addslashes($_POST['size_uom_type']);
+        $shelf = addslashes($_POST['shelf']);
+        $shelf_type = addslashes($_POST['shelf_type']);
+        $temperature = addslashes($_POST['temperature']);
+        $retail_accounts = addslashes($_POST['retail_accounts']);
+        $competing_brands = addslashes($_POST['competing_brands']);
+
+
+
+        // Characteristics
+        $physical_chars = isset($_POST['physical_chars']) && count($_POST['physical_chars']) > 0 ? json_encode($_POST['physical_chars']) : NULL;
+        $physico_chem_char = isset($_POST['physico_chem_char']) && count($_POST['physico_chem_char']) > 0 ? json_encode($_POST['physico_chem_char']) : NULL;
+        $microbial_char = isset($_POST['microbial_char']) && count($_POST['microbial_char']) > 0 ? json_encode($_POST['microbial_char']) : NULL;
+
+
+
+        // Packaging
+        $packaging_1_image = addslashes($_FILES['packaging_1_image']['name']);
+        if (!empty($packaging_1_image)) {
+            $fileValidation = fileValidation(1, 'packaging_1_image', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $packaging_1_image = $files;
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $packaging_1_image = '';
+                $process = false;
+            }
+        }
+        $packaging_1 = $_POST['packaging_1'];
+        $packaging_1_dimension = $_POST['packaging_1_dimension'];
+        $packaging_1_upc = $_POST['packaging_1_upc'];
+        $packaging_1_cube = $_POST['packaging_1_cube'];
+        $packaging_1_weight = $_POST['packaging_1_weight'];
+        $packaging_1_unit = $_POST['packaging_1_unit'];
+        $packaging_1_size_uom = $_POST['packaging_1_size_uom'];
+        $packaging_1_size_uom_type = $_POST['packaging_1_size_uom_type'];
+
+        $packaging_2_image = addslashes($_FILES['packaging_2_image']['name']);
+        if (!empty($packaging_2_image)) {
+            $fileValidation = fileValidation(1, 'packaging_2_image', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $packaging_2_image = $files;
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        }
+        $packaging_2 = $_POST['packaging_2'];
+        $packaging_2_dimension = $_POST['packaging_2_dimension'];
+        $packaging_2_upc = $_POST['packaging_2_upc'];
+        $packaging_2_cube = $_POST['packaging_2_cube'];
+        $packaging_2_weight = $_POST['packaging_2_weight'];
+        $packaging_2_unit = $_POST['packaging_2_unit'];
+        $packaging_2_size_uom = $_POST['packaging_2_size_uom'];
+        $packaging_2_size_uom_type = $_POST['packaging_2_size_uom_type'];
+        
+        $packaging_3_image = addslashes($_FILES['packaging_3_image']['name']);
+        if (!empty($packaging_3_image)) {
+            $fileValidation = fileValidation(1, 'packaging_3_image', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $packaging_3_image = $files;
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $packaging_3_image = '';
+                $process = false;
+            }
+        }
+        $packaging_3 = $_POST['packaging_3'];
+        $packaging_3_dimension = $_POST['packaging_3_dimension'];
+        $packaging_3_upc = $_POST['packaging_3_upc'];
+        $packaging_3_cube = $_POST['packaging_3_cube'];
+        $packaging_3_weight = $_POST['packaging_3_weight'];
+        $packaging_3_unit = $_POST['packaging_3_unit'];
+        $packaging_3_size_uom = $_POST['packaging_3_size_uom'];
+        $packaging_3_size_uom_type = $_POST['packaging_3_size_uom_type'];
+
+        $pallet_image = addslashes($_FILES['pallet_image']['name']);
+        if (!empty($pallet_image)) {
+            $fileValidation = fileValidation(1, 'pallet_image', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $pallet_image = $files;
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $pallet_image = '';
+                $process = false;
+            }
+        }
+        $pallet_type = addslashes($_POST['pallet_type']);
+        $pallet_dimension = addslashes($_POST['pallet_dimension']);
+        $pallet_upc = addslashes($_POST['pallet_upc']);
+        $pallet_cube = addslashes($_POST['pallet_cube']);
+        $pallet_weight = addslashes($_POST['pallet_weight']);
+        $pallet_unit = addslashes($_POST['pallet_unit']);
+        $pallet_boxes = addslashes($_POST['pallet_boxes']);
+
+        $production_day = addslashes($_POST['production_day']);
+        $production_week = addslashes($_POST['production_week']);
+        $production_cost = addslashes($_POST['production_cost']);
+        $production_profit = addslashes($_POST['production_profit']);
+
+        $cost_operation = addslashes($_POST['cost_operation']);
+        $cost_rent = addslashes($_POST['cost_rent']);
+        $cost_material = addslashes($_POST['cost_material']);
+        $cost_financing = addslashes($_POST['cost_financing']);
+        $cost_transportation = addslashes($_POST['cost_transportation']);
+
+        $materials = "";
+        if (!empty($_POST["data_1"])) { $materials = implode(", ", $_POST["data_1"]); }
+
+
+
+        // Documents
+        $docs_regulatory = "";
+        if (!empty($_POST["data_5"])) { $docs_regulatory = implode(", ", $_POST["data_5"]); }
+
+        $docs_certificate = "";
+        if (!empty($_POST["data_6"])) { $docs_certificate = implode(", ", $_POST["data_6"]); }
+
+        $mock_recall = $_POST['mock_recall'];
+        $product_trace = $_POST['product_trace'];
+
+
+
+        // Manufacturer
+        $manu_name = addslashes($_POST['manu_name']);
+        $manu_phone = addslashes($_POST['manu_phone']);
+        $manu_contact = addslashes($_POST['manu_contact']);
+        $manu_address = addslashes($_POST['manu_address']);
+        $manu_email = addslashes($_POST['manu_email']);
+        $manu_website = addslashes($_POST['manu_website']);
+        $manu_reg_no = addslashes($_POST['manu_reg_no']);
+        $manu_dunn_no = addslashes($_POST['manu_dunn_no']);
+
+        $manu_certificate = "";
+        if (!empty($_POST["data_2"])) { $manu_certificate = implode(", ", $_POST["data_2"]); }
+
+        $broker_name = addslashes($_POST['broker_name']);
+        $broker_phone = addslashes($_POST['broker_phone']);
+        $broker_contact = addslashes($_POST['broker_contact']);
+        $broker_address = addslashes($_POST['broker_address']);
+        $broker_email = addslashes($_POST['broker_email']);
+        $broker_website = addslashes($_POST['broker_website']);
+        $broker_reg_no = addslashes($_POST['broker_reg_no']);
+        $broker_dunn_no = addslashes($_POST['broker_dunn_no']);
+
+        $broker_certificate = "";
+        if (!empty($_POST["data_3"])) { $broker_certificate = implode(", ", $_POST["data_3"]); }
+        
+        $agent_company = addslashes($_POST['agent_company']);
+        $agent_phone = addslashes($_POST['agent_phone']);
+        $agent_contact = addslashes($_POST['agent_contact']);
+        $agent_address = addslashes($_POST['agent_address']);
+        $agent_email = addslashes($_POST['agent_email']);
+        $agent_website = addslashes($_POST['agent_website']);
+
+        $importer_name = addslashes($_POST['importer_name']);
+        $importer_phone = addslashes($_POST['importer_phone']);
+        $importer_contact = addslashes($_POST['importer_contact']);
+        $importer_address = addslashes($_POST['importer_address']);
+        $importer_email = addslashes($_POST['importer_email']);
+        $importer_website = addslashes($_POST['importer_website']);
+        $importer_reg_no = addslashes($_POST['importer_reg_no']);
+        $importer_dunn_no = addslashes($_POST['importer_dunn_no']);
+
+        $importer_certificate = "";
+        if (!empty($_POST["data_4"])) { $importer_certificate = implode(", ", $_POST["data_4"]); }
+
+        $fsvp_date_review = addslashes($_POST['fsvp_date_review']);
+        $fsvp_date_audit = addslashes($_POST['fsvp_date_audit']);
+        $fsvp_seasonal = addslashes($_POST['fsvp_seasonal']);
+        $fsvp_date_available = addslashes($_POST['fsvp_date_available']);
+
+        $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
+
+        if ($process == true) {
+            $sql = "INSERT INTO tbl_products (user_id, portal_user, vendor_s_ID, image, code, name, category_group, leads, lead_type, private_label, cost, incoterms, moq, imports, description, feature, ingredients, claims, intended, intended_consumers, allergen, flavor, size_uom, size_uom_type, shelf, shelf_type, temperature, retail_accounts, competing_brands, 
+
+                physical_characteristics, physico_chemical_characteristics, microbiological_characteristics, 
+
+                packaging_1, packaging_1_image, packaging_1_dimension, packaging_1_upc, packaging_1_cube, packaging_1_weight, packaging_1_unit, packaging_1_size_uom, packaging_1_size_uom_type, 
+                packaging_2, packaging_2_image, packaging_2_dimension, packaging_2_upc, packaging_2_cube, packaging_2_weight, packaging_2_unit, packaging_2_size_uom, packaging_2_size_uom_type, 
+                packaging_3, packaging_3_image, packaging_3_dimension, packaging_3_upc, packaging_3_cube, packaging_3_weight, packaging_3_unit, packaging_3_size_uom, packaging_3_size_uom_type, 
+
+                pallet_image, pallet_type, pallet_dimension, pallet_upc, pallet_cube, pallet_weight, pallet_unit, pallet_boxes, production_day, production_week, production_cost, production_profit, cost_operation, cost_rent, cost_material, cost_financing, cost_transportation, materials, 
+
+                docs_regulatory, docs_certificate, mock_recall, product_trace, 
+
+                manu_name, manu_phone, manu_contact, manu_address, manu_email, manu_website, manu_reg_no, manu_dunn_no, manu_certificate, 
+                broker_name, broker_phone, broker_contact, broker_address, broker_email, broker_website, broker_reg_no, broker_dunn_no, broker_certificate, 
+                agent_company, agent_phone, agent_contact, agent_address, agent_email, agent_website, 
+                importer_name, importer_phone, importer_contact, importer_address, importer_email, importer_website, importer_reg_no, importer_dunn_no, importer_certificate, 
+                fsvp_date_review, fsvp_date_audit, fsvp_seasonal, fsvp_date_available,
+
+                file_history, last_modified)
+            VALUES ('$user_id', '$portal_user', '$vendor_s_ID', '$image_array', '$code', '$name', '$category_group', '$leads', '$lead_type', '$private_label', '$cost', '$incoterms', '$moq', '$imports', '$description', '$feature', '$ingredients', '$claims', '$intended', '$intended_consumers', '$allergen', '$flavor', '$size_uom', '$size_uom_type', '$shelf', '$shelf_type', '$temperature', '$retail_accounts', '$competing_brands', 
+
+                '$physical_chars', '$physico_chem_char', '$microbial_char', 
+
+                '$packaging_1', '$packaging_1_image', '$packaging_1_dimension', '$packaging_1_upc', '$packaging_1_cube', '$packaging_1_weight', '$packaging_1_unit', '$packaging_1_size_uom', '$packaging_1_size_uom_type', 
+                '$packaging_2', '$packaging_2_image', '$packaging_2_dimension', '$packaging_2_upc', '$packaging_2_cube', '$packaging_2_weight', '$packaging_2_unit', '$packaging_2_size_uom', '$packaging_2_size_uom_type', 
+                '$packaging_3', '$packaging_3_image', '$packaging_3_dimension', '$packaging_3_upc', '$packaging_3_cube', '$packaging_3_weight', '$packaging_3_unit', '$packaging_3_size_uom', '$packaging_3_size_uom_type', 
+
+                '$pallet_image', '$pallet_type', '$pallet_dimension', '$pallet_upc', '$pallet_cube', '$pallet_weight', '$pallet_unit', '$pallet_boxes', '$production_day', '$production_week', '$production_cost', '$production_profit', '$cost_operation', '$cost_rent', '$cost_material', '$cost_financing', '$cost_transportation', '$materials', 
+
+                '$docs_regulatory', '$docs_certificate', '$mock_recall', '$product_trace', 
+
+                '$manu_name', '$manu_phone', '$manu_contact', '$manu_address', '$manu_email', '$manu_website', '$manu_reg_no', '$manu_dunn_no', '$manu_certificate', 
+                '$broker_name', '$broker_phone', '$broker_contact', '$broker_address', '$broker_email', '$broker_website', '$broker_reg_no', '$broker_dunn_no', '$broker_certificate', 
+                '$agent_company', '$agent_phone', '$agent_contact', '$agent_address', '$agent_email', '$agent_website', 
+                '$importer_name', '$importer_phone', '$importer_contact', '$importer_address', '$importer_email', '$importer_website', '$importer_reg_no', '$importer_dunn_no', '$importer_certificate', 
+                '$fsvp_date_review', '$fsvp_date_audit', '$fsvp_seasonal', '$fsvp_date_available',
+
+                '$file_history', '$local_date')";
+
+            if (mysqli_query($conn, $sql)) {
+                $last_id = mysqli_insert_id($conn);
+
+                if (!empty($_POST['labs'])) {
+                    $labs = implode(", ", $_POST["labs"]);
+                    $labs_arr = explode(", ", $labs);
+                    foreach ($labs_arr as $value) {
+                        mysqli_query( $conn,"UPDATE tbl_products_lab SET product_id = $last_id WHERE ID = $value" );
+                    }
+                }
+
+
+                if (!empty($image_main)) {
+                    $fileExtension = fileExtension($image_main);
+                    $src = $fileExtension['src'];
+                    $embed = $fileExtension['embed'];
+                    $type = $fileExtension['type'];
+                    $file_extension = $fileExtension['file_extension'];
+                    $url = $base_url.'uploads/products/';
+                    $image_main = $src.$url.rawurlencode($image_main).$embed;
+                } else {
+                    $image_main = "//placehold.co/40x40/EFEFEF/AAAAAA?text=no+image";
+                }
+
+                $output = array(
+                    "ID" => $last_id,
+                    "name" => stripcslashes(htmlentities($name)),
+                    "description" => stripcslashes(htmlentities($description)),
+                    "image" => $image_main,
+                    "category" => $category_group,
+                    "last_modified" => $local_date
+                );
+                echo json_encode($output);
+            }
+
+            mysqli_close($conn);
+        }
+    }
+    if( isset($_POST['btnUpdate_Products']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $ID = $_POST['ID'];
+
+        // Vendor Details
+        $vendor_s_ID = addslashes($_POST['vendor_s_ID']);
+        $vendor_c_ID = addslashes($_POST['vendor_c_ID']);
+
+        $vendor_id = addslashes($_POST['vendor_id']);
+        $vendor_name = addslashes($_POST['vendor_name']);
+        $vendor_code = addslashes($_POST['vendor_code']);
+        $vendor_address = addslashes($_POST['vendor_address']);
+        $vendor_contact_name = addslashes($_POST['vendor_contact_name']);
+        $vendor_phone = addslashes($_POST['vendor_phone']);
+        $vendor_fax = addslashes($_POST['vendor_fax']);
+        $vendor_email = addslashes($_POST['vendor_email']);
+
+        $vendor_business = addslashes($_POST['vendor_business']);
+        $vendor_size = addslashes($_POST['vendor_size']);
+        $vendor_location = addslashes($_POST['vendor_location']);
+        $vendor_geographic = addslashes($_POST['vendor_geographic']);
+        $vendor_retail = addslashes($_POST['vendor_retail']);
+        $vendor_diversity = addslashes($_POST['vendor_diversity']);
+        $vendor_responsibility = addslashes($_POST['vendor_responsibility']);
+
+        if (!empty($vendor_s_ID)) {
+            mysqli_query( $conn,"UPDATE tbl_supplier SET vendor_id='".$vendor_id."', vendor_code='".$vendor_code."', name='".$vendor_name."', address='".$vendor_address."', phone='".$vendor_phone."', fax='".$vendor_fax."', email='".$vendor_email."' WHERE ID='".$vendor_s_ID."'" );
+        } else {
+            $sqlVendor = "INSERT INTO tbl_supplier (user_id, portal_user, facility_switch, page, vendor_id, name, vendor_code, address, phone, fax, email)
+            VALUES ( '$user_id', '$portal_user', '$facility_switch_user_id', '1', '$vendor_id', '$vendor_name', '$vendor_code', '$vendor_address', '$vendor_phone', '$vendor_fax', '$vendor_email')";
+            if (mysqli_query($conn, $sqlVendor)) {
+                $vendor_s_ID = mysqli_insert_id($conn);
+            }
+        }
+
+        if (!empty($vendor_c_ID)) {
+            mysqli_query( $conn,"UPDATE tbl_supplier_company SET supplier_id='".$vendor_s_ID."', business='".$vendor_business."', size='".$vendor_size."', location='".$vendor_location."', geographic='".$vendor_geographic."', retail='".$vendor_retail."', diversity='".$vendor_diversity."', responsibility='".$vendor_responsibility."' WHERE ID='".$vendor_c_ID."'" );
+        } else {
+            $sqlCompany = "INSERT INTO tbl_supplier_company (supplier_id, business, size, location, geographic, retail, diversity, responsibility)
+            VALUES ( '$vendor_s_ID', '$vendor_business', '$vendor_size', '$vendor_location', '$vendor_geographic', '$vendor_retail', '$vendor_diversity', '$vendor_responsibility')";
+            if (mysqli_query($conn, $sqlCompany)) {
+                $vendor_c_ID = mysqli_insert_id($conn);
+            }
+        }
+
+
+        // Product Overview
+        $image_array = array();
+        $arr_item = array();
+        $file_history = '';
+        $filesize = 0;
+        $process = true;
+
+        $selectImage = mysqli_query( $conn,"SELECT image, file_history, packaging_1_image, packaging_2_image, packaging_3_image, pallet_image FROM tbl_products WHERE ID = $ID" );
+        if ( mysqli_num_rows($selectImage) > 0 ) {
+            $rowImage = mysqli_fetch_array($selectImage);
+            $current_image = $rowImage['image'];
+            $current_image_array = explode(", ", $current_image);
+            if (COUNT($current_image_array) == 7) {
+                $current_image_array[7] = '';
+                $current_image_array[8] = '';
+            }
+        }
+        $arr_item = array();
+        if (!empty($rowImage["file_history"])) {
+            $arr_item = json_decode($rowImage["file_history"],true);
+        }
+
+        $image_main = addslashes($_FILES['image_main']['name']);
+        if (!empty($image_main)) {
+            $fileValidation = fileValidation(1, 'image_main', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $image_main = $files;
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $image_main = '';
+                $process = false;
+            }
+        } else {
+            $image_main = $current_image_array[0];
+            array_push($image_array, $current_image_array[0]);
+        }
+
+        $image_top = addslashes($_FILES['image_top']['name']);
+        if (!empty($image_top)) {
+            $fileValidation = fileValidation(1, 'image_top', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, $current_image_array[1]);
+        }
+
+        $image_front = addslashes($_FILES['image_front']['name']);
+        if (!empty($image_front)) {
+            $fileValidation = fileValidation(1, 'image_front', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, $current_image_array[2]);
+        }
+
+        $image_left = addslashes($_FILES['image_left']['name']);
+        if (!empty($image_left)) {
+            $fileValidation = fileValidation(1, 'image_left', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, $current_image_array[3]);
+        }
+
+        $image_bottom = addslashes($_FILES['image_bottom']['name']);
+        if (!empty($image_bottom)) {
+            $fileValidation = fileValidation(1, 'image_bottom', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, $current_image_array[4]);
+        }
+
+        $image_back = addslashes($_FILES['image_back']['name']);
+        if (!empty($image_back)) {
+            $fileValidation = fileValidation(1, 'image_back', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, $current_image_array[5]);
+        }
+
+        $image_right = addslashes($_FILES['image_right']['name']);
+        if (!empty($image_right)) {
+            $fileValidation = fileValidation(1, 'image_right', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, $current_image_array[6]);
+        }
+
+        $image_brand = addslashes($_FILES['image_brand']['name']);
+        if (!empty($image_brand)) {
+            $fileValidation = fileValidation(1, 'image_brand', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, $current_image_array[7]);
+        }
+
+        $image_qr = addslashes($_FILES['image_qr']['name']);
+        if (!empty($image_qr)) {
+            $fileValidation = fileValidation(1, 'image_qr', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                array_push($image_array, $files);
+
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            array_push($image_array, $current_image_array[8]);
+        }
+        $image_array = implode(", ",$image_array);
+        mysqli_query( $conn,"UPDATE tbl_products SET image ='". $image_array ."' WHERE ID='".$ID."'" );
+
+        $name = addslashes($_POST['name']);
+        $category_group = addslashes($_POST['category_group']);
+        $code = addslashes($_POST['code']);
+        $leads = addslashes($_POST['leads']);
+        $lead_type = addslashes($_POST['lead_type']);
+        $private_label = addslashes($_POST['private_label']);
+        $cost = addslashes($_POST['cost']);
+        $incoterms = $_POST['incoterms'];
+        $moq = addslashes($_POST['moq']);
+        $imports = $_POST['imports'];
+        $description = addslashes($_POST['description']);
+        $feature = addslashes($_POST['feature']);
+        $ingredients = addslashes($_POST['ingredients']);
+
+        $claims = "";
+        if (!empty($_POST["claims"])) { $claims = implode(", ", $_POST["claims"]); }
+
+        $intended = $_POST['intended'];
+        $intended_consumers = addslashes($_POST['intended_consumers']);
+
+        $allergen = "";
+        if (!empty($_POST["allergen"])) { $allergen = implode(", ", $_POST["allergen"]); }
+
+        $flavor = addslashes($_POST['flavor']);
+        $size_uom = addslashes($_POST['size_uom']);
+        $size_uom_type = addslashes($_POST['size_uom_type']);
+        $shelf = addslashes($_POST['shelf']);
+        $shelf_type = addslashes($_POST['shelf_type']);
+        $temperature = addslashes($_POST['temperature']);
+        $retail_accounts = addslashes($_POST['retail_accounts']);
+        $competing_brands = addslashes($_POST['competing_brands']);
+        mysqli_query( $conn,"UPDATE tbl_products SET vendor_s_ID ='".$vendor_s_ID."', name ='".$name."', category_group ='".$category_group."', code ='".$code."', leads ='".$leads."', lead_type ='".$lead_type."', private_label ='".$private_label."', cost ='".$cost."', incoterms ='".$incoterms."', moq ='".$moq."', imports ='".$imports."', description ='".$description."', feature ='".$feature."', ingredients ='".$ingredients."', claims ='".$claims."', intended ='".$intended."', intended_consumers ='".$intended_consumers."', allergen ='".$allergen."', flavor ='".$flavor."', size_uom ='".$size_uom."', size_uom_type ='".$size_uom_type."', shelf ='".$shelf."', shelf_type ='".$shelf_type."', temperature ='".$temperature."', retail_accounts ='".$retail_accounts."', competing_brands ='".$competing_brands."' WHERE ID='".$ID."'" );
+
+
+
+        // Characteristics
+        $physical_chars = isset($_POST['physical_chars']) && count($_POST['physical_chars']) > 0 ? json_encode($_POST['physical_chars']) : NULL;
+        $physico_chem_char = isset($_POST['physico_chem_char']) && count($_POST['physico_chem_char']) > 0 ? json_encode($_POST['physico_chem_char']) : NULL;
+        $microbial_char = isset($_POST['microbial_char']) && count($_POST['microbial_char']) > 0 ? json_encode($_POST['microbial_char']) : NULL;
+        mysqli_query( $conn,"UPDATE tbl_products SET physical_characteristics ='".$physical_chars."', physico_chemical_characteristics ='".$physico_chem_char."', microbiological_characteristics ='".$microbial_char."' WHERE ID='".$ID."'" );
+
+        // if(mysqli_error($conn)) {
+        //     echo mysqli_error($conn);
+        // } else {
+        //     echo 'ok';
+        // }
+
+
+        // Packaging
+        $packaging_1_image = addslashes($_FILES['packaging_1_image']['name']);
+        if (!empty($packaging_1_image)) {
+            $fileValidation = fileValidation(1, 'packaging_1_image', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $packaging_1_image = $files;
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $packaging_1_image = '';
+                $process = false;
+            }
+        } else {
+            $packaging_1_image = $rowImage['packaging_1_image'];
+        }
+        $packaging_1 = $_POST['packaging_1'];
+        $packaging_1_dimension = $_POST['packaging_1_dimension'];
+        $packaging_1_upc = $_POST['packaging_1_upc'];
+        $packaging_1_cube = $_POST['packaging_1_cube'];
+        $packaging_1_weight = $_POST['packaging_1_weight'];
+        $packaging_1_unit = $_POST['packaging_1_unit'];
+        $packaging_1_size_uom = $_POST['packaging_1_size_uom'];
+        $packaging_1_size_uom_type = $_POST['packaging_1_size_uom_type'];
+
+        $packaging_2_image = addslashes($_FILES['packaging_2_image']['name']);
+        if (!empty($packaging_2_image)) {
+            $fileValidation = fileValidation(1, 'packaging_2_image', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $packaging_2_image = $files;
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $process = false;
+            }
+        } else {
+            $packaging_2_image = $rowImage['packaging_2_image'];
+        }
+        $packaging_2 = $_POST['packaging_2'];
+        $packaging_2_dimension = $_POST['packaging_2_dimension'];
+        $packaging_2_upc = $_POST['packaging_2_upc'];
+        $packaging_2_cube = $_POST['packaging_2_cube'];
+        $packaging_2_weight = $_POST['packaging_2_weight'];
+        $packaging_2_unit = $_POST['packaging_2_unit'];
+        $packaging_2_size_uom = $_POST['packaging_2_size_uom'];
+        $packaging_2_size_uom_type = $_POST['packaging_2_size_uom_type'];
+        
+        $packaging_3_image = addslashes($_FILES['packaging_3_image']['name']);
+        if (!empty($packaging_3_image)) {
+            $fileValidation = fileValidation(1, 'packaging_3_image', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $packaging_3_image = $files;
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $packaging_3_image = '';
+                $process = false;
+            }
+        } else {
+            $packaging_3_image = $rowImage['packaging_3_image'];
+        }
+        $packaging_3 = $_POST['packaging_3'];
+        $packaging_3_dimension = $_POST['packaging_3_dimension'];
+        $packaging_3_upc = $_POST['packaging_3_upc'];
+        $packaging_3_cube = $_POST['packaging_3_cube'];
+        $packaging_3_weight = $_POST['packaging_3_weight'];
+        $packaging_3_unit = $_POST['packaging_3_unit'];
+        $packaging_3_size_uom = $_POST['packaging_3_size_uom'];
+        $packaging_3_size_uom_type = $_POST['packaging_3_size_uom_type'];
+
+        $pallet_image = addslashes($_FILES['pallet_image']['name']);
+        if (!empty($pallet_image)) {
+            $fileValidation = fileValidation(1, 'pallet_image', 'products/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+
+            if ($process == true) {
+                $pallet_image = $files;
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            } else {
+                $pallet_image = '';
+                $process = false;
+            }
+        } else {
+            $pallet_image = $rowImage['pallet_image'];
+        }
+        $pallet_type = addslashes($_POST['pallet_type']);
+        $pallet_dimension = addslashes($_POST['pallet_dimension']);
+        $pallet_upc = addslashes($_POST['pallet_upc']);
+        $pallet_cube = addslashes($_POST['pallet_cube']);
+        $pallet_weight = addslashes($_POST['pallet_weight']);
+        $pallet_unit = addslashes($_POST['pallet_unit']);
+        $pallet_boxes = addslashes($_POST['pallet_boxes']);
+
+        $production_day = addslashes($_POST['production_day']);
+        $production_week = addslashes($_POST['production_week']);
+        $production_cost = addslashes($_POST['production_cost']);
+        $production_profit = addslashes($_POST['production_profit']);
+
+        $cost_operation = addslashes($_POST['cost_operation']);
+        $cost_rent = addslashes($_POST['cost_rent']);
+        $cost_material = addslashes($_POST['cost_material']);
+        $cost_financing = addslashes($_POST['cost_financing']);
+        $cost_transportation = addslashes($_POST['cost_transportation']);
+
+        $materials = "";
+        if (!empty($_POST["data_1"])) { $materials = implode(", ", $_POST["data_1"]); }
+
+        mysqli_query( $conn,"UPDATE tbl_products SET packaging_1 ='".$packaging_1."', packaging_1_image ='".$packaging_1_image."', packaging_1_dimension ='".$packaging_1_dimension."', packaging_1_upc ='".$packaging_1_upc."', packaging_1_cube ='".$packaging_1_cube."', packaging_1_weight ='".$packaging_1_weight."', packaging_1_unit ='".$packaging_1_unit."', packaging_1_size_uom ='".$packaging_1_size_uom."', packaging_1_size_uom_type ='".$packaging_1_size_uom_type."', 
+
+            packaging_2 ='".$packaging_2."', packaging_2_image ='".$packaging_2_image."', packaging_2_dimension ='".$packaging_2_dimension."', packaging_2_upc ='".$packaging_2_upc."', packaging_2_cube ='".$packaging_2_cube."', packaging_2_weight ='".$packaging_2_weight."', packaging_2_unit ='".$packaging_2_unit."', packaging_2_size_uom ='".$packaging_2_size_uom."', packaging_2_size_uom_type ='".$packaging_2_size_uom_type."', 
+
+            packaging_3 ='".$packaging_3."', packaging_3_image ='".$packaging_3_image."', packaging_3_dimension ='".$packaging_3_dimension."', packaging_3_upc ='".$packaging_3_upc."', packaging_3_cube ='".$packaging_3_cube."', packaging_3_weight ='".$packaging_3_weight."', packaging_3_unit ='".$packaging_3_unit."', packaging_3_size_uom ='".$packaging_3_size_uom."', packaging_3_size_uom_type ='".$packaging_3_size_uom_type."', 
+
+            pallet_image ='".$pallet_image."', pallet_type ='".$pallet_type."', pallet_dimension ='".$pallet_dimension."', pallet_upc ='".$pallet_upc."', pallet_cube ='".$pallet_cube."', pallet_weight ='".$pallet_weight."', pallet_unit ='".$pallet_unit."', pallet_boxes ='".$pallet_boxes."', 
+
+            production_day ='".$production_day."', production_week ='".$production_week."', production_cost ='".$production_cost."',  production_profit ='".$production_profit."', 
+
+            cost_operation ='".$cost_operation."', cost_rent ='".$cost_rent."', cost_material ='".$cost_material."',  cost_financing ='".$cost_financing."', cost_transportation ='".$cost_transportation."', 
+
+            materials ='".$materials."' WHERE ID='".$ID."'" );
+
+
+
+        // Documents
+        $docs_regulatory = "";
+        if (!empty($_POST["data_5"])) { $docs_regulatory = implode(", ", $_POST["data_5"]); }
+
+        $docs_certificate = "";
+        if (!empty($_POST["data_6"])) { $docs_certificate = implode(", ", $_POST["data_6"]); }
+
+        $mock_recall = $_POST['mock_recall'];
+        $product_trace = $_POST['product_trace'];
+
+        mysqli_query( $conn,"UPDATE tbl_products SET docs_regulatory ='".$docs_regulatory."', docs_certificate ='".$docs_certificate."', mock_recall ='".$mock_recall."', product_trace ='".$product_trace."' WHERE ID='".$ID."'" );
+
+
+
+        // Manufacturer
+        $manu_name = addslashes($_POST['manu_name']);
+        $manu_phone = addslashes($_POST['manu_phone']);
+        $manu_contact = addslashes($_POST['manu_contact']);
+        $manu_address = addslashes($_POST['manu_address']);
+        $manu_email = addslashes($_POST['manu_email']);
+        $manu_website = addslashes($_POST['manu_website']);
+        $manu_reg_no = addslashes($_POST['manu_reg_no']);
+        $manu_dunn_no = addslashes($_POST['manu_dunn_no']);
+
+        $manu_certificate = "";
+        if (!empty($_POST["data_2"])) { $manu_certificate = implode(", ", $_POST["data_2"]); }
+
+        $broker_name = addslashes($_POST['broker_name']);
+        $broker_phone = addslashes($_POST['broker_phone']);
+        $broker_contact = addslashes($_POST['broker_contact']);
+        $broker_address = addslashes($_POST['broker_address']);
+        $broker_email = addslashes($_POST['broker_email']);
+        $broker_website = addslashes($_POST['broker_website']);
+        $broker_reg_no = addslashes($_POST['broker_reg_no']);
+        $broker_dunn_no = addslashes($_POST['broker_dunn_no']);
+
+        $broker_certificate = "";
+        if (!empty($_POST["data_3"])) { $broker_certificate = implode(", ", $_POST["data_3"]); }
+        
+        $agent_company = addslashes($_POST['agent_company']);
+        $agent_phone = addslashes($_POST['agent_phone']);
+        $agent_contact = addslashes($_POST['agent_contact']);
+        $agent_address = addslashes($_POST['agent_address']);
+        $agent_email = addslashes($_POST['agent_email']);
+        $agent_website = addslashes($_POST['agent_website']);
+
+        $importer_name = addslashes($_POST['importer_name']);
+        $importer_phone = addslashes($_POST['importer_phone']);
+        $importer_contact = addslashes($_POST['importer_contact']);
+        $importer_address = addslashes($_POST['importer_address']);
+        $importer_email = addslashes($_POST['importer_email']);
+        $importer_website = addslashes($_POST['importer_website']);
+        $importer_reg_no = addslashes($_POST['importer_reg_no']);
+        $importer_dunn_no = addslashes($_POST['importer_dunn_no']);
+
+        $importer_certificate = "";
+        if (!empty($_POST["data_4"])) { $importer_certificate = implode(", ", $_POST["data_4"]); }
+
+        $fsvp_date_review = addslashes($_POST['fsvp_date_review']);
+        $fsvp_date_audit = addslashes($_POST['fsvp_date_audit']);
+        $fsvp_seasonal = addslashes($_POST['fsvp_seasonal']);
+        $fsvp_date_available = addslashes($_POST['fsvp_date_available']);
+
+        $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
+
+        mysqli_query( $conn,"UPDATE tbl_products SET manu_name ='".$manu_name."', manu_phone ='".$manu_phone."', manu_contact ='".$manu_contact."', manu_address ='".$manu_address."', manu_email ='".$manu_email."', manu_website ='".$manu_website."', manu_reg_no ='".$manu_reg_no."', manu_dunn_no ='".$manu_dunn_no."', manu_certificate ='".$manu_certificate."', 
+
+            broker_name ='".$broker_name."', broker_phone ='".$broker_phone."', broker_contact ='".$broker_contact."', broker_address ='".$broker_address."', broker_email ='".$broker_email."', broker_website ='".$broker_website."', broker_reg_no ='".$broker_reg_no."', broker_dunn_no ='".$broker_dunn_no."', broker_certificate ='".$broker_certificate."', 
+
+            agent_company ='".$agent_company."', agent_phone ='".$agent_phone."', agent_contact ='".$agent_contact."', agent_address ='".$agent_address."', agent_email ='".$agent_email."', agent_website ='".$agent_website."', 
+
+            importer_name ='".$importer_name."', importer_phone ='".$importer_phone."', importer_contact ='".$importer_contact."', importer_address ='".$importer_address."', importer_email ='".$importer_email."', importer_website ='".$importer_website."', importer_reg_no ='".$importer_reg_no."', importer_dunn_no ='".$importer_dunn_no."', importer_certificate ='".$importer_certificate."', 
+
+            fsvp_date_review ='".$fsvp_date_review."', fsvp_date_audit ='".$fsvp_date_audit."', fsvp_seasonal ='".$fsvp_seasonal."', fsvp_date_available ='".$fsvp_date_available."', 
+
+            file_history ='".$file_history."' WHERE ID='".$ID."'" );
+
+        if ($process == true) {
+            if (!empty($_POST['labs'])) {
+                $labs = implode(", ", $_POST["labs"]);
+                $labs_arr = explode(", ", $labs);
+                foreach ($labs_arr as $value) {
+                    mysqli_query( $conn,"UPDATE tbl_products_lab SET product_id = $ID WHERE ID = $value" );
+                }
+            }
+
+            if (!empty($image_main)) {
+                $fileExtension = fileExtension($image_main);
+                $src = $fileExtension['src'];
+                $embed = $fileExtension['embed'];
+                $type = $fileExtension['type'];
+                $file_extension = $fileExtension['file_extension'];
+                $url = $base_url.'uploads/products/';
+                $image_main = $src.$url.rawurlencode($image_main).$embed;
+            } else {
+                $image_main = "//placehold.co/40x40/EFEFEF/AAAAAA?text=no+image";
+            }
+
+            $output = array(
+                "ID" => $ID,
+                "name" => stripcslashes(htmlentities($name)),
+                "description" => stripcslashes(htmlentities($description)),
+                "image" => $image_main,
+                "category" => $category_group,
+                "last_modified" => $local_date
+            );
+            echo json_encode($output);
+        }
+    }
+    if( isset($_GET['btnDelete_Products']) ) {
+        $id = $_GET['btnDelete_Products'];
+        $last_modified = date('Y-m-d');
+
+        mysqli_query( $conn,"UPDATE tbl_products set deleted=1, last_modified='".$last_modified."' WHERE ID=$id" );
+        if (!mysqli_error($conn)) {
+                        
+            $output = array(
+                'ID' => $id
+            );
+            echo json_encode($output);
+        }
+    }
+    if( isset($_GET['modalView_ProductsX']) ) {
         $id = $_GET['modalView_Products'];
+        $t = $_GET['t'];
         $allergen = array();
 
         if (!empty($_COOKIE['switchAccount'])) {
@@ -34954,8 +39049,8 @@
             $row = mysqli_fetch_array($selectData);
             $data_image = $row['image'];
             $data_image_array = explode(", ", $data_image);
-            $image_main = "https://via.placeholder.com/400x250/EFEFEF/AAAAAA.png?text=Main+Product+View";
-            $image_angle = "https://via.placeholder.com/120x90/EFEFEF/AAAAAA.png?text=No+Image";
+            $image_main = "//placehold.co/400x250/EFEFEF/AAAAAA?text=no+image";
+            $image_angle = "//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image";
 
             $allergen = explode(", ", $row["allergen"]);
 
@@ -36708,20 +40803,7 @@
 
         mysqli_close($conn);
     }
-    if( isset($_GET['btnDelete_Products']) ) {
-        $id = $_GET['btnDelete_Products'];
-        $last_modified = date('Y-m-d');
-
-        mysqli_query( $conn,"UPDATE tbl_products set deleted=1, last_modified='".$last_modified."' WHERE ID=$id" );
-        if (!mysqli_error($conn)) {
-                        
-            $output = array(
-                'ID' => $id
-            );
-            echo json_encode($output);
-        }
-    }
-    if( isset($_POST['btnSave_Products']) ) {
+    if( isset($_POST['btnSave_Productsx']) ) {
         $ID = $_POST['ID'];
 
         $path = 'uploads/products/';
@@ -37367,8 +41449,8 @@
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_products (user_id, image, code, name, category, category_other, description, ingredient, packaging_1, packaging_2, packaging_3, intended, claims, allergen, allergen_other, material, unit, boxes, pallet, count_unit_box, count_unit_pallet, count_unit_carton, shelf, storage, upc, gtin, lead_time, moq, export, countries, manufactured_by, manufactured_for, distributed_by, warehouse, lot_code, mock_recall, product_trace, artwork, haccp, label, formulation, origin, procedures, analysis, specifcation, sheet, guarantee, conformance, insurance, specifcation_date, artwork_date, haccp_date, label_date, formulation_date, artwork_radio, haccp_radio, label_radio, formulation_radio, origin_radio, procedures_radio, analysis_radio, specifcation_radio, sheet_radio, guarantee_radio, conformance_radio, insurance_radio, docs, docs_date, intended_consumers, packaging_temperature, labeling_instructions, physical_characteristics, physico_chemical_characteristics, microbiological_characteristics, vendor_name, vendor_code, mb_enterprise_name, mb_lot_code, mb_manufactured_date, mb_expiry_date, traded_supplier_name, traded_supplied_for, traded_manufactured_date, traded_expiry_date, branded_manufactured_by, branded_manufactured_for, branded_manufactured_date, branded_expiry_date, branded_lot_code_by_manufacturer, branded_lot_code_by_enterprise, delivered_from, country_of_origin, country_of_purchase, file_history)
-            VALUES ('$ID', '$image_array', '$code', '$name', '$category', '$category_other', '$description', '$ingredient', '$packaging_1', '$packaging_2', '$packaging_3', '$intended', '$claims', '$allergen', '$allergen_other', '$material', '$unit', '$boxes', '$pallet', '$count_unit_box', '$count_unit_pallet', '$count_unit_carton', '$shelf', '$storage', '$upc', '$gtin', '$lead', '$moq', '$export', '$countries', '$manufactured_by', '$manufactured_for', '$distributed_by', '$warehouse', '$lot_code', '$mock_recall', '$product_trace', '$artwork', '$haccp', '$label', '$formulation', '$origin', '$procedures', '$analysis', '$specifcation', '$sheet', '$guarantee', '$conformance', '$insurance', '$specifcation_date', '$artwork_date', '$haccp_date', '$label_date', '$formulation_date', '$artwork_radio', '$haccp_radio', '$label_radio', '$formulation_radio', '$origin_radio', '$procedures_radio', '$analysis_radio', '$specifcation_radio', '$sheet_radio', '$guarantee_radio', '$conformance_radio', '$insurance_radio', '$docs', '$docs_date', '$intended_consumers', '$packaging_temperature', '$labeling_instructions', 
+            $sql = "INSERT INTO tbl_products (user_id, facility_switch, image, code, name, category, category_other, description, ingredient, packaging_1, packaging_2, packaging_3, intended, claims, allergen, allergen_other, material, unit, boxes, pallet, count_unit_box, count_unit_pallet, count_unit_carton, shelf, storage, upc, gtin, lead_time, moq, export, countries, manufactured_by, manufactured_for, distributed_by, warehouse, lot_code, mock_recall, product_trace, artwork, haccp, label, formulation, origin, procedures, analysis, specifcation, sheet, guarantee, conformance, insurance, specifcation_date, artwork_date, haccp_date, label_date, formulation_date, artwork_radio, haccp_radio, label_radio, formulation_radio, origin_radio, procedures_radio, analysis_radio, specifcation_radio, sheet_radio, guarantee_radio, conformance_radio, insurance_radio, docs, docs_date, intended_consumers, packaging_temperature, labeling_instructions, physical_characteristics, physico_chemical_characteristics, microbiological_characteristics, vendor_name, vendor_code, mb_enterprise_name, mb_lot_code, mb_manufactured_date, mb_expiry_date, traded_supplier_name, traded_supplied_for, traded_manufactured_date, traded_expiry_date, branded_manufactured_by, branded_manufactured_for, branded_manufactured_date, branded_expiry_date, branded_lot_code_by_manufacturer, branded_lot_code_by_enterprise, delivered_from, country_of_origin, country_of_purchase, file_history)
+            VALUES ('$ID', $facility_switch_user_id, '$image_array', '$code', '$name', '$category', '$category_other', '$description', '$ingredient', '$packaging_1', '$packaging_2', '$packaging_3', '$intended', '$claims', '$allergen', '$allergen_other', '$material', '$unit', '$boxes', '$pallet', '$count_unit_box', '$count_unit_pallet', '$count_unit_carton', '$shelf', '$storage', '$upc', '$gtin', '$lead', '$moq', '$export', '$countries', '$manufactured_by', '$manufactured_for', '$distributed_by', '$warehouse', '$lot_code', '$mock_recall', '$product_trace', '$artwork', '$haccp', '$label', '$formulation', '$origin', '$procedures', '$analysis', '$specifcation', '$sheet', '$guarantee', '$conformance', '$insurance', '$specifcation_date', '$artwork_date', '$haccp_date', '$label_date', '$formulation_date', '$artwork_radio', '$haccp_radio', '$label_radio', '$formulation_radio', '$origin_radio', '$procedures_radio', '$analysis_radio', '$specifcation_radio', '$sheet_radio', '$guarantee_radio', '$conformance_radio', '$insurance_radio', '$docs', '$docs_date', '$intended_consumers', '$packaging_temperature', '$labeling_instructions', 
                     ".(isset($physical_chars) ? "'$physical_chars'" : "NULL").",
                     ".(isset($physico_chem_char) ? "'$physico_chem_char'" : "NULL").",
                     ".(isset($microbial_char) ? "'$microbial_char'" : "NULL").",
@@ -37396,7 +41478,7 @@
                     $data_image_array = explode(", ", $data_image);
 
                     $url_base = "";
-                    $image_main = "https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=No+Image";
+                    $image_main = "//placehold.co/40x40/EFEFEF/AAAAAA?text=no+image";
 
                     if (!empty($data_image)) {
 
@@ -37433,7 +41515,7 @@
             mysqli_close($conn);
         }
     }
-    if( isset($_POST['btnUpdate_Products']) ) {
+    if( isset($_POST['btnUpdate_Productsx']) ) {
         $ID = $_POST['ID'];
         $last_modified = date('Y-m-d');
 
@@ -38144,7 +42226,7 @@
 
                     $data_image = $row['image'];
                     $url_base = "";
-                    $image_main = "https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=No+Image";
+                    $image_main = "//placehold.co/40x40/EFEFEF/AAAAAA?text=no+image";
 
                     if (!empty($data_image)) {
 
@@ -38386,6 +42468,466 @@
                 "modal" => $modal
             );
             echo json_encode($output);
+        }
+    }
+
+    // Data Section
+    if( isset($_GET['modalNew_Data']) ) {
+        $modal = $_GET['modalNew_Data'];
+        $section = $_GET['s'];
+
+        echo '<input class="form-control" type="hidden" name="modal" value="'.$modal.'" />';
+        echo '<input class="form-control" type="hidden" name="section" value="'.$section.'" />';
+
+        if ($section == 1) {
+            echo '<div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Material Name</label>
+                        <input class="form-control" type="text" name="name" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Lead Time</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="lead_time" />
+                            <div class="input-group-addon" style="padding: 0;">
+                                <select name="type" style="border: 0; background: transparent;">
+                                    <option value="0">Day</option>
+                                    <option value="1">Week</option>
+                                    <option value="2">Month</option>
+                                    <option value="3">Year</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">% in Formula</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">$</span>
+                            <input class="form-control" type="number" name="formula" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Cost</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">$</span>
+                            <input class="form-control" type="number" name="cost" />
+                        </div>
+                    </div>
+                </div>
+            </div>';
+        } else if ($section == 5)  {
+            echo '<div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Requirements Name</label>
+                        <input class="form-control" type="text" name="name" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">File</label>
+                        <input class="form-control" type="file" name="file" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Document Date</label>
+                        <input class="form-control" type="date" name="date_start" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Review Due Date</label>
+                        <input class="form-control" type="date" name="date_end" />
+                    </div>
+                </div>
+            </div>';
+        } else if ($section == 6)  {
+            echo '<div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Documents Name</label>
+                        <input class="form-control" type="text" name="name" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">File</label>
+                        <input class="form-control" type="file" name="file" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Document Date</label>
+                        <input class="form-control" type="date" name="date_start" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Review Due Date</label>
+                        <input class="form-control" type="date" name="date_end" />
+                    </div>
+                </div>
+            </div>';
+        } else {
+            echo '<div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Certificate Name</label>
+                        <input class="form-control" type="text" name="name" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">File</label>
+                        <input class="form-control" type="file" name="file" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Document Date</label>
+                        <input class="form-control" type="date" name="date_start" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Review Date</label>
+                        <input class="form-control" type="date" name="date_end" />
+                    </div>
+                </div>
+            </div>';
+        }
+    }
+    if( isset($_GET['modalEdit_Data']) ) {
+        $ID = $_GET['modalEdit_Data'];
+        $modal = $_GET['m'];
+        $section = $_GET['s'];
+
+        echo '<input class="form-control" type="hidden" name="ID" value="'.$ID.'" />';
+        echo '<input class="form-control" type="hidden" name="modal" value="'.$modal.'" />';
+        echo '<input class="form-control" type="hidden" name="section" value="'.$section.'" />';
+
+        if ($section == 1) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_products_lead_time WHERE ID = $ID" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $rowData = mysqli_fetch_array($selectData);
+
+                echo '<div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Material Name</label>
+                            <input class="form-control" type="text" name="name" value="'.$rowData['name'].'" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Lead Time</label>
+                            <div class="input-group">
+                                <input class="form-control" type="text" name="lead_time" value="'.$rowData['lead_time'].'" />
+                                <div class="input-group-addon" style="padding: 0;">
+                                    <select name="type" style="border: 0; background: transparent;">
+                                        <option value="0" '; echo $rowData['type'] == 0 ? 'SELECTED':''; echo '>Day</option>
+                                        <option value="1" '; echo $rowData['type'] == 1 ? 'SELECTED':''; echo '>Week</option>
+                                        <option value="2" '; echo $rowData['type'] == 2 ? 'SELECTED':''; echo '>Month</option>
+                                        <option value="3" '; echo $rowData['type'] == 3 ? 'SELECTED':''; echo '>Year</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">% in Formula</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input class="form-control" type="number" name="formula" value="'.$rowData['formula'].'" />
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Cost</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input class="form-control" type="number" name="cost" value="'.$rowData['cost'].'" />
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+            }
+        } else {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_products_data WHERE ID = $ID" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $rowData = mysqli_fetch_array($selectData);
+
+                $files = htmlentities($rowData["files"] ?? '');
+                $type = 'iframe';
+                $datafancybox = 'data-fancybox';
+                if (!empty($files)) {
+                    $fileExtension = fileExtension($files);
+                    $src = $fileExtension['src'];
+                    $embed = $fileExtension['embed'];
+                    $type = $fileExtension['type'];
+                    $file_extension = $fileExtension['file_extension'];
+                    $url = $base_url.'uploads/products/';
+
+                    $files = $src.$url.rawurlencode($files).$embed;
+                }
+
+                echo '<div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Certificate Name</label>
+                            <input class="form-control" type="text" name="name" value="'.$rowData['name'].'" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">File</label>
+                            <input type="hidden" name="file_temp" value="'.$rowData["files"].'" />
+                            <input class="form-control hide" type="file" name="file" />
+                            <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNewOld" onclick="uploadNewOld(this)">Upload New</button></p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Document Date</label>
+                            <input class="form-control" type="date" name="date_start" value="'.$rowData['date_start'].'" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Review Date</label>
+                            <input class="form-control" type="date" name="date_end" value="'.$rowData['date_end'].'" />
+                        </div>
+                    </div>
+                </div>';
+            }
+        }
+    }
+    if( isset($_GET['btnDelete_Data']) ) {
+        $ID = $_GET['btnDelete_Data'];
+        $section = $_GET['s'];
+
+        if ($section == 1) {
+            mysqli_query( $conn,"UPDATE tbl_products_lead_time set deleted = 1 WHERE ID = $ID" );
+        } else {
+            mysqli_query( $conn,"UPDATE tbl_products_data set deleted = 1 WHERE ID = $ID" );
+        }
+    }
+    if( isset($_POST['btnSave_Data']) ) {
+        $modal = $_POST['modal'];
+        $section = $_POST['section'];
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        if ($section == 1) {
+            $name = addslashes($_POST['name']);
+            $lead_time = addslashes($_POST['lead_time']);
+            $formula = addslashes($_POST['formula']);
+            $cost = addslashes($_POST['cost']);
+
+            $type = addslashes($_POST['type']);
+            $dat_type = array(
+                0 => 'Day',
+                1 => 'Week',
+                2 => 'Month',
+                3 => 'Year',
+            );
+
+            $sql = "INSERT INTO tbl_products_lead_time (portal_user, name, lead_time, type, formula, cost)
+            VALUES ('$portal_user', '$name', '$lead_time', '$type', '$formula', '$cost')";
+            if (mysqli_query($conn, $sql)) {
+                $last_id = mysqli_insert_id($conn);
+
+                $data = '<tr id="tr_'.$last_id.'">
+                    <td>'.htmlentities($name).'</td>
+                    <td>'.htmlentities($lead_time).' '.$dat_type[$type].'</td>
+                    <td>$'.htmlentities($formula).' %</td>
+                    <td>$'.htmlentities($cost).'</td>
+                    <td class="text-center">
+                        <input type="hidden" name="data_'.$section.'[]" value="'.$last_id.'" />
+                        <div class="btn-group btn-group-circle">
+                            <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$last_id.', '.$modal.', '.$section.')">Edit</a>
+                            <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$last_id.', this)">Delete</a>
+                        </div>
+                    </td>
+                </tr>';
+                
+                $output = array(
+                    "ID" => $last_id,
+                    "data" => $data,
+                    "modal" => $modal,
+                    "section" => $section
+                );
+                echo json_encode($output);
+            }
+        } else {
+            $name = addslashes($_POST['name']);
+            $date_start = addslashes($_POST['date_start']);
+            $date_end = addslashes($_POST['date_end']);
+
+            $files = $_FILES['file']['name'];
+            if (!empty($files)) {
+                $fileValidation = fileValidation(0, 'file', 'products/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
+            }
+
+            $sql = "INSERT INTO tbl_products_data (portal_user, section, name, files, date_start, date_end)
+            VALUES ('$portal_user', '$section', '$name', '$files', '$date_start', '$date_end')";
+            if (mysqli_query($conn, $sql)) {
+                $last_id = mysqli_insert_id($conn);
+
+                if (!empty($files)) {
+                    $fileExtension = fileExtension($files);
+                    $src = $fileExtension['src'];
+                    $embed = $fileExtension['embed'];
+                    $type = $fileExtension['type'];
+                    $file_extension = $fileExtension['file_extension'];
+                    $url = $base_url.'uploads/products/';
+                    $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
+                }
+
+                $data = '<tr id="tr_'.$last_id.'">
+                    <td>'.htmlentities($name).'</td>
+                    <td class="text-center">'.$files.'</td>
+                    <td class="text-center">'.$date_start.'</td>
+                    <td class="text-center">'.$date_end.'</td>
+                    <td class="text-center">
+                        <input type="hidden" name="data_'.$section.'[]" value="'.$last_id.'" />
+                        <div class="btn-group btn-group-circle">
+                            <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$last_id.', '.$modal.', '.$section.')">Edit</a>
+                            <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$last_id.', this)">Delete</a>
+                        </div>
+                    </td>
+                </tr>';
+                
+                $output = array(
+                    "ID" => $last_id,
+                    "data" => $data,
+                    "modal" => $modal,
+                    "section" => $section
+                );
+                echo json_encode($output);
+            }
+        }
+    }
+    if( isset($_POST['btnUpdate_Data']) ) {
+        $ID = $_POST['ID'];
+        $modal = $_POST['modal'];
+        $section = $_POST['section'];
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        if ($section == 1) {
+            $name = addslashes($_POST['name']);
+            $lead_time = addslashes($_POST['lead_time']);
+            $formula = addslashes($_POST['formula']);
+            $cost = addslashes($_POST['cost']);
+
+            $type = addslashes($_POST['type']);
+            $dat_type = array(
+                0 => 'Day',
+                1 => 'Week',
+                2 => 'Month',
+                3 => 'Year',
+            );
+
+            mysqli_query( $conn,"UPDATE tbl_products_lead_time SET name='".$name."', lead_time='".$lead_time."', type='".$type."', formula='".$formula."', cost='".$cost."' WHERE ID='".$ID."'" );
+            if (!mysqli_error($conn)) {
+                $data = '<td>'.htmlentities($name).'</td>
+                <td>'.htmlentities($lead_time).' '.$dat_type[$type].'</td>
+                <td>$'.htmlentities($formula).' %</td>
+                <td>$'.htmlentities($cost).'</td>
+                <td class="text-center">
+                    <input type="hidden" name="data_'.$section.'[]" value="'.$ID.'" />
+                    <div class="btn-group btn-group-circle">
+                        <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$ID.', '.$modal.', '.$section.')">Edit</a>
+                        <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$ID.', this)">Delete</a>
+                    </div>
+                </td>';
+                
+                $output = array(
+                    "ID" => $ID,
+                    "data" => $data,
+                    "modal" => $modal,
+                    "section" => $section
+                );
+                echo json_encode($output);
+            }
+        } else {
+            $name = addslashes($_POST['name']);
+            $date_start = addslashes($_POST['date_start']);
+            $date_end = addslashes($_POST['date_end']);
+
+            $files = $_FILES['file']['name'];
+            if (!empty($files)) {
+                $fileValidation = fileValidation(0, 'file', 'products/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
+            } else {
+                $files = addslashes($_POST['file_temp']);
+            }
+
+            mysqli_query( $conn,"UPDATE tbl_products_data SET portal_user='".$portal_user."', name='".$name."', files='".$files."', date_start='".$date_start."', date_end='".$date_end."' WHERE ID='".$ID."'" );
+            if (!mysqli_error($conn)) {
+
+                if (!empty($files)) {
+                    $fileExtension = fileExtension($files);
+                    $src = $fileExtension['src'];
+                    $embed = $fileExtension['embed'];
+                    $type = $fileExtension['type'];
+                    $file_extension = $fileExtension['file_extension'];
+                    $url = $base_url.'uploads/products/';
+                    $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
+                }
+
+                $data = '<td>'.htmlentities($name).'</td>
+                <td class="text-center">'.$files.'</td>
+                <td class="text-center">'.$date_start.'</td>
+                <td class="text-center">'.$date_end.'</td>
+                <td class="text-center">
+                    <input type="hidden" name="data_'.$section.'[]" value="'.$ID.'" />
+                    <div class="btn-group btn-group-circle">
+                        <a href="#modalEditData" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Data('.$ID.', '.$modal.', '.$section.')">Edit</a>
+                        <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Data('.$ID.', this)">Delete</a>
+                    </div>
+                </td>';
+                
+                $output = array(
+                    "ID" => $ID,
+                    "data" => $data,
+                    "modal" => $modal,
+                    "section" => $section
+                );
+                echo json_encode($output);
+            }
         }
     }
 
@@ -38698,7 +43240,7 @@
             <select class="form-control mt-multiselect" name="assigned_to[]" multiple="multiple">';
 
                 $array_assigned_to = explode(", ", $row["assigned_to"]);
-                $selectEmployeee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
+                $selectEmployeee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
                 if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
                         if (in_array($rowEmployee["ID"], $array_assigned_to)) {
@@ -38798,7 +43340,7 @@
             if (!empty($assigned_to)) {
                 $array_assigned_to = explode(", ", $assigned_to);
                 foreach ($array_assigned_to as $value) {
-                    $selectEmployeee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND ID = $value" );
+                    $selectEmployeee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND ID = $value" );
                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                         $rowEmployee = mysqli_fetch_array($selectEmployeee);
                         $to = $rowEmployee["email"];
@@ -38902,7 +43444,7 @@
             if (!empty($assigned_to)) {
                 $array_assigned_to = explode(", ", $assigned_to);
                 foreach ($array_assigned_to as $value) {
-                    $selectEmployeee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND ID = $value" );
+                    $selectEmployeee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND ID = $value" );
                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                         $rowEmployee = mysqli_fetch_array($selectEmployeee);
                         $to = $rowEmployee["email"];
@@ -39039,7 +43581,7 @@
             $optionEmployee = '';
             $optionTraining = '';
             foreach ($department_id_arr as $value) {
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $emp_ID = $rowEmployee["ID"];
@@ -39079,6 +43621,7 @@
                             title
                             FROM tbl_hr_job_description 
                             WHERE status = 1
+                            AND deleted = 0
                         ) AS jd
                         ON d.ID = jd.department_id
                         
@@ -39098,6 +43641,7 @@
                         AND t.title IS NOT NULL
                         AND d.user_id = $user_id
                         AND d.ID = $value
+                        AND d.deleted = 0
                     ) AS r" );
                 if ( mysqli_num_rows($selectTrainings) > 0 ) {
                     while($rowTraining = mysqli_fetch_array($selectTrainings)) {
@@ -39299,7 +43843,7 @@
                             //     }
                             // }
 
-                            $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                            $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id ORDER BY title" );
                             if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                 while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                     $dept_ID = $rowDept['ID'];
@@ -39336,7 +43880,7 @@
                             $array_employee_id = array();
                             foreach ($arr_department_id as $value) {
                                 
-                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                         $emp_ID = $rowEmployee["ID"];
@@ -40294,7 +44838,7 @@
                         }
                         if (!empty($row['department_id'])) { $arr_department_id =  explode(', ', $row['department_id']); }
 
-                        $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                        $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id ORDER BY title" );
                         if ( mysqli_num_rows($selectDepartment) > 0 ) {
                             while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                 $dept_ID = $rowDept['ID'];
@@ -41127,7 +45671,7 @@
                 <div class="portlet-body">
                     <div class="mt-checkbox-inline">';
 
-                            $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                            $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id ORDER BY title" );
                             if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                 while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                     $dept_ID = $rowDept['ID'];
@@ -41708,7 +46252,7 @@
                         //     }
                         // }
 
-                        $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                        $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id ORDER BY title" );
                         if ( mysqli_num_rows($selectDepartment) > 0 ) {
                             while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                 $dept_ID = $rowDept['ID'];
@@ -42430,7 +46974,7 @@
                         //     }
                         // }
 
-                        $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                        $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id ORDER BY title" );
                         if ( mysqli_num_rows($selectDepartment) > 0 ) {
                             while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                 $dept_ID = $rowDept['ID'];
@@ -44903,7 +49447,7 @@
                     //     }
                     // }
 
-                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id ORDER BY title" );
                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                         while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                             if (in_array($rowDept["ID"], $array_department_id)) {
@@ -44921,7 +49465,7 @@
                 $data_employee_id = array();
                 if (!empty($employee_id)) {
                     $array_employee_id = explode(", ", $employee_id);
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             if (in_array($rowEmployee["ID"], $array_employee_id)) {
@@ -44938,7 +49482,7 @@
 
                     // Employee
                     $array_employee_id = explode(", ", $employee_id);
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             if (in_array($rowEmployee["ID"], $array_employee_id)) {
@@ -45423,7 +49967,7 @@
                 //     }
                 // }
 
-                $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id ORDER BY title" );
                 if ( mysqli_num_rows($selectDepartment) > 0 ) {
                     while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                         if (in_array($rowDept["ID"], $array_department_id)) {
@@ -45441,7 +49985,7 @@
             $data_employee_id = array();
             if (!empty($employee_id)) {
                 $array_employee_id = explode(", ", $employee_id);
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         if (in_array($rowEmployee["ID"], $array_employee_id)) {
@@ -45828,7 +50372,7 @@
                 //     }
                 // }
 
-                $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $user_id ORDER BY title" );
                 if ( mysqli_num_rows($selectDepartment) > 0 ) {
                     while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                         if (in_array($rowDept["ID"], $array_department_id)) {
@@ -45846,7 +50390,7 @@
             $data_employee_id = array();
             if (!empty($employee_id)) {
                 $array_employee_id = explode(", ", $employee_id);
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         if (in_array($rowEmployee["ID"], $array_employee_id)) {
@@ -46004,8 +50548,8 @@
                                         }
 
                                         echo '<div class="flex-shrink-0 position-relative" style="width: 50px; height: 50px;"">
-                                            <img class="position-absolute top-0 start-0 border border-default bg-white img-circle" style="width: 35px; height: 35px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" />
-                                            <img class="position-absolute bottom-0 end-0 border border-default bg-white img-circle" style="width: 35px; height: 35px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar_2.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" />
+                                            <img class="position-absolute top-0 start-0 border border-default bg-white img-circle" style="width: 35px; height: 35px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" />
+                                            <img class="position-absolute bottom-0 end-0 border border-default bg-white img-circle" style="width: 35px; height: 35px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar_2.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" />
                                         </div>
                                         <div class="userData flex-grow-1 ms-3">
                                             <p class="mb-0 bold" style="font-size: 15px;">'.$user_fullname.' / '.$user_fullname_2.'</p>
@@ -46016,7 +50560,7 @@
                                             <span class="hide position-absolute bottom-0 end-0 translate-middlex badge border border-white img-circle p-1 bg-danger">
                                                 <span class="visually-hidden">unread messages</span>
                                             </span>
-                                            <img class="border border-default bg-white img-circle" style="width: 50px; height: 50px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" />
+                                            <img class="border border-default bg-white img-circle" style="width: 50px; height: 50px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" />
                                         </div>
                                         <div class="userData flex-grow-1 ms-3">
                                             <p class="mb-0 bold" style="font-size: 15px;">'.$user_fullname.'</p>
@@ -46044,8 +50588,8 @@
                                         }
 
                                         echo '<div class="flex-shrink-0 position-relative" style="width: 50px; height: 50px;"">
-                                            <img class="position-absolute top-0 start-0 border border-2 bg-light rounded-circle" style="width: 35px; height: 35px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" />
-                                            <img class="position-absolute bottom-0 end-0 border border-2 bg-light rounded-circle" style="width: 35px; height: 35px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar_2.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" />
+                                            <img class="position-absolute top-0 start-0 border border-2 bg-light rounded-circle" style="width: 35px; height: 35px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" />
+                                            <img class="position-absolute bottom-0 end-0 border border-2 bg-light rounded-circle" style="width: 35px; height: 35px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar_2.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" />
                                         </div>
                                         <div class="userData flex-grow-1 ms-3">
                                             <p class="mb-0 fw-bold" style="font-size: 15px;">'.$user_fullname.' / '.$user_fullname_2.'</p>
@@ -46056,7 +50600,7 @@
                                             <span class="d-none position-absolute bottom-0 end-0 translate-middlex badge border border-light rounded-circle p-1 bg-danger">
                                                 <span class="visually-hidden">unread messages</span>
                                             </span>
-                                            <img class="border border-2 bg-light rounded-circle" style="width: 50px; height: 50px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" />
+                                            <img class="border border-2 bg-light rounded-circle" style="width: 50px; height: 50px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$chat_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" />
                                         </div>
                                         <div class="userData flex-grow-1 ms-3">
                                             <p class="mb-0 fw-bold" style="font-size: 15px;">'.$user_fullname.'</p>
@@ -46144,13 +50688,13 @@
                     if ($secContainer_tmp_user == $ID2) {
                         echo '<div class="d-flex secContainer secSender">
                             <div class="flex-shrink-0">
-                                <img src="'.$base_url.'uploads/avatar/'.$sender_userAvatar.'" alt="'.$sender_fullname.'" class="border border-2 rounded-circle" style="width: 40px; height: 40px;" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';">
+                                <img src="'.$base_url.'uploads/avatar/'.$sender_userAvatar.'" alt="'.$sender_fullname.'" class="border border-2 rounded-circle" style="width: 40px; height: 40px;" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';">
                             </div>
                             <div class="d-flex flex-column-reverse flex-grow-1 secMessage">';
                     } else {
                         echo '<div class="d-flex secContainer secReceiver">
                             <div class="flex-shrink-0">
-                                <img src="'.$base_url.'uploads/avatar/'.$receiver_userAvatar.'" alt="'.$receiver_fullname.'" class="border border-2 rounded-circle" style="width: 40px; height: 40px;" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';">
+                                <img src="'.$base_url.'uploads/avatar/'.$receiver_userAvatar.'" alt="'.$receiver_fullname.'" class="border border-2 rounded-circle" style="width: 40px; height: 40px;" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';">
                             </div>
                             <div class="d-flex flex-column-reverse flex-grow-1 secMessage">';
                     }
@@ -46224,7 +50768,7 @@
 
             $data_1 = '<div class="d-flex secContainer secSender">
                 <div class="flex-shrink-0">
-                    <img src="'.$base_url.'uploads/avatar/'.$sender_userAvatar.'" alt="'.$sender_fullname.'" class="border border-2 rounded-circle" style="width: 40px; height: 40px;" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';">
+                    <img src="'.$base_url.'uploads/avatar/'.$sender_userAvatar.'" alt="'.$sender_fullname.'" class="border border-2 rounded-circle" style="width: 40px; height: 40px;" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';">
                 </div>
                 <div class="d-flex flex-column-reverse flex-grow-1 secMessage">
                     <div class="mb-1 p-2">'.stripcslashes($message).'</div>
@@ -46304,7 +50848,7 @@
                                 foreach($data_image_array as $value) {
                                     if (!empty($value)) {
                                         echo '<div class="carousel-item '; if ($active == 0) { $active++; echo 'active'; } echo '">
-                                            <img src="'.$base_url.'uploads/products/'.$value.'" class="d-block w-100 imgCover" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image\';" />
+                                            <img src="'.$base_url.'uploads/products/'.$value.'" class="d-block w-100 imgCover" onerror="this.onerror=null;this.src=\'https://placehold.co/150x150/EFEFEF/AAAAAA?text=no+image\';" />
 
 
                                         </div>';
@@ -46333,7 +50877,7 @@
                 } else {
                     echo '<div class="col-md-3 mb-4 imgSet">
                         <div class="position-relative">
-                            <img src="https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image" class="d-block w-100 imgCover border rounded" />
+                            <img src="//placehold.co/150x150/EFEFEF/AAAAAA?text=no+image" class="d-block w-100 imgCover border rounded" />
                             <div class="d-flex justify-content-center align-items-center position-absolute imgView">
                                 <a href="marketplace-view?ID='.$data_ID.'"><h5 class="bg-primary text-light rounded p-2 bi bi-search"></h5></a>
                             </div>
@@ -46478,10 +51022,12 @@
                         WHERE user_id = $ID
                         AND suspended = 0
                         AND status = 1
+                        AND deleted = 0
                     ) AS e
                     ON FIND_IN_SET(d.ID, REPLACE(e.department_id, ' ', '')) > 0
 
                     WHERE d.user_id = $ID
+                    AND d.deleted = 0
 
                     GROUP BY d.ID
                     ORDER BY d.title
@@ -46524,7 +51070,7 @@
         $type = $_GET['type'];
 
         if ($type == 1) {
-            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE user_id = $ID AND status = 1 ORDER BY title" );
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE deleted = 0 AND user_id = $ID AND status = 1 ORDER BY title" );
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $counter = 1;
                 while($rowData = mysqli_fetch_array($selectData)) {
@@ -46540,7 +51086,7 @@
                 }
             }
         } else if ($type == 2) {
-            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE user_id = $ID AND status = 0 ORDER BY title" );
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE deleted = 0 AND user_id = $ID AND status = 0 ORDER BY title" );
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $counter = 1;
                 while($rowData = mysqli_fetch_array($selectData)) {
@@ -46572,12 +51118,14 @@
                         *
                         FROM tbl_hr_employee
                         WHERE user_id = $ID
+                        AND deleted = 0
                         AND suspended = 0
                         AND status = 1
                     ) AS e
                     ON FIND_IN_SET(jd.ID, REPLACE(e.job_description_id, ' ', '')) > 0
 
                     WHERE jd.user_id = $ID
+                    AND  jd.deleted = 0
 
                     GROUP BY jd.ID
                     ORDER BY jd.title
@@ -46619,6 +51167,7 @@
                     ON FIND_IN_SET(jd.ID, REPLACE(t.job_description_id, ' ', '')) > 0
 
                     WHERE jd.user_id = $ID
+                    AND jd.deleted = 0
 
                     GROUP BY jd.ID
                     ORDER BY jd.title
@@ -46690,7 +51239,7 @@
 
                     $HasEmployee = false;
                     // $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status <> '' " );
-                    $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                    $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                     if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
                         $countDepartmentChecking = 0;
                         while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
@@ -46745,7 +51294,7 @@
                         $statusFiles++;
                     }
 
-                    $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status > 0 AND facility_switch = $facility_switch_user_id" );
+                    $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND trainings_id_status > 0 AND facility_switch = $facility_switch_user_id" );
                     if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
                         $countRequiredTrainingChecking = 0;
                         while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
@@ -46769,7 +51318,7 @@
                 }
             }
         } else if ($page === "job-description") {
-            $selectJDCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE user_id = $user_id AND facility_switch = $facility_switch_user_id" );
+            $selectJDCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE deleted = 0 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
             if ( mysqli_num_rows($selectJDCounter) > 0 ) {
                 while($rowJDCounter = mysqli_fetch_array($selectJDCounter)) {
                     $status = $rowJDCounter["status"];
@@ -46781,7 +51330,7 @@
 
                     // TOTAL JOB DESC. W/NO TRAINING
                     $HasTrainings = false;
-                    $selectTrainingsCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings" );
+                    $selectTrainingsCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0" );
                     while($rowTrainingCounter = mysqli_fetch_array($selectTrainingsCounter)) {
                         $array_jd_counter = explode(", ", $rowTrainingCounter["job_description_id"]);
                         foreach ($array_jd_counter as $value) {
@@ -46795,7 +51344,7 @@
                     // TOTAL JOB DESC. W/NO EMPLOYEE
                     $HasEmployee = false;
                     // $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status <> '' " );
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             $rowEmployeeJD = $rowEmployee['job_description_id'];
@@ -46813,7 +51362,7 @@
                 }
             }
         } else if ($page === "employee") {
-            $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID <> 1240 AND ID <> 1241 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
+            $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND ID <> 1240 AND ID <> 1241 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
             if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
                 while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
                     $suspended = $rowEmployeeCounter["suspended"];
@@ -46827,14 +51376,14 @@
                 }
             }
             
-            $selectEmployeeSuspendedCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 1 AND user_id = $user_id" );
+            $selectEmployeeSuspendedCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND suspended = 1 AND user_id = $user_id" );
             if ( mysqli_num_rows($selectEmployeeSuspendedCounter) > 0 ) {
                 while($rowEmployeeSuspendedCounter = mysqli_fetch_array($selectEmployeeSuspendedCounter)) {
                     $statusSuspended++;
                 }
             }
 
-            $selectEmployeeMonthCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE last_modified>=DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) AND status = 0 AND user_id = $user_id" );
+            $selectEmployeeMonthCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND last_modified>=DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) AND status = 0 AND user_id = $user_id" );
             if ( mysqli_num_rows($selectEmployeeMonthCounter) > 0 ) {
                 while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeMonthCounter)) {
                     $statusInactiveMonth++;
@@ -46859,7 +51408,7 @@
                 }
             }
         } else if ($page === "supplier") {
-            $selectSupplierCounter = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE user_id = $user_id" );
+            $selectSupplierCounter = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE is_deleted = 0 AND user_id = $user_id" );
             if ( mysqli_num_rows($selectSupplierCounter) > 0 ) {
                 while($rowSupplierCounter = mysqli_fetch_array($selectSupplierCounter)) {
                     $status = $rowSupplierCounter["status"];
@@ -46870,7 +51419,7 @@
                 }
             }
 
-            $selectSupplierMonthCounter = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE last_modified>=DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) AND status = 0" );
+            $selectSupplierMonthCounter = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE is_deleted = 0 AND last_modified>=DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) AND status = 0" );
             if ( mysqli_num_rows($selectSupplierMonthCounter) > 0 ) {
                 while($rowSupplierMonthCounter = mysqli_fetch_array($selectSupplierMonthCounter)) {
                     $statusInactiveMonth++;
@@ -46888,7 +51437,7 @@
                 }
             }
 
-            $selectSupplierMonthCounter = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE last_modified>=DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) AND status = 0" );
+            $selectSupplierMonthCounter = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE is_deleted = 0 AND last_modified>=DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) AND status = 0" );
             if ( mysqli_num_rows($selectSupplierMonthCounter) > 0 ) {
                 while($rowSupplierMonthCounter = mysqli_fetch_array($selectSupplierMonthCounter)) {
                     $statusInactiveMonth++;
@@ -47935,7 +52484,7 @@
                             <option value="">Select</option>
                             <option value="0">Compliance Department</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $current_userEmployerID ORDER BY first_name" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND status = 1 AND user_id = $current_userEmployerID ORDER BY first_name" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $rowEmployeeID = $rowEmployee["ID"];
@@ -49060,6 +53609,7 @@
                 $type = $rowItem["l_type"];
                 $new_parent_id = $rowItem["l_parent_id"];
                 $new_child_id = $rowItem["l_child_id"];
+                $l_type = $rowItem["l_type"];
                 $reason = $rowItem["l_reason"];
 
                 $review = 0;
@@ -49193,15 +53743,21 @@
                                                     <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
                                                     <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
                                             
-                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557) {
+                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557 OR $portal_user == 1622) {
                                                         $output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
                                                     }
 
                                                     $output .= '<li class="divider"> </li>';
 
-                                                    if ($current_client == 0) {
-                                                        $output .= '<li><a href="#modalAttached" class="btnAttached" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnAttached('. $item_ID .')">Attach File</a></li>';
-                                                    }
+                                                    // if ($current_client == 0) {
+                                                        $output .= '<li><a href="#modalAttached" class="btnAttached" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnAttached('. $item_ID .')">Attach '; 
+                                                            if ($current_client == 16 OR $user_id == 1649) {
+                                                                $output .=  'Artifacts';
+                                                            } else {
+                                                                $output .=  'Files';
+                                                            }
+                                                        $output .= '</a></li>';
+                                                    // }
                                                     
                                                     $output .= '<li><a href="#modalCompliance" class="btnCompliance" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnCompliance('. $item_ID .')">Add Compliance</a></li>
                                                     <li><a href="#modalComment" class="btnComment" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnComment('. $item_ID .')">Add Comment</a></li>
@@ -49527,6 +54083,7 @@
             $library_ID = $row["l_ID"];
             $library_parent_id = $row["l_parent_id"];
             $library_child = $row["l_child_id"];
+            $l_type = $row["l_type"];
             $reason = $row["l_reason"];
             $l_description = $row["l_description"];
 
@@ -49539,7 +54096,7 @@
 
             $library_name = $row["l_name"];
             $array_name_id = explode(", ", $library_name);
-            if ( count($array_name_id) == 4 ) {
+            if ($l_type == 0 AND count($array_name_id) == 4) {
                 $data_name = array();
 
                 $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
@@ -49861,7 +54418,7 @@
                                             }
                                         echo '</li>';
                                         
-                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557) {
+                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557 OR $portal_user == 1622) {
                                             echo '<li class="pictogram-align-between">
                                                 <a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a>';
 
@@ -49918,7 +54475,13 @@
 
                                         if ($current_client == 0) {
                                             echo '<li class="pictogram-align-between">
-                                                <a href="#modalAttached" class="btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')">Attach File</a>';
+                                                <a href="#modalAttached" class="btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')">Attach '; 
+                                                    if ($client_ID == 16 OR $user_id == 1649) {
+                                                        echo 'Artifacts';
+                                                    } else {
+                                                        echo 'Files';
+                                                    }
+                                                echo '</a>';
 
                                                 $pictogram = 'cd_action_file';
                                                 if ($user_id == 163) {
@@ -50348,7 +54911,13 @@
                             <div class="tabbable-line">
                                 <ul class="nav nav-tabs">
                                     <li class="active"><a href="#tabDescription_'. $library_ID .'" data-toggle="tab" aria-expanded="true">Description</a></li>
-                                    <li class=""><a href="#tabFiles_'. $library_ID .'" data-toggle="tab" aria-expanded="true">Files</a></li>
+                                    <li class=""><a href="#tabFiles_'. $library_ID .'" data-toggle="tab" aria-expanded="true">';
+                                        if ($client_ID == 16 OR $user_id == 1649) {
+                                            echo 'Artifacts';
+                                        } else {
+                                            echo 'Files';
+                                        }
+                                    echo '</a></li>
                                     <li class="">';
 
                                         $countComment = 0;
@@ -50421,6 +54990,7 @@
                                                     }
 
                                                     $files = '';
+                                                    $files_download = '';
                                                     $type = 'iframe';
                                                     $target = '';
                                                     $file_extension = 'fa-youtube-play';
@@ -50447,6 +55017,7 @@
                                                             $url = $base_url.'uploads/library/';
 
                                                             $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                            $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                         } else if ($str_filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                             $file_extension = 'fa-google';
@@ -50481,7 +55052,7 @@
                                                                 <div class="mt-action-row">
                                                                     <div class="mt-action-info">
                                                                         <div class="mt-action-icon">
-                                                                            <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                            <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                         </div>
                                                                         <div class="mt-action-details" style="vertical-align: middle;">
                                                                             <span class="mt-action-author">'. htmlentities($file_name ?? '');
@@ -50520,7 +55091,13 @@
                                                 }
                                             }
                                         echo '</div>
-                                        <a href="#modalAttached" class="btn btn-circle btn-success btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')" style="margin: 15px;">Attach File</a>
+                                        <a href="#modalAttached" class="btn btn-circle btn-success btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')" style="margin: 15px;">Attach '; 
+                                            if ($client_ID == 16 OR $user_id == 1649) {
+                                                echo 'Artifacts';
+                                            } else {
+                                                echo 'Files';
+                                            }
+                                        echo '</a>
                                     </div>
                                     <div class="tab-pane" id="tabComments_'. $library_ID .'">
                                         <div class="mt-actions">';
@@ -50544,7 +55121,7 @@
                                                         $comment_name = 'Compliance';
                                                     }
 
-                                                    $comment_avatar = "https://via.placeholder.com/200x150/EFEFEF/AAAAAA.png?text=no+image";
+                                                    $comment_avatar = "//placehold.co/200x150/EFEFEF/AAAAAA?text=no+image";
                                                     $resultUserInfo = mysqli_query( $conn,"SELECT * FROM tbl_user_info WHERE user_id = $comment_user_id" );
                                                     if ( mysqli_num_rows($resultUserInfo) > 0 ) {
                                                         $rowUserInfo = mysqli_fetch_array($resultUserInfo);
@@ -50838,6 +55415,7 @@
 
                                                             $filetype = $rowComplinace['filetype'];
                                                             $files = $rowComplinace["files"];
+                                                            $files_download = '';
                                                             $type = 'iframe';
                                                             $file_extension = 'fa-youtube-play';
                                                             $datafancybox = 'data-fancybox';
@@ -50851,6 +55429,7 @@
                                                                     $url = $base_url.'uploads/library/';
 
                                                                     $files = $src.$url.rawurlencode($files).$embed;
+                                                                    $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($files).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                                 } else if ($filetype == 3) {
                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                     $file_extension = 'fa-google';
@@ -50859,7 +55438,7 @@
                                                                     $target = '_blank';
                                                                     $datafancybox = '';
                                                                 }
-                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                             }
 
                                                             $displayLibrary = false;
@@ -50915,6 +55494,7 @@
 
                                                                             $filetype = $rowComplinaceItem['filetype'];
                                                                             $files = $rowComplinaceItem["files"];
+                                                                            $files_download = '';
                                                                             $type = 'iframe';
                                                                             $file_extension = 'fa-youtube-play';
                                                                             $datafancybox = 'data-fancybox';
@@ -50928,6 +55508,7 @@
                                                                                     $url = $base_url.'uploads/library/';
 
                                                                                     $files = $src.$url.rawurlencode($files).$embed;
+                                                                                    $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($files).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                                                 } else if ($filetype == 3) {
                                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                                     $file_extension = 'fa-google';
@@ -50936,7 +55517,7 @@
                                                                                     $target = '_blank';
                                                                                     $datafancybox = '';
                                                                                 }
-                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                                             }
 
                                                                             $compliance_type = $rowComplinaceItem["type"];
@@ -51080,6 +55661,7 @@
                                                                 }
 
                                                                 $files = $str_filename;
+                                                                $files_download = '';
                                                                 if ($str_filetype == 1) {
                                                                     $fileExtension = fileExtension($str_filename);
                                                                     $src = $fileExtension['src'];
@@ -51089,6 +55671,7 @@
                                                                     $url = $base_url.'uploads/library/';
 
                                                                     $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                                    $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                                 } else if ($str_filetype == 3) {
                                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                     $file_extension = 'fa-google';
@@ -51097,7 +55680,7 @@
                                                                     $target = '_blank';
                                                                     $datafancybox = '';
                                                                 }
-                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                             }
 
                                                             $displayLibrary = false;
@@ -51189,6 +55772,7 @@
                                                                                 }
 
                                                                                 $files = $str_filename;
+                                                                                $files_download = '';
                                                                                 if ($str_filetype == 1) {
                                                                                     $fileExtension = fileExtension($str_filename);
                                                                                     $src = $fileExtension['src'];
@@ -51198,6 +55782,7 @@
                                                                                     $url = $base_url.'uploads/library/';
 
                                                                                     $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                                                    $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                                                 } else if ($str_filetype == 3) {
                                                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                                     $file_extension = 'fa-google';
@@ -51206,7 +55791,7 @@
                                                                                     $target = '_blank';
                                                                                     $datafancybox = '';
                                                                                 }
-                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                                             }
 
                                                                             $displayLibrary = false;
@@ -51312,6 +55897,7 @@
                                                                                                 }
 
                                                                                                 $files = $str_filename;
+                                                                                                $files_download = '';
                                                                                                 if ($str_filetype == 1) {
                                                                                                     $fileExtension = fileExtension($str_filename);
                                                                                                     $src = $fileExtension['src'];
@@ -51321,6 +55907,7 @@
                                                                                                     $url = $base_url.'uploads/library/';
 
                                                                                                     $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                                                                    $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                                                                 } else if ($str_filetype == 3) {
                                                                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                                                     $file_extension = 'fa-google';
@@ -51329,6 +55916,7 @@
                                                                                                     $target = '_blank';
                                                                                                     $datafancybox = '';
                                                                                                 }
+                                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                                                             }
 
                                                                                             $displayLibrary = false;
@@ -51410,6 +55998,7 @@
                                                     }
 
                                                     $files = '';
+                                                    $files_download = '';
                                                     $type = 'iframe';
                                                     $file_extension = 'fa-youtube-play';
                                                     $datafancybox = 'data-fancybox';
@@ -51435,6 +56024,7 @@
                                                             $url = $base_url.'uploads/library/';
 
                                                             $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                            $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                         } else if ($str_filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                             $file_extension = 'fa-google';
@@ -51466,7 +56056,7 @@
                                                                 <div class="mt-action-row">
                                                                     <div class="mt-action-info">
                                                                         <div class="mt-action-icon">
-                                                                            <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                            <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                         </div>
                                                                         <div class="mt-action-details" style="vertical-align: middle;">
                                                                             <p class="mt-action-desc">
@@ -51514,6 +56104,7 @@
                                                         }
 
                                                         $files = '';
+                                                        $files_download = '';
                                                         $type = 'iframe';
                                                         $file_extension = 'fa-youtube-play';
                                                         $datafancybox = 'data-fancybox';
@@ -51539,6 +56130,7 @@
                                                                 $url = $base_url.'uploads/library/';
 
                                                                 $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                                $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                             } else if ($str_filetype == 3) {
                                                                 $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                 $file_extension = 'fa-google';
@@ -51570,7 +56162,7 @@
                                                                     <div class="mt-action-row">
                                                                         <div class="mt-action-info">
                                                                             <div class="mt-action-icon">
-                                                                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                             </div>
                                                                             <div class="mt-action-details" style="vertical-align: middle;">
                                                                                 <p class="mt-action-desc">
@@ -51876,6 +56468,7 @@
             $library_ID = $row["l_ID"];
             $library_name = $row["l_name"];
             $library_child = $row["l_child_id"];
+            $l_type = $row["l_type"];
             $reason = $row["l_reason"];
             $l_description = $row["l_description"];
 
@@ -51887,7 +56480,7 @@
             }
 
             $array_name_id = explode(", ", $library_name);
-            if ( count($array_name_id) == 4 ) {
+            if ($l_type == 0 AND count($array_name_id) == 4) {
                 $data_name = array();
 
                 $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
@@ -51926,7 +56519,13 @@
                     <div class="tabbable-line">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tabDescription_'. $library_ID .'" data-toggle="tab" aria-expanded="true">Description</a></li>
-                            <li class=""><a href="#tabFiles_'. $library_ID .'" data-toggle="tab" aria-expanded="true">Files</a></li>
+                            <li class=""><a href="#tabFiles_'. $library_ID .'" data-toggle="tab" aria-expanded="true">';
+                                if ($client_ID == 16 OR $user_id == 1649) {
+                                    echo 'Artifacts';
+                                } else {
+                                    echo 'Files';
+                                }
+                            echo '</a></li>
                             <li class="">';
 
                                 $countComment = 0;
@@ -52004,6 +56603,7 @@
                                             }
 
                                             $files = '';
+                                            $files_download = '';
                                             $type = 'iframe';
                                             $target = '';
                                             $file_extension = 'fa-youtube-play';
@@ -52030,6 +56630,7 @@
                                                     $url = $base_url.'uploads/library/';
 
                                                     $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                    $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                 } else if ($str_filetype == 3) {
                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                     $file_extension = 'fa-google';
@@ -52052,7 +56653,7 @@
                                                     <div class="mt-action-row">
                                                         <div class="mt-action-info">
                                                             <div class="mt-action-icon">
-                                                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                             </div>
                                                             <div class="mt-action-details" style="vertical-align: middle;">
                                                                 <span class="mt-action-author">'. htmlentities($file_name ?? '');
@@ -52090,7 +56691,13 @@
                                         }
                                     }
                                 echo '</div>
-                                <a href="#modalAttached" class="btn btn-circle btn-success btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')" style="margin: 15px;">Attach File</a>
+                                <a href="#modalAttached" class="btn btn-circle btn-success btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')" style="margin: 15px;">Attach '; 
+                                    if ($client_ID == 16 OR $user_id == 1649) {
+                                        echo 'Artifacts';
+                                    } else {
+                                        echo 'Files';
+                                    }
+                                echo '</a>
                             </div>
                             <div class="tab-pane" id="tabComments_'. $library_ID .'">
                                 <div class="mt-actions">';
@@ -52118,7 +56725,7 @@
                                                 $comment_name = 'Compliance';
                                             }
 
-                                            $comment_avatar = "https://via.placeholder.com/200x150/EFEFEF/AAAAAA.png?text=no+image";
+                                            $comment_avatar = "//placehold.co/200x150/EFEFEF/AAAAAA?text=no+image";
                                             $resultUserInfo = mysqli_query( $conn,"SELECT * FROM tbl_user_info WHERE user_id = $comment_user_id" );
                                             if ( mysqli_num_rows($resultUserInfo) > 0 ) {
                                                 $rowUserInfo = mysqli_fetch_array($resultUserInfo);
@@ -52416,6 +57023,7 @@
 
                                                     $filetype = $rowComplinace['filetype'];
                                                     $files = $rowComplinace["files"];
+                                                    $files_download = '';
                                                     $type = 'iframe';
                                                     $file_extension = 'fa-youtube-play';
                                                     $datafancybox = 'data-fancybox';
@@ -52429,6 +57037,7 @@
                                                             $url = $base_url.'uploads/library/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
+                                                            $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($files).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                         } else if ($filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                             $file_extension = 'fa-google';
@@ -52437,7 +57046,7 @@
                                                             $target = '_blank';
                                                             $datafancybox = '';
                                                         }
-                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                     }
 
                                                     echo '<tr id="tr_'. $compliance_ID .'">
@@ -52480,6 +57089,7 @@
 
                                                                     $filetype = $rowComplinaceItem['filetype'];
                                                                     $files = $rowComplinaceItem["files"];
+                                                                    $files_download = '';
                                                                     $type = 'iframe';
                                                                     $file_extension = 'fa-youtube-play';
                                                                     $datafancybox = 'data-fancybox';
@@ -52493,6 +57103,7 @@
                                                                             $url = $base_url.'uploads/library/';
 
                                                                             $files = $src.$url.rawurlencode($files).$embed;
+                                                                            $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($files).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                                         } else if ($filetype == 3) {
                                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                             $file_extension = 'fa-google';
@@ -52501,7 +57112,7 @@
                                                                             $target = '_blank';
                                                                             $datafancybox = '';
                                                                         }
-                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                                     }
 
                                                                     $compliance_type = $rowComplinaceItem["type"];
@@ -52620,6 +57231,7 @@
                                                     $review_last_modified = $review_last_modified->format('M d, Y');
 
                                                     $files = '';
+                                                    $files_download = '';
                                                     $type = 'iframe';
                                                     $file_extension = 'fa-youtube-play';
                                                     $datafancybox = 'data-fancybox';
@@ -52645,6 +57257,7 @@
                                                             $url = $base_url.'uploads/library/';
 
                                                             $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                            $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                         } else if ($str_filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                             $file_extension = 'fa-google';
@@ -52653,7 +57266,7 @@
                                                             $target = '_blank';
                                                             $datafancybox = '';
                                                         }
-                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'">View</a>';
+                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'">View</a>';
                                                     }
 
                                                     echo '<tr id="tr_'.$review_ID.'">
@@ -52732,6 +57345,7 @@
                                                                         }
 
                                                                         $files = $str_filename;
+                                                                        $files_download = '';
                                                                         if ($str_filetype == 1) {
                                                                             $fileExtension = fileExtension($str_filename);
                                                                             $src = $fileExtension['src'];
@@ -52741,6 +57355,7 @@
                                                                             $url = $base_url.'uploads/library/';
 
                                                                             $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                                            $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                                         } else if ($str_filetype == 3) {
                                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                             $file_extension = 'fa-google';
@@ -52749,7 +57364,7 @@
                                                                             $target = '_blank';
                                                                             $datafancybox = '';
                                                                         }
-                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'">View</a>';
+                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'">View</a>';
                                                                     }
 
                                                                     echo '<tr id="tr_'. $review_ID .'" class="child_'.$review_parent_id.'">
@@ -52842,6 +57457,7 @@
                                                                                         }
 
                                                                                         $files = $str_filename;
+                                                                                        $files_download = '';
                                                                                         if ($str_filetype == 1) {
                                                                                             $fileExtension = fileExtension($str_filename);
                                                                                             $src = $fileExtension['src'];
@@ -52851,6 +57467,7 @@
                                                                                             $url = $base_url.'uploads/library/';
 
                                                                                             $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                                                            $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                                                         } else if ($str_filetype == 3) {
                                                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                                             $file_extension = 'fa-google';
@@ -52859,7 +57476,7 @@
                                                                                             $target = '_blank';
                                                                                             $datafancybox = '';
                                                                                         }
-                                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'">View</a>';
+                                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'">View</a>';
                                                                                     }
 
                                                                                     echo '<tr id="tr_'. $review_ID .'" class="child_'.$review_parent_id.' child_action_'.$review_parent_id_action.'">
@@ -52928,6 +57545,7 @@
                                             }
 
                                             $files = '';
+                                            $files_download = '';
                                             $type = 'iframe';
                                             $file_extension = 'fa-youtube-play';
                                             $datafancybox = 'data-fancybox';
@@ -52953,6 +57571,7 @@
                                                     $url = $base_url.'uploads/library/';
 
                                                     $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                    $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                 } else if ($str_filetype == 3) {
                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                     $file_extension = 'fa-google';
@@ -52972,7 +57591,7 @@
                                                     <div class="mt-action-row">
                                                         <div class="mt-action-info">
                                                             <div class="mt-action-icon">
-                                                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                             </div>
                                                             <div class="mt-action-details" style="vertical-align: middle;">
                                                                 <p class="mt-action-desc">
@@ -53023,6 +57642,7 @@
                                                 }
 
                                                 $files = '';
+                                                $files_download = '';
                                                 $type = 'iframe';
                                                 $file_extension = 'fa-youtube-play';
                                                 $datafancybox = 'data-fancybox';
@@ -53048,6 +57668,7 @@
                                                         $url = $base_url.'uploads/library/';
 
                                                         $files = $src.$url.rawurlencode($str_filename).$embed;
+                                                        $files_download = 'data-caption="&lt;a href=&quot;'.$url.rawurlencode($str_filename).'&quot; target=&quot;_blank&quot; &gt; Download &lt;/a&gt; "';
                                                     } else if ($str_filetype == 3) {
                                                         $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                         $file_extension = 'fa-google';
@@ -53067,7 +57688,7 @@
                                                         <div class="mt-action-row">
                                                             <div class="mt-action-info">
                                                                 <div class="mt-action-icon">
-                                                                    <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                    <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' '.$files_download.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                 </div>
                                                                 <div class="mt-action-details" style="vertical-align: middle;">
                                                                     <p class="mt-action-desc">
@@ -54995,6 +59616,7 @@
                         ON e.ID = u.employee_id
 
                         WHERE e.suspended = 0 
+                        AND e.deleted = 0
                         AND e.status = 1 
                         AND e.user_id = $user_id 
                         AND e.facility_switch = $facility_switch_user_id
@@ -55034,6 +59656,7 @@
                         ON e.ID = u.employee_id
 
                         WHERE e.suspended = 0 
+                        AND e.deleted = 0
                         AND e.status = 1 
                         AND e.user_id = $user_id 
                         AND e.facility_switch = $facility_switch_user_id
@@ -55155,6 +59778,7 @@
                         ON e.ID = u.employee_id
 
                         WHERE e.suspended = 0 
+                        AND e.deleted = 0
                         AND e.status = 1 
                         AND e.user_id = $user_id 
                         AND e.facility_switch = $facility_switch_user_id
@@ -55193,6 +59817,7 @@
                         ON e.ID = u.employee_id
 
                         WHERE e.suspended = 0 
+                        AND e.deleted = 0
                         AND e.status = 1 
                         AND e.user_id = $user_id 
                         AND e.facility_switch = $facility_switch_user_id
@@ -55366,6 +59991,7 @@
                         ON e.ID = u.employee_id
 
                         WHERE e.suspended = 0 
+                        AND e.deleted = 0
                         AND e.status = 1 
                         AND e.user_id = $user_id 
                         AND e.facility_switch = $facility_switch_user_id
@@ -55405,6 +60031,7 @@
                         ON e.ID = u.employee_id
 
                         WHERE e.suspended = 0 
+                        AND e.deleted = 0
                         AND e.status = 1 
                         AND e.user_id = $user_id 
                         AND e.facility_switch = $facility_switch_user_id
@@ -57089,7 +61716,7 @@
                 $comment_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
                 $comment_email = $rowUser["email"];
 
-                $comment_avatar = "https://via.placeholder.com/200x150/EFEFEF/AAAAAA.png?text=no+image";
+                $comment_avatar = "//placehold.co/200x150/EFEFEF/AAAAAA?text=no+image";
                 $resultUserInfo = mysqli_query( $conn,"SELECT * FROM tbl_user_info WHERE user_id = $comment_user_id" );
                 if ( mysqli_num_rows($resultUserInfo) > 0 ) {
                     $rowUserInfo = mysqli_fetch_array($resultUserInfo);
@@ -61365,7 +65992,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" required >';
 
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id=$user_id" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND status = 1 AND user_id=$user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             $rowEmployeeID = $rowEmployee["ID"];
@@ -61505,7 +66132,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" required >';
 
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id=$user_id" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE deleted = 0 AND status = 1 AND user_id=$user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             $rowEmployeeID = $rowEmployee["ID"];
@@ -62101,6 +66728,22 @@
             }
         }
     }
+    if( isset($_GET['modalCloneFacility']) ) {
+        $ID = $_GET['modalCloneFacility'];
+
+        $selectData = mysqli_query( $conn,"SELECT * FROM tblFacilityDetails WHERE users_entities = $ID" );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+
+            echo '<option value="0">Main Account</option>';
+
+            while($rowData = mysqli_fetch_array($selectData)) {
+                $facility_id = $rowData["facility_id"];
+                $facility_category = htmlentities($rowData["facility_category"] ?? '');
+
+                echo '<option value="'.$facility_id.'">'.$facility_category.'</option>';
+            }
+        }
+    }
     if( isset($_GET['btnClone']) ) {
         $id = $_GET['btnClone'];
 
@@ -62119,14 +66762,15 @@
 
         echo '<input class="form-control" type="hidden" name="ID" value="'. $id .'" />
         <div class="form-group">
-            <label class="col-md-3 control-label">Select User</label>
+            <label class="col-md-3 control-label">Select Account</label>
             <div class="col-md-8">
-                <select class="form-control mt-multiselect btn btn-default" name="user" required>
+                <select class="form-control mt-multiselect btn btn-default" name="user" onchange="selectUser(this.value)" required>
                     <option value="">Select</option>';
 
-                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557) {
+                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557 OR $portal_user == 1622) {
                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1" );
                         if ($current_client == 1) { $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1 AND client = 1" ); }
+                        if ($portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557 OR $portal_user == 1622) { $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1 AND ID = $portal_user" ); }
 
                         if ( mysqli_num_rows($selectUser) > 0 ) {
                             while($rowUser = mysqli_fetch_array($selectUser)) {
@@ -62155,6 +66799,12 @@
                     }
 
                 echo '</select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Select Facility</label>
+            <div class="col-md-8">
+                <select class="form-control mt-multiselect btn btn-default" data-placeholder="Please Select" name="facility" id="facility"></select>
             </div>
         </div>
         <div class="form-group">
@@ -62197,6 +66847,11 @@
         $ID = $_POST['ID'];
         $user = $_POST['user'];
         $include = '';
+
+        $facility_switch_user_id = 0;
+        if (!empty($_POST['facility'])) {
+            $facility_switch_user_id = $_POST['facility'];
+        }
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
@@ -63026,17 +67681,22 @@
                     $dashboard_name = implode(" - ",$data_name);
                 }
 
-                $file_files = $rowFile["fileSource"];
-                $fileExtension = fileExtension($file_files);
-                $src = $fileExtension['src'];
-                $embed = $fileExtension['embed'];
-                $type = $fileExtension['type'];
-                $file_extension = $fileExtension['file_extension'];
-                $url = $base_url.'uploads/library/';
+                $type = '';
+                $file = $rowFile["fileSource"];
+                if (!empty($file)) {
+                    $fileExtension = fileExtension($file);
+                    $src = $fileExtension['src'];
+                    $embed = $fileExtension['embed'];
+                    $type = $fileExtension['type'];
+                    $file_extension = $fileExtension['file_extension'];
+                    $url = $base_url.'uploads/library/';
+
+                    $file = $src.$url.rawurlencode($file).$embed;
+                }
 
                 $data .= '<tr>
                     <td><a href="'.$base_url.'dashboard?d='.$dashboard_ID.'" target="_blank">'.$dashboard_name.'</a></td>
-                    <td><a href="'.$src.$url.rawurlencode($file_files).$embed.'" data-src="'.$src.$url.rawurlencode($file_files).$embed.'" '.$datafancybox.' data-type="'.$type.'">'.$file_name.'</a></td>
+                    <td><a href="'.$file.'" data-src="'.$file.'" '.$datafancybox.' data-type="'.$type.'">'.$file_name.'</a></td>
                     <td class="text-center">'.$file_last_modified.'</td>
                     <td class="text-center">'.$file_due_date.'</td>
                 </tr>';

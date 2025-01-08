@@ -234,6 +234,7 @@
                                                                 ) AS t 
                                                                 ON FIND_IN_SET(j.ID, REPLACE(t.job_description_id, ' ', ''))
                                                                 WHERE j.status = 1
+                                                                AND j.deleted = 0
                                                                 AND j.user_id = $switch_user_id
                                                                 AND j.facility_switch = $facility_switch_user_id
                                                                 GROUP BY j.ID
@@ -334,6 +335,7 @@
                                                                 ) AS t 
                                                                 ON FIND_IN_SET(j.ID, REPLACE(t.job_description_id, ' ', ''))
                                                                 WHERE j.status = 0
+                                                                AND j.deleted = 0
                                                                 AND j.user_id = $switch_user_id
                                                                 AND j.facility_switch = $facility_switch_user_id
                                                                 GROUP BY j.ID

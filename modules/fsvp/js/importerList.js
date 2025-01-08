@@ -88,6 +88,7 @@ $(function() {
         }
     });
     const CBPFormAlert = Init.createAlert($('#modalCBPFiling .modal-body'));
+    $('.signature__').eSign();
 
     populateFSVPQISelect();
     fetchImporterListTable(importersData, importerListTable);
@@ -112,6 +113,8 @@ $(function() {
         var l = Ladda.create(form.querySelector('[type=submit]'));
         l.start();
         const data = new FormData(form);
+
+        data.append('signature', $('#signature').eSign("getData"));
 
         $.ajax({
             url: baseUrl + "newImporter",
@@ -143,6 +146,14 @@ $(function() {
                 l.stop();
             }
         });
+    });
+
+    $('#modalNewImporter').on('show.bs.modal', function() {
+        $('#signature').eSign();
+    });
+
+    $('#modalNewImporter').on('hidden.bs.modal', function() {
+        $('#signature').eSign('destroy');
     });
 
     $('#tableImporterList').on('click', '[data-opencbpfilingform]', function() {
@@ -178,9 +189,10 @@ $(function() {
     // cbp modal hide event
     $('#modalCBPFiling').on('hidden.bs.modal', function() {
         $('#CBPFilingForm [name=importer]').val('');
+        $('.signature__').eSign('destroy');
+        $('.signature__').eSign();
     });
     
-
     // submitting CBP forms
     $('#CBPFilingForm').submit(function(e) {
         e.preventDefault();
@@ -194,6 +206,10 @@ $(function() {
         }
 
         const data = new FormData(form);
+
+        // signatures
+        data.append('reviewer_sign', $('#reviewer_signature').eSign("getData"));
+        data.append('approver_sign', $('#approver_signature').eSign("getData"));
 
         var l = Ladda.create(this.querySelector('[type=submit]'));
         l.start();
@@ -354,6 +370,19 @@ function showCBPModal(data, mode = 'create') {
         $('#cfDetImporter').val(cbp.determining_importer);
         $('#cfDesImporter').val(cbp.designated_importer);
         $('#cfEntryFiler').val(cbp.cbp_entry_filer);
+
+        // set comment
+        $('#cbpComment').val(cbp.comments);
+        
+        // set reviewer info
+        $('#revName').val(cbp.reviewer.name);
+        $('#revDate').val(cbp.reviewer.date);
+        $('#reviewer_signature').eSign("set", cbp.reviewer.sign);
+
+        // set approver info
+        $('#apbName').val(cbp.approver.name);
+        $('#apbDate').val(cbp.approver.date);
+        $('#approver_signature').eSign("set", cbp.approver.sign);
     }
     
     $('#CBPFilingForm [name=importer]').val(data.id);

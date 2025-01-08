@@ -149,8 +149,8 @@
                                             <th style="min-width: 10rem;">Date</th>
                                             <th>Agenda</th>
                                             <th>Attendees</th>
-                                            <th style="min-width: 12rem !important;">Action Items</th>
-                                            <th style="min-width: 12rem !important;">Actions</th>
+                                            <th class="text-center" style="min-width: 13rem !important;">Action Items</th>
+                                            <th class="text-center" style="min-width: 12rem !important;">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody id="meeting_tbl">
@@ -179,21 +179,34 @@
                                                                         }
         
                                                                     echo '</td>
-                                                                    <td>';
+                                                                    <td class="text-center">';
         
                                                                         $getId = $row['id'];
-                                                                        $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
-                                                                        $resultOpen = mysqli_query($conn, $queryOpen);
+                                                                        // $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
+                                                                        $resultOpen = mysqli_query($conn, "
+                                                                            SELECT 
+                                                                            COUNT(*) AS countAction, 
+                                                                            COALESCE(SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END), 0) AS countOpen, 
+                                                                            COALESCE(SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END), 0) AS countFollow, 
+                                                                            COALESCE(SUM(CASE WHEN status = 'Close' THEN 1 ELSE 0 END), 0) AS countClose 
+                                                                            FROM tbl_meeting_minutes_action_items
+                                                                            
+                                                                            WHERE action_meeting_id = $getId
+                                                                        ");
                                                                         while($rowOpen = mysqli_fetch_array($resultOpen)) {
-                                                                            $btnBG = 'btn-success';
-                                                                            if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
-                                                                            else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
-        
-                                                                            echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row['id'].')">'.$rowOpen['countOpen'].'</a>';
+                                                                            // $btnBG = 'btn-success';
+                                                                            // if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
+                                                                            // else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
+                                                                            
+                                                                            echo '<div class="btn-group btn-group-circle">
+                                                                                <a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm dark" type="button" onclick="btnGet_status('.$row['id'].')" title="Open">'.$rowOpen['countOpen'].'</a>
+                                                                                <a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm btn-warning" type="button" onclick="btnGet_status('.$row['id'].')" title="Follow Up">'.$rowOpen['countFollow'].'</a>
+                                                                                <a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm btn-success" type="button" onclick="btnGet_status('.$row['id'].')" title="Close">'.$rowOpen['countClose'].'</a>
+                                                                            </div>';
                                                                         }
         
                                                                     echo '</td>
-                                                                    <td>
+                                                                    <td class="text-center">
                                                                         <div class="btn-group btn-group-circle">
                                                                            <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row['id'].')">Edit</a>
                                                                             <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row['id'].'">PDF</a>
@@ -204,95 +217,71 @@
                                                         }
                                                     }
                                                 } else {
-                                                    // Assign
-                                                    $meetings = $conn->query("SELECT * FROM tbl_meeting_minutes WHERE user_ids = $switch_user_id ORDER BY inserted_at DESC");
+                                                    $meetings = $conn->query("
+                                                        SELECT
+                                                        *
+                                                        FROM (
+                                                        
+                                                            SELECT * FROM tbl_meeting_minutes WHERE user_ids = $switch_user_id AND FIND_IN_SET($current_userEmployeeID, REPLACE(attendees, ' ', '')) > 0
+                                                                                                                
+                                                            UNION ALL
+                                                            
+                                                            SELECT * FROM tbl_meeting_minutes WHERE user_ids = $switch_user_id AND added_by_id = $current_userID
+                                                        ) r
+                                                        
+                                                        GROUP BY id
+                                                        
+                                                        ORDER BY inserted_at DESC
+                                                    ");
                                                     if(mysqli_num_rows($meetings) > 0) {
-                                                        $counter = 0;
                                                         while($row = $meetings->fetch_assoc()) {
-                                                            $array_data = explode(", ", $row["attendees"]);
-                                                            if(in_array($current_userEmployeeID,$array_data)) {
-        
-                                                                echo '<tr id="id_'.$row['id'].'">
-                                                                    <td>'.$row['account'].'</td>
-                                                                    <td>'.$row['meeting_date'].'</td>
-                                                                    <td>'.$row['agenda'].'</td>
-                                                                    <td>';
-                                                                        $array_data = explode(", ", $row["attendees"]);
-                                                                        $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
-                                                                        $resultAssignto = mysqli_query($conn, $queryAssignto);
-                                                                        while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
-                                                                            if(in_array($rowAssignto['ID'],$array_data)){echo$rowAssignto['first_name'].',';}
-                                                                        }
-        
-                                                                    echo '</td>
-                                                                    <td>';
-        
-                                                                        $getId = $row['id'];
-                                                                        $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
-                                                                        $resultOpen = mysqli_query($conn, $queryOpen);
-                                                                        while($rowOpen = mysqli_fetch_array($resultOpen)) {
-                                                                            $btnBG = 'btn-success';
-                                                                            if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
-                                                                            else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
-        
-                                                                            echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row['id'].')">'.$rowOpen['countOpen'].'</a>';
-                                                                        }
-        
-                                                                    echo '</td>
-                                                                    <td>
-                                                                        <div class="btn-group btn-group-circle">
-                                                                           <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row['id'].')">Edit</a>
-                                                                            <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row['id'].'">PDF</a>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>';
-                                                            }
-                                                        }
-                                                    }
-                                                    
-                                                    // Created
-                                                    $meetings = $conn->query("SELECT * FROM tbl_meeting_minutes WHERE user_ids = $switch_user_id AND added_by_id = $current_userID ORDER BY inserted_at DESC");
-                                                    if(mysqli_num_rows($meetings) > 0) {
-                                                        $counter = 0;
-                                                        while($row = $meetings->fetch_assoc()) {
-                                                            $array_data = explode(", ", $row["attendees"]);
-                                                            // if(in_array($cookie_employee_id,$array_data)) {
-        
-                                                                echo '<tr id="id_'.$row['id'].'">
-                                                                    <td>'.$row['account'].'</td>
-                                                                    <td>'.$row['meeting_date'].'</td>
-                                                                    <td>'.$row['agenda'].'</td>
-                                                                    <td>';
-                                                                        $array_data = explode(", ", $row["attendees"]);
-                                                                        $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
-                                                                        $resultAssignto = mysqli_query($conn, $queryAssignto);
-                                                                        while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
-                                                                            if(in_array($rowAssignto['ID'],$array_data)){echo$rowAssignto['first_name'].',';}
-                                                                        }
-        
-                                                                    echo '</td>
-                                                                    <td>';
-        
-                                                                        $getId = $row['id'];
-                                                                        $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
-                                                                        $resultOpen = mysqli_query($conn, $queryOpen);
-                                                                        while($rowOpen = mysqli_fetch_array($resultOpen)) {
-                                                                            $btnBG = 'btn-success';
-                                                                            if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
-                                                                            else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
-        
-                                                                            echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row['id'].')">'.$rowOpen['countOpen'].'</a>';
-                                                                        }
-        
-                                                                    echo '</td>
-                                                                    <td>
-                                                                        <div class="btn-group btn-group-circle">
-                                                                           <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row['id'].')">Edit</a>
-                                                                            <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row['id'].'">PDF</a>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>';
-                                                            // }
+                                                            echo '<tr id="id_'.$row['id'].'">
+                                                                <td>'.$row['account'].'</td>
+                                                                <td>'.$row['meeting_date'].'</td>
+                                                                <td>'.$row['agenda'].'</td>
+                                                                <td>';
+                                                                    $array_data = explode(", ", $row["attendees"]);
+                                                                    $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
+                                                                    $resultAssignto = mysqli_query($conn, $queryAssignto);
+                                                                    while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
+                                                                        if(in_array($rowAssignto['ID'],$array_data)){echo$rowAssignto['first_name'].',';}
+                                                                    }
+    
+                                                                echo '</td>
+                                                                <td class="text-center">';
+    
+                                                                    $getId = $row['id'];
+                                                                    // $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
+                                                                    $resultOpen = mysqli_query($conn, "
+                                                                        SELECT 
+                                                                        COUNT(*) AS countAction, 
+                                                                        COALESCE(SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END), 0) AS countOpen, 
+                                                                        COALESCE(SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END), 0) AS countFollow, 
+                                                                        COALESCE(SUM(CASE WHEN status = 'Close' THEN 1 ELSE 0 END), 0) AS countClose 
+                                                                        FROM tbl_meeting_minutes_action_items
+                                                                        
+                                                                        WHERE action_meeting_id = $getId
+                                                                    ");
+                                                                    while($rowOpen = mysqli_fetch_array($resultOpen)) {
+                                                                        // $btnBG = 'btn-success';
+                                                                        // if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
+                                                                        // else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
+                                                                            
+                                                                        echo '<div class="btn-group btn-group-circle">
+                                                                            <a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm dark" type="button" onclick="btnGet_status('.$row['id'].')" title="Open">'.$rowOpen['countOpen'].'</a>
+                                                                            <a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm btn-warning" type="button" onclick="btnGet_status('.$row['id'].')" title="Follow Up">'.$rowOpen['countFollow'].'</a>
+                                                                            <a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm btn-success" type="button" onclick="btnGet_status('.$row['id'].')" title="Close">'.$rowOpen['countClose'].'</a>
+                                                                        </div>';
+                                                                    }
+    
+                                                                echo '</td>
+                                                                <td class="text-center">
+                                                                    <div class="btn-group btn-group-circle">
+                                                                       <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row['id'].')">Edit</a>
+                                                                        <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row['id'].'">PDF</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>';
                                                         }
                                                     }
                                                 }
@@ -317,21 +306,34 @@
                                                                     }
     
                                                                 echo '</td>
-                                                                <td>';
+                                                                <td class="text-center">';
     
                                                                     $getId = $row['id'];
-                                                                    $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
-                                                                    $resultOpen = mysqli_query($conn, $queryOpen);
+                                                                    // $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
+                                                                    $resultOpen = mysqli_query($conn, "
+                                                                        SELECT 
+                                                                        COUNT(*) AS countAction, 
+                                                                        COALESCE(SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END), 0) AS countOpen, 
+                                                                        COALESCE(SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END), 0) AS countFollow, 
+                                                                        COALESCE(SUM(CASE WHEN status = 'Close' THEN 1 ELSE 0 END), 0) AS countClose 
+                                                                        FROM tbl_meeting_minutes_action_items
+                                                                        
+                                                                        WHERE action_meeting_id = $getId
+                                                                    ");
                                                                     while($rowOpen = mysqli_fetch_array($resultOpen)) {
-                                                                        $btnBG = 'btn-success';
-                                                                        if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
-                                                                        else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
-    
-                                                                        echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row['id'].')">'.$rowOpen['countOpen'].'</a>';
+                                                                        // $btnBG = 'btn-success';
+                                                                        // if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
+                                                                        // else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
+                                                                            
+                                                                        echo '<div class="btn-group btn-group-circle">
+                                                                            <a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm dark" type="button" onclick="btnGet_status('.$row['id'].')" title="Open">'.$rowOpen['countOpen'].'</a>
+                                                                            <a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm btn-warning" type="button" onclick="btnGet_status('.$row['id'].')" title="Follow Up">'.$rowOpen['countFollow'].'</a>
+                                                                            <a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm btn-success" type="button" onclick="btnGet_status('.$row['id'].')" title="Close">'.$rowOpen['countClose'].'</a>
+                                                                        </div>';
                                                                     }
     
                                                                 echo '</td>
-                                                                <td>
+                                                                <td class="text-center">
                                                                     <div class="btn-group btn-group-circle">
                                                                        <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row['id'].')">Edit</a>
                                                                         <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row['id'].'">PDF</a>
@@ -629,7 +631,8 @@
                                         <label class="control-label">Assign To</label>
                                         <select class="form-control mt-multiselect btn btn-default" type="text" name="assign_to[]" required>
                                             <?php
-                                                $queryAssignto = "SELECT * FROM tbl_hr_employee where user_id = $switch_user_id or user_id = 34 order by first_name ASC";
+                                                // $queryAssignto = "SELECT * FROM tbl_hr_employee where user_id = $switch_user_id or user_id = 34 order by first_name ASC";
+                                                $queryAssignto = "SELECT * FROM tbl_hr_employee where user_id = $switch_user_id order by first_name ASC";
                                                 $resultAssignto = mysqli_query($conn, $queryAssignto);
                                                 while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
                                                    echo '<option value="'.$rowAssignto['ID'].'">'.$rowAssignto['first_name'].' '.$rowAssignto['last_name'].'</option>'; 
@@ -640,8 +643,20 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12">
+                                        <label class="control-label">Request Date</label>
+                                        <input class="form-control" type="date" name="target_request_date" value="<? echo date('Y-m-d'); ?>" required />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label">Start Date</label>
+                                        <input class="form-control" type="date" name="target_start_date" value="<? echo date('Y-m-d'); ?>" required />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
                                         <label class="control-label">Due Date</label>
-                                        <input class="form-control" type="date" name="target_due_date" value="<?php echo date('Y-m-d', strtotime(date('Y-m-d'))); ?>" required>
+                                        <input class="form-control" type="date" name="target_due_date" value="<? echo date('Y-m-d'); ?>" required />
                                     </div>
                                 </div>
                             </div>
@@ -978,7 +993,9 @@
                                                         </thead>
                                                         <tbody id="dynamic_field">
                                                             <tr>
-                                                                <td><input type="text" name="action_details[]" placeholder="Action Items" class="form-control action_list" /></td>
+                                                                <td>
+                                                                    <textarea name="action_details[]" placeholder="Action Items" class="form-control action_list"></textarea>
+                                                                </td>
                                                                 <td>
                                                                     <select class="form-control name_list" type="text" name="assigned_to[]">
                                                                         <option value="0">---Select---</option>
@@ -1033,13 +1050,13 @@
         <!-- END PAGE LEVEL SCRIPTS -->
         <script src="assets/global/plugins/bootstrap-tabdrop/js/bootstrap-tabdrop.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <!--<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>-->
 
         <script>
             //fetch all action item
             $(document).ready(function(){
                 //fetch data
-                get_all_report('get_data');
+                // get_all_report('get_data');
             });
 
             function get_all_report(key) {
@@ -1220,7 +1237,7 @@
                         if ($.trim(response)) {
                             msg = "Sucessfully Save!";
                             // $('#id_'+meeting_id).empty();
-                            $('#meeting_ref').append(response);
+                            $('#meeting_ref tbody').append(response);
                             $('#modal_add_reference').modal('hide');
                         } else {
                             msg = "Error!"
@@ -1231,6 +1248,41 @@
                     }
                 });
             }));
+            function btnDelete(id, e) {
+                // if (confirm("Your item will be deleted!")) {
+                // 	$.ajax({
+                //         type: "GET",
+                //         url: "meeting_minutes/fetch_minutes.php?btnDelete_Ref="+id,
+                //         dataType: "html",
+                //         success: function(data){
+                //             $(e).parent().parent().remove();
+                //             // $('#meeting_ref tbody #tr_'+id).remove();
+                //             alert('This item has been deleted');
+                //         }
+                //     });
+                // }
+                // return false;
+			    
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be deleted!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "meeting_minutes/fetch_minutes.php?btnDelete_Ref="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $(e).parent().parent().remove();
+                        }
+                    });
+                    swal("Done!", "This item has been deleted.", "success");
+                });
+            }
 
             //comment
             $(document).on('click', '#comment_AI', function(){
@@ -1385,7 +1437,15 @@
                     }
                 });
             }
-
+    
+            function summer() {
+            
+                $("#your_summernotes").summernote({
+                    placeholder:'',
+                    height: 400
+                });
+                $('.dropdown-toggle').dropdown();
+            }
             // update meeting details
             function btnUpdate_meeting_details(id) {
                 $.ajax({
@@ -1396,6 +1456,7 @@
                         $("#modalGet_details .modal-body").html(data);
                         $(".modalForm").validate();
                         selectMulti();
+                        summer();
                     }
                 });
             }

@@ -26,14 +26,14 @@
         }
         $stmt->close();
 
-        $details = $conn->prepare('SELECT c.id, c.name, r.account_website, r.account_about, r.account_product, r.account_service, r.account_industry, r.account_category, r.account_certification FROM tbl_Customer_Relationship r JOIN countries c ON r.account_country = c.id WHERE crm_id = ?');
+        $details = $conn->prepare('SELECT c.id, c.name, r.account_website, r.account_about, r.account_product, r.account_service, r.account_industry, r.account_category, r.account_email, r.account_certification FROM tbl_Customer_Relationship r JOIN countries c ON r.account_country = c.id WHERE crm_id = ?');
         if ($details === false) {
             echo 'Error preparing Statement: ' . $conn->error;
             exit;
         }
         $details->bind_param('i', $contact_view_id);
         $details->execute();
-        $details->bind_result($country_id, $country, $website, $about, $product, $services, $industry, $category, $certification);
+        $details->bind_result($country_id, $country, $website, $about, $product, $services, $industry, $category, $contact_email, $certification);
         $details->fetch();
         $details->close();
     ?>
@@ -162,7 +162,7 @@
                 <!-- BEGIN PROFILE CONTENT -->
                 <div class="profile-content">
                     <div class="row">
-                        <div class="col-md-12 contact_details" id="contact_details">
+                        <div class="col-md-12 contact_details mt-5" id="contact_details">
                             <div class="widget-thumb widget-bg-color-white margin-bottom-20 tabbable-line">
                                 <div class="d-flex justify-content-between">
                                     <h4 class="widget-thumb-heading text-uppercase">Contact's Details</h4>
@@ -198,11 +198,11 @@
                                         <br> 
                                         <div class="row">
                                             <div class="form-group">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <label class="control-label"><strong>Address</strong></label>
                                                     <input type="text" class="form-control" name="account_address">
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <label class="control-label"><strong>Country</strong></label>
                                                     <select class="form-control mt-multiselect" name="account_country">
                                                             <option value="<?=$country_id?>"><?=$country?></option>
@@ -210,6 +210,10 @@
                                                             <option value="<?=$country['id']?>"><?=$country['name']?></option>
                                                         <?php endforeach; endif?>
                                                     </select>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="control-label"><strong>State</strong></label>
+                                                    <input type="text" class="form-control" name="account_state">
                                                 </div>
                                             </div>
                                         </div>
@@ -234,7 +238,7 @@
                                         <div class="row">
                                             <div class="form-group">
                                                 <div class="col-md-4">
-                                                    <label class="control-label"><strong>Website</strong>&nbsp;<i style="font-size:12px;"><a href="<?=$website?>" target="_blank">Go to Website</a></i></label>
+                                                    <label class="control-label"><strong>Website</strong>&nbsp;<i style="font-size:12px;"><?= !empty($website) ?  '<a href="'.$website.'" target="_blank">Go to Website</a></i>' : '<em class="bi bi-exclamation-circle text-warning">No provided website link.</em>' ?></i></label>
                                                     <input type="text" class="form-control" name="account_website">
                                                 </div>
                                                 <div class="col-md-4">
@@ -262,6 +266,18 @@
                                                 <div class="col-md-2" id="status-container">
                                                 </div>
                                                 <div class="col-md-2 d-none" id="directory-container">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-4">
+                                                    <label class="control-label"><strong>DUNS</strong></label>
+                                                    <input type="text" class="form-control" name="duns">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="control-label"><strong>FDA Facility Registration no.</strong></label>
+                                                    <input type="text" class="form-control" name="fda_reg_no">
                                                 </div>
                                             </div>
                                         </div>
@@ -463,14 +479,14 @@
                             <div class="widget-thumb widget-bg-color-white margin-bottom-20 tabbable-line">
                                 <div class="d-flex justify-content-between">
                                     <h4 class="widget-thumb-heading text-uppercase">Emails</h4>
-                                    <div class="actions d-none">
+                                    <div class="actions">
                                         <div class="btn-group">
                                             <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
                                             <ul class="dropdown-menu pull-right">
                                                 <li>
-                                                    <a data-toggle="modal" href="#modalTaskForm" >Add New Email</a>
+                                                    <a data-toggle="modal" href="#sendEmail" >Add New Email</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -499,14 +515,14 @@
                             <div class="widget-thumb widget-bg-color-white margin-bottom-20 tabbable-line">
                                 <div class="d-flex justify-content-between">
                                     <h4 class="widget-thumb-heading text-uppercase">Campaigns</h4>
-                                    <div class="actions d-none">
+                                    <div class="actions">
                                         <div class="btn-group">
                                             <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
                                                 <i class="fa fa-angle-down"></i>
                                             </a>
                                             <ul class="dropdown-menu pull-right">
                                                 <li>
-                                                    <a data-toggle="modal" href="#addReference" >Add New Campaign</a>
+                                                    <a data-toggle="modal" href="#sendCampaign" >Add New Campaign</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -1253,13 +1269,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Start Date</label>
-                                        <input class="form-control" type="date" name="startdate" id="Task_added" required>
+                                        <input class="form-control" type="datetime-local" name="startdate" id="Task_added" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Deadline</label>
-                                        <input class="form-control" type="date" name="duedate" id="Deadline" required>
+                                        <input class="form-control" type="datetime-local" name="duedate" id="Deadline" required>
                                     </div>
                                 </div>
                             </div>
@@ -1343,13 +1359,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Start Date <span id="startdate1"></span> </label>
-                                        <input class="form-control" type="date" name="startdate" id="startdate" required>
+                                        <input class="form-control" type="datetime-local" name="startdate" id="startdate" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Deadline</label>
-                                        <input class="form-control" type="date" name="duedate" id="duedate" required>
+                                        <input class="form-control" type="datetime-local" name="duedate" id="duedate" required>
                                     </div>
                                 </div>
                             </div>
@@ -1672,6 +1688,92 @@
                 </div>
             </div>
         </div>
+        
+        <div class="modal fade" id="sendCampaign" tabindex="-1" role="dialog" >
+            <div class="modal-dialog" style="width: 95%">
+                <div class="modal-content">
+                    <form id="emailCampaignForm">
+                        <div class="modal-header bg-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">New Campaign <i style="color:#fff;font-size:14px;"></i></h4>
+                        </div>
+                        <div class="modal-body">
+                           <div class="row">
+                               <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Campaign Name</label>
+                                        <input class="form-control" type="text" id="campaign-name" name="campaign_name" required>
+                                        <input class="form-control" type="hidden" name="campaign_from" value="<?=$current_userEmail?>">
+                                        <input class="form-control" type="hidden" name="account_emailc" value="<?=$contact_email?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Subject</label>
+                                        <input class="form-control" type="text" name="campaign_subject" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Message</label>
+                                        <textarea class="form-control summernoteEditor" type="text" name="campaign_body" rows="4" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="margin-top:10px;">
+                            <button type="submit" id="campaignBtn" class="btn btn-info">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal fade" id="sendEmail" tabindex="-1" role="dialog" >
+            <div class="modal-dialog" style="width: 95%">
+                <div class="modal-content">
+                    <form id="emailForm">
+                        <div class="modal-header bg-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">New Email <i style="color:#fff;font-size:14px;"></i></h4>
+                        </div>
+                        <div class="modal-body">
+                           <div class="row">
+                               <div class="col-md-6 d-none">
+                                    <div class="form-group">
+                                        <label>Email Name</label>
+                                        <input class="form-control" type="text" id="campaign-name" name="email_name">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Subject</label>
+                                        <input class="form-control" type="text" name="email_subject" required>
+                                        <input class="form-control" type="hidden" name="account_emaile" value="<?=$contact_email?>">
+                                        <input class="form-control" type="hidden" name="email_from" value="<?=$current_userEmail?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Message</label>
+                                        <textarea class="form-control summernoteEmailEditor" type="text" name="campaign_body" rows="4" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="margin-top:10px;">
+                            <button type="submit" id="emailBtn" class="btn btn-info">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <div class="modal fade bs-modal-lg" id="campaignDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" style="width:100%;">
@@ -1741,12 +1843,36 @@
 
         <?php include_once ('footer.php'); ?>
         <script src="assets/global/plugins/bootstrap-tabdrop/js/bootstrap-tabdrop.js" type="text/javascript"></script>
-        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <!--<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>-->
         <script src="crm/customer_details.js" type="text/javascript"></script>
         <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const navLinks = document.querySelectorAll(".nav-tabs a");
+                const stickyNav = document.querySelector(".sticky-nav");
+            
+                const stickyNavHeight = stickyNav.offsetHeight || 0;
+            
+                navLinks.forEach(link => {
+                    link.addEventListener("click", function (event) {
+                        event.preventDefault();
+            
+                        const targetId = this.getAttribute("href").substring(1);
+                        const targetElement = document.getElementById(targetId);
+            
+                        if (targetElement) {
+                            const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - stickyNavHeight;
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: "smooth",
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
             $(document).ready(function() {
-                $(".campaign_body").summernote({
-                    placeholder: '',
+                $(".campaign_body, .summernoteEditor, .summernoteEmailEditor").summernote({
                     height: 400
                 });
             });
@@ -2217,6 +2343,7 @@
                         $('input[name="account_name"]').val(response.account_name);
                         $('input[name="parent_account"]').val(response.parent_account);
                         $('input[name="account_address"]').val(response.account_address);
+                        $('input[name="account_state"]').val(response.account_state);
                         $('input[name="account_email"]').val(response.account_email);
                         $('input[name="account_phone"]').val(response.account_phone);
                         $('input[name="account_fax"]').val(response.account_fax);
@@ -2226,6 +2353,8 @@
                         $('input[name="account_twitter"]').val(response.account_twitter);
                         $('input[name="account_linkedin"]').val(response.account_linkedin);
                         $('input[name="account_interlink"]').val(response.account_interlink);
+                        $('input[name="duns"]').val(response.duns);
+                        $('input[name="fda_reg_no"]').val(response.fda_reg_no);
                         $('input[name="account_status"][value="' + response.status + '"]').prop('checked', true);
                         $('input[name="Account_Directory"][value="' + response.directory + '"]').prop('checked', true);
                         $('#status-container').html(generateStatusHtml(response));

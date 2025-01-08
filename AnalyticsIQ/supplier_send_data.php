@@ -9,6 +9,11 @@ if (!empty($_COOKIE['switchAccount'])) {
     $user_id = employerID($portal_user);
 }
 
+$facility_switch_user_id2 = 0;
+if (isset($_COOKIE['facilityswitchAccount'])) {
+    $facility_switch_user_id2 = $_COOKIE['facilityswitchAccount'];
+}
+
 function employerID($ID) {
     global $conn;
 
@@ -39,14 +44,14 @@ if ($mysqli->connect_error) {
 // Query for donut chart
 $donutQuery = "
     SELECT 
-        SUM(LENGTH(material) - LENGTH(REPLACE(material, ',', '')) + 1) AS total_send,
+        COUNT(ID) AS total_send,
         SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) AS pending,
         SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS approved,
         SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS non_approved,
         SUM(CASE WHEN status = 3 THEN 1 ELSE 0 END) AS emergency_use_only,
         SUM(CASE WHEN status = 4 THEN 1 ELSE 0 END) AS do_not_use
     FROM tbl_supplier
-    WHERE is_deleted = 0 AND user_id = $user_id AND page = 1
+    WHERE is_deleted = 0 AND user_id = $user_id AND facility_switch = $facility_switch_user_id2 AND page = 1
 ";
 
 $donutResult = $mysqli->query($donutQuery);
@@ -61,7 +66,7 @@ $lineQuery = "
         SUM(CASE WHEN frequency = 4 THEN 1 ELSE 0 END) AS once_per_month,
         SUM(CASE WHEN frequency = 5 THEN 1 ELSE 0 END) AS once_per_year
     FROM tbl_supplier
-    WHERE is_deleted = 0 AND user_id = $user_id AND page = 1
+    WHERE is_deleted = 0 AND user_id = $user_id AND facility_switch = $facility_switch_user_id2 AND page = 1
 ";
 
 $lineResult = $mysqli->query($lineQuery);

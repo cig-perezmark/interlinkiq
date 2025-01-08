@@ -5,6 +5,8 @@
 include_once __DIR__ ."/../../alt-setup/setup.php";
 date_default_timezone_set('America/Chicago');
 
+$conn->execute("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
+
 function ForeignSupplierSQLClause($firstAnd = true) {
     return ($firstAnd ? " AND " : " ") . "TRIM(SUBSTRING_INDEX(address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(address, '|', 1)) NOT LIKE 'US'";
 }
@@ -290,6 +292,13 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
                 eval.approval_date,
                 eval.assessment,
                 eval.description,
+                rec.approved_by,
+                rec.approved_by_sign,
+                rec.approve_date,
+                rec.reviewed_by,
+                rec.reviewed_by_sign,
+                rec.review_date,
+                rec.comments,
                 supp.name AS supplier_name, 
                 supp.address AS supplier_address,
                 imp.name AS importer_name, 
@@ -491,7 +500,7 @@ function prepareFileInfo($data) {
         'id' => $data['id'] ?? null,
         'filename' => $filename,
         'src' => embedFileUrl($data['filename'], $data['path']),
-        'note' => empty($data['note']) ? '(none)': $data['note'],
+        'note' => empty($data['note']) ? '': $data['note'],
         'document_date' => $data['document_date'],
         'expiration_date' => $data['expiration_date'],
         'upload_date' => date('Y-m-d', strtotime($data['uploaded_at'])),
@@ -583,6 +592,13 @@ function saveNewEvaluationRecord($conn, $post, $evalId, $preRecordId = null) {
             'warning_letters'               => $post['warning_letters'] ?? NULL,
             'other_significant_ca'          => $post['other_sca'] ?? NULL,
             'suppliers_corrective_actions'  => $post['supplier_corrective_actions'] ?? NULL,
+            'approved_by'                   => emptyIsNull($_POST['approved_by']),
+            'approved_by_sign'              => emptyIsNull($_POST['approver_sign'] == 'null' ? null : $_POST['approver_sign']),
+            'approve_date'                  => emptyIsNull($_POST['approve_date']),
+            'reviewed_by'                   => emptyIsNull($_POST['reviewed_by']),
+            'reviewed_by_sign'              => emptyIsNull($_POST['reviewer_sign'] == 'null' ? null : $_POST['reviewer_sign']),
+            'review_date'                   => emptyIsNull($_POST['review_date']),
+            'comments'                      => emptyIsNull($_POST['comments']),
         ];
 
         // evaluate due date if already expired
@@ -637,7 +653,8 @@ function updateAWData($conn, $POST, $portal_user, $id, $importerId, $fsvpqiId, $
             verification_records = ?,
             assessment_results = ?,
             corrective_actions = ?,
-            reevaluation_date = ?
+            reevaluation_date = ?,
+            comments = ?
         WHERE id = ?
     ";
     $values = [
@@ -658,6 +675,7 @@ function updateAWData($conn, $POST, $portal_user, $id, $importerId, $fsvpqiId, $
         emptyIsNull($POST['assessment_results']),
         emptyIsNull($POST['corrective_actions']),
         emptyIsNull($POST['reevaluation_date']),
+        emptyIsNull($POST['comments']),
         $id
     ];
 

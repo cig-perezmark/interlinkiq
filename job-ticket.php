@@ -178,14 +178,34 @@
                                                                         4 => '<span class="label label-sm label-danger">Unresolved</span>'
                                                                     );
 
+                                                                    $jt_file = '';
                                                                     $file_files = $row["s_files"];
                                                                     if (!empty($file_files)) {
-                                                                        $fileExtension = fileExtension($file_files);
-                                                                        $src = $fileExtension['src'];
-                                                                        $embed = $fileExtension['embed'];
-                                                                        $type = $fileExtension['type'];
-                                                                        $file_extension = $fileExtension['file_extension'];
-                                                                        $url = $base_url.'uploads/services/';
+
+                                                                        $files_arr = explode(" | ", $file_files);
+                                                                        if (count($files_arr) > 1) {
+
+                                                                            foreach ($files_arr as $f) {
+
+                                                                                $fileExtension = fileExtension($f);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/services/';
+
+                                                                                $jt_file .= '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($f).$embed.'" data-fancybox="fancybox_'.$row["s_ID"].'" data-fancybox data-type="'.$type.'">View</a></p>';
+                                                                            }
+                                                                        } else {
+                                                                            $fileExtension = fileExtension($file_files);
+                                                                            $src = $fileExtension['src'];
+                                                                            $embed = $fileExtension['embed'];
+                                                                            $type = $fileExtension['type'];
+                                                                            $file_extension = $fileExtension['file_extension'];
+                                                                            $url = $base_url.'uploads/services/';
+
+                                                                            $jt_file = '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">View</a></p>';
+                                                                        }
                                                                     }
 
                                                                     echo '<tr id="tr_'.$row["s_ID"].'">
@@ -193,9 +213,8 @@
                                                                         <td>'.$category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;"><b>'.htmlentities($row["s_title"] ?? '') .'</b></p>
-                                                                            <p style="margin: 0;">'. htmlentities($row["s_description"] ?? '') .'</p>';
-                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'.$file_files.'</a></p>' : '';
-                                                                        echo '</td>
+                                                                            <p style="margin: 0;">'. htmlentities($row["s_description"] ?? '') .'</p>'.$jt_file.'
+                                                                        </td>
                                                                         <td>
                                                                             <p style="margin: 0;">'.htmlentities($row["s_contact"] ?? '').'</p>
                                                                             <p style="margin: 0;"><a href="mailto:'.htmlentities($row["s_email"] ?? '').'" target="_blank">'.htmlentities($row["s_email"] ?? '').'</a></p>
@@ -330,14 +349,34 @@
                                                                         7 => 'Praise'
                                                                     );
 
+                                                                    $jt_file = '';
                                                                     $file_files = $row["s_files"];
                                                                     if (!empty($file_files)) {
-                                                                        $fileExtension = fileExtension($file_files);
-                                                                        $src = $fileExtension['src'];
-                                                                        $embed = $fileExtension['embed'];
-                                                                        $type = $fileExtension['type'];
-                                                                        $file_extension = $fileExtension['file_extension'];
-                                                                        $url = $base_url.'uploads/services/';
+
+                                                                        $files_arr = explode(" | ", $file_files);
+                                                                        if (count($files_arr) > 1) {
+
+                                                                            foreach ($files_arr as $f) {
+
+                                                                                $fileExtension = fileExtension($f);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/services/';
+
+                                                                                $jt_file .= '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($f).$embed.'" data-fancybox="fancybox_'.$row["s_ID"].'" data-fancybox data-type="'.$type.'">View</a></p>';
+                                                                            }
+                                                                        } else {
+                                                                            $fileExtension = fileExtension($file_files);
+                                                                            $src = $fileExtension['src'];
+                                                                            $embed = $fileExtension['embed'];
+                                                                            $type = $fileExtension['type'];
+                                                                            $file_extension = $fileExtension['file_extension'];
+                                                                            $url = $base_url.'uploads/services/';
+
+                                                                            $jt_file = '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">View</a></p>';
+                                                                        }
                                                                     }
 
                                                                     echo '<tr id="tr_'.$row["s_ID"].'">
@@ -345,9 +384,8 @@
                                                                         <td>'.$category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;">'.htmlentities($row["s_title"] ?? '').'</p>
-                                                                            <p style="margin: 0;">'.htmlentities($row["s_description"] ?? '').'</p>';
-                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'.$file_files.'</a></p>' : '';
-                                                                        echo '</td>
+                                                                            <p style="margin: 0;">'.htmlentities($row["s_description"] ?? '').'</p>'.$jt_file.'
+                                                                        </td>
                                                                         <td>
                                                                             <p style="margin: 0;">'.htmlentities($row["s_contact"] ?? '').'</p>
                                                                             <p style="margin: 0;"><a href="mailto:'.htmlentities($row["s_email"] ?? '').'" target="_blank">'.htmlentities($row["s_email"] ?? '').'</a></p>

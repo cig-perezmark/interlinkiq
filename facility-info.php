@@ -13,7 +13,18 @@ error_reporting(0);
 
     include_once ('header.php'); 
 ?>
-
+<style>
+    @media only screen and (min-width: 600px) {
+        .list-column-break {
+            -moz-column-count: 4;
+            -moz-column-gap: 20px;
+            -webkit-column-count: 2;
+            -webkit-column-gap: 20px;
+            column-count: 4;
+            column-gap: 20px;
+        }
+    }
+</style>
                     <div class="row">
                         <div class="col-md-12">
                             <?php  ?>
@@ -82,12 +93,14 @@ error_reporting(0);
                                                     </li>
                                                     <?php if($_COOKIE['client'] != 1 ): ?>
                                                         <li>
-                                                            <a href="#aq" data-toggle="tab">Allergens / Quality System</a>
+                                                            <a href="#aq" data-toggle="tab"><?php if($_COOKIE['client'] == 16 OR $switch_user_id == 1649 ){ echo 'Quality System';}else{echo 'Allergens / Quality System';} ?></a>
                                                         </li>
                                                     <?php endif; ?>
-                                                    <li>
-                                                        <a href="#ppf" data-toggle="tab"><?php if($_COOKIE['client'] == 1 ){ echo 'Premises';}else{echo 'Physical Plant / Facilities ';} ?></a>
-                                                    </li>
+                                                    <?php if($_COOKIE['client'] != 16 OR $switch_user_id != 1649 ): ?>
+                                                        <li>
+                                                            <a href="#ppf" data-toggle="tab"><?php if($_COOKIE['client'] == 1 ){ echo 'Premises';}else{echo 'Physical Plant / Facilities';} ?></a>
+                                                        </li>
+                                                    <?php endif; ?>
                                                     <?php if($_COOKIE['client'] == 1 or $_COOKIE['ID'] == 38): ?>
                                                          <li>
                                                             <a href="#bond" data-toggle="tab">Insurance and Bond</a>
@@ -105,6 +118,7 @@ error_reporting(0);
                                             <div class="portlet-body">
                                                 <div class="tab-content">
                                                     <?php   
+                                                    $done = false;
                                                     // for display country
                                                     $querycountry = "SELECT * FROM countries order by name ASC";
                                                     $resultcountry = mysqli_query($conn, $querycountry);
@@ -113,11 +127,10 @@ error_reporting(0);
                                                     // $users = $_COOKIE['ID'];
                                                     $users = $switch_user_id;
                                                     $getids = $_GET['facility_id'];
-                                                    $query = "SELECT * FROM tblFacilityDetails where  facility_id = '$getids' ";
+                                                    $query = "SELECT * FROM tblFacilityDetails WHERE facility_id = '$getids' ";
                                                     $result = mysqli_query($conn, $query);
                                                                                 
                                                     while($row = mysqli_fetch_array($result)) {
-                                                        $done = false;
                                                         if($users == $row['users_entities']){
                                                             $done = true;
                                                             break;
@@ -126,7 +139,7 @@ error_reporting(0);
                                                     if($done == true){?>
                                                     <!--start-->
                                                     <div class="tab-pane active" id="EI">
-                                                       <div class="row">
+                                                        <div class="row">
                                                            <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
                                                             <div class="form-group">
                                                                 <div class="col-md-12">
@@ -399,44 +412,98 @@ error_reporting(0);
                                                                             <th>Phone</th>
                                                                             <th>Email</th>
                                                                             <th>Alternate Name</th>
-                                                                             <th>Phone</th>
+                                                                            <th>Phone</th>
                                                                             <th>Email</th>
-                                                                            <td></td>
+                                                                            <th></th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
                                                                         <?php 
                                                                             $i = 1;
-                                                                            // $usersQuery = $_COOKIE['ID'];
-                                                                            $usersQuery = $switch_user_id;
                                                                             $facility_id = $_GET['facility_id'];
-                                                                            $queriesPri = "SELECT * FROM tbl_critical_operation left join tbl_hr_employee on ID = addPrimaryNameField where user_cookies = $usersQuery and assign_area = $facility_id";
-                                                                            $resultQuery = mysqli_query($conn, $queriesPri);
-                                                                             
+                                                                            // $queriesPri = "SELECT * FROM tbl_critical_operation left join tbl_hr_employee on ID = addPrimaryNameField where user_cookies = $switch_user_id and assign_area = $facility_id";
+                                                                            // $resultQuery = mysqli_query($conn, $queriesPri);
+                                                                            $resultQuery = mysqli_query($conn, "
+                                                                                SELECT 
+                                                                                c.critical_operation_id AS c_ID,
+                                                                                e1.first_name AS e1_first_name,
+                                                                                e1.last_name AS e1_last_name,
+                                                                                e1.email AS e1_email,
+                                                                                ui1.mobile AS ui1_mobile,
+                                                                                e2.first_name AS e2_first_name,
+                                                                                e2.last_name AS e2_last_name,
+                                                                                e2.email AS e2_email,
+                                                                                ui2.mobile AS ui2_mobile
+                                                                                
+                                                                                FROM tbl_critical_operation AS c
+                                                                                
+                                                                                LEFT JOIN (
+                                                                                	SELECT
+                                                                                    ID, first_name, last_name, email
+                                                                                    FROM tbl_hr_employee
+                                                                                ) AS e1
+                                                                                ON c.addPrimaryNameField = e1.ID
+                                                                                
+                                                                                LEFT JOIN (
+                                                                                	SELECT
+                                                                                    ID, employee_id
+                                                                                    FROM tbl_user
+                                                                                ) AS u1
+                                                                                ON u1.employee_id = e1.ID
+                                                                                
+                                                                                LEFT JOIN (
+                                                                                	SELECT
+                                                                                    ID, user_id, mobile
+                                                                                    FROM tbl_user_info
+                                                                                ) AS ui1
+                                                                                ON u1.ID = ui1.user_id
+                                                                                
+                                                                                LEFT JOIN (
+                                                                                	SELECT
+                                                                                    ID, first_name, last_name, email
+                                                                                    FROM tbl_hr_employee
+                                                                                ) AS e2
+                                                                                ON c.addAlternateNameField = e2.ID
+                                                                                
+                                                                                LEFT JOIN (
+                                                                                	SELECT
+                                                                                    ID, employee_id
+                                                                                    FROM tbl_user
+                                                                                ) AS u2
+                                                                                ON u2.employee_id = e2.ID
+                                                                                
+                                                                                LEFT JOIN (
+                                                                                	SELECT
+                                                                                    ID, user_id, mobile
+                                                                                    FROM tbl_user_info
+                                                                                ) AS ui2
+                                                                                ON u2.ID = ui2.user_id
+                                                                                
+                                                                                WHERE c.deleted = 0
+                                                                                AND c.user_cookies = $switch_user_id
+                                                                                AND c.assign_area = $facility_id
+                                                                            ");
                                                                             while($rowPri = mysqli_fetch_array($resultQuery)){ 
                                                                                 $alt = htmlentities($rowPri['addAlternateNameField'] ?? '');
                                                                                 $altEmail = htmlentities($rowPri['email'] ?? '');
                                                                                 
                                                                                 $queriesAlt = "SELECT * FROM tbl_hr_employee where ID = $alt";
                                                                                 $resultQueryAlt = mysqli_query($conn, $queriesAlt);
-                                                                            ?>
-                                                                                <tr>
-                                                                                    <td><?php echo $i++;  ?></td>
-                                                                                    <td><?php echo htmlentities($rowPri['first_name'] ?? '');  ?> <?php echo htmlentities($rowPri['last_name'] ?? '');  ?></td>
-                                                                                    <td></td>
-                                                                                    <td><?php echo htmlentities($rowPri['email'] ?? '');  ?></td>
-                                                                                     <?php while($rowAlt = mysqli_fetch_array($resultQueryAlt)){ ?>
-                                                                                    <td>
-                                                                                        <?php echo htmlentities($rowAlt['first_name'] ?? '');  ?> <?php echo htmlentities($rowAlt['last_name'] ?? '');  ?>
+                                                                                
+                                                                                echo '<tr>
+                                                                                    <td>'.$i++.'</td>
+                                                                                    <td>'.htmlentities($rowPri['e1_first_name'] ?? '').' '.htmlentities($rowPri['e1_last_name'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowPri['ui1_mobile'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowPri['e1_email'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowPri['e2_first_name'] ?? '').' '.htmlentities($rowPri['e2_last_name'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowPri['ui2_mobile'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowPri['e2_email'] ?? '').'</td>
+                                                                                    <td class="text-center">
+                                                                                        <a class="btn btn-sm blue btn-outline btnViewCMT" data-toggle="modal" href="#modalViewCMT" data-id="'.$rowPri['c_ID'].'">VIEW</a>
+                                                                                        <a class="btn btn-sm btn-outline red" onclick="btnDelete_CMT('.$rowPri['c_ID'].', this)">Delete</a>
                                                                                     </td>
-                                                                                    <td></td>
-                                                                                    <td> 
-                                                                                        <?php echo htmlentities($rowAlt['email'] ?? '');  ?> 
-                                                                                    </td>
-                                                                                     <?php } ?>
-                                                                                    <td></td>
-                                                                                </tr>
-                                                                            <?php }
+                                                                                </tr>';
+                                                                            }
                                                                         ?>
                                                                     </tbody>
                                                                 </table>
@@ -612,7 +679,7 @@ error_reporting(0);
                                                                         // $usersQuery = $_COOKIE['ID'];
                                                                         $usersQuery = $switch_user_id;
                                                                         $facility_id = $_GET['facility_id'];
-                                                                        $queries = "SELECT * FROM tblFacilityDetails_Certification where user_cookies = $usersQuery and facility_entities = $facility_id  order by Certification_id desc";
+                                                                        $queries = "SELECT * FROM tblFacilityDetails_Certification WHERE deleted = 0 AND user_cookies = $usersQuery and facility_entities = $facility_id  order by Certification_id desc";
                                                                         $resultQuery = mysqli_query($conn, $queries);
                                                                         while($rowAcc = mysqli_fetch_array($resultQuery)){ 
                                                                             $idate=date_create($rowAcc['Issue_Date_Certification']);
@@ -663,85 +730,53 @@ error_reporting(0);
                                                     <!--end-->
                                                     <!--start-->
                                                     <div class="tab-pane" id="fo">
-                                                        <h4><strong>Facility Functions</strong></h4>
+                                                        <h4><strong>Facility Functions</strong> &nbsp;<a data-toggle="modal" href="#addFFModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
                                                         <br>
                                                         <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
                                                             <div class="row">
-                                                                <?php
-                                                                    $array_data = explode(", ", $row["Facilty_Functions"]); 
-                                                                ?>
-                                                                <div class="col-md-4">
-                                                                    <input type="hidden" class="form-control" name="ids" value="<?php if($users == $row['users_entities']){ echo $row['facility_id'];}else{ echo '';} ?>" required> 
-                                                                    
-                                                                    <input type="checkbox" name="Facilty_Functions[]" value="1" <?php if(in_array('1', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>Manufacturer</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Facilty_Functions[]" value="9" <?php if(in_array('9', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>Distribution</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Facilty_Functions[]" value="10" <?php if(in_array('10', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>Retailer</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Facilty_Functions[]" value="13" <?php if(in_array('13', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>Microbusiness</label>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <input type="checkbox" name="Facilty_Functions[]" value="14" <?php if(in_array('14', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>Cultivation</label>
-                                                                    <br>
-                                                                    <?php if($_COOKIE['client'] != 1 ): ?>
-                                                                        <input type="checkbox" name="Facilty_Functions[]" value="6" <?php if(in_array('6', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Packaging</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Facilty_Functions[]" value="5" <?php if(in_array('5', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Co-Packer</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Facilty_Functions[]" value="8" <?php if(in_array('8', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Storage</label>
-                                                                    <?php endif; ?>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <?php if($_COOKIE['client'] != 1 ): ?>
-                                                                        <input type="checkbox" name="Facilty_Functions[]" value="2" <?php if(in_array('2', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Co-Manufacturer</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Facilty_Functions[]" value="3" <?php if(in_array('3', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Processor</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Facilty_Functions[]" value="4" <?php if(in_array('4', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Packer</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Facilty_Functions[]" value="7" <?php if(in_array('7', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Warehouse</label>
-                                                                    <?php endif; ?>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <?php if($_COOKIE['client'] != 1 ): ?>
-                                                                        <input type="checkbox" name="Facilty_Functions[]" value="11" <?php if(in_array('11', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Testing</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Facilty_Functions[]" value="12" <?php if(in_array('12', $array_data)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Transport</label>
-                                                                    <?php endif; ?>
+                                                                <div class="col-md-12">
+                                                                    <?php
+                                                                        $array_data = explode(", ", $row["Facilty_Functions"]);
+                                                                        
+                                                                        echo '<ul class="list-unstyled list-column-break mt-checkbox-list">';
+                                                                            $selectFunction = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_Function WHERE deleted = 0");
+                                                                            if ($current_client == 16 OR $switch_user_id == 1649) {
+                                                                                $selectFunction = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_Function WHERE deleted = 0 AND user_id = $switch_user_id");
+                                                                            }
+                                                                            while($rowFunction = mysqli_fetch_array($selectFunction)){ 
+                                                                                $f_ID = $rowFunction['ID'];
+                                                                                $f_name = htmlentities($rowFunction['name'] ?? '');
+                                                                                
+                                                                                echo '<li>
+                                                                                    <label class="mt-checkbox mt-checkbox-outline">
+                                                                                        <input type="checkbox" name="Facilty_Functions[]" value="'.$f_ID.'" '; in_array($f_ID, $array_data) ? 'CHECKED':''; echo '> '.$f_name.'
+                                                                                        <span></span>
+                                                                                    </label>
+                                                                                </li>';
+                                                                            }
+                                                                        echo '</ul>';
+                                                                    ?>
                                                                 </div>
                                                             </div>
                                                             <hr>
                                                             <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label>Number of Shifts:</label>
-                                                                        <input type="number" class="form-control" name="Number_of_Shifts" value="<?php echo $row["Number_of_Shifts"]?>">
+                                                                <?php if($switch_user_id != 1649): ?>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Number of Shifts:</label>
+                                                                            <input type="number" class="form-control" name="Number_of_Shifts" value="<?php echo $row["Number_of_Shifts"]?>">
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                <?php endif; ?>
+                                                                
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label>Number of Employees:</label>
                                                                         <input type="number" class="form-control" name="Number_of_Employees" value="<?php echo $row["Number_of_Employees"]?>">
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <?php if($_COOKIE['client'] != 1 ): ?>
-                                                                <div class="row">
+                                                                
+                                                                <?php if($_COOKIE['client'] != 1 AND $switch_user_id != 1649): ?>
                                                                     <div class="col-md-6">
                                                                         <div class="form-group">
                                                                             <label>Number of Lines:</label>
@@ -754,8 +789,8 @@ error_reporting(0);
                                                                             <input type="number" class="form-control" name="Number_of_HACCPs" value="<?php echo $row["Number_of_HACCPs"]?>">
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            <?php endif; ?>
+                                                                <?php endif; ?>
+                                                            </div>
                                                             <hr>
                                                             <h4><strong>Details</strong></h4>
                                                             <div class="row">
@@ -815,102 +850,91 @@ error_reporting(0);
                                                     <div class="tab-pane" id="aq">
                                                         <h4><strong>Allergens List (Handled in the Facility)</strong></h4>
                                                         <br>
-                                                        <div class="row">
-                                                            <?php
-                                                                $array_Allergens = explode(", ", $row["Allergens"]); 
-                                                            ?>
                                                         <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
-                                                            <div class="col-md-4">
-                                                                <input type="hidden" class="form-control" name="ids" value="<?php if($users == $row['users_entities']){ echo $row['facility_id'];}else{ echo '';} ?>" required> 
-                                                                <input type="checkbox" name="Allergens[]" value="1" <?php if(in_array('1', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Milk</label>
-                                                                <br>
-                                                                <input type="checkbox" name="Allergens[]" value="2" <?php if(in_array('2', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Tree Nuts</label>
-                                                                <br>
-                                                                <input type="checkbox" name="Allergens[]" value="3" <?php if(in_array('3', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Eggs</label>
-                                                                <br>
-                                                                <input type="checkbox" name="Allergens[]" value="4" <?php if(in_array('4', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Peanuts</label>
-                                                                <br>      
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <input type="checkbox" name="Allergens[]" value="5" <?php if(in_array('5', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Fish</label>
-                                                                <br>
-                                                                <input type="checkbox" name="Allergens[]" value="6" <?php if(in_array('6', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Wheat</label>
-                                                                <br>
-                                                                <input type="checkbox" name="Allergens[]" value="7" <?php if(in_array('7', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Shell Fish</label>
-                                                                <br>
-                                                                <input type="checkbox" name="Allergens[]" value="8" <?php if(in_array('8', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Soy Beans</label>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <input type="checkbox" name="Allergens[]" value="9" <?php if(in_array('9', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Sesame</label>
-                                                                <br>
-                                                                <input type="checkbox" name="Allergens[]" value="10" <?php if(in_array('10', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                <label>Other</label>
-                                                                <br>
-                                                                <input class="form-control" type="" name="Allergens_specify" value="<?php echo $row['Allergens_specify']; ?>"> 
-                                                            </div>
-                                                        </div>
+                                                            <?php if($switch_user_id != 1649): ?>
+                                                                <div class="row">
+                                                                    <?php
+                                                                        $array_Allergens = explode(", ", $row["Allergens"]); 
+                                                                    ?>
+                                                                    <div class="col-md-4">
+                                                                        <input type="hidden" class="form-control" name="ids" value="<?php if($users == $row['users_entities']){ echo $row['facility_id'];}else{ echo '';} ?>" required> 
+                                                                        <input type="checkbox" name="Allergens[]" value="1" <?php if(in_array('1', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Milk</label>
+                                                                        <br>
+                                                                        <input type="checkbox" name="Allergens[]" value="2" <?php if(in_array('2', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Tree Nuts</label>
+                                                                        <br>
+                                                                        <input type="checkbox" name="Allergens[]" value="3" <?php if(in_array('3', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Eggs</label>
+                                                                        <br>
+                                                                        <input type="checkbox" name="Allergens[]" value="4" <?php if(in_array('4', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Peanuts</label>
+                                                                        <br>      
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <input type="checkbox" name="Allergens[]" value="5" <?php if(in_array('5', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Fish</label>
+                                                                        <br>
+                                                                        <input type="checkbox" name="Allergens[]" value="6" <?php if(in_array('6', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Wheat</label>
+                                                                        <br>
+                                                                        <input type="checkbox" name="Allergens[]" value="7" <?php if(in_array('7', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Shell Fish</label>
+                                                                        <br>
+                                                                        <input type="checkbox" name="Allergens[]" value="8" <?php if(in_array('8', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Soy Beans</label>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <input type="checkbox" name="Allergens[]" value="9" <?php if(in_array('9', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Sesame</label>
+                                                                        <br>
+                                                                        <input type="checkbox" name="Allergens[]" value="10" <?php if(in_array('10', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                        <label>Other</label>
+                                                                        <br>
+                                                                        <input class="form-control" type="" name="Allergens_specify" value="<?php echo $row['Allergens_specify']; ?>"> 
+                                                                    </div>
+                                                                </div>
                                                             <hr>
-                                                            <h4><strong>Quality System Used?</strong></h4>
+                                                            <?php endif; ?>
+                                                            <h4><strong>Quality System Used?</strong> &nbsp;<a data-toggle="modal" href="#addQSModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
                                                             <br>
                                                             <div class="row">
-                                                                <?php
-                                                                    $array_Quality_System = explode(", ", $row["Quality_System"]); 
-                                                                ?>
-                                                                <div class="col-md-4">
-                                                                    <input type="checkbox" name="Quality_System[]" value="1" <?php if(in_array('1', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>ISO</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Quality_System[]" value="2" <?php if(in_array('2', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>Good Manufacturing Practices</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Quality_System[]" value="3" <?php if(in_array('3', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>SQF</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Quality_System[]" value="4" <?php if(in_array('4', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>BRC</label>
-                                                                     <br>      
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <input type="checkbox" name="Quality_System[]" value="5" <?php if(in_array('5', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>FSSC 22000</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Quality_System[]" value="6" <?php if(in_array('6', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>PrimusGFS</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Quality_System[]" value="7" <?php if(in_array('7', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>Good Laboratory Practices</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Quality_System[]" value="8" <?php if(in_array('8', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>Good Agricultural Practices</label>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <input type="checkbox" name="Quality_System[]" value="9" <?php if(in_array('9', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>FSMS</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Quality_System[]" value="10" <?php if(in_array('10', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>QMS</label>
-                                                                    <br>
-                                                                    <input type="checkbox" name="Quality_System[]" value="11" <?php if(in_array('11', $array_Quality_System)){echo 'checked';}else{echo '';} ?>> 
-                                                                    <label>Other</label>
-                                                                    <br>
-                                                                    <input class="form-control" type="" name="Quality_System_specify" value="<?php echo $row['Quality_System_specify']; ?>"> 
+                                                                <div class="col-md-12">
+                                                                    <?php
+                                                                        $array_Quality_System = explode(", ", $row["Quality_System"]);
+                                                                        
+                                                                        echo '<ul class="list-unstyled list-column-break mt-checkbox-list">';
+                                                                            $selectQS = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_QS WHERE deleted = 0");
+                                                                            if ($current_client == 16 OR $switch_user_id == 1649) {
+                                                                                $selectQS = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_QS WHERE deleted = 0 AND user_id = $switch_user_id");
+                                                                            }
+                                                                            while($rowQS = mysqli_fetch_array($selectQS)){ 
+                                                                                $q_ID = $rowQS['ID'];
+                                                                                $q_name = htmlentities($rowQS['name'] ?? '');
+                                                                                
+                                                                                echo '<li>
+                                                                                    <label class="mt-checkbox mt-checkbox-outline">
+                                                                                        <input type="checkbox" name="Quality_System[]" value="'.$q_ID.'" '; in_array($q_ID, $array_Quality_System) ? 'CHECKED':''; echo '> '.$q_name.'
+                                                                                        <span></span>
+                                                                                    </label>
+                                                                                </li>';
+                                                                            }
+                                                                            echo '<li class="hide">
+                                                                                <label class="mt-checkbox mt-checkbox-outline">
+                                                                                    <input type="checkbox" name="Quality_System[]" value="11"> Others
+                                                                                    <span></span>
+                                                                                </label>
+                                                                            </li>';
+                                                                        echo '</ul>';
+                                                                    ?>
                                                                 </div>
                                                             </div>
                                                             <br>
                                                             <input type="submit" name="btn_aqs_function" value="Save" class="btn btn-success" style="float:right;margin-right:20px;">
                                                             <br>
                                                             <br>
-                                                        </div> 
                                                         </form>
+                                                    </div> 
                                                     <!--end-->
                                                     <!--start-->
                                                     <div class="tab-pane" id="ppf">
@@ -1321,6 +1345,48 @@ error_reporting(0);
           
           
                     <!--view modal-->
+                    <div class="modal fade" id="addFFModal" tabindex="-1" role="dialog" >
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form method="post" class="modalForm addFunction">
+                                    <div class="modal-header bg-primary">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Add Facility Function</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input class="form-control" type="name" name="name" required />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer" style="margin-top:10px;">
+                                        <input type="submit" name="btnFunction" id="btnFunction" value="Add" class="btn btn-info">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="addQSModal" tabindex="-1" role="dialog" >
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form method="post" class="modalForm addQS">
+                                    <div class="modal-header bg-primary">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Add Quality System</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input class="form-control" type="name" name="name" required />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer" style="margin-top:10px;">
+                                        <input type="submit" name="btnQS" id="btnQS" value="Add" class="btn btn-info">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal fade bs-modal-lg" id="modalGetContact" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
@@ -1573,6 +1639,23 @@ error_reporting(0);
                                     <div class="modal-footer">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         <button type="submit" class="btn btn-success" name="btnSave_critical_operation_facility">Save</button>
+                                    </div>
+                                </form>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="modalViewCMT"  tabindex="-1" role="basic" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Crisis Management Team </h4>
+                                    </div>
+                                    <div class="modal-body"></div>
+                                    <div class="modal-footer">
+                                        <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                        <input type="submit" name="btnViewCMT_Update" value="Update" class="btn btn-info">  
                                     </div>
                                 </form>
                              </div>
@@ -2868,6 +2951,18 @@ error_reporting(0);
                 });
             });
             // View Service_Team
+            $(".btnViewCMT").click(function() {
+                var id = $(this).data("id");
+                $.ajax({    
+                    type: "GET",
+                    url: "facility-function/fetch-Service_Team.php?modalViewCMT="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalViewCMT .modal-body").html(data);
+                       
+                    }
+                });
+            });
             $(".btnViewService_Team").click(function() {
                 var id = $(this).data("id");
                 $.ajax({    
@@ -2963,6 +3058,27 @@ error_reporting(0);
               else{
                   document.getElementById("PAS").readOnly = false;
               }
+            }
+            function btnDelete_CMT(id, e) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be deleted!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "facility-function/function.php?btnDelete_CMT="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $(e).parent().parent().remove();
+                        }
+                    });
+                    swal("Done!", "This item has been deleted.", "success");
+                });
             }
             function btnDelete_F_Contact(id, e) {
                 swal({
@@ -3600,7 +3716,75 @@ error_reporting(0);
                 });
             }));
 
+            $(".addFunction").on('submit',(function(e) {
+                e.preventDefault();
+                //  var row_tbl = $("#Status_tbl").val();
+                formObj = $(this);
+                if (!formObj.validate().form()) return false;
+                    
+                var formData = new FormData(this);
+                formData.append('btnFunction',true);
 
+                var l = Ladda.create(document.querySelector('#btnFunction'));
+                l.start();
+
+                $.ajax({
+                    url: "facility-function/function.php",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData:false,
+                    cache: false,
+                    success: function(response) {
+                        // alert(response);
+                        if ($.trim(response)) {
+                            msg = "Successfully Added!";
+                            $('#fo ul').append(response);
+                            $('#addFFModal').modal('hide');;
+                        } else {
+                            msg = "Error!"
+                        }
+                        l.stop();
+
+                        bootstrapGrowl(msg);
+                    }
+                });
+            }));
+            $(".addQS").on('submit',(function(e) {
+                e.preventDefault();
+                //  var row_tbl = $("#Status_tbl").val();
+                formObj = $(this);
+                if (!formObj.validate().form()) return false;
+                    
+                var formData = new FormData(this);
+                formData.append('btnQS',true);
+
+                var l = Ladda.create(document.querySelector('#btnQS'));
+                l.start();
+
+                $.ajax({
+                    url: "facility-function/function.php",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData:false,
+                    cache: false,
+                    success: function(response) {
+                        // alert(response);
+                        if ($.trim(response)) {
+                            msg = "Successfully Added!";
+                            $('#aq ul').append(response);
+                            $('#addQSModal').modal('hide');;
+                        } else {
+                            msg = "Error!"
+                        }
+                        l.stop();
+
+                        bootstrapGrowl(msg);
+                    }
+                });
+            }));
+            
             // addFacility_registration
             $(".addFacility_registration").on('submit',(function(e) {
                 e.preventDefault();

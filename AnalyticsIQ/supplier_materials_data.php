@@ -11,6 +11,11 @@ if (!empty($_COOKIE['switchAccount'])) {
     $user_id = employerID($portal_user);
 }
 
+$facility_switch_user_id2 = 0;
+if (isset($_COOKIE['facilityswitchAccount'])) {
+    $facility_switch_user_id2 = $_COOKIE['facilityswitchAccount'];
+}
+
 function employerID($ID) {
     global $conn;
 
@@ -76,6 +81,7 @@ $sql = "
         FROM tbl_supplier
         WHERE page = 1 
     	AND is_deleted = 0
+    	AND facility_switch = $facility_switch_user_id2
     ) AS s
     ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', ''))
     

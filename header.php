@@ -151,26 +151,65 @@
         }
         
         // For Switch Account Profie
+        $enterp_iso2 = '';
         if (isset($_COOKIE['switchAccount'])) {
             $id = $_COOKIE['switchAccount'];
             // $FreeAccess = false;
     
-            $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $id" );
+            // $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $id" );
+            $selectEnterprise = mysqli_query( $conn,"
+                SELECT 
+                e.enterp_id,
+                e.BrandLogos,
+                e.businessname,
+                e.users_entities,
+                c.iso2
+                FROM tblEnterpiseDetails AS e
+                
+                LEFT JOIN (
+                	SELECT
+                    *
+                    FROM countries
+                ) AS c
+                ON e.country = c.id
+                
+                WHERE users_entities = $id
+            " );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
                 $enterp_id = $rowEnterprise['enterp_id'];
                 $enterp_logo = $rowEnterprise['BrandLogos'];
                 $enterp_name = htmlentities($rowEnterprise['businessname']);
                 $enterp_userID = $rowEnterprise['users_entities'];
+                $enterp_iso2 = $rowEnterprise['iso2'];
             }
         } else {
-            $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $current_userEmployerID" );
+            // $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $current_userEmployerID" );
+            $selectEnterprise = mysqli_query( $conn,"
+                SELECT 
+                e.enterp_id,
+                e.BrandLogos,
+                e.businessname,
+                e.users_entities,
+                c.iso2
+                FROM tblEnterpiseDetails AS e
+                
+                LEFT JOIN (
+                	SELECT
+                    *
+                    FROM countries
+                ) AS c
+                ON e.country = c.id
+                
+                WHERE users_entities = $current_userEmployerID
+            " );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
                 $enterp_id = $rowEnterprise['enterp_id'];
                 $enterp_logo = $rowEnterprise['BrandLogos'];
                 $enterp_name = htmlentities($rowEnterprise['businessname']);
                 $enterp_userID = $rowEnterprise['users_entities'];
+                $enterp_iso2 = $rowEnterprise['iso2'];
             }
                 
             // For Employee ONLY
@@ -209,6 +248,8 @@
             // $selectCustomer = mysqli_query( $conn,"SELECT * from tbl_supplier WHERE page = 2 AND status = 1 AND is_deleted = 0 AND email = '".$current_userEmail."'" );
             // if ( mysqli_num_rows($selectCustomer) > 0 ) { $FreeAccess = false; }
         }
+        if (empty($enterp_iso2)) { $enterp_iso2 = 'US'; }
+        
 
     }
 
@@ -327,7 +368,8 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <link href="assets/global/plugins/jstree/dist/themes/default/style.min.css" rel="stylesheet" type="text/css" />
 
-    <link href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" rel="stylesheet" type="text/css" />
+    <!--<link href="//cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" rel="stylesheet" type="text/css" />-->
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" rel="stylesheet" type="text/css" />
 
     <link href="assets/global/plugins/ladda/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
 
@@ -404,7 +446,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 }
     
                 if ($facility_switch_user_id > 0) {
-                    setcookie('facilityswitchAccount', $id, time() + (86400 * 1), "/");  // 86400 = 1 day
+                    setcookie('facilityswitchAccount', $switch_user_id, time() + (86400 * 1), "/");  // 86400 = 1 day
                 }
             }
         
@@ -827,6 +869,15 @@ License: You must have a valid license purchased only from themeforest(the above
         .fa, .far, .fas {
             font: normal normal normal 14px / 1 FontAwesome;
         }
+
+
+        #jTimeoutAlert {
+            font-size: 3rem;
+            width: auto;
+        }
+        #jTimeoutAlert .ja_title > div {
+            font-size: 4rem;
+        }
     </style>
 </head>
 <!-- END HEAD -->
@@ -903,128 +954,128 @@ License: You must have a valid license purchased only from themeforest(the above
             <div class="page-logo">
                 <center>
                     <?php
-                            if ($current_client == 1) {
-                                if ($switch_user_id == 27) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="assets/img/Canna-OS-Logo_gear.png" height="60px" alt="logo" /></a>';
-                                    }
+                        if ($current_client == 1) {
+                            if ($switch_user_id == 27) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="assets/img/Canna-OS-Logo_gear.png" height="60px" alt="logo" /></a>';
                                 }
-                                
-                            } else if ($current_client == 2) {
-                                if ($switch_user_id == 1360) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/252423%20-%20FoodSafety%20360%20V1%20with%20register%20logo.png" height="60px" alt="logo" /></a>';
-                                    }
+                            } else {
+                                echo '<a href="dashboard"><img src="assets/img/Canna-OS-Logo_gear.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 2) {
+                            if ($switch_user_id == 1360) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="/companyDetailsFolder/252423%20-%20FoodSafety%20360%20V1%20with%20register%20logo.png" height="60px" alt="logo" /></a>';
                                 }
-                                
-                            } else if ($current_client == 3) {
-                                if ($switch_user_id == 1365) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
-                                    }
+                            } else {
+                                echo '<a href="dashboard"><img src="/companyDetailsFolder/252423%20-%20FoodSafety%20360%20V1%20with%20register%20logo.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 3) {
+                            if ($switch_user_id == 1365) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
                                 }
-                                
-                            } else if ($current_client == 4) {
-                                if ($switch_user_id == 1366) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
-                                    }
+                            } else {
+                                echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 4) {
+                            if ($switch_user_id == 1366) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
                                 }
-                                
-                            } else if ($current_client == 5) {
-                                if ($switch_user_id == 1453) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
-                                    }
+                            } else {
+                                echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 5) {
+                            if ($switch_user_id == 1453) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
                                 }
-                                
-                            } else if ($current_client == 7) {
-                                if ($switch_user_id == 1469) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/388267 - Cannabis360.png" height="60px" alt="logo" /></a>';
-                                    }
+                            } else {
+                                echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 7) {
+                            if ($switch_user_id == 1469) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/388267 - Cannabis360.png" height="60px" alt="logo" /></a>';
                                 }
-                                
-                            } else if ($current_client == 8) {
-                                if ($switch_user_id == 1471) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/165028 - SafeSupplements 360.png" height="60px" alt="logo" /></a>';
-                                    }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/388267 - Cannabis360.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 8) {
+                            if ($switch_user_id == 1471) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/165028 - SafeSupplements 360.png" height="60px" alt="logo" /></a>';
                                 }
-                                
-                            } else if ($current_client == 9) {
-                                if ($switch_user_id == 1477) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/175668 - FS_RGB_R_Stacked_SiennaTuscany.jpg" height="60px" alt="logo" /></a>';
-                                    }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/165028 - SafeSupplements 360.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 9) {
+                            if ($switch_user_id == 1477) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/175668 - FS_RGB_R_Stacked_SiennaTuscany.jpg" height="60px" alt="logo" /></a>';
                                 }
-                                
-                            } else if ($current_client == 10) {
-                                if ($switch_user_id == 1479) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
-                                    }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/175668 - FS_RGB_R_Stacked_SiennaTuscany.jpg" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 10) {
+                            if ($switch_user_id == 1479) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
                                 }
-                                
-                            } else if ($current_client == 11) {
-                                if ($switch_user_id == 1486) {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
-                                    }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 11) {
+                            if ($switch_user_id == 1486) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
                                 }
-                                
                             } else {
-                                if (isset($_COOKIE['switchAccount'])) {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else {
+                            if (isset($_COOKIE['switchAccount'])) {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                            } else {
+                                if(!empty($enterp_logo)) {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
                                 } else {
-                                    if(!empty($enterp_logo)) {
-                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
-                                    } else {
-                                        echo '<a href="dashboard"><img src="assets/img/interlinkiq v3.png" height="60px" alt="logo" /></a>';
-                                    }
+                                    echo '<a href="dashboard"><img src="assets/img/interlinkiq v3.png" height="60px" alt="logo" /></a>';
                                 }
                             }
-                        ?>
+                        }
+                    ?>
                 </center>
                 <!-- <img src="../assets/layouts/layout2/img/default-logo.jpg" alt="logo" class="logo-default" width="30" height="30" /> </a> -->
 
@@ -1084,20 +1135,20 @@ License: You must have a valid license purchased only from themeforest(the above
                         </ul>
                     </div>
                 </div>
-
-                <?php
-                    if ($facility_switch_user_id > 0) {
-                        $selectFacility = mysqli_query($conn, "SELECT facility_category FROM tblFacilityDetails WHERE facility_id = $facility_switch_user_id");
-                        if(mysqli_num_rows($selectFacility) > 0) {
-                            $rowFacilityData = mysqli_fetch_assoc($selectFacility);
-                            
-                            echo '<div class="page-actions">
-                                <div style="color: red; font-weight: 700; font-size: 2rem; line-height: 1.5;">'.htmlentities($rowFacilityData['facility_category'] ?? '').'</div>
-                            </div>';
-                        }
-                    }
-                ?>
             <?php } ?>
+
+            <?php
+                if ($facility_switch_user_id > 0) {
+                    $selectFacility = mysqli_query($conn, "SELECT facility_category FROM tblFacilityDetails WHERE facility_id = $facility_switch_user_id");
+                    if(mysqli_num_rows($selectFacility) > 0) {
+                        $rowFacilityData = mysqli_fetch_assoc($selectFacility);
+                        
+                        echo '<div class="page-actions">
+                            <div style="color: red; font-weight: 700; font-size: 2rem; line-height: 1.5;">'.htmlentities($rowFacilityData['facility_category'] ?? '').'</div>
+                        </div>';
+                    }
+                }
+            ?>
             <?php
                     if ($current_client == 1) {
                         echo '<div class="page-actions" style="margin-top: 10px;">
@@ -1203,7 +1254,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                
                                echo '<div class="d-flex flex-columnx justify-content-betweenx align-items-center w-100 border-1 margin-bottom-15">
                                     <span class="position-relative me-2">
-                                        <img class="d-flex justify-content-center border border-default bg-white img-circle" style="width:80px; height:80px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$current_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image\';" />
+                                        <img class="d-flex justify-content-center border border-default bg-white img-circle" style="width:80px; height:80px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$current_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://placehold.co/150x150/EFEFEF/AAAAAA?text=no+image\';" />
                                     </span>
                                     <h4 class="bold ms-3">'.htmlentities($row['first_name'] ?? ''). " " . htmlentities($row['last_name'] ?? '').'</h4>
                                 </div>
@@ -1283,7 +1334,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 <div class="top-menu">
 
                     <ul class="nav navbar-nav pull-right">
-                        <?php if ($current_client == 0 OR $current_client == 10) { ?>
+                        <?php if ($current_client == 0 OR $current_client == 10 OR $current_client == 11) { ?>
                         <li class="dropdown dropdown-extended" id="googleTranslate">
                             <div id="google_translate_element"></div>
                             <script type="text/javascript">
@@ -1358,6 +1409,20 @@ License: You must have a valid license purchased only from themeforest(the above
                                 //     </a>
                                 //     <ul class="dropdown-menu hide"></ul>
                                 // </li>';
+                                echo '<li class="dropdown dropdown-extended">
+                                    <a data-toggle="modal" href="#modalnewSL">
+                                        <button type="button" class="btn btn-circle btn-primary">LOG</button>
+                                    </a>
+                                </li>';
+                            }
+                            if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163 OR $switch_user_id == 1649) {
+                                echo '<li class="dropdown dropdown-extended">
+                                    <a href="task-management" target="_blank">
+                                        <button type="button" class="btn btn-circle btn-info">TM</button>
+                                    </a>
+                                </li>';
+                            }
+                            if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
                                 echo '<li class="dropdown dropdown-extended">
                                     <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(1)">
                                         <i class="icon-envelope"></i>
@@ -1527,7 +1592,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                         
                                                         echo '<li>
                                                             <a href="'.$rowListModule['m_url'].'">
-                                                                <img src="data:image/png;base64,'.$rowListModule['p_file_attachment'].'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image\';"  />
+                                                                <img src="data:image/png;base64,'.$rowListModule['p_file_attachment'].'" onerror="this.onerror=null;this.src=\'https://placehold.co/100x100/EFEFEF/AAAAAA?text=no+image\';"  />
                                                                 '.strtok(htmlentities($rowListModule['m_description']), " ").'
                                                             </a>
                                                         </li>';
@@ -1641,7 +1706,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <span class="badge badge-default">
                                     <?php    
                                             $users = $user_id;
-                                            $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
+                                            $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE deleted = 0 AND client = $current_client ORDER BY ID desc");
                                                                                                 
                                             while($row = mysqli_fetch_array($result)) {
                                                 echo $row['count'];
@@ -1661,7 +1726,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
                                         <?php 
                                             $users = $user_id;
-                                            $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
+                                            $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE deleted = 0 AND client = $current_client ORDER BY ID desc");
                                                                                                 
                                             while($row = mysqli_fetch_array($result)) {
                                                 echo '<li>
@@ -1682,8 +1747,31 @@ License: You must have a valid license purchased only from themeforest(the above
                                             if ($current_client == 0) {
                                                 
                                                 $users = $user_id;
-                                                $query = "SELECT count(*) as count FROM tblEnterpiseDetails";
-                                                $result = mysqli_query($conn, $query);
+                                                // $query = "SELECT count(*) as count FROM tblEnterpiseDetails";
+                                                $result = mysqli_query($conn, "
+                                                    SELECT 
+                                                    COUNT(e.enterp_id) AS count
+                                                    FROM tblEnterpiseDetails AS e
+                                                    
+                                                    LEFT JOIN (
+                                                    	SELECT
+                                                        id, name
+                                                        FROM countries
+                                                    ) AS c
+                                                    ON c.id = e.country
+                                                    
+                                                    RIGHT JOIN (
+                                                    	SELECT
+                                                        ID
+                                                        FROM tbl_user
+                                                        WHERE deleted = 0
+                                                    ) AS u
+                                                    ON u.ID = e.users_entities 
+                                                    
+                                                    where businessname !='' 
+                                                    
+                                                    order by enterp_id desc
+                                                ");
                                                                                                     
                                                 while($row = mysqli_fetch_array($result)) {
                                                     echo '<li>
@@ -1964,7 +2052,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <a href="javascript:;" class="dropdown-toggle profile-avatar" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                 <?php
                                         if ( empty($current_userAvatar) ) {
-                                            echo '<img src="https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image" class="img-circle" alt="Avatar" style="object-fit: cover; object-position:center;" />';
+                                            echo '<img src="//placehold.co/150x150/EFEFEF/AAAAAA?text=no+image" class="img-circle" alt="Avatar" style="object-fit: cover; object-position:center;" />';
                                         } else {
                                             echo '<img src="uploads/avatar/'. $current_userAvatar .'" class="img-circle" alt="Avatar" style="object-fit: cover; object-position:center;" />';
                                         }
@@ -2029,7 +2117,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <?php if($switch_user_id == 34 && $user_id != 34 ): ?>
                                 <li><a href="pto.php"><i class="icon-calendar"></i>My PTO Dashboard</a></li>
                                 <?php endif ?>
-                                <?php if ($user_id == 108 OR $user_id == 1 OR $user_id == 2 OR $user_id == 387 OR $user_id == 54 OR $user_id == 1105  OR $user_id == 32 OR $user_id == 1105) { ?>
+                                <?php if ($user_id == 108 OR $user_id == 1 OR $user_id == 2 OR $user_id == 387 OR $user_id == 54 OR $user_id == 1105  OR $user_id == 32 OR $user_id == 189 OR $user_id == 1105) { ?>
                                 <li><a href="https://interlinkiq.com/Accounting_system/Login/login_validation/<?= $user_id ?>" target="_blank"><i class="icon-calendar"></i> Accounting</a></li>
                                 <?php } ?>
                                 <?php if ($current_userEmployerID == 34) { ?>
@@ -2091,7 +2179,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 1210 || $_COOKIE['ID'] == 42):?>
-                    <li class="nav-item">
+                    <li class="nav-item d-none">
                         <a href="custom_crm.php" class="nav-link nav-toggle">
                             <i class="icon-users"></i>
                             <span class="title">CRM <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 42)echo '<i class="font-yellow" style="font-size: 12px; margin-left:4px"> ( Customize )</i>';?></span>
@@ -2124,56 +2212,56 @@ License: You must have a valid license purchased only from themeforest(the above
                             </li>';
                         }
                     ?>
-                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145 OR $switch_user_id == 1469) { ?>
-                    <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
-                        <a href="tracking" class="nav-link">
-                            <i class="icon-target"></i>
-                            <span class="title">Tracking Dashboard</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="app-store" class="nav-link">
-                            <i class="icon-grid"></i>
-                            <span class="title">App Catalog</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-
-                    <?php
-                        if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
-                            echo '<li class="nav-item ">
-                                <a href="form-owned" class="nav-link">
-                                    <i class="icon-graph"></i>
-                                    <span class="title">E-Forms</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>';
-                        }
-                    ?>
-
-                    <li class="nav-item">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-support" style="color: #ffff00;"></i>
-                            <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
-                            <span class="selected"></span>
-                            <span class="arrow"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item">
-                                <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Qualification Survey</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Food and Beverage</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    <?php if(($current_client == 0 AND $switch_user_id != 1106 AND $switch_user_id != 1680 ) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145 OR $switch_user_id == 1469) { ?>
+                        <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
+                            <a href="tracking" class="nav-link">
+                                <i class="icon-target"></i>
+                                <span class="title">Tracking Dashboard</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="app-store" class="nav-link">
+                                <i class="icon-grid"></i>
+                                <span class="title">App Catalog</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+    
+                        <?php
+                            if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
+                                echo '<li class="nav-item ">
+                                    <a href="form-owned" class="nav-link">
+                                        <i class="icon-graph"></i>
+                                        <span class="title">E-Forms</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>';
+                            }
+                        ?>
+    
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-support" style="color: #ffff00;"></i>
+                                <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
+                                <span class="selected"></span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="nav-item">
+                                    <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
+                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                        <span class="title">Qualification Survey</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
+                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                        <span class="title">Food and Beverage</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                     <?php } ?>
 
@@ -2287,7 +2375,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <li class="nav-item hide <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "active open start" : ""; ?>" id="menuHR">
                         <a href="javascript:;" class="nav-link nav-toggle">
                             <i class="icon-user-female"></i>
-                            <span class="title">Human Resources</span>
+                            <span class="title">HR/Training Management</span>
                             <span class="selected"></span>
                             <span class="arrow <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "open" : ""; ?>"></span>
                         </a>
@@ -2398,57 +2486,216 @@ License: You must have a valid license purchased only from themeforest(the above
 
                     <!--if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); }-->
                     <?php //  if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
-                    <?php if($current_userEmployeeID == 0) { ?>
-                    <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; ?>">
-                        <a href="job-ticket" class="nav-link">
-                            <i class="icon-earphones-alt"></i>
-                            <span class="title">Job Ticket Tracker</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php } else { ?>
-                    <li class="nav-item <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; ?>">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-earphones"></i>
-                            <span class="title">Job Ticket Tracker</span>
-                            <span class="selected"></span>
-                            <span class="arrow <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; ?>"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item <?php echo $site === "job-ticket-request" ? "active" : ""; ?>">
-                                <a href="job-ticket-request" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Request</span>
+                    <?php 
+                        if($current_userEmployeeID == 0) { 
+                            $sql_custom = '';
+                            $count_JTS = 0;
+                            if ($switch_user_id != 34) { $sql_custom = ' WHERE r.switch_user_id = '.$switch_user_id; }
+                            $selectJTS = mysqli_query( $conn,"
+                                SELECT
+                                COUNT(*) AS count_JTS
+                                FROM (
+                                    SELECT
+                                    s_assigned_to_id
+                                    FROM (
+                                        SELECT 
+                                        s.ID AS s_ID,
+                                        s.assigned_to_id AS s_assigned_to_id,
+                                        s.type AS s_type,
+                                        u.ID AS u_ID,
+                                        u.employee_id AS u_employee_id,
+                                        e.user_id AS e_user_id,
+                                        CASE WHEN LENGTH(e.user_id) > 0 THEN e.user_id ELSE u.ID END AS switch_user_id
+                                
+                                        FROM tbl_services AS s
+                                
+                                        LEFT JOIN (
+                                            SELECT
+                                            *
+                                            FROM tbl_user
+                                        ) AS u
+                                        ON s.user_id = u.ID
+                                
+                                        LEFT JOIN (
+                                            SELECT
+                                            *
+                                            FROM tbl_hr_employee
+                                        ) AS e
+                                        ON u.employee_id = e.ID
+                                
+                                        WHERE s.status = 0 
+                                        AND s.type = 0
+                                        AND s.deleted = 0
+                                    ) r
+                                
+                                    LEFT JOIN (
+                                        SELECT
+                                        *
+                                        FROM tbl_hr_employee
+                                    ) AS ee
+                                    ON FIND_IN_SET(ee.ID, REPLACE(REPLACE(r.s_assigned_to_id, ' ', ''), '|',','  )  ) > 0
+                                
+                                    $sql_custom
+                                
+                                    GROUP BY s_ID
+                                
+                                    ORDER BY s_ID
+                                ) r2
+                                WHERE LENGTH(r2.s_assigned_to_id) = 0 OR r2.s_assigned_to_id IS NULL
+                            " );
+                            if ( mysqli_num_rows($selectJTS) > 0 ) {
+                                $rowJTS = mysqli_fetch_array($selectJTS);
+                                $count_JTS = $rowJTS['count_JTS'];
+                            }
+                            echo '<li class="nav-item '; echo $site === "job-ticket" ? "active " : ""; echo '">
+                                <a href="job-ticket" class="nav-link">
+                                    <i class="icon-earphones-alt"></i>
+                                    <span class="title">Job Ticket Tracker</span>
+                                    <span class="selected"></span>';
+                                    echo $count_JTS > 0 ? '<span class="badge badge-danger">'.$count_JTS.'</span>':'';
+                                echo '</a>
+                            </li>';
+                        } else {
+                            $sql_custom = '';
+                            $count_JTS = 0;
+                            if ($switch_user_id != 34) { $sql_custom .= ' AND r.switch_user_id = '.$switch_user_id; }
+                            if ( !empty(menu('job-ticket', $current_userEmployerID, $current_userEmployeeID)) ) { $sql_custom .= " AND FIND_IN_SET($current_userEmployeeID, REPLACE(r.s_assigned_to_id, ' ', '')) "; }
+                            $selectJTS = mysqli_query( $conn,"
+                                SELECT
+                                COUNT(*) AS count_JTS
+                                FROM (
+                                    SELECT
+                                    s_assigned_to_id
+                                    FROM (
+                                        SELECT 
+                                        s.ID AS s_ID,
+                                        s.assigned_to_id AS s_assigned_to_id,
+                                        s.type AS s_type,
+                                        u.ID AS u_ID,
+                                        u.employee_id AS u_employee_id,
+                                        e.user_id AS e_user_id,
+                                        CASE WHEN LENGTH(e.user_id) > 0 THEN e.user_id ELSE u.ID END AS switch_user_id
+                                
+                                        FROM tbl_services AS s
+                                
+                                        LEFT JOIN (
+                                            SELECT
+                                            *
+                                            FROM tbl_user
+                                        ) AS u
+                                        ON s.user_id = u.ID
+                                
+                                        LEFT JOIN (
+                                            SELECT
+                                            *
+                                            FROM tbl_hr_employee
+                                        ) AS e
+                                        ON u.employee_id = e.ID
+                                
+                                        WHERE s.status = 0 
+                                        AND s.type = 0
+                                        AND s.deleted = 0
+                                    ) r
+                                
+                                    LEFT JOIN (
+                                        SELECT
+                                        *
+                                        FROM tbl_hr_employee
+                                    ) AS ee
+                                    ON FIND_IN_SET(ee.ID, REPLACE(REPLACE(r.s_assigned_to_id, ' ', ''), '|',','  )  ) > 0
+                                
+                                    WHERE r.u_ID != $current_userID
+                                    $sql_custom
+                                
+                                    GROUP BY s_ID
+                                
+                                    ORDER BY s_ID
+                                ) r2
+                                WHERE LENGTH(r2.s_assigned_to_id) = 0 OR r2.s_assigned_to_id IS NULL
+                            " );
+                            if ( mysqli_num_rows($selectJTS) > 0 ) {
+                                $rowJTS = mysqli_fetch_array($selectJTS);
+                                $count_JTS = $rowJTS['count_JTS'];
+                            }
+                            
+                            
+                            $count_JTR = 0;
+                            $selectJTR = mysqli_query( $conn,"
+                                SELECT 
+                                COUNT(s.ID) AS count_JTR
+                                FROM 
+                                tbl_services AS s
+                                
+                                LEFT JOIN (
+                                    SELECT
+                                    ID,
+                                    first_name,
+                                    last_name
+                                    FROM tbl_hr_employee
+                                ) AS e
+                                 ON FIND_IN_SET(e.ID, REPLACE(REPLACE(s.assigned_to_id, ' ', ''), '|',','  )  ) > 0
+                                
+                                WHERE s.status = 0 
+                                AND s.type = 0
+                                AND s.deleted = 0 
+                                AND s.user_id = $current_userID
+                                
+                                GROUP BY s.ID
+                                
+                                ORDER BY s.ID
+                            " );
+                            if ( mysqli_num_rows($selectJTR) > 0 ) {
+                                $rowJTR = mysqli_fetch_array($selectJTR);
+                                $count_JTR = $rowJTR['count_JTR'];
+                            }
+                            
+                            echo '<li class="nav-item '; echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; echo '">
+                                <a href="javascript:;" class="nav-link nav-toggle">
+                                    <i class="icon-earphones" '; if ($count_JTR > 0 OR $count_JTS > 0 ) { echo 'style="color: #ffff00;"'; } echo '></i>
+                                    <span class="title" '; if ($count_JTR > 0 OR $count_JTS > 0 ) { echo 'style="color: #ffff00; font-weight: bold;"'; } echo '>Job Ticket Tracker</span>
                                     <span class="selected"></span>
+                                    <span class="arrow '; echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; echo '"></span>
                                 </a>
-                            </li>
-                            <?php
-                                    echo '<li class="nav-item '; $site === "job-ticket-service" ? "active" : ""; echo '">
+                                <ul class="sub-menu">';
+                                
+                                    echo '<li class="nav-item '; echo $site === "job-ticket-request" ? "active" : ""; echo '">
+                                        <a href="job-ticket-request" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Request</span>
+                                            <span class="selected"></span>';
+                                            echo $count_JTR > 0 ? '<span class="badge badge-danger">'.$count_JTR.'</span>':'';
+                                        echo '</a>
+                                    </li>
+                                    <li class="nav-item '; echo $site === "job-ticket-service" ? "active" : ""; echo '">
                                         <a href="job-ticket-service" class="nav-link ">
                                             <i class="fa fa-minus" style="font-size: 10px;"></i>
                                             <span class="title">Service</span>
-                                            <span class="selected"></span>
-                                        </a>
+                                            <span class="selected"></span>';
+                                            echo $count_JTS > 0 ? '<span class="badge badge-danger">'.$count_JTS.'</span>':'';
+                                        echo '</a>
                                     </li>';
-                                ?>
-                        </ul>
-                    </li>
+                                        
+                                echo '</ul>
+                            </li>';
+                        }
+                    ?>
+                    <?php if($switch_user_id == 1684) { ?>
+                        <!--<li class="nav-item ">-->
+                        <!--    <a href="fsvp" class="nav-link">-->
+                        <!--        <i class="icon-graph"></i>-->
+                        <!--        <span class="title">FSVP</span>-->
+                        <!--        <span class="selected"></span>-->
+                        <!--    </a>-->
+                        <!--</li>-->
                     <?php } ?>
                     <?php if($switch_user_id == 1479 || $_COOKIE['ID'] == 481) { ?>
-                    <li class="nav-item ">
-                        <a href="fsvp" class="nav-link">
-                            <i class="icon-graph"></i>
-                            <span class="title">FSVP</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                     <li class="nav-item ">
-                        <a href="food-safety-plan" class="nav-link">
-                            <i class="icon-graph"></i>
-                            <span class="title">Food Safety Plan</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                         <li class="nav-item ">
+                            <a href="food-safety-plan" class="nav-link">
+                                <i class="icon-graph"></i>
+                                <span class="title">Food Safety Plan</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php } ?>
                     <?php if($_COOKIE['ID'] == 481) { ?>
                     <li class="nav-item ">
@@ -2824,23 +3071,24 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php  endif;?>
-                    <?php if($current_client == 1 || $current_userID == 42 || $current_userID == 693 || $current_userID == 88 || $current_userID == 667 || $current_userID == 748 || $current_userID == 149 || $current_userID == 943 || $current_userID == 153 || $current_userID == 41 || $current_userID == 154 || $current_userID == 43 || $current_userID == 387 || $current_userID == 54 || $current_userID == 55 || $current_userID == 35 || $current_userID == 43 || $current_userID == 1474): ?>
-                    <li class="nav-item <?php echo $site === "MyPro" ? "active" : ""; ?>">
-                        <a href="test_MyPro" class="nav-link">
-                            <i class="icon-earphones-alt"></i>
-                            <span class="title">My Pro (New)</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                    
+                    <?php if($switch_user_id == 34 AND ($current_client == 1 || $current_userID == 42 || $current_userID == 693 || $current_userID == 88 || $current_userID == 667 || $current_userID == 748 || $current_userID == 149 || $current_userID == 943 || $current_userID == 153 || $current_userID == 41 || $current_userID == 154 || $current_userID == 43 || $current_userID == 387 || $current_userID == 54 || $current_userID == 55 || $current_userID == 35 || $current_userID == 43 || $current_userID == 1474)): ?>
+                        <li class="nav-item <?php echo $site === "MyPro" ? "active" : ""; ?>">
+                            <a href="test_MyPro" class="nav-link">
+                                <i class="icon-earphones-alt"></i>
+                                <span class="title">My Pro (New)</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php  endif;?>
                     <?php if($current_client == 1): ?>
-                    <li class="nav-item <?php echo $site === "EMP" ? "active" : ""; ?>">
-                        <a href="emp_bgl_dashboard_development" class="nav-link" style="color:yellow">
-                            <i class="icon-earphones-alt"></i>
-                            <span class="title">EMP</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item <?php echo $site === "EMP" ? "active" : ""; ?>">
+                            <a href="emp_bgl_dashboard_development" class="nav-link" style="color:yellow">
+                                <i class="icon-earphones-alt"></i>
+                                <span class="title">EMP</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php  endif;?>
                     <?php if($current_userEmployerID == 247 || $current_userEmployerID == 324 || $switch_user_id == 34 || $current_userEmployeeID == 34): ?>
                     <li class="nav-item hide <?php echo $site === "Customer_Relationship_Management" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Customer_Relationship_Management', $current_userEmployerID, $current_userEmployeeID); } ?>">
@@ -3047,207 +3295,208 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif ?>
 
                     <?php if($switch_user_id == 1372): ?>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Production Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Foreign Supplier Verification Program (FSVP) Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Sanitation Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Preventive Maintenance Program (PMP) Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Formulation/Product Realization Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Product Testing Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Environmental Monitoring Program (EMP) Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Records Verification Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Food Fraud Vulnerability Assessment (FFVA) Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Certificate of Analysis (COA) Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Internal Audit (IA) Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Shelf Life Program Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Stability Program Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Food Safety/ HACCP Plan Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Bill of Material (BOM) / Mock Recall Traceability Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Calibration Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Crisis Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Customer Complaint Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Food Safety Culture Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Laboratory Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Inventory Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Storage and Distribution Report Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Sales Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Positive Product Release Program Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Residue Testing Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Purchasing Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">QA/QC Activity Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Receiving Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Production Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Foreign Supplier Verification Program (FSVP) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Sanitation Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Preventive Maintenance Program (PMP) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Formulation/Product Realization Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Product Testing Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Environmental Monitoring Program (EMP) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Records Verification Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Food Fraud Vulnerability Assessment (FFVA) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Certificate of Analysis (COA) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Internal Audit (IA) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Shelf Life Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Stability Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Food Safety/ HACCP Plan Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Bill of Material (BOM) / Mock Recall Traceability Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Calibration Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Crisis Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Customer Complaint Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Food Safety Culture Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Laboratory Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Inventory Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Storage and Distribution Report Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Sales Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Positive Product Release Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Residue Testing Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Purchasing Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">QA/QC Activity Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Receiving Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif ?>
 
 
 
                     <?php
+                        $switch_user_id_array = array(1649, 1680);
                         if ($switch_user_id == 1479) {
                             echo '<li class="nav-item '; echo $site === "forms" OR $site === "module" ? "active" : ""; echo '">
                                 <a href="javascript:;" class="nav-link nav-toggle">
@@ -3271,16 +3520,17 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </li>
                                 </ul>
                             </li>';
-                        } else {
+                        } else if (!in_array($switch_user_id, $switch_user_id_array)) {
+                            // updated by almario (the href values) 2024-10-15
                             echo '<li class="nav-item '; echo $site === "forms" ? "active" : ""; echo '">
-                                <a href="forms" class="nav-link">
+                                <a href="https://interlinkiq.com/customizable-and-versatile-eforms/" class="nav-link" target="_blank">
                                     <i class="icon-docs" style="color: orange !important;"></i>
                                     <span class="title">Forms</span>
                                     <span class="selected"></span>
                                 </a>
                             </li>
                             <li class="nav-item '; echo $site === "module" ? "active" : ""; echo '">
-                                <a href="module" class="nav-link">
+                                <a href="https://interlinkiq.com/tools-module/" class="nav-link" target="_blank">
                                     <i class="icon-social-dropbox" style="color: orange !important;"></i>
                                     <span class="title">Module</span>
                                     <span class="selected"></span>
@@ -3288,51 +3538,54 @@ License: You must have a valid license purchased only from themeforest(the above
                             </li>';
                         }
                     ?>
-                    <li class="nav-item hide <?php echo $site === "forms" ? "active" : ""; ?>">
-                        <a href="forms" class="nav-link">
-                            <i class="icon-docs" style="color: orange !important;"></i>
-                            <span class="title">Forms</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item hide <?php echo $site === "module" ? "active" : ""; ?>">
-                        <a href="module" class="nav-link">
-                            <i class="icon-social-dropbox" style="color: orange !important;"></i>
-                            <span class="title">Module</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item hide <?php echo $site === "pro_services" ? "active" : ""; ?>">
-                        <a href="pro-services" class="nav-link">
-                            <i class="icon-flag" style="color: orange !important;"></i>
-                            <span class="title">Pro-Serives</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
-                        <a href="https://consultareinc.com/shop/" target="_blank" class="nav-link">
-                            <i class="icon-book-open" style="color: orange !important;"></i>
-                            <span class="title">SOPs</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
-                        <a href="https://consultareinc.com/training-ace/" target="_blank" class="nav-link">
-                            <i class="icon-screen-desktop" style="color: orange !important;"></i>
-                            <span class="title">Training Ace</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
-                        <a href="https://consultareinc.com/fda/fda-registration-information-sheet/" target="_blank" class="nav-link">
-                            <i class="icon-pencil" style="color: orange !important;"></i>
-                            <span class="title">FDA Registration</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                    
+                    <?php if(!in_array($switch_user_id, $switch_user_id_array)): ?>
+                        <li class="nav-item hide <?php echo $site === "forms" ? "active" : ""; ?>">
+                            <a href="forms" class="nav-link">
+                                <i class="icon-docs" style="color: orange !important;"></i>
+                                <span class="title">Forms</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item hide <?php echo $site === "module" ? "active" : ""; ?>">
+                            <a href="module" class="nav-link">
+                                <i class="icon-social-dropbox" style="color: orange !important;"></i>
+                                <span class="title">Module</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item hide <?php echo $site === "pro_services" ? "active" : ""; ?>">
+                            <a href="pro-services" class="nav-link">
+                                <i class="icon-flag" style="color: orange !important;"></i>
+                                <span class="title">Pro-Serives</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
+                            <a href="https://consultareinc.com/shop/" target="_blank" class="nav-link">
+                                <i class="icon-book-open" style="color: orange !important;"></i>
+                                <span class="title">SOPs</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
+                            <a href="https://consultareinc.com/training-ace/" target="_blank" class="nav-link">
+                                <i class="icon-screen-desktop" style="color: orange !important;"></i>
+                                <span class="title">Training Ace</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; echo $current_client .' '. $switch_user_id;  ?>">
+                            <a href="https://consultareinc.com/fda/fda-registration-information-sheet/" target="_blank" class="nav-link">
+                                <i class="icon-pencil" style="color: orange !important;"></i>
+                                <span class="title">FDA Registration</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    <?php endif ?>
 
                     <?php
-                        if($current_client == 0) {
+                        if($current_client == 0 AND $switch_user_id != 1680) {
                             $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $switch_user_id" );
                             if ( mysqli_num_rows($hasLibrary) == 0 OR $switch_user_id == 163) {
                                 echo '<li class="nav-item '; echo $site === "pricing" ? "active" : ""; echo '">
@@ -3355,15 +3608,15 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
 
-                    <?php if($user_id == 185 || $user_id == 34 || $user_id == 42 || $user_id == 35 || $user_id== 88 || $user_id== 95 || $user_id== 228 || $user_id== 208): ?>
-                    <li class="nav-item <?php echo $site === "Task_Tracker" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { // echo menu('Task_Tracker', $current_userEmployerID, $current_userEmployeeID); 
-                            } ?>">
-                        <a href="Task_Tracker" class="nav-link">
-                            <i class="icon-earphones-alt"></i>
-                            <span class="title">Task Tracker</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                    <?php if($switch_user_id == 34 AND ($user_id == 43 || $user_id == 34 || $user_id == 42 || $user_id == 35 || $user_id== 88 || $user_id== 95 || $user_id== 228 || $user_id== 208) ): ?>
+                        <li class="nav-item <?php echo $site === "Task_Tracker" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { // echo menu('Task_Tracker', $current_userEmployerID, $current_userEmployeeID); 
+                                } ?>">
+                            <a href="Task_Tracker" class="nav-link">
+                                <i class="icon-earphones-alt"></i>
+                                <span class="title">Task Tracker</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif; ?>
 
                     <?php if($user_id == 34): ?>
@@ -3377,10 +3630,10 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif ?>
 
                     <?php
-                            $query = mysqli_query( $conn,"SELECT * FROM tbl_GetApps left join tbl_appstore on app_id = apps_entities where appType = 'IA' and users_entities = $switch_user_id " );
-                            if ( mysqli_num_rows($query) > 0 ) {                             
-                                while($row = mysqli_fetch_array($query)) {
-                        ?>
+                        $query = mysqli_query( $conn,"SELECT * FROM tbl_GetApps left join tbl_appstore on app_id = apps_entities where appType = 'IA' and users_entities = $switch_user_id " );
+                        if ( mysqli_num_rows($query) > 0 ) {                             
+                            while($row = mysqli_fetch_array($query)) {
+                    ?>
                     <li class="nav-item hide">
                         <a href="<?php echo $row['app_url']; ?>" target="_blank" class="nav-link">
                             <i class="icon-layers"></i>
@@ -3551,7 +3804,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                         <?php echo $breadcrumbs; ?>
                     </ul>
-                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > 0) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
+                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0)) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
                         <!--<div class="page-toolbar <?php //if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > '0') { echo 'hide'; } ?>">-->
                         <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height">
                             Collaborator <i class="icon-settings"></i>

@@ -1132,8 +1132,8 @@
                                                     
                                                     FROM tblFacilityDetails_Permits 
                                                     
-                                                    WHERE user_cookies = $switch_user_id
-                                                    AND Expiration_Date < CURDATE()
+                                                    WHERE Expiration_Date < CURDATE()
+                                                    AND user_cookies = $switch_user_id
                                                     
                                                     UNION ALL
                                                     
@@ -1147,8 +1147,8 @@
                                                     Expiration_Date_Type_Accreditation AS f_date_end
                                                     FROM tblFacilityDetails_Accreditation 
                                                     
-                                                    WHERE user_cookies = $switch_user_id
-                                                    AND Expiration_Date_Type_Accreditation < CURDATE()
+                                                    WHERE Expiration_Date_Type_Accreditation < CURDATE()
+                                                    AND user_cookies = $switch_user_id
                                                     
                                                     UNION ALL
                                                     
@@ -1163,8 +1163,8 @@
                                                     
                                                     FROM tblFacilityDetails_Certification 
                                                     
-                                                    WHERE user_cookies = $switch_user_id
-                                                    AND Expiration_Date_Certification < CURDATE()
+                                                    WHERE Expiration_Date_Certification < CURDATE()
+                                                    AND user_cookies = $switch_user_id
                                                 " );
                                                 if ( mysqli_num_rows($selectData) > 0 ) {
                                                     while($rowData = mysqli_fetch_array($selectData)) {

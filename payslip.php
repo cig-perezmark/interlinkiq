@@ -45,10 +45,42 @@
                                     <?php
                                         $payroll = mysqli_query($payroll_connection,"SELECT * FROM pay WHERE payeeid = $current_userEmployeeID AND (paidstatus = 'process' OR paidstatus = 'paid')  ORDER BY paiddate DESC" );
                                         foreach($payroll as $rows):
+                                            $paiddate = $rows['paiddate'];
+                                            $endDate = $rows['paiddate'];
+                                            $employee = mysqli_query($conn,"SELECT * FROM tbl_hr_employee INNER JOIN tbl_hr_department ON tbl_hr_department.ID = tbl_hr_employee.department_id  WHERE tbl_hr_employee.ID = $current_userEmployeeID " );
+                                            $employees = mysqli_fetch_array($employee);
+                                            $position = mysqli_query($conn,"SELECT * FROM tbl_hr_employee INNER JOIN tbl_hr_job_description ON tbl_hr_job_description.ID = tbl_hr_employee.job_description_id  WHERE tbl_hr_employee.ID = $current_userEmployeeID " );
+                                            $positions = mysqli_fetch_array($position);
+                                            $payroll = mysqli_query($payroll_connection,"SELECT * FROM pay WHERE payeeid = $current_userEmployeeID and paiddate = '$paiddate' AND paidstatus IN ('process', 'paid') " );
+                                            $row= mysqli_fetch_array($payroll);
+                                            $payid = $row['payid'];
+                                            $deductions = mysqli_query($payroll_connection,"SELECT SUM(user_deduction) as total FROM user_deductions WHERE payeeid = $current_userEmployeeID and date_paid = '$paiddate'" );
+                                            $total_deductions= mysqli_fetch_array($deductions);
+                                            
+                                            $payroll_employee_details = mysqli_query($payroll_connection,"SELECT * FROM payee INNER JOIN employee_details ON employee_details.payeeid = payee.payeeid INNER JOIN bankname ON payee.bankno = bankname.bankno WHERE payee.payeeid = $current_userEmployeeID" );
+                                            $row_employee= mysqli_fetch_array($payroll_employee_details);
+                                            $adjustment_deduction = 0;
+                                            if($row['adjustment'] >= 0){
+                                                $adjustment_deduction = $row['adjustment'];
+                                            }
+                                            $bi_pay = $row_employee['pay_rate'] / 2;
+                                            $total_gross_pay = $row['pay_rate'] + $row['royaltee'] + $row['comission'] + $row['incentives'] + $adjustment_deduction + $row['other_fees'] +  $row['bunos'];
+                                            $process_fee = $row['transfer_fee'];
+                                            
+                                            $total_adjustment = 0;
+                                            $adjustment = mysqli_query($payroll_connection,"SELECT paidstatus,paiddate,adjustment,payeeid FROM pay WHERE payeeid = $current_userEmployeeID AND paiddate = '$endDate' AND paidstatus IN ('process', 'paid') " );
+                                            foreach($adjustment as $row){
+                                                if($row['adjustment'] < 0){
+                                                    $total_adjustment += $row['adjustment'];
+                                                }
+                                            }
+                                            $total_adjustment;
+                                            
+                                            $net_pay = $total_gross_pay - abs($total_adjustment) - $total_deductions['total'] - $process_fee;
                                     ?>
                                         <tr>
                                             <td><?= $rows['payid'] ?></td>
-                                            <td><?= "$" ?><?= $rows['amount'] ?></td>
+                                            <td><?= "$" ?><?= $net_pay ?></td>
                                             <td><?= $rows['paiddate'] ?></td>
                                             <td><?= $rows['refno'] ?></td>
                                             <td>Wise</td>

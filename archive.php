@@ -32,24 +32,74 @@
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                    $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_archiving_department ORDER BY name" );
+                                                    // $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_archiving_department ORDER BY name" );
+                                                    $result = mysqli_query( $conn,"
+                                                        SELECT
+                                                        ID,
+                                                        name,
+                                                        count,
+                                                        src
+                                                        FROM (
+                                                            SELECT 
+                                                            ad.ID, 
+                                                            ad.name,
+                                                            COUNT(ad.ID) AS count,
+                                                            '1' AS src
+
+                                                            FROM tbl_archiving_department AS ad
+
+                                                            RIGHT JOIN (
+                                                                SELECT 
+                                                                ID,
+                                                                department_id
+                                                                FROM tbl_archiving
+                                                                WHERE user_id = $switch_user_id
+                                                                AND src = 1
+                                                            ) AS a
+                                                            ON ad.ID = a.department_id
+                                                            
+                                                            GROUP BY ad.ID
+
+                                                            UNION ALL
+
+                                                            SELECT 
+                                                            d.ID,
+                                                            d.title AS name,
+                                                            COUNT(d.ID) AS count,
+                                                            '2' AS src
+                                                            FROM tbl_hr_department AS d
+
+                                                            RIGHT JOIN (
+                                                                SELECT 
+                                                                ID,
+                                                                department_id
+                                                                FROM tbl_archiving
+                                                                WHERE user_id = $switch_user_id
+                                                                AND src = 2
+                                                            ) AS a2
+                                                            ON d.ID = a2.department_id
+
+                                                            WHERE d.deleted = 0 
+                                                            AND d.status = 1 
+                                                            AND d.user_id = $switch_user_id
+                                                            AND d.facility_switch = $facility_switch_user_id
+
+                                                            GROUP BY d.ID
+                                                        ) r
+                                                        GROUP BY r.ID, r.src
+                                                        ORDER BY r.name
+                                                    " );
                                                     if ( mysqli_num_rows($result) > 0 ) {
                                                         while($row = mysqli_fetch_array($result)) {
-                                                            $ID = $row['ID'];
+                                                            $ID = htmlentities($row['ID'] ?? '');
                                                             $name = htmlentities($row['name'] ?? '');
-                                                            $records = 0;
+                                                            $count = $row['count'];
+                                                            $src = $row['src'];
 
-                                                            $selectEForm = mysqli_query( $conn, "SELECT ID FROM tbl_archiving WHERE user_id = $switch_user_id AND department_id = $ID" );
-                                                            if ( mysqli_num_rows($selectEForm) > 0 ) {
-                                                                while($row = mysqli_fetch_array($selectEForm)) {
-                                                                    $records++;
-                                                                }
-                                                            }
-
-                                                            if ($records > 0) {
-                                                                echo '<tr id="tr_'. $ID .'" onclick="btnViewDepartment('. $ID .', '.$FreeAccess.')">
+                                                            if ($count > 0) {
+                                                                echo '<tr id="tr_'. $ID .'" onclick="btnViewDepartment('. $ID .', '.$FreeAccess.', '.$src.')">
                                                                     <td>'. $name .'</td>
-                                                                    <td>'. $records .'</td>
+                                                                    <td>'. $count .'</td>
                                                                 </tr>';
                                                             }
                                                         }
@@ -285,27 +335,125 @@
                                                         <select class="form-control select2" name="department_id" onchange="changeDepartment(this, 1)" style="width: 100%;">
                                                             <option value="">Select</option>
                                                             <?php
-                                                                $result = mysqli_query($conn,"SELECT 
-                                                                    d.ID AS d_ID,
-                                                                    d.name AS d_name
-                                                                    FROM tbl_archiving_department AS d
+                                                                // $result = mysqli_query($conn,"
+                                                                //     SELECT 
+                                                                //     d.ID AS d_ID,
+                                                                //     d.name AS d_name
+                                                                //     FROM tbl_archiving_department AS d
 
-                                                                    LEFT JOIN (
-                                                                        SELECT
-                                                                        *
-                                                                        FROM tbl_archiving
-                                                                    ) AS a
-                                                                    ON a.department_id = d.ID
+                                                                //     LEFT JOIN (
+                                                                //         SELECT
+                                                                //         *
+                                                                //         FROM tbl_archiving
+                                                                //     ) AS a
+                                                                //     ON a.department_id = d.ID
 
-                                                                    WHERE a.user_id = $switch_user_id
+                                                                //     WHERE a.user_id = $switch_user_id
 
-                                                                    GROUP BY d.name
+                                                                //     GROUP BY d.name
 
-                                                                    ORDER BY d.name");
+                                                                //     ORDER BY d.name
+                                                                // ");
+                                                                // $result = mysqli_query($conn,"
+                                                                //     SELECT
+                                                                //     ID,
+                                                                //     name,
+                                                                //     src
+                                                                //     FROM (
+                                                                //         SELECT 
+                                                                //         ad.ID, 
+                                                                //         ad.name,
+                                                                //         '1' AS src
+
+                                                                //         FROM tbl_archiving_department AS ad
+
+                                                                //         RIGHT JOIN (
+                                                                //             SELECT 
+                                                                //             ID,
+                                                                //             department_id
+                                                                //             FROM tbl_archiving
+                                                                //             WHERE user_id = $switch_user_id
+                                                                //             AND src = 1
+                                                                //         ) AS a
+                                                                //         ON ad.ID = a.department_id
+
+                                                                //         UNION ALL
+
+                                                                //         SELECT 
+                                                                //         d.ID,
+                                                                //         d.title AS name,
+                                                                //         '2' AS src
+                                                                //         FROM tbl_hr_department AS d
+
+                                                                //         WHERE d.deleted = 0 
+                                                                //         AND d.status = 1 
+                                                                //         AND d.user_id = $switch_user_id
+                                                                //         AND d.facility_switch = $facility_switch_user_id
+                                                                //     ) r
+                                                                //     GROUP BY r.ID, r.src
+                                                                //     ORDER BY r.name
+                                                                // ");
+                                                                $result = mysqli_query($conn,"
+                                                                    SELECT
+                                                                    ID,
+                                                                    name,
+                                                                    count,
+                                                                    src
+                                                                    FROM (
+                                                                        SELECT 
+                                                                        ad.ID, 
+                                                                        ad.name,
+                                                                        COUNT(ad.ID) AS count,
+                                                                        '1' AS src
+            
+                                                                        FROM tbl_archiving_department AS ad
+            
+                                                                        RIGHT JOIN (
+                                                                            SELECT 
+                                                                            ID,
+                                                                            department_id
+                                                                            FROM tbl_archiving
+                                                                            WHERE user_id = $switch_user_id
+                                                                            AND src = 1
+                                                                        ) AS a
+                                                                        ON ad.ID = a.department_id
+                                                                        
+                                                                        GROUP BY ad.ID
+            
+                                                                        UNION ALL
+            
+                                                                        SELECT 
+                                                                        d.ID,
+                                                                        d.title AS name,
+                                                                        COUNT(d.ID) AS count,
+                                                                        '2' AS src
+                                                                        FROM tbl_hr_department AS d
+            
+                                                                        RIGHT JOIN (
+                                                                            SELECT 
+                                                                            ID,
+                                                                            department_id
+                                                                            FROM tbl_archiving
+                                                                            WHERE user_id = $switch_user_id
+                                                                            AND src = 2
+                                                                        ) AS a2
+                                                                        ON d.ID = a2.department_id
+            
+                                                                        WHERE d.deleted = 0 
+                                                                        AND d.status = 1 
+                                                                        AND d.user_id = $switch_user_id
+                                                                        AND d.facility_switch = $facility_switch_user_id
+            
+                                                                        GROUP BY d.ID
+                                                                    ) r
+                                                                    GROUP BY r.ID, r.src
+                                                                    ORDER BY r.name
+                                                                ");
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $ID = htmlentities($row['d_ID'] ?? '');
-                                                                    $name = htmlentities($row['d_name'] ?? '');
-                                                                    echo '<option value="'. $ID .'">'. $name .'</option>';
+                                                                    $ID = htmlentities($row['ID'] ?? '');
+                                                                    $name = htmlentities($row['name'] ?? '');
+                                                                    $src = $row['src'];
+                                                                    echo '<option value="'.$ID.' | '.$src.'">'. $name .'</option>';
                                                                 }
                                                             ?>
                                                             <option value="other">Other</option>
@@ -598,25 +746,32 @@
                     }
                 });
             }
-            function btnViewDepartment(id, freeaccess) {
+            function btnViewDepartment(id, freeaccess, src) {
+                $('#tableData').DataTable().clear();
+                $('#tableData').DataTable().destroy();
+                $('#tableData body').empty();
                 $.ajax({
                     type: "GET",
-                    url: "function.php?modalViewDepartment_archiving="+id+"&freeaccess="+freeaccess,
+                    url: "function.php?modalViewDepartment_archiving="+id+"&freeaccess="+freeaccess+"&src="+src,
                     dataType: "html",
                     success: function(data){
                         $('#tableDataViewAll').removeClass('hide');
                         $("#tableData tbody").html(data);
+                        $('#tableData').DataTable();
                     }
                 });
             }
             function btnViewDepartmentViewAll(id, freeaccess) {
+                $('#tableData').DataTable().clear();
+                $('#tableData').DataTable().destroy();
+                $('#tableData body').empty();
                 $.ajax({
                     type: "GET",
                     url: "function.php?modalViewDepartmentViewAll_archiving="+id+"&freeaccess="+freeaccess,
                     dataType: "html",
                     success: function(data){
                         $('#tableDataViewAll').addClass('hide');
-                        $("#tableData tbody").html(data);
+                        $('#tableData').DataTable();
                     }
                 });
             }

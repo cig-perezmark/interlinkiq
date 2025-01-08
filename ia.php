@@ -63,6 +63,9 @@
                                                 </li>';
                                             } 
                                             echo '<li>
+                                                <a href="#tabArchive" data-toggle="tab">Archive</a>
+                                            </li>
+                                            <li>
                                                 <a href="#tabHistory" data-toggle="tab">History</a>
                                             </li>
                                         </ul>';
@@ -72,28 +75,28 @@
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="tabTemplate">
                                             <?php
-                                                if ($switch_user_id == 1 OR $switch_user_id == 163) {
+                                                // if ($switch_user_id == 1 OR $switch_user_id == 163) {
                                                     echo '<a href="#modalNew" data-toggle="modal" class="btn btn-circle btn-success pull-right margin-bottom-15" onclick="btnNewIA(1)">Add New Template</a>';
-                                                }
+                                                // }
                                             ?>
                                             
                                             <table class="table table-bordered table-hover" id="tableData" style="width:100%">
                                                 <thead>
                                                     <tr class="bg-default">
-                                                        <th>Audit Title</th>
+                                                        <th style="width: 400px;">Audit Title</th>
                                                         <th>Description</th>
-                                                        <th>Date</th>
+                                                        <th class="text-center" style="width: 90px;">Date</th>
                                                         <th class="text-center" style="width: 135px;">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        $selectIA = mysqli_query( $conn,"SELECT * FROM tbl_ia WHERE is_generated = 0 AND deleted = 0 AND (user_id = $switch_user_id OR user_id = $current_userID)" );
+                                                        $selectIA = mysqli_query( $conn,"SELECT * FROM tbl_ia WHERE facility_switch = $facility_switch_user_id AND is_generated = 0 AND deleted = 0 AND (user_id = $switch_user_id OR user_id = $current_userID) ORDER BY last_modified DESC" );
                                                         if ( mysqli_num_rows($selectIA) > 0 ) {
                                                             while($ia = mysqli_fetch_array($selectIA)) {
                                                                 $ia_ID = $ia['ID'];
-                                                                $ia_title = $ia['title'];
-                                                                $ia_description = $ia['description'];
+                                                                $ia_title = htmlentities($ia['title'] ?? '');
+                                                                $ia_description = htmlentities($ia['description'] ?? '');
 
                                                                 $ia_last_modified = $ia['last_modified'];
                                                                 $ia_last_modified = new DateTime($ia_last_modified);
@@ -102,7 +105,7 @@
                                                                 echo '<tr id="tr_'.$ia_ID.'">
                                                                     <td>'.stripcslashes($ia_title).'</td>
                                                                     <td>'.stripcslashes($ia_description).'</td>
-                                                                    <td>'.$ia_last_modified.'</td>
+                                                                    <td class="text-center">'.$ia_last_modified.'</td>
                                                                     <td class="text-center">';
 
                                                                         if ($switch_user_id == 163) {
@@ -139,24 +142,24 @@
                                                         <th>Inspected by</th>
                                                         <th>Auditee</th>
                                                         <th>Verified by</th>
-                                                        <th class="text-center" style="width: 125px;">Start date</th>
-                                                        <th class="text-center" style="width: 125px;">End date</th>
+                                                        <th class="text-center" style="width: 90px;">Start date</th>
+                                                        <th class="text-center" style="width: 90px;">End date</th>
                                                         <th>Audit Scope</th>
                                                         <th class="text-center" style="width: 125px;">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        $selectForm = mysqli_query( $conn,"SELECT * FROM tbl_ia_form WHERE status = 1 AND deleted = 0 AND (user_id = $switch_user_id OR user_id = $current_userID)" );
+                                                        $selectForm = mysqli_query( $conn,"SELECT * FROM tbl_ia_form WHERE facility_switch = $facility_switch_user_id AND status = 1 AND deleted = 0 AND (user_id = $switch_user_id OR user_id = $current_userID)" );
                                                         if ( mysqli_num_rows($selectForm) > 0 ) {
                                                             while($rowForm = mysqli_fetch_array($selectForm)) {
                                                                 $form_ID = $rowForm['ID'];
-                                                                $form_organization = $rowForm['organization'];
-                                                                $form_audit_type = $rowForm['audit_type'];
-                                                                $form_inspected_by = $rowForm['inspected_by'];
-                                                                $form_auditee = $rowForm['auditee'];
-                                                                $form_verified_by = $rowForm['verified_by'];
-                                                                $form_audit_scope = $rowForm['audit_scope'];
+                                                                $form_organization = htmlentities($rowForm['organization'] ?? '');
+                                                                $form_audit_type = htmlentities($rowForm['audit_type'] ?? '');
+                                                                $form_inspected_by = htmlentities($rowForm['inspected_by'] ?? '');
+                                                                $form_auditee = htmlentities($rowForm['auditee'] ?? '');
+                                                                $form_verified_by = htmlentities($rowForm['verified_by'] ?? '');
+                                                                $form_audit_scope = html_entity_decode($rowForm['audit_scope'] ?? '');
 
                                                                 $form_date_start = $rowForm['date_start'];
                                                                 $form_date_start = new DateTime($form_date_start);
@@ -170,7 +173,7 @@
                                                                 $selectFormIA = mysqli_query( $conn,"SELECT * FROM tbl_ia WHERE ID = $form_ia_id" );
                                                                 if ( mysqli_num_rows($selectFormIA) > 0 ) {
                                                                     $rowFormIA = mysqli_fetch_array($selectFormIA);
-                                                                    $form_title = $rowFormIA['title'];
+                                                                    $form_title = htmlentities($rowFormIA['title'] ?? '');
                                                                 }
 
                                                                 echo '<tr id="tr_'.$form_ID.'">
@@ -185,7 +188,7 @@
                                                                     <td>'.$form_audit_scope.'</td>
                                                                     <td class="text-center">
                                                                         <a href="'.$base_url.'ia-form?t=2&i='.$form_ID.'" class="btn btn-xs dark m-0" title="Generate Form" target="_blank"><i class="fa fa-pencil"></i></a>
-                                                                        <a href="'.$base_url.'pdf_dom?id='.$form_ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+                                                                        <a href="'.$base_url.'pdf_ia?id='.$form_ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
                                                                         <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$form_ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                                                                         <a href="javascript:;" class="btn btn-xs btn-info m-0" onclick="btnCloseForm(this, '.$form_ID.')" title="Close"><i class="fa fa-check"></i></a>
                                                                     </td>
@@ -206,24 +209,24 @@
                                                         <th>Inspected by</th>
                                                         <th>Auditee</th>
                                                         <th>Verified by</th>
-                                                        <th class="text-center" style="width: 125px;">Start date</th>
-                                                        <th class="text-center" style="width: 125px;">End date</th>
+                                                        <th class="text-center" style="width: 90px;">Start date</th>
+                                                        <th class="text-center" style="width: 90px;">End date</th>
                                                         <th>Audit Scope</th>
                                                         <th class="text-center" style="width: 125px;">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        $selectForm = mysqli_query( $conn,"SELECT * FROM tbl_ia_form WHERE status = 0 AND deleted = 0 AND (user_id = $switch_user_id OR user_id = $current_userID)" );
+                                                        $selectForm = mysqli_query( $conn,"SELECT * FROM tbl_ia_form WHERE facility_switch = $facility_switch_user_id AND status = 0 AND deleted = 0 AND (user_id = $switch_user_id OR user_id = $current_userID)" );
                                                         if ( mysqli_num_rows($selectForm) > 0 ) {
                                                             while($rowForm = mysqli_fetch_array($selectForm)) {
                                                                 $form_ID = $rowForm['ID'];
-                                                                $form_organization = $rowForm['organization'];
-                                                                $form_audit_type = $rowForm['audit_type'];
-                                                                $form_inspected_by = $rowForm['inspected_by'];
-                                                                $form_auditee = $rowForm['auditee'];
-                                                                $form_verified_by = $rowForm['verified_by'];
-                                                                $form_audit_scope = $rowForm['audit_scope'];
+                                                                $form_organization = htmlentities($rowForm['organization'] ?? '');
+                                                                $form_audit_type = htmlentities($rowForm['audit_type'] ?? '');
+                                                                $form_inspected_by = htmlentities($rowForm['inspected_by'] ?? '');
+                                                                $form_auditee = htmlentities($rowForm['auditee'] ?? '');
+                                                                $form_verified_by = htmlentities($rowForm['verified_by'] ?? '');
+                                                                $form_audit_scope = html_entity_decode($rowForm['audit_scope'] ?? '');
 
                                                                 $form_date_start = $rowForm['date_start'];
                                                                 $form_date_start = new DateTime($form_date_start);
@@ -237,7 +240,7 @@
                                                                 $selectFormIA = mysqli_query( $conn,"SELECT * FROM tbl_ia WHERE ID = $form_ia_id" );
                                                                 if ( mysqli_num_rows($selectFormIA) > 0 ) {
                                                                     $rowFormIA = mysqli_fetch_array($selectFormIA);
-                                                                    $form_title = $rowFormIA['title'];
+                                                                    $form_title = htmlentities($rowFormIA['title'] ?? '');
                                                                 }
 
                                                                 echo '<tr id="tr_'.$form_ID.'">
@@ -251,8 +254,45 @@
                                                                     <td class="text-center">'.$form_date_end.'</td>
                                                                     <td>'.$form_audit_scope.'</td>
                                                                     <td class="text-center">
-                                                                        <a href="'.$base_url.'pdf_dom?id='.$form_ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+                                                                        <a href="'.$base_url.'pdf_ia?id='.$form_ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
                                                                         <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$form_ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
+                                                                    </td>
+                                                                </tr>';
+                                                            }
+                                                        }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="tab-pane" id="tabArchive">
+                                            <table class="table table-bordered table-hover" id="tableDataArchive" style="width:100%">
+                                                <thead>
+                                                    <tr class="bg-default">
+                                                        <th>Audit Title</th>
+                                                        <th>Description</th>
+                                                        <th class="text-center" style="width: 90px;">Date</th>
+                                                        <th class="text-center" style="width: 135px;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                        $selectIA = mysqli_query( $conn,"SELECT * FROM tbl_ia WHERE facility_switch = $facility_switch_user_id AND is_generated = 0 AND deleted = 0 AND (user_id = $switch_user_id OR user_id = $current_userID)" );
+                                                        if ( mysqli_num_rows($selectIA) > 0 ) {
+                                                            while($ia = mysqli_fetch_array($selectIA)) {
+                                                                $ia_ID = $ia['ID'];
+                                                                $ia_title = htmlentities($ia['title'] ?? '');
+                                                                $ia_description = htmlentities($ia['description'] ?? '');
+
+                                                                $ia_last_modified = $ia['last_modified'];
+                                                                $ia_last_modified = new DateTime($ia_last_modified);
+                                                                $ia_last_modified = $ia_last_modified->format('M d, Y');
+
+                                                                echo '<tr id="tr_'.$ia_ID.'">
+                                                                    <td>'.stripcslashes($ia_title).'</td>
+                                                                    <td>'.stripcslashes($ia_description).'</td>
+                                                                    <td class="text-center">'.$ia_last_modified.'</td>
+                                                                    <td class="text-center">
+                                                                        <a href="'.$base_url.'ia-form?t=4&i='.$ia_ID.'" class="btn btn-xs btn-success m-0" title="View" target="_blank"><i class="fa fa-search"></i></a>
                                                                     </td>
                                                                 </tr>';
                                                             }
@@ -321,6 +361,7 @@
 
                                                             WHERE h.deleted = 0 
                                                             AND h.user_id = $switch_user_id
+                                                            AND h.facility_switch = $facility_switch_user_id
 
                                                             ORDER BY ID DESC" );
                                                         if ( mysqli_num_rows($selectHistory) > 0 ) {
@@ -420,7 +461,7 @@
                                     <form method="post" class="form-horizontal modalForm modalNewSheet">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Sheet Details</h4>
+                                            <h4 class="modal-title">Section Details</h4>
                                         </div>
                                         <div class="modal-body"></div>
                                         <div class="modal-footer modal-footer--sticky bg-white">
@@ -437,7 +478,7 @@
                                     <form method="post" class="form-horizontal modalForm modalViewSheet">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Sheet Details</h4>
+                                            <h4 class="modal-title">Section Details</h4>
                                         </div>
                                         <div class="modal-body"></div>
                                         <div class="modal-footer modal-footer--sticky bg-white">
@@ -574,15 +615,19 @@
                 // fancyBoxes();
                 // widget_inputTag();
                 
-                $('#tableData, #tableDataOpen, #tableDataClose, #tableDataHistory').DataTable();
+                $('#tableData').DataTable({
+                    order: [[2, 'desc']]
+                });
+                $('#tableDataOpen, #tableDataClose, #tableDataHistory').DataTable();
             });
 
             function selectType(e) {
                 if (e.value == 1 || e.value == 3 || e.value == 4) {
                     $(e).parent().next().html('<input type="hidden" name="formatID[]" value="0" /><input type="text" class="form-control" name="label[]" placeholder="Label" required />');
                 } else if (e.value == 2) {
-                    $(e).parent().next().html('<input type="hidden" name="formatID[]" value="0" /><input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" required />');
-                    widget_inputTag();
+                    $(e).parent().next().html('<input type="hidden" name="formatID[]" value="0" /><input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" value="Yes,No,NA" readonly />');
+                    // $(e).parent().next().html('<input type="hidden" name="formatID[]" value="0" /><input type="text" class="form-control tagsinput" name="label[]" data-role="tagsinput" placeholder="Enter Options" required />');
+                    // widget_inputTag();
                 } else {
                     $(e).parent().next().html('');
                 }
@@ -763,7 +808,7 @@
                         data += '<select class="form-control" name="type[]" onchange="selectType(this)">';
                             data += '<option value="0" SELECTED>Select Type</option>';
                             data += '<option value="1">Text</option>';
-                            data += '<option value="2">Radio Button</option>';
+                            data += '<option value="2">Yes, No, NA</option>';
                             data += '<option value="3">Date</option>';
                             // data += '<option value="4">File Upload</option>';
                         data += '</select>';
@@ -1137,7 +1182,7 @@
                         success: function(response){
                             // $(e).parent().parent().remove();
 
-                            var view = '<a href="pdf_dom?id='+row+'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>';
+                            var view = '<a href="pdf_ia?id='+row+'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>';
                             view += ' <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '+row+')" title="Move to Archive"><i class="fa fa-archive"></i></a>';
 
                             $('#tableDataOpen tbody #tr_'+row+' td').last().html(view);
@@ -1407,7 +1452,7 @@
                             msg = "Sucessfully Save!";
 
                             var obj = jQuery.parseJSON(response);
-                            $("#tableData tbody").append(obj.data);
+                            $("#tableData tbody").prepend(obj.data);
                             
                             $("#modalNew .modal-body").html('');
                             $('#modalNew').modal('hide');

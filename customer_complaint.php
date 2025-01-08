@@ -93,7 +93,7 @@
                                                 else if($row['complaint_category'] == 1){ $complaint_category = 'Caused Illness or Injury'; }
                                                 else if($row['complaint_category'] == 2){ $complaint_category = 'Foreign Material in Cannabis Product Container'; }
                                                 else if($row['complaint_category'] == 3){ $complaint_category = 'Foul Odor'; }
-                                                else if($row['complaint_category'] == 4){ $complaint_category = 'Improper Packaging'; }
+                                                else if($row['complaint_category'] == 4){ $complaint_category = 'Defective or Damaged Packaging'; }
                                                 else if($row['complaint_category'] == 5){ $complaint_category = 'Incorrect Concentration of Cannabinoids'; }
                                                 else if($row['complaint_category'] == 6){ $complaint_category = 'Mislabeling'; }
                                                 

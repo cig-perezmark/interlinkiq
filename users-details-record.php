@@ -73,7 +73,7 @@
                                     </thead>
                                     <?php
                                         $i = 1;
-                                        $result = mysqli_query($conn, "SELECT first_name, last_name, email FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
+                                        $result = mysqli_query($conn, "SELECT first_name, last_name, email FROM tbl_user WHERE deleted = 0 AND client = $current_client ORDER BY ID desc");
                                         while($row = mysqli_fetch_array($result)) {?> 
                                         <tbody>
                                             <tr>

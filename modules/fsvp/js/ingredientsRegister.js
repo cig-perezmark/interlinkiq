@@ -44,6 +44,10 @@ $(function () {
 
         const data = new FormData(form);
 
+        // signatures
+        data.append('reviewer_sign', $('#reviewer_signature').eSign("getData"));
+        data.append('approver_sign', $('#approver_signature').eSign("getData"));
+
         var l = Ladda.create(this.querySelector('[type=submit]'));
         l.start();
 
@@ -89,9 +93,27 @@ $(function () {
         $('#importerSelect').multiselect('select', [data.importer_id])
         $('#iprTitle').text('Edit Details');
 
+        // set comment
+        $('#cbpComment').val(data.comments);
+    
+        // set reviewer info
+        $('#revName').val(data.reviewed_by);
+        $('#revDate').val(data.review_date);
+        $('#reviewer_signature').eSign("set", data.reviewed_by_sign);
+
+        // set approver info
+        $('#apbName').val(data.approved_by);
+        $('#apbDate').val(data.approve_date);
+        $('#approver_signature').eSign("set", data.approved_sign);
+        
+
         $('#modalIngProdReg').modal('show');
     });
-
+    
+    $('#modalIngProdReg').on('show.bs.modal', function() {
+        $('.signature__').eSign();
+    })
+    ;
     $('#modalIngProdReg').on('hidden.bs.modal', function() {
         $('#modalIngProdReg .form-group:has(#productSelect2)').show();
         $('#modalIngProdReg .form-control').val('');
@@ -100,6 +122,7 @@ $(function () {
         $('#importerSelect').multiselect('select', '')
         $('#iprTitle').text('Add Product');
         importerSelect.reset();
+        $('.signature__').eSign('destroy');
     });
 });
 

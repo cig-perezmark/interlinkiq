@@ -57,7 +57,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Attach Reference File</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" type="file" name="file" />
+                                                <input class="form-control" type="file" name="file[]" multiple />
                                             </div>
                                         </div>
                                         <div class="form-group" id="serviceDesiredDueDate">
@@ -265,6 +265,113 @@
                                                 }
                                             ?>
                                         </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- new task modal -->
+                    <div class="modal fade" id="modalnewSL" tabindex="-1" role="newTask" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                    <h4 class="modal-title">New Task</h4>
+                                </div>
+                                <form class="form-horizontal modalnewSL" role="form">
+                                    <div class="modal-body">
+                                        <div class="form-body">
+                                            <input type="hidden" name="_token" value="<?= isset($_COOKIE['ID']) ? $_COOKIE['ID'] : 'none' ?>">
+                                            <div class="alert alert-danger display-hide">
+                                                <button class="close" data-close="alert"></button>
+                                                Please provide the complete information of the task.
+                                            </div>
+                                            <div class="alert alert-success display-hide">
+                                                <button class="close" data-close="alert"></button>
+                                                Data submitted successfuly!
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Task Owner</label>
+                                                <div class="col-md-8">
+                                                    <p class="form-control-static" style="font-weight: 600;">
+                                                        <?php
+                                                            $i = 1;
+                                                            $result = mysqli_query($conn, "SELECT * from tbl_user where ID = $current_userID ");
+                                                            $row = mysqli_fetch_array($result);
+                                                            echo htmlentities($row['first_name'] ?? '') .' '. htmlentities($row['last_name'] ?? '');
+                                                        ?>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_description" class="col-md-3 control-label">Description</label>
+                                                <div class="col-md-8">
+                                                    <textarea class="form-control" name="description" id="task_description" rows="3" placeholder="Describe your task"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_action" class="col-md-3 control-label">Action</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control mt-multiselect" name="action" id="task_action">
+                                                        <?php
+                                                            $actions = $conn->query("SELECT name FROM tbl_service_logs_actions WHERE deleted = 0 ORDER BY name");
+                                                            if(mysqli_num_rows($actions) > 0) {
+                                                                while($row = $actions->fetch_assoc()) {
+                                                                    echo "<option value='{$row['name']}'>{$row['name']}</option>";
+                                                                }
+                                                            } else {
+                                                                echo "<option><i>No items found.</i></option>";
+                                                            }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_comment" class="col-md-3 control-label">Comment</label>
+                                                <div class="col-md-8">
+                                                    <textarea class="form-control" name="comment" id="task_comment" placeholder="Add comment" rows="3"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_account" class="col-md-3 control-label">Account</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control mt-multiselect" name="account" id="task_account">
+                                                        <?php
+                                                            $accounts = $conn->query("SELECT * FROM tbl_service_logs_accounts WHERE owner_pk = $switch_user_id order by name ASC");
+                                                            if(mysqli_num_rows($accounts) > 0) {
+                                                                while($row = $accounts->fetch_assoc()) {
+                                                                    echo "<option value='{$row['name']}'>{$row['name']}</option>";
+                                                                }
+                                                            } else {
+                                                                echo "<option><i>No items found.</i></option>";
+                                                            }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="taskdate" class="col-md-3 control-label">Task Date</label>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" type="date" name="task_date" value="<?php echo date('Y-m-d'); ?>" id="taskdate">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_minute" class="col-md-3 control-label">Minute</label>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" name="minute" id="task_minute" type="number" min="0.1" step="0.1">
+                                                </div>
+                                            </div>
+                                            <button type="submit" id="task_submit_btn" style="display: none;"></button>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <?php if(!empty($_COOKIE['ID'])){ ?>
+                                            <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                                            <input type="submit" class="btn green" name="btnSave_SL" id="btnSave_SL" value="Submit" />
+                                        <?php }else{ ?>
+                                            <i>Your Cookies has expired please relogin. Thank you</i>
+                                        <?php } ?>
                                     </div>
                                 </form>
                             </div>
@@ -1229,7 +1336,8 @@
 
                     <script src="<?=$base_url?>assets/global/plugins/jstree/dist/jstree.min.js" type="text/javascript"></script>
 
-                    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+                    <!--<script type="text/javascript" src="//cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>-->
+                    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 
                     <script src="<?=$base_url?>assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
                     <script src="<?=$base_url?>assets/global/plugins/ladda/ladda.min.js" type="text/javascript"></script>
@@ -1272,6 +1380,8 @@
                     <script src="<?=$base_url?>assets/layouts/global/scripts/quick-nav.min.js" type="text/javascript"></script>
 
                     <script src="<?=$base_url?>assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
+                    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.min.js" type="text/javascript"></script>-->
+                    <!--<script src="//cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" type="text/javascript"></script>-->
 
                     <!-- END THEME LAYOUT SCRIPTS -->
 
@@ -1294,6 +1404,7 @@
                         
                         
                             selectMulti();
+                            fancyBoxes();
                         
                             var count_Facility = $('#menuFacility ul > li.hide').length;
                             if (count_Facility < 4) {
@@ -1489,27 +1600,37 @@
                         function fancyBoxes() {
                             Fancybox.bind('[data-fancybox]', {
                                 Toolbar: {
-                                    display: [{
-                                            id: "prev",
-                                            position: "center"
-                                        },
-                                        {
-                                            id: "counter",
-                                            position: "center"
-                                        },
-                                        {
-                                            id: "next",
-                                            position: "center"
-                                        },
-                                        "zoom",
-                                        "slideshow",
-                                        "fullscreen",
-                                        "download",
-                                        "thumbs",
-                                        "close",
-                                    ],
+                                    // display: [{
+                                    //         id: "prev",
+                                    //         position: "center"
+                                    //     },
+                                    //     {
+                                    //         id: "counter",
+                                    //         position: "center"
+                                    //     },
+                                    //     {
+                                    //         id: "next",
+                                    //         position: "center"
+                                    //     },
+                                    //     "zoom",
+                                    //     "slideshow",
+                                    //     "fullscreen",
+                                    //     "download",
+                                    //     "thumbs",
+                                    //     "close",
+                                    // ],
+                                    
+                                    display: {
+                                      left: ["infobar"],
+                                      middle: [],
+                                      right: ["slideshow", "download", "thumbs", "close"],
+                                    },
                                 },
                             });
+                            
+                            // Fancybox.bind('[data-fancybox]', {
+                            //     // Your custom options
+                            // }); 
                         }
                         
                         function selectMulti() {
@@ -1588,7 +1709,7 @@
                                 cache: false,
                                 success: function(response) {
                                     if ($.trim(response)) {
-                                        msg = "Sucessfully Save!";
+                                        msg = " Job Ticket Submission Confirmed!";
                                         var obj = jQuery.parseJSON(response);
                         
                                         var html = '<tr id="tr_' + obj.ID + '">';
@@ -1597,11 +1718,7 @@
                                         html += '<td>';
                                         html += '<p style="margin: 0;"><b>' + obj.title + '</b></p>';
                                         html += '<p style="margin: 0;">' + obj.description + '</p>';
-                        
-                                        if (obj.files != "") {
-                                            html += '<p style="margin: 0;">' + obj.files + '</p>';
-                                        }
-                        
+                                        html += obj.files;
                                         html += '</td>';
                                         html += '<td>';
                                         html += '<p style="margin: 0;">' + obj.contact + '</p>';
@@ -1625,6 +1742,30 @@
                                     }
                                     l.stop();
                         
+                                    bootstrapGrowl(msg);
+                                }
+                            });
+                        }));;
+                        
+                        $(".modalnewSL").on('submit', (function(e) {
+                            e.preventDefault();
+                        
+                            formObj = $(this);
+                            if (!formObj.validate().form()) return false;
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnSave_SL', true);
+                        
+                            $.ajax({
+                                url: "task_service_log/private/add_new_task.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                cache: false,
+                                success: function(response) {
+                                    $('#modalnewSL').modal('hide');
+                                    msg = "Sucessfully Save!";
                                     bootstrapGrowl(msg);
                                 }
                             });
@@ -2014,62 +2155,68 @@
 
                     <!-- SET AUTO LOGOUT -->
                     <script>
-function storageChange(event) {
-    if (event.key === 'islogin') {
-        window.location.href = "login";
-    }
-}
-window.addEventListener('storage', storageChange, false)
+                        function storageChange(event) {
+                            if (event.key === 'islogin') {
+                                window.location.href = "login";
+                            }
+                        }
+                        window.addEventListener('storage', storageChange, false)
                     </script>
 
 
                     <!--SET AUTO LOCK-->
                     <script type="text/javascript">
-$(function() {
-    var id = '<?php echo $current_userID; ?>';
-    $('.60Left').on('click', function(e) {
-        e.preventDefault();
-        $.jTimeout.reset(10);
-        $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
-    });
-
-    $('.1440Left').on('click', function(e) {
-        e.preventDefault();
-        $.jTimeout.reset();
-        $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
-    });
-
-    $('.0Left').on('click', function(e) {
-        e.preventDefault();
-        $.jTimeout.reset(0);
-        $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
-    });
-    $.jTimeout({
-        /* For this example only */
-        flashTitle: false,
-        'onClickExtend': function(jTimeout) {
-            $('.jAlert').closeAlert();
-            $.jTimeout().resetExpiration();
-        },
-        'timeoutAfter': 6000,
-        'extendOnMouseMove': true,
-        'mouseDebounce': 5,
-        'logoutUrl': 'function.php?logout=' + id,
-        'onTimeout': function(jTimeout) {
-            window.location.href = "locked";
-        },
-        secondsPrior: 30
-    });
-
-    var timer,
-        setTimer = function() {
-            timer = window.setInterval(function() {
-                $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
-            }, 1000);
-        };
-
-    setTimer();
-});
+                        $(function() {
+                            var id = '<?php echo $current_userID; ?>';
+            				var sui = '<?php echo $switch_user_id; ?>';
+			                var cc = '<?php echo $_COOKIE["client"]; ?>';
+            
+            				lo = 600;
+            				if (sui == 1486 || cc == 11) { lo = 1800; }
+            				
+                            $('.60Left').on('click', function(e) {
+                                e.preventDefault();
+                                $.jTimeout.reset(60);
+                                $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
+                            });
+                        
+                            $('.1440Left').on('click', function(e) {
+                                e.preventDefault();
+                                $.jTimeout.reset();
+                                $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
+                            });
+                        
+                            $('.0Left').on('click', function(e) {
+                                e.preventDefault();
+                                $.jTimeout.reset(0);
+                                $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
+                            });
+                            $.jTimeout({
+                                /* For this example only */
+                                flashTitle: false,
+                                'onClickExtend': function(jTimeout) {
+                                    $('.jAlert').closeAlert();
+                                    $.jTimeout().resetExpiration();
+                                },
+                                'timeoutAfter': 600,
+                                'extendOnMouseMove': true,
+                                'mouseDebounce': 5,
+                                'logoutUrl': 'function.php?logout=' + id,
+                                'onTimeout': function(jTimeout) {
+                                    window.location.href = "locked";
+                                },
+                                secondsPrior: 30
+                            });
+                        
+                            var timer,
+                                setTimer = function() {
+                                    timer = window.setInterval(function() {
+                                        $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
+                                    }, 1000);
+                                };
+                        
+                            setTimer();
+                        });
                     </script>
 
                     <?php if(function_exists('closeDBConnection')) closeDBConnection(); ?>

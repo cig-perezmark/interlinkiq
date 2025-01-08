@@ -50,7 +50,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">
-                    <span data-edit-span style="display:none;">Edit </span>
+                    <span data-edit-span>Edit </span>
                     FSVP Activity(ies) Worksheet
                 </h4>
             </div>
@@ -211,6 +211,16 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- comments -->
+                 <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="awComments">Comment</label>
+                            <textarea name="comments" id="awComments" class="form-control" placeholder="Comments"></textarea>
+                        </div>
+                    </div>
+                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>

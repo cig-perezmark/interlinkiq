@@ -61,6 +61,8 @@ if( isset($_GET['GetDetails']) ) {
                                 <tr>
                                     <th>Action Details</th>
                                     <th>Assigned To</th>
+                                    <th>Request Date</th>
+                                    <th>Start Date</th>
                                     <th>Due Date</th>
                                     <th>Status</th>
                                     <th></th>
@@ -90,7 +92,9 @@ if( isset($_GET['GetDetails']) ) {
                                                }
                                             ?>
                                         </td>
-                                        <td><?php echo date('Y-m-d', strtotime($row_open['target_due_date'])); ?></td>
+                                        <td><?php echo $row_open['target_request_date']; ?></td>
+                                        <td><?php echo $row_open['target_start_date']; ?></td>
+                                        <td><?php echo $row_open['target_due_date']; ?></td>
                                         <td><?php echo $row_open['status']; ?></td>
                                         <td width="60px">
                                             <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $row_open['action_id']; ?>">
@@ -121,6 +125,8 @@ if( isset($_GET['GetDetails']) ) {
                                 <tr>
                                     <th>Action Details</th>
                                     <th>Assigned To</th>
+                                    <th>Request Date</th>
+                                    <th>Start Date</th>
                                     <th>Due Date</th>
                                     <th>Status</th>
                                     <th></th>
@@ -150,7 +156,9 @@ if( isset($_GET['GetDetails']) ) {
                                                }
                                             ?>
                                         </td>
-                                        <td><?php echo date('Y-m-d', strtotime($row_Follow['target_due_date'])); ?></td>
+                                        <td><?php echo $row_Follow['target_request_date']; ?></td>
+                                        <td><?php echo $row_Follow['target_start_date']; ?></td>
+                                        <td><?php echo $row_Follow['target_due_date']; ?></td>
                                         <td><?php echo $row_Follow['status']; ?></td>
                                         <td width="60px">
                                                 <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $row_Follow['action_id']; ?>">
@@ -182,6 +190,8 @@ if( isset($_GET['GetDetails']) ) {
                                 <tr>
                                     <th>Action Details</th>
                                     <th>Assigned To</th>
+                                    <th>Request Date</th>
+                                    <th>Start Date</th>
                                     <th>Due Date</th>
                                     <th>Status</th>
                                     <th></th>
@@ -211,7 +221,9 @@ if( isset($_GET['GetDetails']) ) {
                                                }
                                             ?>
                                         </td>
-                                        <td><?php echo date('Y-m-d', strtotime($row_Close['target_due_date'])); ?></td>
+                                        <td><?php echo $row_Close['target_request_date']; ?></td>
+                                        <td><?php echo $row_Close['target_start_date']; ?></td>
+                                        <td><?php echo $row_Close['target_due_date']; ?></td>
                                         <td><?php echo $row_Close['status']; ?></td>
                                         <td width="60px">
                                             <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $row_Close['action_id']; ?>">
@@ -813,7 +825,8 @@ if( isset($_GET['postDetails2']) ) {
                                         }
                                     }
                                     
-                                    $queryPres = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id or user_id = 34 order by first_name ASC";
+                                    // $queryPres = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id or user_id = 34 order by first_name ASC";
+                                    $queryPres = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id order by first_name ASC";
                                     $resultPres = mysqli_query($conn, $queryPres);
                                     while($rowPres = mysqli_fetch_array($resultPres)) { 
                                         echo '<option value="'.$rowPres['ID'].'" '; echo $row_proj['presider'] == $rowPres['ID'] ? 'selected' : ''; echo'>'.$rowPres['first_name'].' '.$rowPres['last_name'].'</option>'; 
@@ -974,35 +987,40 @@ if( isset($_GET['postDetails2']) ) {
                     <div class="col-md-12">
                          <div class="table-responsive">
                             <table class="table table-bordered" >
-                                <thead>
-                                    <th>Action Items</th>
-                                    <th>Assign to</th>
-                                    <th>Due Date</th>
-                                    <th>Status</th>
-                                </thead>
                                 <tbody id="dynamic_field2">
                                     <tr>
-                                        <td><input type="text" name="action_details[]" placeholder="Action Items" class="form-control action_list" /></td>
                                         <td>
+                                            <label class="control-label">Action Item</label>
+                                            <input class="form-control action_list" name="action_details[]" placeholder="Action Items"><br>
+                                            
+                                            <label class="control-label">Action Item</label>
                                             <select class="form-control name_list" type="text" name="assigned_to[]">
                                                 <option value="0">---Select---</option>
                                                 <?php
-                                                    $query_App = "SELECT * FROM tbl_hr_employee where user_id = $user_id or user_id = 34 order by first_name ASC";
-                                                $result_App = mysqli_query($conn, $query_App);
-                                                while($row_App = mysqli_fetch_array($result_App))
-                                                     { 
+                                                    // $query_App = "SELECT * FROM tbl_hr_employee where user_id = $user_id or user_id = 34 order by first_name ASC";
+                                                    $result_App = mysqli_query($conn, "SELECT * FROM tbl_hr_employee where user_id = $user_id order by first_name ASC");
+                                                    while($row_App = mysqli_fetch_array($result_App)) { 
                                                        echo '<option value="'.$row_App['ID'].'">'.$row_App['first_name'].'</option>'; 
-                                                   }
-                                                 ?>
-                                            </select>
-                                        </td>
-                                        <td><input type="date" name="target_due_date[]" placeholder="Due Date" class="form-control duedate" value="<?= date('Y-m-d', strtotime(date('Y-m-d'))); ?>"></td>
-                                        <td>
+                                                    }
+                                                ?>
+                                            </select><br>
+                                            
+                                            <label class="control-label">Status</label>
                                             <select class="form-control status_s" type="text" name="status[]">
                                                 <option value="Open">Open</option>
                                                 <option value="Follow Up">Follow Up</option>
                                                 <option value="Close">Close</option>
                                             </select>
+                                        </td>
+                                        <td>
+                                            <label class="control-label">Request Date</label>
+                                            <input type="date" name="target_request_date[]" placeholder="Request Date" class="form-control requestdate" value="<?= date('Y-m-d'); ?>"><br>
+                                            
+                                            <label class="control-label">Start Date</label>
+                                            <input type="date" name="target_start_date[]" placeholder="Start Date" class="form-control startdate" value="<?= date('Y-m-d'); ?>"><br>
+                                            
+                                            <label class="control-label">Due Date</label>
+                                            <input type="date" name="target_due_date[]" placeholder="Due Date" class="form-control duedate" value="<?= date('Y-m-d'); ?>">
                                         </td>
                                         <td><button type="button" name="update_btn" id="update_btn" class="btn btn-success">Add</button></td>
                                     </tr>
@@ -1014,12 +1032,14 @@ if( isset($_GET['postDetails2']) ) {
                     <button type="submit" class="btn green ladda-button" name="btnSave_details2" id="btnSave_details2" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                 </div>
                 <div class="tab-pane" id="tabAction">
-                    <a href="#modal_add_action_item" data-toggle="modal" class="btn green btn-xs" type="button" id="add_action" data-id="<?php echo $ID; ?>">Add Action Items</a>
+                    <a href="#modal_add_action_item" data-toggle="modal" class="btn green btn-xs hide" type="button" id="add_action" data-id="<?php echo $ID; ?>">Add Action Items</a>
                     <table class="table table-bordered " >
                         <thead class="bg-primary">
                             <tr>
                                 <th>Action Details</th>
                                 <th>Assigned To</th>
+                                <th>Request Date</th>
+                                <th>Start Date</th>
                                 <th>Due Date</th>
                                 <th>Status</th>
                                 <th></th>
@@ -1048,7 +1068,9 @@ if( isset($_GET['postDetails2']) ) {
                                            }
                                         ?>
                                     </td>
-                                    <td><?php echo date('Y-m-d', strtotime($rowA['target_due_date'])); ?></td>
+                                    <td><?php echo $rowA['target_request_date']; ?></td>
+                                    <td><?php echo $rowA['target_start_date']; ?></td>
+                                    <td><?php echo $rowA['target_due_date']; ?></td>
                                     <td><?php echo $rowA['status']; ?></td>
                                     <td width="60px">
                                         <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $rowA['action_id']; ?>">
@@ -1075,32 +1097,35 @@ if( isset($_GET['postDetails2']) ) {
                 </div>
                 <div class="tab-pane" id="tabReferences">
                     <a href="#modal_add_reference" data-toggle="modal" class="btn green btn-xs" type="button" id="add_reference" data-id="<?php echo $ID; ?>">Add Reference</a>
-                    <table class="table table-bordered " >
+                    <table class="table table-bordered " id="meeting_ref">
                         <thead class="bg-primary">
                             <tr>
                                 <th>Name</th>
                                 <th>Documents</th>
+                                <th class="text-center" style="width: 90px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                        <?php
-                                   
-                            $queryr = "SELECT * FROM tbl_meeting_minutes_ref where meeting_id = '$ID' order by title_name ASC";
-                            $resultr = mysqli_query($conn, $queryr);
-                            while($rowr = mysqli_fetch_array($resultr))
-                             { ?>
-                            <tr>
-                                <td><?php echo $rowr['title_name'];  ?></td>
-                                <td><a href="meeting_references/<?php echo $rowr['file_docs'];  ?>" target="_blank"><?php echo $rowr['file_docs'];  ?></a></td>
-                            </tr>
-                            <?php } ?>
-                            <tr id="meeting_ref"></tr>
+                            <?php
+                                $resultr = mysqli_query($conn, "SELECT * FROM tbl_meeting_minutes_ref WHERE deleted = 0 AND meeting_id = '$ID' order by title_name ASC");
+                                while($rowr = mysqli_fetch_array($resultr)) { 
+                                    echo '<tr>
+                                        <td>'.$rowr['title_name'].'</td>
+                                        <td><a href="meeting_references/'.$rowr['file_docs'].'" target="_blank">'.$rowr['file_docs'].'</a></td>
+                                        <td class="text-center"><a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('.$rowr['ref_id'].', this)">Delete</a></td>
+                                    </tr>';
+                                }
+                            ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     <?php } 
+}
+if( isset($_GET['btnDelete_Ref']) ) {
+    $id = $_GET['btnDelete_Ref'];
+    mysqli_query( $conn,"UPDATE tbl_meeting_minutes_ref SET deleted = 1 WHERE ref_id = $id" );
 }
 if( isset($_POST['btnSave_details2']) ) {
 	
@@ -1154,14 +1179,16 @@ if( isset($_POST['btnSave_details2']) ) {
     if(mysqli_query($conn, $sql)){
         $ID = $_POST['ID'];
         $action_details = count($_POST["action_details"]);
-        if($action_details > 1) {
+        if($action_details > 0) {
             for($i=0; $i<$action_details; $i++) {
                 $assigned_to = $_POST["assigned_to"][$i];
+                $target_request_date = $_POST["target_request_date"][$i];
+                $target_start_date = $_POST["target_start_date"][$i];
                 $target_due_date = $_POST["target_due_date"][$i];
                 $status = $_POST["status"][$i];
                 
-                $sql2 = "INSERT INTO tbl_meeting_minutes_action_items(action_details,action_meeting_id,assigned_to,target_due_date,status) 
-                VALUES('".mysqli_real_escape_string($conn, $_POST["action_details"][$i])."','$ID','$assigned_to','$target_due_date','$status')";
+                $sql2 = "INSERT INTO tbl_meeting_minutes_action_items(action_details,action_meeting_id,assigned_to,target_request_date,target_start_date,target_due_date,status) 
+                VALUES('".mysqli_real_escape_string($conn, $_POST["action_details"][$i])."','$ID','$assigned_to','$target_request_date','$target_start_date','$target_due_date','$status')";
                 mysqli_query($conn, $sql2);
                 
             }
@@ -2138,12 +2165,12 @@ if( isset($_POST['btnSave_reference']) ) {
         $last_id = mysqli_insert_id($conn);
         $queryr = "SELECT * FROM tbl_meeting_minutes_ref where ref_id = $last_id";
         $resultr = mysqli_query($conn, $queryr);
-        while($rowr = mysqli_fetch_array($resultr))
-             { ?>
-                <td><?php echo $rowr['title_name'];  ?></td>
-                <td><a href="meeting_references/<?php echo $rowr['file_docs'];  ?>" target="_blank"><?php echo $rowr['file_docs'];  ?></a></td>
-                
-          <?php }
+        while($rowr = mysqli_fetch_array($resultr)) {
+            echo '<tr>
+                <td>'.$rowr['title_name'].'</td>
+                <td><a href="meeting_references/'.$rowr['file_docs'].'" target="_blank">'.$rowr['file_docs'].'</a></td>
+            </tr>';
+        }
     }
 }
 
@@ -2153,7 +2180,9 @@ if( isset($_POST['btnSave_action_item']) ) {
     $aassign_to = '';
     $user_id = $user_id;
     $meeting_id = mysqli_real_escape_string($conn,$_POST['meeting_ids']);
-    $target_due_date = mysqli_real_escape_string($conn,$_POST['target_due_date']);
+    $target_request_date = $_POST['target_request_date'];
+    $target_start_date = $_POST['target_start_date'];
+    $target_due_date = $_POST['target_due_date'];
     $action_details = mysqli_real_escape_string($conn,$_POST['action_details']);
     
     if(!empty($_POST["assign_to"]))
@@ -2165,7 +2194,8 @@ if( isset($_POST['btnSave_action_item']) ) {
          
     }
     $aassign_to = substr($aassign_to, 0, -2);
-	$sql = "INSERT INTO tbl_meeting_minutes_action_items (action_details,target_due_date,assigned_to,ac_added_by,action_meeting_id,status) VALUES ('$action_details','$target_due_date','$aassign_to','$user_id','$meeting_id','Open')";
+	$sql = "INSERT INTO tbl_meeting_minutes_action_items (action_details, target_request_date, target_start_date, target_due_date, assigned_to, ac_added_by, action_meeting_id, status) 
+	VALUES ('$action_details', '$target_request_date', '$target_start_date', '$target_due_date', '$aassign_to', '$user_id', '$meeting_id', 'Open')";
     if(mysqli_query($conn, $sql)){
         
         $last_id = mysqli_insert_id($conn);
@@ -2189,7 +2219,9 @@ if( isset($_POST['btnSave_action_item']) ) {
                            }
                         ?>
                     </td>
-                    <td><?php echo date('Y-m-d', strtotime($rowr['target_due_date'])); ?></td>
+                    <td><?php echo $rowr['target_request_date']; ?></td>
+                    <td><?php echo $rowr['target_start_date']; ?></td>
+                    <td><?php echo $rowr['target_due_date']; ?></td>
                     <td><?php echo $rowr['status']; ?></td>
                     <td width="60px">
                         <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $rowr['action_id']; ?>">
@@ -2212,6 +2244,8 @@ if( isset($_POST['btnSave_action_item']) ) {
                 
           <?php }
     }
+    
+    echo $sql;
 }
 
 //update status
@@ -2249,8 +2283,18 @@ if( isset($_GET['GetAI']) ) {
                     </div>
                     <div class="form-group">
                         <div class="col-md-6">
+                            <label class="control-label">Request Date</label>
+                            <input class="form-control" type="date" name="target_request_date" value="<?= $row['target_request_date']; ?>" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label">Start Date</label>
+                            <input class="form-control" type="date" name="target_start_date" value="<?= $row['target_start_date']; ?>" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
                             <label class="control-label">Due Date</label>
-                            <input class="form-control" type="date" name="target_due_date" value="<?=date('Y-m-d', strtotime($row['target_due_date'])); ?>">
+                            <input class="form-control" type="date" name="target_due_date" value="<?= $row['target_due_date']; ?>" required />
                         </div>
                         <div class="col-md-6">
                             <label class="control-label">Status</label>
@@ -2269,10 +2313,12 @@ if( isset($_POST['btnSave_status']) ) {
     $IDs = mysqli_real_escape_string($conn,$_POST['action_ids']);
     $action_details = mysqli_real_escape_string($conn,$_POST['action_details']);
     $assigned_to = mysqli_real_escape_string($conn,$_POST['assigned_to']);
-    $target_due_date = mysqli_real_escape_string($conn,$_POST['target_due_date']);
+    $target_request_date = $_POST['target_request_date'];
+    $target_start_date = $_POST['target_start_date'];
+    $target_due_date = $_POST['target_due_date'];
     $status = mysqli_real_escape_string($conn,$_POST['status']);
    
-	$sql = "UPDATE tbl_meeting_minutes_action_items set action_details='$action_details',assigned_to='$assigned_to',target_due_date='$target_due_date',status='$status' where action_id = $IDs";
+	$sql = "UPDATE tbl_meeting_minutes_action_items set action_details='$action_details', assigned_to='$assigned_to', target_request_date='$target_request_date', target_start_date='$target_start_date', target_due_date='$target_due_date', status='$status' where action_id = $IDs";
     if(mysqli_query($conn, $sql)){
         $IDs = mysqli_real_escape_string($conn,$_POST['action_ids']);
         $queryr = "SELECT * FROM tbl_meeting_minutes_action_items where action_id = $IDs";
@@ -2294,7 +2340,9 @@ if( isset($_POST['btnSave_status']) ) {
                        }
                     ?>
                 </td>
-                <td><?php echo date('Y-m-d', strtotime($rowr['target_due_date'])); ?></td>
+                <td><?php echo $rowr['target_request_date']; ?></td>
+                <td><?php echo $rowr['target_start_date']; ?></td>
+                <td><?php echo $rowr['target_due_date']; ?></td>
                 <td><?php echo $rowr['status']; ?></td>
                 <td width="60px">
                     <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $rowr['action_id']; ?>">
@@ -2324,44 +2372,38 @@ if( isset($_GET['getAI_comment']) ) {
 	$ID = $_GET['getAI_comment'];
 	$today = date('Y-m-d');
 
-	echo '<input class="form-control" type="hidden" name="ID" id="ai_id" value="'. $ID .'" />
-	    ';
-	        $query = "SELECT * FROM tbl_meeting_minutes_action_items where action_id = $ID";
-            $result = mysqli_query($conn, $query);
-            while($row = mysqli_fetch_array($result))
-            { ?>
-                
-                <?php 
-                    $comment = mysqli_query($conn,"select * from tbl_meeting_minutes_ai_comment where ai_id = $ID");
-                    foreach($comment as $comment_row){
-                            if($comment_row['ai_commentor']== $_COOKIE['ID']){?>
-                            <div class="form-group">
-                                 <div class="col-md-12">
-                                    <p style="float:right;margin-top:-1.5rem;"><i style="font-size:10px;"><?= date('Y-m-d h:i:s a', strtotime($comment_row['ai_added'])); ?></i> <?= $comment_row['ai_comment']; ?></p>
-                                </div>
-                            </div>
-                            <?php  }else{?>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <label style="font-size:10px;">
-                                        <?php
-                                            $cid = $comment_row['ai_commentor'];
-                                            $commentor = mysqli_query($conn,"select * from tbl_user where ID = $cid");
-                                            foreach($commentor as $cuser){ echo 'Commented by: '.$cuser['first_name'];}
-                                        ?>
-                                     <br>
-                                     <br>
-                                    </label>
-                                </div>
-                                <div class="col-md-12">
-                                    <p style="float:left;margin-top:-1.5rem;"><?= $comment_row['ai_comment']; ?> <i style="font-size:10px;"><?= date('Y-m-d h:i:s a', strtotime($comment_row['ai_added'])); ?></i></p>
-                                </div>
-                            </div>
-                           <?php }
-                   }
-                ?>
-                
-    <?php } 
+	echo '<input class="form-control" type="hidden" name="ID" id="ai_id" value="'. $ID .'" />';
+    $query = "SELECT * FROM tbl_meeting_minutes_action_items where action_id = $ID";
+    $result = mysqli_query($conn, $query);
+    while($row = mysqli_fetch_array($result)) {
+        $comment = mysqli_query($conn,"select * from tbl_meeting_minutes_ai_comment where ai_id = $ID");
+        foreach($comment as $comment_row) {
+            if($comment_row['ai_commentor']== $_COOKIE['ID']) {
+                echo '<div class="form-group">
+                     <div class="col-md-12">
+                        <p style="margin-top:-1.5rem;">'.nl2br($comment_row['ai_comment']).'<br><i style="font-size:10px;">'.date('Y-m-d h:i:s a', strtotime($comment_row['ai_added'])).'</i></p>
+                    </div>
+                </div>';
+            } else {
+                echo '<div class="form-group">
+                    <div class="col-md-12">
+                        <label style="font-size:10px;">';
+                        
+                            $cid = $comment_row['ai_commentor'];
+                            $commentor = mysqli_query($conn,"select * from tbl_user where ID = $cid");
+                            foreach($commentor as $cuser){ echo 'Commented by: '.$cuser['first_name']; }
+                                
+                            echo '<br><br>
+                        </label>
+                    </div>
+                    <div class="col-md-12">
+                        <p style="margin-top:-1.5rem;">'.$comment_row['ai_comment'].'<i style="font-size:10px;">'.date('Y-m-d h:i:s a', strtotime($comment_row['ai_added'])).'</i></p>
+                    </div>
+                </div>';
+            }
+        }
+    }
+            
     echo'<div class="form-group">
         <div class="col-md-12">
             <textarea class="form-control" name="ai_comment"></textarea>
@@ -2438,7 +2480,9 @@ if( isset($_POST['btnComment']) ) {
                        }
                     ?>
                 </td>
-                <td><?php echo date('Y-m-d', strtotime($rowr['target_due_date'])); ?></td>
+                <td><?php echo $rowr['target_request_date']; ?></td>
+                <td><?php echo $rowr['target_start_date']; ?></td>
+                <td><?php echo $rowr['target_due_date']; ?></td>
                 <td><?php echo $rowr['status']; ?></td>
                 <td width="60px">
                     <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $rowr['action_id']; ?>">
@@ -2539,12 +2583,3 @@ function php_mailer2($from, $to, $user, $subject, $body) {
 		
 	}
 ?>
-<script>
-    $(document).ready(function() {
-    $("#your_summernotes").summernote({
-        placeholder:'',
-        height: 400
-    });
-    $('.dropdown-toggle').dropdown();
-});
-</script>

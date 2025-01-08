@@ -1123,6 +1123,109 @@
         );
         echo json_encode($output);
     }
+    if( isset($_POST['btn_SignUpVM']) ) {
+        $ID = $_POST['ID'];
+        if (empty($ID)) { $ID = 0; }
+        
+        $client = $_POST['client'];
+        $first_name = addslashes($_POST['first_name']);
+        $last_name = addslashes($_POST['last_name']);
+        $email = $_POST['email'];
+        $vendor_type = $_POST['vendor_type'];
+        $phone = addslashes($_POST['phone']);
+        $password = $_POST['password'];
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $exist = false;
+        $message = 'Email Address is already exist. Please try again!';
+
+        $is_active = 0;
+        if ($client > 0) { $is_active = 1; }
+
+        $selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE email = '".$email."'");
+        if ( mysqli_num_rows($selectEmail) > 0 ) { 
+            $exist = true;
+        } else {
+            // check if user register was invited (supplier/customer/employee)
+            $selectData = mysqli_query( $conn,"SELECT
+                ID,
+                email
+                FROM tbl_supplier 
+                WHERE is_deleted = 0
+                AND email = '".$email."'
+
+                UNION ALL
+
+                SELECT
+                ID,
+                email
+                FROM tbl_hr_employee
+                WHERE email = '".$email."'
+            " );
+            if ( mysqli_num_rows($selectData) == 0 ) {
+                if ($client > 0 AND $client != 10) {
+                    $message = 'Thank you for trying to create an account. Access is by invitation only. For further assistance, please contact <a href="mailto:csuccess@consultareinc.com" target="_blank">csuccess@consultareinc.com</a> or call <a href="tel:1-202-982-3002" target="_blank">1-202-982-3002</a>.';
+                    $exist = true;
+                } else {
+                    $is_active = 1;
+                }
+            } else {
+                $is_active = 1;
+            }
+        }
+
+        if ($exist == false) {
+            $sql = "INSERT INTO tbl_user (employee_id, first_name, last_name, email, password, client, vendor_type, is_active, date_registered)
+            VALUES ( '$ID', '$first_name', '$last_name', '$email', '$password_hash', '$client', '$vendor_type', '$is_active', '$local_date')";
+            if (mysqli_query($conn, $sql)) {
+                $last_id = mysqli_insert_id($conn);
+                $sql = "INSERT INTO tbl_user_info (user_id, mobile) VALUES ('$last_id', '$phone')";
+                mysqli_query($conn, $sql);
+
+                $client_name = "InterlinkIQ";
+                $selectClient= mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client");
+                if ( mysqli_num_rows($selectClient) > 0 ) {
+                    $rowClient = mysqli_fetch_array($selectClient);
+                    $client_name = $rowClient['name'];
+                }
+
+                $sender_name = 'Interlink IQ';
+                $sender_email = 'services@interlinkiq.com';
+                $sender[$sender_email] = $sender_name;
+
+                $recipients_name = 'Arnel Ryan';
+                $recipients_email = 'arnel@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $recipients_name = 'InterlinkIQ';
+                $recipients_email = 'info@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $recipients_name = 'Customer Success';
+                $recipients_email = 'csuccess@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $subject = 'New User Registered from '.$client_name;
+                $body = 'Hi Team,<br><br>
+
+                See details for our new user registered below<br><br>
+
+                Name: '.$first_name.' '.$last_name.'<br>
+                Email: '.$email.'<br>
+                Phone: '.$phone.'<br><br>
+
+                InterlinkIQ.com Team<br>
+                Consultare Inc. Group';
+
+                php_mailer_dynamic($sender, $recipients, $subject, $body);
+                $message = 'Welcome to our Community! Please logged in to your account.';
+            }
+        }
+        $output = array(
+            'exist' => $exist,
+            'message' => $message
+        );
+        echo json_encode($output);
+    }
     if( isset($_POST['btn_Fotgot']) ) {
         $email = $_POST['email'];
         $random = rand(1000,1000000);
@@ -35360,7 +35463,7 @@
                             $file_extension = $fileExtension['file_extension'];
                             $url = $base_url.'uploads/services/';
 
-                            $files .= '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($f).$embed.'" data-fancybox="fancybox_'.$row["s_ID"].'" data-fancybox data-type="'.$type.'">View</a></p>';
+                            $files .= '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($f).$embed.'" data-fancybox="fancybox_'.$data_ID.'" data-fancybox data-type="'.$type.'">View</a></p>';
                         }
                     }
 

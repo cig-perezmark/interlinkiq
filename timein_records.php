@@ -1,6 +1,6 @@
 <?php 
 
-    include_once 'database.php';
+    include_once 'database_iiq.php';
 
     $user_id = $_POST["current_user_id"];
     $current_userfullname = $_POST["fullname_user"];
@@ -11,7 +11,7 @@
     date_default_timezone_set('America/Chicago');
 
     $currentDateTimeCST = date('Y-m-d H:i:s');
-    $currentDate = date('Y-m-d');
+    echo $currentDate = date('Y-m-d');
 
     $checkSql = "SELECT MAX(batch) AS max_batch FROM `tbl_timein` WHERE `user_id` = $user_id AND DATE(`time_in_datetime`) = '$currentDate'";
     $result = mysqli_query($conn, $checkSql);

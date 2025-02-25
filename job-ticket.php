@@ -383,7 +383,7 @@
                                                                         <td>'.$counter++.'</td>
                                                                         <td>'.$category[$category_id].'</td>
                                                                         <td>
-                                                                            <p style="margin: 0;">'.htmlentities($row["s_title"] ?? '').'</p>
+                                                                            <p style="margin: 0;"><b>'.htmlentities($row["s_title"] ?? '').'</b></p>
                                                                             <p style="margin: 0;">'.htmlentities($row["s_description"] ?? '').'</p>'.$jt_file.'
                                                                         </td>
                                                                         <td>
@@ -465,6 +465,9 @@
                 });
             });
             
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLJT='+id;
+            }
             function btnDone(id) {
                 swal({
                     title: "Are you sure?",

@@ -583,6 +583,9 @@
                 }
             });
 
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLHRD='+id;
+            }
             function summary(id, type, title) {
                 $.ajax({
                     type: "GET",

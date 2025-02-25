@@ -226,11 +226,24 @@
                         if (!empty($assigned_to_id)) {
                             $output = json_decode($assigned_to_id, true);
                             $exist = 0;
-                            foreach ($output as $key => $value) {
-                                if ($current_userEmployerID == $key) {
-                                    if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
-                                        $exist++;
-                                        break;
+                            
+							if (isset($_GET['facility_id'])) {
+								$f_ID = $_GET['facility_id'];
+								foreach ($output as $key => $value) {
+									if ($f_ID == $key) {
+										if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+											$exist++;
+											break;
+										}
+									}
+								} 
+							} else {
+                                foreach ($output as $key => $value) {
+                                    if ($current_userEmployerID == $key) {
+                                        if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                            $exist++;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -889,30 +902,6 @@ License: You must have a valid license purchased only from themeforest(the above
 
             if ($current_userAdminAccess == 0) {
                 $displayMenu = "hide";
-                // $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE name='".$name."'" );
-                // if ( mysqli_num_rows($selectMenu) > 0 ) {
-                //     $rowMenu = mysqli_fetch_array($selectMenu);
-                //     $assigned_to_id = $rowMenu['assigned_to_id'];
-    
-                //     if (!isset($_COOKIE['switchAccount'])) {
-                //         if (!empty($assigned_to_id)) {
-                //             $output = json_decode($assigned_to_id, true);
-                //             $exist = 0;
-                //             foreach ($output as $key => $value) {
-                //                 if ($current_userEmployerID == $key) {
-                //                     if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
-                //                         $exist++;
-                //                         break;
-                //                     }
-                //                 }
-                //             }
-        
-                //             if ($exist > 0) { $displayMenu = ""; }
-                //         }
-                //     } else {
-                //         $displayMenu = "";
-                //     }
-                // }
                 
                 if (!isset($_COOKIE['switchAccount'])) {
                     $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE name='".$name."'" );
@@ -923,11 +912,24 @@ License: You must have a valid license purchased only from themeforest(the above
                         if (!empty($assigned_to_id)) {
                             $output = json_decode($assigned_to_id, true);
                             $exist = 0;
-                            foreach ($output as $key => $value) {
-                                if ($current_userEmployerID == $key) {
-                                    if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
-                                        $exist++;
-                                        break;
+                            
+                            if (isset($_GET['facility_id'])) {
+                                $f_ID = $_GET['facility_id'];
+                                foreach ($output as $key => $value) {
+                                    if ($f_ID == $key) {
+                                        if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                            $exist++;
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                foreach ($output as $key => $value) {
+                                    if ($current_userEmployerID == $key) {
+                                        if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                            $exist++;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -2088,6 +2090,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <a href="auto_service_log.php"><i class="icon-rocket"></i> Auto Logs <span class="badge badge-success myTask"></span></a>
                                 </li>
                                 <?php } ?>
+                                <?php if ($_COOKIE['ID'] == 456) { ?>
+                                <li>
+                                    <a href="#generateLogsModal" data-toggle="modal"><i class="icon-rocket"></i> Generate Logs</a>
+                                </li>
+                                <?php } ?>
                                 <li>
                                     <a href="#"><i class="icon-rocket"></i> My Tasks <span class="badge badge-success myTask"></span></a>
                                 </li>
@@ -2342,7 +2349,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         }
                                         
                                         if ($rowFacility['e_facility_switch'] == 1) {
-                                            echo '<li class="nav-item">
+                                            echo '<li class="nav-item  '; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('facility-info', $rowFacility['f_id'], $current_userEmployeeID); } echo '">
                                                 <a href="javascript:;" class="nav-link nav-toggle">
                                                     <i class="fa fa-minus" style="font-size: 10px;"></i>
                                                     <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
@@ -2358,7 +2365,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </ul>
                                             </li>';
                                         } else {
-                                            echo '<li class="nav-item">
+                                            echo '<li class="nav-item  '; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('facility-info', $rowFacility['f_id'], $current_userEmployeeID); } echo '">
                                                 <a href="facility-info?facility_id='.$rowFacility['f_id'].'" class="nav-link ">
                                                     <i class="fa fa-minus" style="font-size: 10px;"></i>
                                                     <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
@@ -3495,51 +3502,59 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
 
+                    <li class="nav-item">
+                        <a href="//vendormatch.pro/" class="nav-link" target="_blank">
+                            <i class="icon-calendar" style="color: orange !important;"></i>
+                            <span class="title">Vendor Match</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
                     <?php
-                        $switch_user_id_array = array(1649, 1680);
-                        if ($switch_user_id == 1479) {
-                            echo '<li class="nav-item '; echo $site === "forms" OR $site === "module" ? "active" : ""; echo '">
-                                <a href="javascript:;" class="nav-link nav-toggle">
-                                    <i class="icon-docs" style="color: orange !important;"></i>
-                                    <span class="title">Catalog</span>
-                                    <span class="selected"></span>
-                                    <span class="arrow "></span>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li class="nav-item">
-                                        <a href="forms" class="nav-link ">
-                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                            <span class="title">Forms</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="module" class="nav-link ">
-                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                            <span class="title">Tools</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>';
-                        } else if (!in_array($switch_user_id, $switch_user_id_array)) {
-                            // updated by almario (the href values) 2024-10-15
-                            echo '<li class="nav-item '; echo $site === "forms" ? "active" : ""; echo '">
-                                <a href="https://interlinkiq.com/customizable-and-versatile-eforms/" class="nav-link" target="_blank">
-                                    <i class="icon-docs" style="color: orange !important;"></i>
-                                    <span class="title">Forms</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                            <li class="nav-item '; echo $site === "module" ? "active" : ""; echo '">
-                                <a href="https://interlinkiq.com/tools-module/" class="nav-link" target="_blank">
-                                    <i class="icon-social-dropbox" style="color: orange !important;"></i>
-                                    <span class="title">Module</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>';
-                        }
+                        // $switch_user_id_array = array(1649, 1680);
+                        // if ($switch_user_id == 1479) {
+                        //     echo '<li class="nav-item '; echo $site === "forms" OR $site === "module" ? "active" : ""; echo '">
+                        //         <a href="javascript:;" class="nav-link nav-toggle">
+                        //             <i class="icon-docs" style="color: orange !important;"></i>
+                        //             <span class="title">Catalog</span>
+                        //             <span class="selected"></span>
+                        //             <span class="arrow "></span>
+                        //         </a>
+                        //         <ul class="sub-menu">
+                        //             <li class="nav-item">
+                        //                 <a href="forms" class="nav-link ">
+                        //                     <i class="fa fa-minus" style="font-size: 10px;"></i>
+                        //                     <span class="title">Forms</span>
+                        //                 </a>
+                        //             </li>
+                        //             <li class="nav-item">
+                        //                 <a href="module" class="nav-link ">
+                        //                     <i class="fa fa-minus" style="font-size: 10px;"></i>
+                        //                     <span class="title">Tools</span>
+                        //                 </a>
+                        //             </li>
+                        //         </ul>
+                        //     </li>';
+                        // } else if (!in_array($switch_user_id, $switch_user_id_array)) {
+                        //     // updated by almario (the href values) 2024-10-15
+                        //     echo '<li class="nav-item '; echo $site === "forms" ? "active" : ""; echo '">
+                        //         <a href="https://interlinkiq.com/customizable-and-versatile-eforms/" class="nav-link" target="_blank">
+                        //             <i class="icon-docs" style="color: orange !important;"></i>
+                        //             <span class="title">Forms</span>
+                        //             <span class="selected"></span>
+                        //         </a>
+                        //     </li>
+                        //     <li class="nav-item '; echo $site === "module" ? "active" : ""; echo '">
+                        //         <a href="https://interlinkiq.com/tools-module/" class="nav-link" target="_blank">
+                        //             <i class="icon-social-dropbox" style="color: orange !important;"></i>
+                        //             <span class="title">Module</span>
+                        //             <span class="selected"></span>
+                        //         </a>
+                        //     </li>';
+                        // }
                     ?>
                     
-                    <?php if(!in_array($switch_user_id, $switch_user_id_array)): ?>
+                    <?php // if(!in_array($switch_user_id, $switch_user_id_array)): ?>
+                    <?php if($switch_user_id == 1): ?>
                         <li class="nav-item hide <?php echo $site === "forms" ? "active" : ""; ?>">
                             <a href="forms" class="nav-link">
                                 <i class="icon-docs" style="color: orange !important;"></i>
@@ -3804,10 +3819,13 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                         <?php echo $breadcrumbs; ?>
                     </ul>
-                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0)) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
+                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0)) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
                         <!--<div class="page-toolbar <?php //if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > '0') { echo 'hide'; } ?>">-->
-                        <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height">
+                        <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height <?php if ($site == 'dashboard') { echo 'hide'; } ?>">
                             Collaborator <i class="icon-settings"></i>
+                        </a>
+                        <a href="javascript:;" class="btn btn-info btn-fit-height" onclick="btnExportFiles(<?php echo $switch_user_id; ?>)">
+                            Export Data <i class=" icon-cloud-download"></i>
                         </a>
                     </div>
                 </div>
@@ -3914,6 +3932,50 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <button type="submit" class="btn btn-success" name="generate_pto"><span id="save_pto">Generate</span></button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal fade" id="generateLogsModal" tabindex="-1" role="basic" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Start Date</label>
+                                                <input type="date" class="form-control" placeholder=""> 
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xs-12">
+                                            <div class="form-group">
+                                                <label>End Date</label>
+                                                <input type="date" class="form-control" placeholder=""> 
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Client</label> 
+                                                <select class="form-control" name="sl_account" id="sl_account" required>
+                                                    <?php 
+                                                        $accounts = $conn->query("SELECT name FROM tbl_service_logs_accounts WHERE deleted = 0 AND owner_pk = $switch_user_id ORDER BY name ASC");
+                                                        if ($accounts && $accounts->num_rows > 0) {
+                                                            while ($row = $accounts->fetch_assoc()) {
+                                                                echo "<option value='{$row['name']}'>{$row['name']}</option>";
+                                                            }
+                                                        } else {
+                                                            echo "<option value='' disabled>No accounts available.</option>";
+                                                        }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Generate</span></button>
+                                </div>
                             </div>
                         </div>
                     </div>

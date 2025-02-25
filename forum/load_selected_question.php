@@ -1,6 +1,4 @@
-           
-          
-          <?php 
+<?php 
             session_start();
             include 'database.php';   
             $user_id = $_COOKIE['ID'];
@@ -235,7 +233,3 @@
                 });
                 
             </script>
-
-
-            
-    

@@ -130,5 +130,3 @@
             echo "Error updating record: " . $stmt->error;
         }
     }
-
-

@@ -77,7 +77,6 @@ function taskFormValidationInit() {
                     destroyTaskForm();
                     // toastr['success'](data.success, "Added successfully");
                     bootstrapGrowl('Added successfully!');
-                     console.log('testing');
                 }
                 else if(data.error) {
                     $('#newTask').modal('hide');
@@ -100,7 +99,14 @@ function taskFormValidationInit() {
     }
     
     // current date init (new task form)
-    document.getElementById('taskdate').value = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const options = { timeZone: "America/Chicago", year: "numeric", month: "2-digit", day: "2-digit" };
+    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(now);
+    const [month, day, year] = formattedDate.split("/");
+    const inputDate = `${year}-${month}-${day}`;
+    
+    document.getElementById("taskdate").value = inputDate;
+    // document.getElementById('taskdate').value = new Date().toISOString().split('T')[0];
 }
 
 function repopulateServiceLogTable(data) {

@@ -79,7 +79,7 @@
             $current_userLName = htmlentities($rowUser['last_name']);
         }
 
-        $enterp_name = "";
+        $enterp_name = "Consultare Inc. Group";
         if(!empty($prepared_by)) {
             $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $prepared_by" );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
@@ -89,8 +89,10 @@
         }
 
 
-        // $reviewed_by = employerID($row["reviewed_by"]);
+        $reviewed_by = employerID($row["reviewed_by"]);
         $reviewed_by = $row["reviewed_by"];
+        $reviewed_by_ent = $row["reviewed_by"];
+        if (!empty($reviewed_by_ent)) { $reviewed_by_ent = employerID($row["reviewed_by"]); }
         $reviewed_signature = $row["reviewed_signature"];
         $reviewed_position = htmlentities($row["reviewed_position"]);
         $reviewed_date = $row["reviewed_date"];
@@ -104,15 +106,17 @@
 
         $reviewed_enterp_name = "";
         if(!empty($reviewed_by)) {
-            $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $reviewed_by" );
+            $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $reviewed_by_ent" );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
                 $reviewed_enterp_name = htmlentities($rowEnterprise['businessname']);
             }
         }
 
-        // $approved_by = employerID($row["approved_by"]);
+        $approved_by = employerID($row["approved_by"]);
         $approved_by = $row["approved_by"];
+        $approved_by_ent = $row["approved_by"];
+        if (!empty($approved_by_ent)) { $approved_by_ent = employerID($row["approved_by"]); }
         $approved_signature = $row["approved_signature"];
         $approved_position = htmlentities($row["approved_position"]);
         $approved_date = $row["approved_date"];
@@ -126,7 +130,7 @@
 
         $approved_enterp_name = "";
         if(!empty($approved_by)) {
-            $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $approved_by" );
+            $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $approved_by_ent" );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
                 $approved_enterp_name = htmlentities($rowEnterprise['businessname']);
@@ -141,7 +145,11 @@
     $sum = 0;
     $total_likelihood = 0;
     $result_likelihood = 'Undefined';
-    $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+
+    $sql_organic = ' WHERE organic = 0 ';
+    if ($likelihood_user_id == 256) { $sql_organic = ''; }
+    
+    $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic ORDER BY ordering" );
     if ( mysqli_num_rows($selectLikelihood) > 0 ) {
         while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
             $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
@@ -262,16 +270,30 @@
         if ($likelihood_type == 1) {
             $html .= '<tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Supplier Company Name</b></td>
-                <td colspan="5">'.htmlentities($row["company"]).'</td>
+                <td colspan="5">'.htmlentities($row["company"] ?? '').'</td>
+            </tr>
+            <tr style="background-color: #e1e5ec;">
+                <td colspan="2"><b>Website</b></td>
+                <td colspan="2"><a href="'.htmlentities($row["website"] ?? '').'" target="_blank">'.htmlentities($row["website"] ?? '').'</a></td>
+            </tr>
+            <tr style="background-color: #e1e5ec;">
+                <td colspan="2"><b>Headquarters</b></td>
+                <td colspan="2">'.htmlentities($row["headquarters"] ?? '').'</td>
+            </tr>
+            <tr style="background-color: #e1e5ec;">
+                <td style="text-align: center;"><b>Tel. No.</b></td>
+                <td style="text-align: center;"><b>Email</b></td>
+                <td style="text-align: center;">T: <a href="tel:'.htmlentities($row["telephone"] ?? '').'">'.htmlentities($row["telephone"] ?? '').'</a></td>
+                <td style="text-align: center;"><a href="mailto:'.htmlentities($row["email"] ?? '').'">'.htmlentities($row["email"] ?? '').'</a></td>
             </tr>
             <tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Contact Person</b></td>
-                <td colspan="5">'.htmlentities($row["person"]).'</td>
+                <td colspan="5">'.htmlentities($row["person"] ?? '').'</td>
             </tr>';
         } else if ($likelihood_type == 2) {
             $html .= '<tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Material Name</b></td>
-                <td colspan="5">'.htmlentities($row["product"]).'</td>
+                <td colspan="5">'.htmlentities($row["product"] ?? '').'</td>
             </tr>';
         }
         
@@ -444,7 +466,7 @@
         </tr>';
         
         $index = 0;
-        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic ORDER BY ordering" );
         if ( mysqli_num_rows($selectLikelihood) > 0 ) {
             while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                 $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
@@ -457,6 +479,14 @@
                     $likelihood_fairly_likely = $rowLikelihood["fairly_likely"];
                     $likelihood_likely = $rowLikelihood["likely"];
                     $likelihood_very_likely = $rowLikelihood["very_likely"];
+
+                    if ($likelihood_user_id == 1211 AND $likelihood_ID == 7) {
+                        $likelihood_very_unlikely = 'Up to 5% of $375';
+                        $likelihood_unlikely = 'In between 5-100% of $375';
+                        $likelihood_fairly_likely = '$375';
+                        $likelihood_likely = 'More than $375';
+                        $likelihood_very_likely = 'More than 200% of $375';
+                    }
 
                     $ref_content = '';
                     $resultRef = mysqli_query( $conn,"SELECT * FROM tbl_ffva_reference WHERE type = 1 AND element = $likelihood_ID" );
@@ -475,7 +505,7 @@
                         <td style="vertical-align: top; text-align: center;">';
                             if ($likelihood_answer_arr[$index] == 0) { $html .= 'No'; } else { $html .= 'Yes'; }
                         $html .= '</td>
-                        <td style="vertical-align: top;" colspan="3">'.htmlspecialchars($likelihood_comment_arr[$index]).'</td>
+                        <td style="vertical-align: top;" colspan="3">'.html_entity_decode($likelihood_comment_arr[$index]).'</td>
                         <td style="vertical-align: top;">';
                             if ($likelihood_rate_arr[$index] == 1) {
                                 $html .= '<b>Very Unlikely</b><br><i>'.htmlspecialchars($likelihood_very_unlikely).'</i>';
@@ -514,7 +544,7 @@
                     <td style="vertical-align: top; text-align: center;">';
                         if ($likelihood_answer_other[$index] == 0) { $html .= 'No'; } else { $html .= 'Yes'; }
                     $html .= '</td>
-                    <td style="vertical-align: top;" colspan="3">'.$likelihood_comment_other[$index].'</td>
+                    <td style="vertical-align: top;" colspan="3">'.html_entity_decode($likelihood_comment_other[$index]).'</td>
                     <td style="vertical-align: top;">';
                         if ($likelihood_rate_other[$index] == 1) {
                             $html .= '<b>Very Unlikely</b>';
@@ -589,7 +619,7 @@
                     <td style="vertical-align: top; text-align: center;">';
                         if ($consequence_answer_arr[$index] == 0) { $html .= 'No'; } else { $html .= 'Yes'; }
                     $html .= '</td>
-                    <td style="vertical-align: top;" colspan="3">'.$consequence_comment_arr[$index].'</td>
+                    <td style="vertical-align: top;" colspan="3">'.html_entity_decode($consequence_comment_arr[$index]).'</td>
                     <td style="vertical-align: top;">';
                         if ($consequence_rate_arr[$index] == 1) {
                             $html .= '<b>Negligible</b><br><i>'.htmlspecialchars($consequence_negligible).'</i>';
@@ -617,7 +647,7 @@
             $consequence_comment_other = explode(' | ', $row["consequence_comment_other"]);
             $consequence_file_other = explode(' | ', $row["consequence_file_other"]);
             $consequence_rate_other = explode(', ', $row["consequence_rate_other"]);
-
+ 
             $index = 0;
             foreach ($consequence_element_other as $value) {
 
@@ -627,7 +657,7 @@
                     <td style="vertical-align: top; text-align: center;">';
                         if ($consequence_answer_other[$index] == 0) { $html .= 'No'; } else { $html .= 'Yes'; }
                     $html .= '</td>
-                    <td style="vertical-align: top;" colspan="3">'.$consequence_comment_other[$index].'</td>
+                    <td style="vertical-align: top;" colspan="3">'.html_entity_decode($consequence_comment_other[$index]).'</td>
                     <td style="vertical-align: top;">';
                         if ($consequence_rate_other[$index] == 1) {
                             $html .= '<b>Negligible</b>';
@@ -694,7 +724,10 @@
         if (!empty($row["prevention_other"])) {
             $prevention_other_arr = explode(', ', $row["prevention_other"]);
             foreach ($prevention_other_arr as $value) {
-                $html .= '<tr><td>'.$value.'</td></tr>';
+                $html .= '<tr>
+                    <td>✔</td>
+                    <td>'.$value.'</td>
+                </tr>';
             }
         }
     $html .= '</table>
@@ -728,7 +761,10 @@
         if (!empty($row["detection_other"])) {
             $detection_other_arr = explode(', ', $row["detection_other"]);
             foreach ($detection_other_arr as $value) {
-                $html .= '<tr><td>'.$value.'</td></tr>';
+                $html .= '<tr>
+                    <td>✔</td>
+                    <td>'.$value.'</td>
+                </tr>';
             }
         }
     $html .= '</table>
@@ -762,7 +798,10 @@
         if (!empty($row["mitigation_other"])) {
             $mitigation_other_arr = explode(', ', $row["mitigation_other"]);
             foreach ($mitigation_other_arr as $value) {
-                $html .= '<tr><td>'.$value.'</td></tr>';
+                $html .= '<tr>
+                    <td>✔</td>
+                    <td>'.$value.'</td>
+                </tr>';
             }
         }
     $html .= '</table>
@@ -887,11 +926,13 @@
                 <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
                 <td colspan="4" style="text-align: center; vertical-align: middle;"></td>
             </tr>';
-        }
+        } 
     $html .= '</table>';
-
-    $final_name = htmlentities($row["product"]);
-    if ($likelihood_type == 1) { $final_name = htmlentities($row["company"]); }
+ 
+    $final_name = htmlentities($row["product"] ?? '');
+    if ($likelihood_type == 1) { $final_name = htmlentities($row["company"] ?? ''); }
+    $final_name = preg_replace('/[^A-Za-z0-9\- ]/', '', $final_name);
+    
     header('Content-Type: application/vnd.ms-excel');
 	header('Content-Disposition: attachment; filename='.htmlentities($row["code"]).'-'.$final_name.'-'.$prepared_date.'.xls');
 	echo $html;

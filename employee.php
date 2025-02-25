@@ -1269,6 +1269,9 @@
                 }
             });
 
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLHRER='+id;
+            }
             function repeaterForm() {
                 var FormRepeater=function(){
                     return{

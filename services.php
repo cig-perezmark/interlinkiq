@@ -328,6 +328,9 @@
                 // Emjay script ends here
             });
 
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLS='+id;
+            }
             function repeaterForm(modal) {
                 if (modal == "") { modal = "modalNew"; }
 

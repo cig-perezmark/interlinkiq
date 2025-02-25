@@ -1,4 +1,3 @@
-
 <?php 
 
 require_once "forum_functions.php";
@@ -560,6 +559,3 @@ $(function() {
 
 
 </script>
-
-
-

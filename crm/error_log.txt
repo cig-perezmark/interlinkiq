@@ -1,0 +1,1 @@
+Error executing batch insert: Incorrect string value: '\xE9es (1...' for column 'account_product' at row 3Error executing batch insert: Incorrect string value: '\xE9es (1...' for column 'account_product' at row 3

@@ -1,4 +1,3 @@
-
 <?php 
 error_reporting(0);
     $title = "Contacts Relationship Management";

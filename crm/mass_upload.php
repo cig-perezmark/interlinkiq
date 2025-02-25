@@ -121,6 +121,3 @@
             echo json_encode(['error' => 'Error opening the CSV file']);
         }
     }
-
-
-

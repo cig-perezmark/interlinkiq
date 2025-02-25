@@ -1,4 +1,3 @@
-
 <?php 
 error_reporting(0);
     $title = "Facility Information";
@@ -3121,6 +3120,9 @@ error_reporting(0);
                     });
                     swal("Done!", "This item has been deleted.", "success");
                 });
+            }
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLF='+id;
             }
             
             

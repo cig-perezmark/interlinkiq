@@ -88,4 +88,4 @@ $rows = mysqli_query($conn, "SELECT * FROM tbl_MyProject_Services order by MyPro
                 //     }
                 // });
             }
-        </script>  
+        </script>

@@ -635,9 +635,9 @@
                                                     </span>
                                                 </div>
                                             </form>
-                                            <form id="searchFormState">
+                                            <form id="searchFormSource">
                                                 <label>Contact source.</label>
-                                                <div class="input-group" style="margin-bottom:1rem">
+                                                <div class="input-group" style="margin-bottom:1rem"> 
                                                     <input type="text" class="form-control" id="searchSourceValue" placeholder="Search contact source">
                                                     <span class="input-group-btn">
                                                         <button type="submit" class="btn green" type="button"><i class="fa fa-search"></i></button>

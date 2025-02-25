@@ -71,59 +71,59 @@
      */
 
     // Include the main TCPDF library (search for installation path).
-    require_once('TCPDF/tcpdf.php');
+    // require_once('TCPDF/tcpdf.php');
 
-    // create new PDF document
-    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    // // create new PDF document
+    // $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    // set document information
-    $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor('InterlinkIQ.com');
-    $pdf->SetTitle('InterlinkIQ.com');
-    $pdf->SetSubject('InterlinkIQ.com');
-    $pdf->SetKeywords('InterlinkIQ.com');
+    // // set document information
+    // $pdf->SetCreator(PDF_CREATOR);
+    // $pdf->SetAuthor('InterlinkIQ.com');
+    // $pdf->SetTitle('InterlinkIQ.com');
+    // $pdf->SetSubject('InterlinkIQ.com');
+    // $pdf->SetKeywords('InterlinkIQ.com');
 
-    // set default header data
-    $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+    // // set default header data
+    // $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
-    // // set header and footer fonts
-    // $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-    // $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+    // // // set header and footer fonts
+    // // $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+    // // $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
-    // remove default header/footer
-    $pdf->setPrintHeader(false);
-    $pdf->setPrintFooter(false);
-    $pdf->setHeaderMargin(0);
-    // $pdf->setMargins(0, 0, 0, true);
-    // $pdf->setPageOrientation('', false, 0);
+    // // remove default header/footer
+    // $pdf->setPrintHeader(false);
+    // $pdf->setPrintFooter(false);
+    // $pdf->setHeaderMargin(0);
+    // // $pdf->setMargins(0, 0, 0, true);
+    // // $pdf->setPageOrientation('', false, 0);
 
-    // set default monospaced font
-    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+    // // set default monospaced font
+    // $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-    // // set margins
-    // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-    // $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-    // $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+    // // // set margins
+    // // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+    // // $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+    // // $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
-    // set auto page breaks
-    $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+    // // set auto page breaks
+    // $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-    // set image scale factor
-    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+    // // set image scale factor
+    // $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-    // set some language-dependent strings (optional)
-    if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-        require_once(dirname(__FILE__).'/lang/eng.php');
-        $pdf->setLanguageArray($l);
-    }
+    // // set some language-dependent strings (optional)
+    // if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+    //     require_once(dirname(__FILE__).'/lang/eng.php');
+    //     $pdf->setLanguageArray($l);
+    // }
 
-    // ---------------------------------------------------------
+    // // ---------------------------------------------------------
 
-    // set font
-    $pdf->SetFont('dejavusans', '', 9);
+    // // set font
+    // $pdf->SetFont('dejavusans', '', 9);
 
-    // add a page
-    $pdf->AddPage();
+    // // add a page
+    // $pdf->AddPage();
 
 	if ($type == 1) {
 		$selectData = mysqli_query( $conn,"SELECT * FROM tbl_cam WHERE ID = $ID" );
@@ -564,14 +564,16 @@
 		</html>';
 	}
 
-    // output the HTML content
-    $pdf->writeHTML($html, true, false, true, false, '');
 
-    // reset pointer to the last page
-    $pdf->lastPage();
+    echo $html;
+    // // output the HTML content
+    // $pdf->writeHTML($html, true, false, true, false, '');
 
-    // ---------------------------------------------------------
+    // // reset pointer to the last page
+    // $pdf->lastPage();
 
-    //Close and output PDF document
-    $pdf->Output('Title -'.date('Ymd').'.pdf', 'I');
+    // // ---------------------------------------------------------
+
+    // //Close and output PDF document
+    // $pdf->Output('Title -'.date('Ymd').'.pdf', 'I');
 ?>

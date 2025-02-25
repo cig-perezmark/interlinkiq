@@ -2198,10 +2198,7 @@
                     },
                     cache: false,
                     success: function(dataResult){
-                        var dataResult = JSON.parse(dataResult);
-                        if(dataResult.statusCode==200){
-                            location.reload();
-                        }
+                        location.reload();
                     }
                     
                 });
@@ -2226,10 +2223,7 @@
                     },
                     cache: false,
                     success: function(dataResult){
-                        var dataResult = JSON.parse(dataResult);
-                        if(dataResult.statusCode==200){
-                            location.reload();
-                        }
+                        location.reload();
                     }
                 });
             })

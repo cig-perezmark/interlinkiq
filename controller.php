@@ -36,6 +36,10 @@
     if (isset($_COOKIE['facilityswitchAccount'])) {
         $facility_switch_user_id = $_COOKIE['facilityswitchAccount'];
     }
+    
+    // echo $facility_switch_user_id ?? 'empty','<br>';
+    // echo $switch_user_id ?? 'emptys';
+    // echo $get_users = "SELECT * FROM tbl_hr_employee WHERE facility_switch = $facility_switch_user_id AND user_id = $switch_user_id AND status != 0";
 		
 		
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -76,6 +80,7 @@
                 echo "No matching record found.";
             }
         }
+        
         if(isset($_POST['get_employee1'])){
                 $form_id = $_POST['id'];
                 $switch_user_id = mysqli_real_escape_string($conn, $switch_user_id);
@@ -117,21 +122,22 @@
                 echo '</select>';
 
         }
+        
         if(isset($_POST['get_employee'])){
             $form_id = $_POST['id'];
             $switch_user_id = mysqli_real_escape_string($conn, $switch_user_id);
             $form_id = mysqli_real_escape_string($conn, $form_id);
         
-            $get_users = "SELECT * FROM tbl_hr_employee WHERE facility_switch = $facility_switch_user_id AND user_id = $switch_user_id AND status != 0"; 
+            $get_users = "SELECT * FROM tbl_hr_employee WHERE user_id = $switch_user_id AND status != 0"; 
             $user_result = mysqli_query($conn, $get_users);
             $selected = '';
-            $options = ''; // Initialize an empty string to store options
+            $options = '';
             echo '<label>Select Owner</label>
                   <select id="form_owner" onchange="check_selected()" class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">';
         
             if ($user_result && mysqli_num_rows($user_result) > 0) {
                 while ($rows = mysqli_fetch_assoc($user_result)) {
-                    echo  $get_users_form = "SELECT * FROM tbl_user WHERE employee_id = '" . $rows['ID'] . "'";
+                $get_users_form = "SELECT * FROM tbl_user WHERE employee_id = '" . $rows['ID'] . "'";
                     $user_form_result = mysqli_query($conn, $get_users_form);
         
                     if ($user_form_result && mysqli_num_rows($user_form_result) > 0) {

@@ -1,4 +1,4 @@
-            <div class="page-footer">
+<div class="page-footer">
                 
                 <!-- END FOOTER -->
                 <!--[if lt IE 9]>

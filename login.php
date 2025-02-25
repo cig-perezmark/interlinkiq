@@ -7,12 +7,16 @@
     // // header('Location: profile');
     
     echo '<script>
-      if (document.referrer == "") {
-        window.history.back();
-      } else {
-        window.location.href = "profile";
-      }
+      window.location.href = "profile";
     </script>';
+    
+    // echo '<script>
+    //   if (document.referrer == "") {
+    //     window.history.back();
+    //   } else {
+    //     window.location.href = "profile";
+    //   }
+    // </script>';
   }
 ?>
 
@@ -494,9 +498,9 @@
               data += '</div>';
 
               $('#container').removeClass('right-panel-active');
-            //   $('.formSignIn .alert_msg').html(data);
-            //   btnBack();
-              $('#modalThankYou').modal('show');
+              $('.formSignIn .alert_msg').html(data);
+              btnBack();
+            //   $('#modalThankYou').modal('show');
             } else {
               var data = '<div class="alert alert-danger">';
               data += obj.message;

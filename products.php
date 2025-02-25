@@ -290,7 +290,6 @@
     .ui-autocomplete > li:hover {
         background: #f1f1f1;
     }
-
 </style>
 
 
@@ -470,503 +469,2483 @@
 
 
                         <!-- MODAL AREA-->
-                        <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <form method="post" enctype="multipart/form-data" class="modalForm modalSave modalProduct">
-                                        <div class="modal-header tabbable-line">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">New Product Form</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="tabbable tabbable-tabdrop">
-                                                <input class="form-control" type="hidden" name="ID" value="<?php echo $switch_user_id; ?>" />
-                                                <ul class="nav nav-tabs">
-                                                    <li class="active">
-                                                        <a href="#tabVendor" data-toggle="tab">Vendor Details</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#tabBasic" data-toggle="tab">Product Overview</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#tabCharacteristics" data-toggle="tab">Product Characteristics</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#tabPackaging" data-toggle="tab">Packaging</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#tabDocs" data-toggle="tab">Documents</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#tabManufactured" data-toggle="tab">Manufacturer</a>
-                                                    </li>
-                                                </ul>
-                                                <div class="tab-content margin-top-20">
-                                                    <div class="tab-pane active" id="tabVendor">
-                                                        <input class="form-control" type="hidden" name="vendor_s_ID" id="vendor_s_ID" />
-                                                        <input class="form-control" type="hidden" name="vendor_c_ID" id="vendor_c_ID" />
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Vendor ID</label>
-                                                                    <input class="form-control" type="text" name="vendor_id" id="vendor_id" />
+                        <?php if ($switch_user_id != 0) { ?>
+                            <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <form method="post" enctype="multipart/form-data" class="modalForm modalSave modalProduct">
+                                            <div class="modal-header tabbable-line">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                <h4 class="modal-title">New Product Form</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="tabbable tabbable-tabdrop">
+                                                    <input class="form-control" type="hidden" name="ID" value="<?php echo $switch_user_id; ?>" />
+                                                    <ul class="nav nav-tabs">
+                                                        <li class="<?php echo $switch_user_id == 1684 ? 'hide':'active'; ?>">
+                                                            <a href="#tabVendor" data-toggle="tab">Vendor Details</a>
+                                                        </li>
+                                                        <li class="<?php echo $switch_user_id == 1684 ? 'active':''; ?>">
+                                                            <a href="#tabBasic" data-toggle="tab">Product Overview</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#tabCharacteristics" data-toggle="tab">Product Characteristics</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#tabPackaging" data-toggle="tab">Packaging</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#tabDocs" data-toggle="tab">Documents</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#tabManufactured" data-toggle="tab">Manufacturer</a>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="tab-content margin-top-20">
+                                                        <div class="tab-pane <?php echo $switch_user_id == 1684 ? 'hide':'active'; ?>" id="tabVendor">
+                                                            <input class="form-control" type="hidden" name="vendor_s_ID" id="vendor_s_ID" />
+                                                            <input class="form-control" type="hidden" name="vendor_c_ID" id="vendor_c_ID" />
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Vendor ID</label>
+                                                                        <input class="form-control" type="text" name="vendor_id" id="vendor_id" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Vendor Name</label>
+                                                                        <input class="form-control" type="text" name="vendor_name" id="vendor_name" autocomplete="off" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Vendor/Item Code</label>
+                                                                        <input class="form-control" type="text" name="vendor_code" id="vendor_code" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-9">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Address</label>
+                                                                        <input class="form-control" type="text" name="vendor_address" id="vendor_address" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Contact Name</label>
+                                                                        <input class="form-control" type="text" name="vendor_contact_name"  id="vendor_contact_name" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Phone</label>
+                                                                        <input class="form-control" type="text" name="vendor_phone" id="vendor_phone" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Fax</label>
+                                                                        <input class="form-control" type="text" name="vendor_fax" id="vendor_fax" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Email Address</label>
+                                                                        <input class="form-control" type="text" name="vendor_email" id="vendor_email" />
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Vendor Name</label>
-                                                                    <input class="form-control" type="text" name="vendor_name" id="vendor_name" autocomplete="off" />
+                                                            
+                                                            <h4><strong>Company Background</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-7">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Company Primary Business Description</label>
+                                                                        <input class="form-control" type="text" name="vendor_business" id="vendor_business" />
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Vendor/Item Code</label>
-                                                                    <input class="form-control" type="text" name="vendor_code" id="vendor_code" />
+                                                                <div class="col-md-5">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Company Size</label>
+                                                                        <input class="form-control" type="text" name="vendor_size" id="vendor_size" />
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-9">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Address</label>
-                                                                    <input class="form-control" type="text" name="vendor_address" id="vendor_address" />
+                                                                <div class="col-md-7">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Locations</label>
+                                                                        <input class="form-control" type="text" name="vendor_location" id="vendor_location" />
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Contact Name</label>
-                                                                    <input class="form-control" type="text" name="vendor_contact_name"  id="vendor_contact_name" />
+                                                                <div class="col-md-5">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Geographic Distribution Points</label>
+                                                                        <input class="form-control" type="text" name="vendor_geographic" id="vendor_geographic" />
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Phone</label>
-                                                                    <input class="form-control" type="text" name="vendor_phone" id="vendor_phone" />
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Retail Accounts Listing</label>
+                                                                        <input class="form-control" type="text" name="vendor_retail" id="vendor_retail" />
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Fax</label>
-                                                                    <input class="form-control" type="text" name="vendor_fax" id="vendor_fax" />
+                                                                <div class="col-md-7">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Corporate Diversity Program Statement</label>
+                                                                        <input class="form-control" type="text" name="vendor_diversity" id="vendor_diversity" />
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Email Address</label>
-                                                                    <input class="form-control" type="text" name="vendor_email" id="vendor_email" />
+                                                                <div class="col-md-5">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Corporate Responsibility Program Statement</label>
+                                                                        <input class="form-control" type="text" name="vendor_responsibility" id="vendor_responsibility" />
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
-                                                        <h4><strong>Company Background</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-7">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Company Primary Business Description</label>
-                                                                    <input class="form-control" type="text" name="vendor_business" id="vendor_business" />
+                                                        <div class="tab-pane <?php echo $switch_user_id == 1684 ? 'active':''; ?>" id="tabBasic">
+                                                            <div class="row margin-bottom-20">
+                                                                <div class="<?php echo $switch_user_id == 1684 ? 'col-md-12':'col-md-6'; ?> productMain">
+                                                                    <p><strong>Main Product View</strong></p>
+                                                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                        <div class="fileinput-new thumbnail">
+                                                                            <img src="//placehold.co/400x250/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                        </div>
+                                                                        <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                        <div>
+                                                                            <span class="btn default btn-file btn-xs">
+                                                                                <span class="fileinput-new"> Select image </span>
+                                                                                <span class="fileinput-exists"> Change </span>
+                                                                                <input class="form-control" type="file" name="image_main" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                            </span>
+                                                                            <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="<?php echo $switch_user_id == 1684 ? 'hide':''; ?> col-md-6 productAngle">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-4">
+                                                                            <p><strong>Top View</strong></p>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="image_top" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-4">
+                                                                            <p><strong>Front View</strong></p>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="image_front" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-4">
+                                                                            <p><strong>Left View</strong></p>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="image_left" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row margin-top-20">
+                                                                        <div class="col-sm-4">
+                                                                            <p><strong>Bottom View</strong></p>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="image_bottom" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-4">
+                                                                            <p><strong>Back View</strong></p>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="image_back" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-4">
+                                                                            <p><strong>Right View</strong></p>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="image_right" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-5">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Company Size</label>
-                                                                    <input class="form-control" type="text" name="vendor_size" id="vendor_size" />
+    
+                                                            <div class="row">
+                                                                <div class="col-md-8">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Product Name</label>
+                                                                        <input class="form-control" type="text" name="name" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Category Group Description</label>
+                                                                        <select class="form-control" name="category_group">
+                                                                            <option value="0">Select</option>
+    
+                                                                            <?php
+                                                                                $selectCategory = mysqli_query( $conn,"
+                                                                                    SELECT 
+                                                                                    g.id AS group_id,
+                                                                                    g.name AS group_name,
+                                                                                    d.id AS desciption_id,
+                                                                                    d.name AS desciption_name
+                                                                                    FROM tbl_products_category_group AS g
+    
+                                                                                    LEFT JOIN (
+                                                                                        SELECT
+                                                                                        *
+                                                                                        FROM tbl_products_category_group_description
+                                                                                        WHERE deleted = 0
+                                                                                    ) AS d
+                                                                                    ON g.ID = d.category_id
+    
+                                                                                    WHERE g.deleted = 0
+                                                                                " );
+                                                                                if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                                                                    $category_group = array();
+                                                                                    $category_group_prev = 0;
+                                                                                    while($rowCategory = mysqli_fetch_array($selectCategory)) {
+    
+                                                                                        if (!in_array($rowCategory['group_id'], $category_group)) {
+                                                                                            array_push($category_group, $rowCategory['group_id']);
+    
+                                                                                            if ($category_group_prev > 0 AND $category_group_prev != $rowCategory['group_id']) {
+                                                                                                echo '</optgroup>';
+                                                                                            }
+                                                                                            $category_group_prev = $rowCategory['group_id'];
+    
+                                                                                            echo '<optgroup label="'.$rowCategory['group_name'].'">';
+                                                                                        }
+    
+                                                                                        echo '<option value="'.$rowCategory['desciption_id'].'">'.$rowCategory['desciption_name'].'</option>';
+                                                                                    }
+                                                                                }
+                                                                            ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <div class="row">
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'col-md-12':'col-md-4'; ?>">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Product / Item Code</label>
+                                                                                <input class="form-control" type="text" name="code" required />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'hide':''; ?> col-md-5">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Lead Time</label>
+                                                                                <div class="input-group">
+                                                                                    <input class="form-control" type="number" name="leads" min="0" />
+                                                                                    <div class="input-group-addon" style="padding: 0;">
+                                                                                        <select name="lead_type" style="border: 0; background: transparent;">
+                                                                                            <option value="0">Day</option>
+                                                                                            <option value="1">Week</option>
+                                                                                            <option value="2">Month</option>
+                                                                                            <option value="3">Year</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'col-md-6':'col-md-3'; ?>">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Private Label</label>
+                                                                                <select class="form-control" name="private_label">
+                                                                                    <option value="0">No</option>
+                                                                                    <option value="1">Yes</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'hide':''; ?> col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Cost</label>
+                                                                                <div class="input-group">
+                                                                                    <span class="input-group-addon">$</span>
+                                                                                    <input class="form-control" type="number" name="cost" min="0" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'hide':''; ?> col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Incoterms</label>
+                                                                                <select class="form-control" name="incoterms">
+                                                                                    <option value="0">Select</option>
+    
+                                                                                    <?php
+                                                                                        $selectIncoterms = mysqli_query( $conn,"SELECT * from tbl_products_incoterms WHERE deleted = 0" );
+                                                                                        if ( mysqli_num_rows($selectIncoterms) > 0 ) {
+                                                                                            while($rowIncoterms = mysqli_fetch_array($selectIncoterms)) {
+                                                                                                echo '<option value="'.$rowIncoterms['ID'].'">'.$rowIncoterms['name'].'</option>';
+                                                                                            }
+                                                                                        }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'hide':''; ?> col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">MOQ</label>
+                                                                                <input class="form-control" type="number" name="moq" min="0" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'col-md-6':'col-md-3'; ?>">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Imports</label>
+                                                                                <select class="form-control" name="imports">
+                                                                                    <option value="0">No</option>
+                                                                                    <option value="1">Yes</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <label>Brand Logo</label>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="image_brand" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label>QR Code</label>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="image_qr" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Product Description</label>
+                                                                        <textarea class="form-control" name="description" required ></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Product Characteristics</label>
+                                                                        <textarea class="form-control" name="feature"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Ingredients List</label>
+                                                                        <textarea class="form-control" name="ingredients"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Product Claims</label>
+                                                                        <select class="form-control mt-multiselect btn btn-default" name="claims[]" multiple="multiple">
+                                                                            <?php
+                                                                                $selectClaims = mysqli_query( $conn,"SELECT * FROM tbl_products_claims WHERE deleted = 0 ORDER BY name" );
+                                                                                if ( mysqli_num_rows($selectClaims) > 0 ) {
+                                                                                    while($rowClaims = mysqli_fetch_array($selectClaims)) {
+                                                                                        echo '<option value="'.$rowClaims['ID'].'">'.$rowClaims['name'].'</option>';
+                                                                                    }
+                                                                                }
+                                                                            ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Intended Use</label>
+                                                                        <select class="form-control" name="intended">
+                                                                            <option value="0">Select</option>
+                                                                            <?php
+                                                                                $selectIntended = mysqli_query( $conn,"SELECT * FROM tbl_products_intended WHERE deleted = 0 ORDER BY name" );
+                                                                                if ( mysqli_num_rows($selectIntended) > 0 ) {
+                                                                                    while($rowIntended = mysqli_fetch_array($selectIntended)) {
+                                                                                        $intended_ID = $rowIntended["ID"];
+                                                                                        $intended_name = $rowIntended["name"];
+    
+                                                                                        echo '<option value="'.$intended_ID.'">'.$intended_name.'</option>';
+                                                                                    }
+                                                                                }
+                                                                            ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Intended Consumers</label>
+                                                                        <input class="form-control" type="text" name="intended_consumers" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Allergens</label>
+                                                                        <select class="form-control mt-multiselect btn btn-default" name="allergen[]" multiple="multiple">
+                                                                            <?php
+                                                                                $selectAllergens = mysqli_query( $conn,"SELECT * FROM tbl_products_allergens ORDER BY name" );
+                                                                                if ( mysqli_num_rows($selectAllergens) > 0 ) {
+                                                                                    while($rowAllergens = mysqli_fetch_array($selectAllergens)) {
+                                                                                        echo '<option value="'.$rowAllergens['ID'].'">'.$rowAllergens['name'].'</option>';
+                                                                                    }
+                                                                                }
+                                                                            ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="<?php echo $switch_user_id == 1684 ? 'hide':''; ?> col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Available Flavors</label>
+                                                                        <input class="form-control" type="text" name="flavor" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Size/UOM</label>
+                                                                        <div class="input-group">
+                                                                            <input class="form-control" type="number" name="size_uom" min="0" />
+                                                                            <div class="input-group-addon" style="padding: 0;">
+                                                                                <select name="size_uom_type" style="border: 0; background: transparent;">
+                                                                                    <?php
+                                                                                        $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                                                        if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                                                            while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                                                echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
+                                                                                            }
+                                                                                        }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="<?php echo $switch_user_id == 1684 ? 'col-md-4':'col-md-3'; ?>">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Shelf Life</label>
+                                                                        <div class="input-group">
+                                                                            <input class="form-control" type="number" name="shelf" min="0" />
+                                                                            <div class="input-group-addon" style="padding: 0;">
+                                                                                <select name="shelf_type" style="border: 0; background: transparent;">
+                                                                                    <option value="0">Day</option>
+                                                                                    <option value="1">Week</option>
+                                                                                    <option value="2">Month</option>
+                                                                                    <option value="3">Year</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="<?php echo $switch_user_id == 1684 ? 'col-md-4':'col-md-2'; ?>">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Temperature</label>
+                                                                        <input class="form-control" type="text" name="temperature" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="<?php echo $switch_user_id == 1684 ? 'hide':''; ?> col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Retail Accounts</label>
+                                                                        <textarea class="form-control" name="retail_accounts"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="<?php echo $switch_user_id == 1684 ? 'hide':''; ?> col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Competing Brands</label>
+                                                                        <textarea class="form-control" name="competing_brands"></textarea>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-7">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Locations</label>
-                                                                    <input class="form-control" type="text" name="vendor_location" id="vendor_location" />
+                                                        </div>
+                                                        <div class="tab-pane" id="tabCharacteristics">
+                                                            <h4 class="pictogram-align">
+                                                                <strong>Product Description, including Important Food Safety Characteristics</strong>
+                                                                <?php
+                                                                    $pictogram = 'prod_desc';
+                                                                    if ($switch_user_id == 163) {
+                                                                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                                    } else {
+                                                                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                            $row = mysqli_fetch_array($selectPictogram);
+                
+                                                                            $files = '';
+                                                                            $type = 'iframe';
+                                                                            if (!empty($row["files"])) {
+                                                                                $arr_filename = explode(' | ', $row["files"]);
+                                                                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                                $str_filename = '';
+                
+                                                                                foreach($arr_filename as $val_filename) {
+                                                                                    $str_filename = $val_filename;
+                                                                                }
+                                                                                foreach($arr_filetype as $val_filetype) {
+                                                                                    $str_filetype = $val_filetype;
+                                                                                }
+                
+                                                                                $files = $row["files"];
+                                                                                if ($row["filetype"] == 1) {
+                                                                                    $fileExtension = fileExtension($files);
+                                                                                    $src = $fileExtension['src'];
+                                                                                    $embed = $fileExtension['embed'];
+                                                                                    $type = $fileExtension['type'];
+                                                                                    $file_extension = $fileExtension['file_extension'];
+                                                                                    $url = $base_url.'uploads/pictogram/';
+                
+                                                                                    $files = $src.$url.rawurlencode($files).$embed;
+                                                                                } else if ($row["filetype"] == 3) {
+                                                                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                                }
+                                                                            }
+                
+                                                                            if (!empty($files)) {
+                                                                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                ?>
+                                                            </h4>
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label"> Organoleptic/Sensory Characteristics </label>
+                                                                        <div class="chars-container">
+                                                                            <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                                                <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" />
+                                                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physical_chars[]" data-placeholder="e.g. Color, Flavor, Texture, Form" onclick="addMoreChars(this)">
+                                                                             <i class="fa fa-plus"></i> Add more
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Physico - Chemical Characteristics</label>
+                                                                        <div class="chars-container">
+                                                                            <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                                                <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." />
+                                                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physico_chem_char[]" data-placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." onclick="addMoreChars(this)">
+                                                                             <i class="fa fa-plus"></i> Add more
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Microbiological Characteristics</label>
+                                                                        <div class="chars-container">
+                                                                            <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                                                <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" />
+                                                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="microbial_char[]" data-placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" onclick="addMoreChars(this)">
+                                                                             <i class="fa fa-plus"></i> Add more
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-5">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Geographic Distribution Points</label>
-                                                                    <input class="form-control" type="text" name="vendor_geographic" id="vendor_geographic" />
+                                                        </div>
+                                                        <div class="tab-pane" id="tabPackaging">
+                                                            <h4><strong>Primary</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <label>&nbsp;</label>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="packaging_1_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-10">
+                                                                    <div class="row">
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Unit</label>
+                                                                                <select class="form-control" name="packaging_1">
+                                                                                    <option value="0">Select</option>
+    
+                                                                                    <?php
+                                                                                        $selectPrimary = mysqli_query( $conn,"SELECT * from tbl_products_primary WHERE deleted = 0 ORDER BY name" );
+                                                                                        if ( mysqli_num_rows($selectPrimary) > 0 ) {
+                                                                                            while($rowPrimary = mysqli_fetch_array($selectPrimary)) {
+                                                                                                echo '<option value="'.$rowPrimary['ID'].'">'.$rowPrimary['name'].'</option>';
+                                                                                            }
+                                                                                        }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Dimension</label>
+                                                                                <input class="form-control" type="text" name="packaging_1_dimension" />
+                                                                                <small class="help-block">H x L x W <?php echo $switch_user_id == 1684 ? '(in)':''; ?></small>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">UPC</label>
+                                                                                <input class="form-control" type="text" name="packaging_1_upc" />
+                                                                                <small class="help-block">H x L x W <?php echo $switch_user_id == 1684 ? '(in)':''; ?></small>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Cube</label>
+                                                                                <input class="form-control" type="text" name="packaging_1_cube" />
+                                                                                <small class="help-block">H x L x W <?php echo $switch_user_id == 1684 ? '(in)':''; ?></small>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'col-md-3':'col-md-4'; ?>">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label"><?php echo $switch_user_id == 1684 ? 'Weight (lbs)':'Ship Weight'; ?></label>
+                                                                                <input class="form-control" type="text" name="packaging_1_weight" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'col-md-3':'col-md-4'; ?>">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">No. of Units</label>
+                                                                                <input class="form-control" type="text" name="packaging_1_unit" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="<?php echo $switch_user_id == 1684 ? 'col-md-2':'hide'; ?>">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Material</label>
+                                                                                <select class="form-control" name="packaging_1_material">
+                                                                                    <option value="0">Select</option>
+                                                                                    <?php
+                                                                                        $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 ORDER BY name" );
+                                                                                        if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                                                                            while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
+                                                                                                echo '<option value="'.$rowMaterial['ID'].'">'.$rowMaterial['name'].'</option>';
+                                                                                            }
+                                                                                        }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Size/UOM</label>
+                                                                                <div class="input-group">
+                                                                                    <input class="form-control" type="number" name="packaging_1_size_uom" min="0" />
+                                                                                    <div class="input-group-addon" style="padding: 0;">
+                                                                                        <select name="packaging_1_size_uom_type" style="border: 0; background: transparent;">
+                                                                                            <?php
+                                                                                                $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                                                                if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                                                                    while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                                                        echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
+                                                                                                    }
+                                                                                                }
+                                                                                            ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Retail Accounts Listing</label>
-                                                                    <input class="form-control" type="text" name="vendor_retail" id="vendor_retail" />
+                                                            <hr>
+    
+                                                            <?php if ($switch_user_id == 1684) { ?>
+                                                                <h4><strong>Secondary Packaging</strong></h4>
+                                                                <div class="row">
+                                                                    <div class="col-md-4">
+                                                                        <strong>Case</strong>
+                                                                        <div class="form-group">
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail" style="height: 100px;"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="packaging_2a_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Material</label>
+                                                                            <select class="form-control" name="packaging_2a_material">
+                                                                                <option value="0">Select</option>
+                                                                                <?php
+                                                                                    $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 ORDER BY name" );
+                                                                                    if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                                                                        while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
+                                                                                            echo '<option value="'.$rowMaterial['ID'].'">'.$rowMaterial['name'].'</option>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="packaging_2a_weight" />
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Dimension</label>
+                                                                            <input class="form-control" type="text" name="packaging_2a_dimension" />
+                                                                            <small class="help-block">H x L x W (in)</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <strong>Case OD</strong>
+                                                                        <div class="form-group">
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail" style="height: 100px;"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="packaging_2b_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Material</label>
+                                                                            <select class="form-control" name="packaging_2b_material">
+                                                                                <option value="0">Select</option>
+                                                                                <?php
+                                                                                    $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 ORDER BY name" );
+                                                                                    if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                                                                        while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
+                                                                                            echo '<option value="'.$rowMaterial['ID'].'">'.$rowMaterial['name'].'</option>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="packaging_2b_weight" />
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Dimension</label>
+                                                                            <input class="form-control" type="text" name="packaging_2b_dimension" />
+                                                                            <small class="help-block">H x L x W (in)</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <strong>Case ID</strong>
+                                                                        <div class="form-group">
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail" style="height: 100px;"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="packaging_2c_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Material</label>
+                                                                            <select class="form-control" name="packaging_2c_material">
+                                                                                <option value="0">Select</option>
+                                                                                <?php
+                                                                                    $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 ORDER BY name" );
+                                                                                    if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                                                                        while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
+                                                                                            echo '<option value="'.$rowMaterial['ID'].'">'.$rowMaterial['name'].'</option>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="packaging_2c_weight" />
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Dimension</label>
+                                                                            <input class="form-control" type="text" name="packaging_2c_dimension" />
+                                                                            <small class="help-block">H x L x W (in)</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                
+                                                                <div class="row">
+                                                                    <div class="col-md-4">
+                                                                        <h4><strong>Pallet</strong></h4>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Material</label>
+                                                                            <select class="form-control" name="packaging_3a_material">
+                                                                                <option value="0">Select</option>
+                                                                                <?php
+                                                                                    $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 ORDER BY name" );
+                                                                                    if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                                                                        while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
+                                                                                            echo '<option value="'.$rowMaterial['ID'].'">'.$rowMaterial['name'].'</option>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="packaging_3a_weight" />
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Dimension</label>
+                                                                            <input class="form-control" type="text" name="packaging_3a_dimension" />
+                                                                            <small class="help-block">H x L x W (in)</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <h4><strong>Pallet Label</strong></h4>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Material</label>
+                                                                            <select class="form-control" name="packaging_3b_material">
+                                                                                <option value="0">Select</option>
+                                                                                <?php
+                                                                                    $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 ORDER BY name" );
+                                                                                    if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                                                                        while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
+                                                                                            echo '<option value="'.$rowMaterial['ID'].'">'.$rowMaterial['name'].'</option>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="packaging_3b_weight" />
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Dimension</label>
+                                                                            <input class="form-control" type="text" name="packaging_3b_dimension" />
+                                                                            <small class="help-block">H x L x W (in)</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <h4><strong>Pallet Wrap</strong></h4>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Material</label>
+                                                                            <select class="form-control" name="packaging_3c_material">
+                                                                                <option value="0">Select</option>
+                                                                                <?php
+                                                                                    $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 ORDER BY name" );
+                                                                                    if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                                                                        while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
+                                                                                            echo '<option value="'.$rowMaterial['ID'].'">'.$rowMaterial['name'].'</option>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="packaging_3c_weight" />
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Dimension</label>
+                                                                            <input class="form-control" type="text" name="packaging_3c_dimension" />
+                                                                            <small class="help-block">H x L x W (in)</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                            <?php } else { ?>
+                                                                <h4><strong>Secondary</strong></h4>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label>&nbsp;</label>
+                                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                    <div class="fileinput-new thumbnail">
+                                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                    </div>
+                                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                    <div>
+                                                                                        <span class="btn default btn-file btn-xs">
+                                                                                            <span class="fileinput-new"> Select image </span>
+                                                                                            <span class="fileinput-exists"> Change </span>
+                                                                                            <input class="form-control" type="file" name="packaging_2_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                        </span>
+                                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-10">
+                                                                        <div class="row">
+                                                                            <div class="col-md-3">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Case</label>
+                                                                                    <select class="form-control" name="packaging_2">
+                                                                                        <option value="0">Select</option>
+        
+                                                                                        <?php
+                                                                                            $selectSecondary = mysqli_query( $conn,"SELECT * from tbl_products_secondary WHERE deleted = 0 ORDER BY name" );
+                                                                                            if ( mysqli_num_rows($selectSecondary) > 0 ) {
+                                                                                                while($rowSecondary = mysqli_fetch_array($selectSecondary)) {
+                                                                                                    echo '<option value="'.$rowSecondary['ID'].'">'.$rowSecondary['name'].'</option>';
+                                                                                                }
+                                                                                            }
+                                                                                        ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Dimension</label>
+                                                                                    <input class="form-control" type="text" name="packaging_2_dimension" />
+                                                                                    <small class="help-block">H x L x W <?php echo $switch_user_id == 1684 ? '(in)':''; ?></small>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">UPC</label>
+                                                                                    <input class="form-control" type="text" name="packaging_2_upc" />
+                                                                                    <small class="help-block">H x L x W <?php echo $switch_user_id == 1684 ? '(in)':''; ?></small>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Cube</label>
+                                                                                    <input class="form-control" type="text" name="packaging_2_cube" />
+                                                                                    <small class="help-block">H x L x W <?php echo $switch_user_id == 1684 ? '(in)':''; ?></small>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="<?php echo $switch_user_id == 1684 ? 'col-md-3':'col-md-4'; ?>">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label"><?php echo $switch_user_id == 1684 ? 'Weight (lbs)':'Ship Weight'; ?></label>
+                                                                                    <input class="form-control" type="text" name="packaging_2_weight" />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="<?php echo $switch_user_id == 1684 ? 'col-md-3':'col-md-4'; ?>">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">No. of Units</label>
+                                                                                    <input class="form-control" type="text" name="packaging_2_unit" />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="<?php echo $switch_user_id == 1684 ? 'col-md-2':'hide'; ?>">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Material</label>
+                                                                                    <select class="form-control" name="packaging_2_material">
+                                                                                        <option value="0">Select</option>
+                                                                                        <?php
+                                                                                            $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 ORDER BY name" );
+                                                                                            if ( mysqli_num_rows($selectMaterial) > 0 ) {
+                                                                                                while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
+                                                                                                    echo '<option value="'.$rowMaterial['ID'].'">'.$rowMaterial['name'].'</option>';
+                                                                                                }
+                                                                                            }
+                                                                                        ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Size/UOM</label>
+                                                                                    <div class="input-group">
+                                                                                        <input class="form-control" type="number" name="packaging_2_size_uom" min="0" />
+                                                                                        <div class="input-group-addon" style="padding: 0;">
+                                                                                            <select name="packaging_2_size_uom_type" style="border: 0; background: transparent;">
+                                                                                                <?php
+                                                                                                    $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                                                                    if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                                                                        while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                                                            echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
+                                                                                                        }
+                                                                                                    }
+                                                                                                ?>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+    
+                                                                <h4><strong>Tertiary</strong></h4>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <label>&nbsp;</label>
+                                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                    <div class="fileinput-new thumbnail">
+                                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                    </div>
+                                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                    <div>
+                                                                                        <span class="btn default btn-file btn-xs">
+                                                                                            <span class="fileinput-new"> Select image </span>
+                                                                                            <span class="fileinput-exists"> Change </span>
+                                                                                            <input class="form-control" type="file" name="packaging_3_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                        </span>
+                                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-10">
+                                                                        <div class="row">
+                                                                            <div class="col-md-3">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Master Pack</label>
+                                                                                    <select class="form-control" name="packaging_3">
+                                                                                        <option value="0">Select</option>
+        
+                                                                                        <?php
+                                                                                            $selectTertiary = mysqli_query( $conn,"SELECT * from tbl_products_tertiary WHERE deleted = 0" );
+                                                                                            if ( mysqli_num_rows($selectTertiary) > 0 ) {
+                                                                                                while($rowTertiary = mysqli_fetch_array($selectTertiary)) {
+                                                                                                    echo '<option value="'.$rowTertiary['ID'].'">'.$rowTertiary['name'].'</option>';
+                                                                                                }
+                                                                                            }
+                                                                                        ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Dimension</label>
+                                                                                    <input class="form-control" type="text" name="packaging_3_dimension" />
+                                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">UPC</label>
+                                                                                    <input class="form-control" type="text" name="packaging_3_upc" />
+                                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Cube</label>
+                                                                                    <input class="form-control" type="text" name="packaging_3_cube" />
+                                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Ship Weight</label>
+                                                                                    <input class="form-control" type="text" name="packaging_3_weight" />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">No. of Units</label>
+                                                                                    <input class="form-control" type="text" name="packaging_3_unit" />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label">Size/UOM</label>
+                                                                                    <div class="input-group">
+                                                                                        <input class="form-control" type="number" name="packaging_3_size_uom" min="0" />
+                                                                                        <div class="input-group-addon" style="padding: 0;">
+                                                                                            <select name="packaging_3_size_uom_type" style="border: 0; background: transparent;">
+                                                                                                <?php
+                                                                                                    $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                                                                    if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                                                                        while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                                                            echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
+                                                                                                        }
+                                                                                                    }
+                                                                                                ?>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                            <?php } ?>
+    
+                                                            <h4><strong>Pallet Configuration</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <label>&nbsp;</label>
+                                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                                <div class="fileinput-new thumbnail">
+                                                                                    <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                                </div>
+                                                                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                                <div>
+                                                                                    <span class="btn default btn-file btn-xs">
+                                                                                        <span class="fileinput-new"> Select image </span>
+                                                                                        <span class="fileinput-exists"> Change </span>
+                                                                                        <input class="form-control" type="file" name="pallet_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                                    </span>
+                                                                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-10">
+                                                                    <div class="row">
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Pallet Type</label>
+                                                                                <select class="form-control" name="pallet_type">
+                                                                                    <option value="0">Select</option>
+    
+                                                                                    <?php
+                                                                                        $selectPallet = mysqli_query( $conn,"
+                                                                                            SELECT 
+                                                                                            p.id AS group_id,
+                                                                                            p.name AS group_name,
+                                                                                            t.id AS desciption_id,
+                                                                                            t.name AS desciption_name
+                                                                                            FROM tbl_products_pallet AS p
+    
+                                                                                            LEFT JOIN (
+                                                                                                SELECT
+                                                                                                *
+                                                                                                FROM tbl_products_pallet_type
+                                                                                                WHERE deleted = 0
+                                                                                            ) AS t
+                                                                                            ON p.ID = t.pallet_id
+    
+                                                                                            WHERE p.deleted = 0
+                                                                                        " );
+                                                                                        if ( mysqli_num_rows($selectPallet) > 0 ) {
+                                                                                            $pallet_arr = array();
+                                                                                            $pallet_arr_prev = 0;
+                                                                                            while($rowPallet = mysqli_fetch_array($selectPallet)) {
+    
+                                                                                                if (!in_array($rowPallet['group_id'], $pallet_arr)) {
+                                                                                                    array_push($pallet_arr, $rowPallet['group_id']);
+    
+                                                                                                    if ($pallet_arr_prev > 0 AND $pallet_arr_prev != $rowPallet['group_id']) {
+                                                                                                        echo '</optgroup>';
+                                                                                                    }
+                                                                                                    $pallet_arr_prev = $rowPallet['group_id'];
+    
+                                                                                                    echo '<optgroup label="'.$rowPallet['group_name'].'">';
+                                                                                                }
+    
+                                                                                                echo '<option value="'.$rowPallet['desciption_id'].'">'.$rowPallet['desciption_name'].'</option>';
+                                                                                            }
+                                                                                        }
+                                                                                    ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Dimension</label>
+                                                                                <input class="form-control" type="text" name="pallet_dimension" />
+                                                                                <small class="help-block">H x L x W (in)</small>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">UPC</label>
+                                                                                <input class="form-control" type="text" name="pallet_upc" />
+                                                                                <small class="help-block">H x L x W (in)</small>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Cube</label>
+                                                                                <input class="form-control" type="text" name="pallet_cube" />
+                                                                                <small class="help-block">H x L x W (in)</small>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">Ship Weight</label>
+                                                                                <input class="form-control" type="text" name="pallet_weight" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">No. of Units</label>
+                                                                                <input class="form-control" type="text" name="pallet_unit" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">No. of Cartons/Boxes</label>
+                                                                                <input class="form-control" type="text" name="pallet_boxes" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-7">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Corporate Diversity Program Statement</label>
-                                                                    <input class="form-control" type="text" name="vendor_diversity" id="vendor_diversity" />
+                                                            <hr>
+    
+                                                            <?php if ($switch_user_id == 1684) { ?>
+                                                                <h4><strong>Palletization</strong></h4>
+                                                                <strong>Unit</strong>
+                                                                <div class="row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Content (bags)</label>
+                                                                            <input class="form-control" type="text" name="pallet_unit_content" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Bag net weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="pallet_unit_net" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Bag gross weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="pallet_unit_gross" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <strong>Case</strong>
+                                                                <div class="row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Content (bags)</label>
+                                                                            <input class="form-control" type="text" name="pallet_case_content" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Case net weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="pallet_case_net" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Case gross weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="pallet_case_gross" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <strong>Pallet Stacking Pattern</strong>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Cases / layer</label>
+                                                                            <input class="form-control" type="text" name="pallet_cases_layer" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Layers / pallet</label>
+                                                                            <input class="form-control" type="text" name="pallet_layers" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Cases / pallet</label>
+                                                                            <input class="form-control" type="text" name="pallet_cases" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Net weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="pallet_net_weight" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Gross weight (lbs)</label>
+                                                                            <input class="form-control" type="text" name="pallet_gross_weight" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Pallet height (in)</label>
+                                                                            <input class="form-control" type="text" name="pallet_height" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <strong>Trailer Loading Pattern</strong>
+                                                                        <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Trailer Loading Pattern', 7)"><i class="fa fa-plus"></i></a>
+                                                                        <div class="table-scrollable">
+                                                                            <table class="table table-bordered table-hover tbl-data-1-7">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th>Trailer Type</th>
+                                                                                        <th>Layout</th>
+                                                                                        <th>Pallets / Trailer</th>
+                                                                                        <th>Net Weight (lbs)</th>
+                                                                                        <th>Gross Weight (lbs)</th>
+                                                                                        <th class="text-center" style="width: 135px;">Action</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody></tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            <?php } else { ?>
+                                                                <h4><strong>Production</strong></h4>
+                                                                <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">No. of Units / Day</label>
+                                                                            <input class="form-control" type="text" name="production_day" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">No. of Units / Week</label>
+                                                                            <input class="form-control" type="text" name="production_week" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Production Cost</label>
+                                                                            <input class="form-control" type="text" name="production_cost" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Profit %</label>
+                                                                            <input class="form-control" type="text" name="production_profit" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+        
+                                                                <h4><strong>Cost Calculation</strong></h4>
+                                                                <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Operation</label>
+                                                                            <input class="form-control" type="text" name="cost_operation" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Rent, Utilities</label>
+                                                                            <input class="form-control" type="text" name="cost_rent" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Materials</label>
+                                                                            <input class="form-control" type="text" name="cost_material" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Financing </label>
+                                                                            <input class="form-control" type="text" name="cost_financing" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Transportation </label>
+                                                                            <input class="form-control" type="text" name="cost_transportation" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+        
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Lead Time', 1)">Add Lead Times</a>
+                                                                        <div class="table-scrollable">
+                                                                            <table class="table table-bordered table-hover tbl-data-1-1">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th>Material Name</th>
+                                                                                        <th style="width: 100px;">Lead Time</th>
+                                                                                        <th style="width: 100px;">% in Formula</th>
+                                                                                        <th style="width: 100px;">Cost</th>
+                                                                                        <th class="text-center" style="width: 135px;">Action</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody></tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            <?php } ?>
+                                                        </div>
+                                                        <div class="tab-pane" id="tabDocs">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <h4>
+                                                                        <strong>Regulatory</strong>
+                                                                        <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Requirements', 5)"><i class="fa fa-plus"></i></a>
+                                                                    </h4>
+                                                                    <div class="table-scrollable">
+                                                                        <table class="table table-bordered table-hover tbl-data-1-5">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Requirements Name</th>
+                                                                                    <th class="text-center" style="width: 100px;">File</th>
+                                                                                    <th class="text-center" style="width: 100px;">Document Date</th>
+                                                                                    <th class="text-center" style="width: 100px;">Review Due Date</th>
+                                                                                    <th class="text-center" style="width: 135px;">Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody></tbody>
+                                                                        </table>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-5">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Corporate Responsibility Program Statement</label>
-                                                                    <input class="form-control" type="text" name="vendor_responsibility" id="vendor_responsibility" />
+    
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <h4>
+                                                                        <strong>Product Certification & Document</strong>
+                                                                        <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Documents', 6)"><i class="fa fa-plus"></i></a>
+                                                                    </h4>
+                                                                    <div class="table-scrollable">
+                                                                        <table class="table table-bordered table-hover tbl-data-1-6">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Documents Name</th>
+                                                                                    <th class="text-center" style="width: 100px;">File</th>
+                                                                                    <th class="text-center" style="width: 100px;">Document Date</th>
+                                                                                    <th class="text-center" style="width: 100px;">Review Due Date</th>
+                                                                                    <th class="text-center" style="width: 135px;">Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody></tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+    
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <h4>
+                                                                        <strong>Lab</strong>
+                                                                        <a href="#modalNewLab" data-toggle="modal" class="btn green" onclick="btnNew_Lab(1)"><i class="fa fa-plus"></i></a>
+                                                                    </h4>
+                                                                    <div class="table-scrollable">
+                                                                        <table class="table table-bordered table-hover" id="tableLab_1">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Lot #</th>
+                                                                                    <th>Lab</th>
+                                                                                    <th>Analysis</th>
+                                                                                    <th>Method</th>
+                                                                                    <th>Sample Size</th>
+                                                                                    <th>Unit</th>
+                                                                                    <th class="text-center">Date Sent for Lab</th>
+                                                                                    <th class="text-center">Date Received</th>
+                                                                                    <th class="text-center">Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody></tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <h4><strong>Exercises</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Mock Recall Exercise</label>
+                                                                        <input class="form-control" type="date" name="mock_recall" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Product Trace Exercise</label>
+                                                                        <input class="form-control" type="date" name="product_trace" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane" id="tabManufactured">
+                                                            <h4><strong>Manufactured By</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Manufacturer Name</label>
+                                                                        <input class="form-control" type="text" name="manu_name" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Phone</label>
+                                                                        <input class="form-control" type="text" name="manu_phone" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Contact</label>
+                                                                        <input class="form-control" type="text" name="manu_contact" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Facility Address</label>
+                                                                        <input class="form-control" type="text" name="manu_address" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Email</label>
+                                                                        <input class="form-control" type="email" name="manu_email" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Website</label>
+                                                                        <input class="form-control" type="text" name="manu_website" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Facility Registration No.</label>
+                                                                        <input class="form-control" type="text" name="manu_reg_no" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Dunn No.</label>
+                                                                        <input class="form-control" type="text" name="manu_dunn_no" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Certificate', 2)">Add Certificate</a>
+                                                                    <div class="table-scrollable">
+                                                                        <table class="table table-bordered table-hover tbl-data-1-2">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Certification Name</th>
+                                                                                    <th class="text-center" style="width: 100px;">File</th>
+                                                                                    <th class="text-center" style="width: 100px;">Certification Date</th>
+                                                                                    <th class="text-center" style="width: 100px;">Due Date</th>
+                                                                                    <th class="text-center" style="width: 135px;">Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody></tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+    
+                                                            <h4><strong>Broker Info</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Company Name</label>
+                                                                        <input class="form-control" type="text" name="broker_name" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Phone</label>
+                                                                        <input class="form-control" type="text" name="broker_phone" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Contact</label>
+                                                                        <input class="form-control" type="text" name="broker_contact" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Address</label>
+                                                                        <input class="form-control" type="text" name="broker_address" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Email</label>
+                                                                        <input class="form-control" type="email" name="broker_email" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Website</label>
+                                                                        <input class="form-control" type="text" name="broker_website" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Facility Registration No.</label>
+                                                                        <input class="form-control" type="text" name="broker_reg_no" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Dunn No.</label>
+                                                                        <input class="form-control" type="text" name="broker_dunn_no" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Certificate', 3)">Add Certificate</a>
+                                                                    <div class="table-scrollable">
+                                                                        <table class="table table-bordered table-hover tbl-data-1-3">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Certification Name</th>
+                                                                                    <th class="text-center" style="width: 100px;">File</th>
+                                                                                    <th class="text-center" style="width: 100px;">Certification Date</th>
+                                                                                    <th class="text-center" style="width: 100px;">Due Date</th>
+                                                                                    <th class="text-center" style="width: 135px;">Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody></tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+    
+                                                            <h4><strong>US Agent Name</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Company Name</label>
+                                                                        <input class="form-control" type="text" name="agent_company" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Phone</label>
+                                                                        <input class="form-control" type="text" name="agent_phone" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Contact</label>
+                                                                        <input class="form-control" type="text" name="agent_contact" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Address</label>
+                                                                        <input class="form-control" type="text" name="agent_address" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Email</label>
+                                                                        <input class="form-control" type="email" name="agent_email" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Website</label>
+                                                                        <input class="form-control" type="text" name="agent_website" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+    
+                                                            <h4><strong>Importer Info</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Importer Name</label>
+                                                                        <input class="form-control" type="text" name="importer_name" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Phone</label>
+                                                                        <input class="form-control" type="text" name="importer_phone" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Contact</label>
+                                                                        <input class="form-control" type="text" name="importer_contact" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Address</label>
+                                                                        <input class="form-control" type="text" name="importer_address" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Email</label>
+                                                                        <input class="form-control" type="email" name="importer_email" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Website</label>
+                                                                        <input class="form-control" type="text" name="importer_website" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Facility Registration No.</label>
+                                                                        <input class="form-control" type="text" name="importer_reg_no" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Dunn No.</label>
+                                                                        <input class="form-control" type="text" name="importer_dunn_no" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Certificate', 4)">Add Certificate</a>
+                                                                    <div class="table-scrollable">
+                                                                        <table class="table table-bordered table-hover tbl-data-1-4">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Certification Name</th>
+                                                                                    <th class="text-center" style="width: 100px;">File</th>
+                                                                                    <th class="text-center" style="width: 100px;">Certification Date</th>
+                                                                                    <th class="text-center" style="width: 100px;">Due Date</th>
+                                                                                    <th class="text-center" style="width: 135px;">Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody></tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+    
+                                                            <h4><strong>FSVP Requirements</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Date of FSVP Review</label>
+                                                                        <input class="form-control" type="date" name="fsvp_date_review" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Last Date of FDA FSVP Audit</label>
+                                                                        <input class="form-control" type="date" name="fsvp_date_audit" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Seasonal</label>
+                                                                        <select class="form-control" name="fsvp_seasonal">
+                                                                            <option value="0">No</option>
+                                                                            <option value="1">Yes</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">If Yes, Available Date</label>
+                                                                        <input class="form-control" type="date" name="fsvp_date_available" />
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="tab-pane" id="tabBasic">
-                                                        <div class="row margin-bottom-20">
-                                                            <div class="col-md-6 productMain">
-                                                                <p><strong>Main Product View</strong></p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer modal-footer--sticky bg-white">
+                                                <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                                <button type="submit" class="btn btn-success ladda-button" name="btnSave_Products" id="btnSave_Products" data-style="zoom-out"><span class="ladda-label">Save</span></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } else { ?>
+                            <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content"> 
+                                        <form method="post" enctype="multipart/form-data" class="modalForm modalSave modalProduct">
+                                            <div class="modal-header tabbable-line">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                <h4 class="modal-title">New Product Form</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="ID" value="<?php echo $switch_user_id; ?>" />
+                                                <input type="hidden" name="vendor_name" id="vendor_name" autocomplete="off" />
+                                                
+                                                <!-- Overview -->
+                                                <div class="row margin-bottom-20">
+                                                    <div class="col-md-6 productMain">
+                                                        <p><strong>Main Product View</strong></p>
+                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                            <div class="fileinput-new thumbnail">
+                                                                <img src="//placehold.co/400x250/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                            </div>
+                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                            <div>
+                                                                <span class="btn default btn-file btn-xs">
+                                                                    <span class="fileinput-new"> Select image </span>
+                                                                    <span class="fileinput-exists"> Change </span>
+                                                                    <input class="form-control" type="file" name="image_main" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                </span>
+                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 productAngle">
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <p><strong>Top View</strong></p>
                                                                 <div class="fileinput fileinput-new" data-provides="fileinput">
                                                                     <div class="fileinput-new thumbnail">
-                                                                        <img src="//placehold.co/400x250/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
                                                                     </div>
                                                                     <div class="fileinput-preview fileinput-exists thumbnail"></div>
                                                                     <div>
                                                                         <span class="btn default btn-file btn-xs">
                                                                             <span class="fileinput-new"> Select image </span>
                                                                             <span class="fileinput-exists"> Change </span>
-                                                                            <input class="form-control" type="file" name="image_main" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                            <input class="form-control" type="file" name="image_top" accept="image/png,image/PNG,image/jpg,image/jpeg" />
                                                                         </span>
                                                                         <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6 productAngle">
-                                                                <div class="row">
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Top View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_top" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
+                                                            <div class="col-sm-4">
+                                                                <p><strong>Front View</strong></p>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
                                                                     </div>
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Front View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_front" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Left View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_left" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="image_front" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row margin-top-20">
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Bottom View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_bottom" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <p><strong>Left View</strong></p>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
                                                                     </div>
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Back View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_back" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Right View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_right" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="image_left" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        <div class="row margin-top-20">
+                                                            <div class="col-sm-4">
+                                                                <p><strong>Bottom View</strong></p>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                    </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="image_bottom" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <p><strong>Back View</strong></p>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                    </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="image_back" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <p><strong>Right View</strong></p>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                    </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="image_right" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Product Name</label>
+                                                            <input class="form-control" type="text" name="name" required />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Category Group Description</label>
+                                                            <select class="form-control" name="category_group">
+                                                                <option value="0">Select</option>
+
+                                                                <?php
+                                                                    $selectCategory = mysqli_query( $conn,"
+                                                                        SELECT 
+                                                                        g.id AS group_id,
+                                                                        g.name AS group_name,
+                                                                        d.id AS desciption_id,
+                                                                        d.name AS desciption_name
+                                                                        FROM tbl_products_category_group AS g
+
+                                                                        LEFT JOIN (
+                                                                            SELECT
+                                                                            *
+                                                                            FROM tbl_products_category_group_description
+                                                                            WHERE deleted = 0
+                                                                        ) AS d
+                                                                        ON g.ID = d.category_id
+
+                                                                        WHERE g.deleted = 0
+                                                                    " );
+                                                                    if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                                                        $category_group = array();
+                                                                        $category_group_prev = 0;
+                                                                        while($rowCategory = mysqli_fetch_array($selectCategory)) {
+
+                                                                            if (!in_array($rowCategory['group_id'], $category_group)) {
+                                                                                array_push($category_group, $rowCategory['group_id']);
+
+                                                                                if ($category_group_prev > 0 AND $category_group_prev != $rowCategory['group_id']) {
+                                                                                    echo '</optgroup>';
+                                                                                }
+                                                                                $category_group_prev = $rowCategory['group_id'];
+
+                                                                                echo '<optgroup label="'.$rowCategory['group_name'].'">';
+                                                                            }
+
+                                                                            echo '<option value="'.$rowCategory['desciption_id'].'">'.$rowCategory['desciption_name'].'</option>';
+                                                                        }
+                                                                    }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8">
                                                         <div class="row">
-                                                            <div class="col-md-8">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Product Name</label>
-                                                                    <input class="form-control" type="text" name="name" required />
-                                                                </div>
-                                                            </div>
                                                             <div class="col-md-4">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Category Group Description</label>
-                                                                    <select class="form-control" name="category_group">
+                                                                    <label class="control-label">Product / Item Code</label>
+                                                                    <input class="form-control" type="text" name="code" required />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Lead Time</label>
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="number" name="leads" min="0" />
+                                                                        <div class="input-group-addon" style="padding: 0;">
+                                                                            <select name="lead_type" style="border: 0; background: transparent;">
+                                                                                <option value="0">Day</option>
+                                                                                <option value="1">Week</option>
+                                                                                <option value="2">Month</option>
+                                                                                <option value="3">Year</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Private Label</label>
+                                                                    <select class="form-control" name="private_label">
+                                                                        <option value="0">No</option>
+                                                                        <option value="1">Yes</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Cost</label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon">$</span>
+                                                                        <input class="form-control" type="number" name="cost" min="0" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Incoterms</label>
+                                                                    <select class="form-control" name="incoterms">
                                                                         <option value="0">Select</option>
 
                                                                         <?php
-                                                                            $selectCategory = mysqli_query( $conn,"
-                                                                                SELECT 
-                                                                                g.id AS group_id,
-                                                                                g.name AS group_name,
-                                                                                d.id AS desciption_id,
-                                                                                d.name AS desciption_name
-                                                                                FROM tbl_products_category_group AS g
-
-                                                                                LEFT JOIN (
-                                                                                    SELECT
-                                                                                    *
-                                                                                    FROM tbl_products_category_group_description
-                                                                                    WHERE deleted = 0
-                                                                                ) AS d
-                                                                                ON g.ID = d.category_id
-
-                                                                                WHERE g.deleted = 0
-                                                                            " );
-                                                                            if ( mysqli_num_rows($selectCategory) > 0 ) {
-                                                                                $category_group = array();
-                                                                                $category_group_prev = 0;
-                                                                                while($rowCategory = mysqli_fetch_array($selectCategory)) {
-
-                                                                                    if (!in_array($rowCategory['group_id'], $category_group)) {
-                                                                                        array_push($category_group, $rowCategory['group_id']);
-
-                                                                                        if ($category_group_prev > 0 AND $category_group_prev != $rowCategory['group_id']) {
-                                                                                            echo '</optgroup>';
-                                                                                        }
-                                                                                        $category_group_prev = $rowCategory['group_id'];
-
-                                                                                        echo '<optgroup label="'.$rowCategory['group_name'].'">';
-                                                                                    }
-
-                                                                                    echo '<option value="'.$rowCategory['desciption_id'].'">'.$rowCategory['desciption_name'].'</option>';
+                                                                            $selectIncoterms = mysqli_query( $conn,"SELECT * from tbl_products_incoterms WHERE deleted = 0" );
+                                                                            if ( mysqli_num_rows($selectIncoterms) > 0 ) {
+                                                                                while($rowIncoterms = mysqli_fetch_array($selectIncoterms)) {
+                                                                                    echo '<option value="'.$rowIncoterms['ID'].'">'.$rowIncoterms['name'].'</option>';
                                                                                 }
                                                                             }
                                                                         ?>
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-8">
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Product / Item Code</label>
-                                                                            <input class="form-control" type="text" name="code" required />
-                                                                        </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">MOQ</label>
+                                                                    <input class="form-control" type="number" name="moq" min="0" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Imports</label>
+                                                                    <select class="form-control" name="imports">
+                                                                        <option value="0">No</option>
+                                                                        <option value="1">Yes</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label>Brand Logo</label>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
                                                                     </div>
-                                                                    <div class="col-md-5">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Lead Time</label>
-                                                                            <div class="input-group">
-                                                                                <input class="form-control" type="number" name="leads" min="0" />
-                                                                                <div class="input-group-addon" style="padding: 0;">
-                                                                                    <select name="lead_type" style="border: 0; background: transparent;">
-                                                                                        <option value="0">Day</option>
-                                                                                        <option value="1">Week</option>
-                                                                                        <option value="2">Month</option>
-                                                                                        <option value="3">Year</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="image_brand" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
                                                                     </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Private Label</label>
-                                                                            <select class="form-control" name="private_label">
-                                                                                <option value="0">No</option>
-                                                                                <option value="1">Yes</option>
-                                                                            </select>
-                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label>QR Code</label>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
                                                                     </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Cost</label>
-                                                                            <div class="input-group">
-                                                                                <span class="input-group-addon">$</span>
-                                                                                <input class="form-control" type="number" name="cost" min="0" />
-                                                                            </div>
-                                                                        </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="image_qr" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
                                                                     </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Incoterms</label>
-                                                                            <select class="form-control" name="incoterms">
-                                                                                <option value="0">Select</option>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Product Description</label>
+                                                            <textarea class="form-control" name="description" required ></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Product Characteristics</label>
+                                                            <textarea class="form-control" name="feature"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Ingredients List</label>
+                                                            <textarea class="form-control" name="ingredients"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Product Claims</label>
+                                                            <select class="form-control mt-multiselect btn btn-default" name="claims[]" multiple="multiple">
+                                                                <?php
+                                                                    $selectClaims = mysqli_query( $conn,"SELECT * FROM tbl_products_claims WHERE deleted = 0 ORDER BY name" );
+                                                                    if ( mysqli_num_rows($selectClaims) > 0 ) {
+                                                                        while($rowClaims = mysqli_fetch_array($selectClaims)) {
+                                                                            echo '<option value="'.$rowClaims['ID'].'">'.$rowClaims['name'].'</option>';
+                                                                        }
+                                                                    }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Intended Use</label>
+                                                            <select class="form-control" name="intended">
+                                                                <option value="0">Select</option>
+                                                                <?php
+                                                                    $selectIntended = mysqli_query( $conn,"SELECT * FROM tbl_products_intended WHERE deleted = 0 ORDER BY name" );
+                                                                    if ( mysqli_num_rows($selectIntended) > 0 ) {
+                                                                        while($rowIntended = mysqli_fetch_array($selectIntended)) {
+                                                                            $intended_ID = $rowIntended["ID"];
+                                                                            $intended_name = $rowIntended["name"];
 
-                                                                                <?php
-                                                                                    $selectIncoterms = mysqli_query( $conn,"SELECT * from tbl_products_incoterms WHERE deleted = 0" );
-                                                                                    if ( mysqli_num_rows($selectIncoterms) > 0 ) {
-                                                                                        while($rowIncoterms = mysqli_fetch_array($selectIncoterms)) {
-                                                                                            echo '<option value="'.$rowIncoterms['ID'].'">'.$rowIncoterms['name'].'</option>';
-                                                                                        }
-                                                                                    }
-                                                                                ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">MOQ</label>
-                                                                            <input class="form-control" type="number" name="moq" min="0" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Imports</label>
-                                                                            <select class="form-control" name="imports">
-                                                                                <option value="0">No</option>
-                                                                                <option value="1">Yes</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
+                                                                            echo '<option value="'.$intended_ID.'">'.$intended_name.'</option>';
+                                                                        }
+                                                                    }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Intended Consumers</label>
+                                                            <input class="form-control" type="text" name="intended_consumers" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Allergens</label>
+                                                            <select class="form-control mt-multiselect btn btn-default" name="allergen[]" multiple="multiple">
+                                                                <?php
+                                                                    $selectAllergens = mysqli_query( $conn,"SELECT * FROM tbl_products_allergens ORDER BY name" );
+                                                                    if ( mysqli_num_rows($selectAllergens) > 0 ) {
+                                                                        while($rowAllergens = mysqli_fetch_array($selectAllergens)) {
+                                                                            echo '<option value="'.$rowAllergens['ID'].'">'.$rowAllergens['name'].'</option>';
+                                                                        }
+                                                                    }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Available Flavors</label>
+                                                            <input class="form-control" type="text" name="flavor" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Size/UOM</label>
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="number" name="size_uom" min="0" />
+                                                                <div class="input-group-addon" style="padding: 0;">
+                                                                    <select name="size_uom_type" style="border: 0; background: transparent;">
+                                                                        <?php
+                                                                            $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                                            if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                                                while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                                    echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
+                                                                                }
+                                                                            }
+                                                                        ?>
+                                                                    </select>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-4">
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <label>Brand Logo</label>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_brand" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <label>QR Code</label>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_qr" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Shelf Life</label>
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="number" name="shelf" min="0" />
+                                                                <div class="input-group-addon" style="padding: 0;">
+                                                                    <select name="shelf_type" style="border: 0; background: transparent;">
+                                                                        <option value="0">Day</option>
+                                                                        <option value="1">Week</option>
+                                                                        <option value="2">Month</option>
+                                                                        <option value="3">Year</option>
+                                                                    </select>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Product Description</label>
-                                                                    <textarea class="form-control" name="description" required ></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Temperature</label>
+                                                            <input class="form-control" type="text" name="temperature" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Retail Accounts</label>
+                                                            <textarea class="form-control" name="retail_accounts"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Competing Brands</label>
+                                                            <textarea class="form-control" name="competing_brands"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Characteristics -->
+                                                <h4 class="pictogram-align">
+                                                    <strong>Product Description, including Important Food Safety Characteristics</strong>
+                                                    <?php
+                                                        $pictogram = 'prod_desc';
+                                                        if ($switch_user_id == 163) {
+                                                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                        } else {
+                                                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                $row = mysqli_fetch_array($selectPictogram);
+    
+                                                                $files = '';
+                                                                $type = 'iframe';
+                                                                if (!empty($row["files"])) {
+                                                                    $arr_filename = explode(' | ', $row["files"]);
+                                                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                    $str_filename = '';
+    
+                                                                    foreach($arr_filename as $val_filename) {
+                                                                        $str_filename = $val_filename;
+                                                                    }
+                                                                    foreach($arr_filetype as $val_filetype) {
+                                                                        $str_filetype = $val_filetype;
+                                                                    }
+    
+                                                                    $files = $row["files"];
+                                                                    if ($row["filetype"] == 1) {
+                                                                        $fileExtension = fileExtension($files);
+                                                                        $src = $fileExtension['src'];
+                                                                        $embed = $fileExtension['embed'];
+                                                                        $type = $fileExtension['type'];
+                                                                        $file_extension = $fileExtension['file_extension'];
+                                                                        $url = $base_url.'uploads/pictogram/';
+    
+                                                                        $files = $src.$url.rawurlencode($files).$embed;
+                                                                    } else if ($row["filetype"] == 3) {
+                                                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                    }
+                                                                }
+    
+                                                                if (!empty($files)) {
+                                                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                }
+                                                            }
+                                                        }
+                                                    ?>
+                                                </h4>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label"> Organoleptic/Sensory Characteristics </label>
+                                                            <div class="chars-container">
+                                                                <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                                    <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" />
+                                                                    <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Product Characteristics</label>
-                                                                    <textarea class="form-control" name="feature"></textarea>
+                                                            <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physical_chars[]" data-placeholder="e.g. Color, Flavor, Texture, Form" onclick="addMoreChars(this)">
+                                                                 <i class="fa fa-plus"></i> Add more
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Physico - Chemical Characteristics</label>
+                                                            <div class="chars-container">
+                                                                <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                                    <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." />
+                                                                    <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
                                                                 </div>
                                                             </div>
+                                                            <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physico_chem_char[]" data-placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." onclick="addMoreChars(this)">
+                                                                 <i class="fa fa-plus"></i> Add more
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Microbiological Characteristics</label>
+                                                            <div class="chars-container">
+                                                                <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                                    <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" />
+                                                                    <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                                                </div>
+                                                            </div>
+                                                            <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="microbial_char[]" data-placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" onclick="addMoreChars(this)">
+                                                                 <i class="fa fa-plus"></i> Add more
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Packaging -->
+                                                <h4><strong>Primary</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <div class="row">
                                                             <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Ingredients List</label>
-                                                                    <textarea class="form-control" name="ingredients"></textarea>
+                                                                <label>&nbsp;</label>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                    </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="packaging_1_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                    </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Product Claims</label>
-                                                                    <select class="form-control mt-multiselect btn btn-default" name="claims[]" multiple="multiple">
-                                                                        <?php
-                                                                            $selectClaims = mysqli_query( $conn,"SELECT * FROM tbl_products_claims WHERE deleted = 0 ORDER BY name" );
-                                                                            if ( mysqli_num_rows($selectClaims) > 0 ) {
-                                                                                while($rowClaims = mysqli_fetch_array($selectClaims)) {
-                                                                                    echo '<option value="'.$rowClaims['ID'].'">'.$rowClaims['name'].'</option>';
-                                                                                }
-                                                                            }
-                                                                        ?>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Intended Use</label>
-                                                                    <select class="form-control" name="intended">
+                                                                    <label class="control-label">Unit</label>
+                                                                    <select class="form-control" name="packaging_1">
                                                                         <option value="0">Select</option>
-                                                                        <?php
-                                                                            $selectIntended = mysqli_query( $conn,"SELECT * FROM tbl_products_intended WHERE deleted = 0 ORDER BY name" );
-                                                                            if ( mysqli_num_rows($selectIntended) > 0 ) {
-                                                                                while($rowIntended = mysqli_fetch_array($selectIntended)) {
-                                                                                    $intended_ID = $rowIntended["ID"];
-                                                                                    $intended_name = $rowIntended["name"];
 
-                                                                                    echo '<option value="'.$intended_ID.'">'.$intended_name.'</option>';
-                                                                                }
-                                                                            }
-                                                                        ?>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Intended Consumers</label>
-                                                                    <input class="form-control" type="text" name="intended_consumers" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Allergens</label>
-                                                                    <select class="form-control mt-multiselect btn btn-default" name="allergen[]" multiple="multiple">
                                                                         <?php
-                                                                            $selectAllergens = mysqli_query( $conn,"SELECT * FROM tbl_products_allergens ORDER BY name" );
-                                                                            if ( mysqli_num_rows($selectAllergens) > 0 ) {
-                                                                                while($rowAllergens = mysqli_fetch_array($selectAllergens)) {
-                                                                                    echo '<option value="'.$rowAllergens['ID'].'">'.$rowAllergens['name'].'</option>';
+                                                                            $selectPrimary = mysqli_query( $conn,"SELECT * from tbl_products_primary WHERE deleted = 0 ORDER BY name" );
+                                                                            if ( mysqli_num_rows($selectPrimary) > 0 ) {
+                                                                                while($rowPrimary = mysqli_fetch_array($selectPrimary)) {
+                                                                                    echo '<option value="'.$rowPrimary['ID'].'">'.$rowPrimary['name'].'</option>';
                                                                                 }
                                                                             }
                                                                         ?>
@@ -975,17 +2954,44 @@
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Available Flavors</label>
-                                                                    <input class="form-control" type="text" name="flavor" />
+                                                                    <label class="control-label">Dimension</label>
+                                                                    <input class="form-control" type="text" name="packaging_1_dimension" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">UPC</label>
+                                                                    <input class="form-control" type="text" name="packaging_1_upc" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Cube</label>
+                                                                    <input class="form-control" type="text" name="packaging_1_cube" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Ship Weight</label>
+                                                                    <input class="form-control" type="text" name="packaging_1_weight" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">No. of Units</label>
+                                                                    <input class="form-control" type="text" name="packaging_1_unit" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Size/UOM</label>
                                                                     <div class="input-group">
-                                                                        <input class="form-control" type="number" name="size_uom" min="0" />
+                                                                        <input class="form-control" type="number" name="packaging_1_size_uom" min="0" />
                                                                         <div class="input-group-addon" style="padding: 0;">
-                                                                            <select name="size_uom_type" style="border: 0; background: transparent;">
+                                                                            <select name="packaging_1_size_uom_type" style="border: 0; background: transparent;">
                                                                                 <?php
                                                                                     $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
                                                                                     if ( mysqli_num_rows($selectUOM) > 0 ) {
@@ -999,1010 +3005,795 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Shelf Life</label>
-                                                                    <div class="input-group">
-                                                                        <input class="form-control" type="number" name="shelf" min="0" />
-                                                                        <div class="input-group-addon" style="padding: 0;">
-                                                                            <select name="shelf_type" style="border: 0; background: transparent;">
-                                                                                <option value="0">Day</option>
-                                                                                <option value="1">Week</option>
-                                                                                <option value="2">Month</option>
-                                                                                <option value="3">Year</option>
-                                                                            </select>
-                                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+
+                                                <h4><strong>Secondary</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <label>&nbsp;</label>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Temperature</label>
-                                                                    <input class="form-control" type="text" name="temperature" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Retail Accounts</label>
-                                                                    <textarea class="form-control" name="retail_accounts"></textarea>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Competing Brands</label>
-                                                                    <textarea class="form-control" name="competing_brands"></textarea>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="packaging_2_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="tab-pane" id="tabCharacteristics">
-                                                        <h4 class="pictogram-align">
-                                                            <strong>Product Description, including Important Food Safety Characteristics</strong>
-                                                            <?php
-                                                                $pictogram = 'prod_desc';
-                                                                if ($switch_user_id == 163) {
-                                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                                                } else {
-                                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                                        $row = mysqli_fetch_array($selectPictogram);
-            
-                                                                        $files = '';
-                                                                        $type = 'iframe';
-                                                                        if (!empty($row["files"])) {
-                                                                            $arr_filename = explode(' | ', $row["files"]);
-                                                                            $arr_filetype = explode(' | ', $row["filetype"]);
-                                                                            $str_filename = '';
-            
-                                                                            foreach($arr_filename as $val_filename) {
-                                                                                $str_filename = $val_filename;
+                                                    <div class="col-md-10">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Case</label>
+                                                                    <select class="form-control" name="packaging_2">
+                                                                        <option value="0">Select</option>
+
+                                                                        <?php
+                                                                            $selectSecondary = mysqli_query( $conn,"SELECT * from tbl_products_secondary WHERE deleted = 0 ORDER BY name" );
+                                                                            if ( mysqli_num_rows($selectSecondary) > 0 ) {
+                                                                                while($rowSecondary = mysqli_fetch_array($selectSecondary)) {
+                                                                                    echo '<option value="'.$rowSecondary['ID'].'">'.$rowSecondary['name'].'</option>';
+                                                                                }
                                                                             }
-                                                                            foreach($arr_filetype as $val_filetype) {
-                                                                                $str_filetype = $val_filetype;
-                                                                            }
-            
-                                                                            $files = $row["files"];
-                                                                            if ($row["filetype"] == 1) {
-                                                                                $fileExtension = fileExtension($files);
-                                                                                $src = $fileExtension['src'];
-                                                                                $embed = $fileExtension['embed'];
-                                                                                $type = $fileExtension['type'];
-                                                                                $file_extension = $fileExtension['file_extension'];
-                                                                                $url = $base_url.'uploads/pictogram/';
-            
-                                                                                $files = $src.$url.rawurlencode($files).$embed;
-                                                                            } else if ($row["filetype"] == 3) {
-                                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                                            }
-                                                                        }
-            
-                                                                        if (!empty($files)) {
-                                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ?>
-                                                        </h4>
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label"> Organoleptic/Sensory Characteristics </label>
-                                                                    <div class="chars-container">
-                                                                        <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                                                            <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" />
-                                                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physical_chars[]" data-placeholder="e.g. Color, Flavor, Texture, Form" onclick="addMoreChars(this)">
-                                                                         <i class="fa fa-plus"></i> Add more
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Physico - Chemical Characteristics</label>
-                                                                    <div class="chars-container">
-                                                                        <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                                                            <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." />
-                                                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physico_chem_char[]" data-placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." onclick="addMoreChars(this)">
-                                                                         <i class="fa fa-plus"></i> Add more
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Microbiological Characteristics</label>
-                                                                    <div class="chars-container">
-                                                                        <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                                                            <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" />
-                                                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="microbial_char[]" data-placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" onclick="addMoreChars(this)">
-                                                                         <i class="fa fa-plus"></i> Add more
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane" id="tabPackaging">
-                                                        <h4><strong>Primary</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-2">
-                                                                <div class="row">
-                                                                    <div class="col-md-12">
-                                                                        <label>&nbsp;</label>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="packaging_1_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-10">
-                                                                <div class="row">
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Unit</label>
-                                                                            <select class="form-control" name="packaging_1">
-                                                                                <option value="0">Select</option>
-
-                                                                                <?php
-                                                                                    $selectPrimary = mysqli_query( $conn,"SELECT * from tbl_products_primary WHERE deleted = 0" );
-                                                                                    if ( mysqli_num_rows($selectPrimary) > 0 ) {
-                                                                                        while($rowPrimary = mysqli_fetch_array($selectPrimary)) {
-                                                                                            echo '<option value="'.$rowPrimary['ID'].'">'.$rowPrimary['name'].'</option>';
-                                                                                        }
-                                                                                    }
-                                                                                ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Dimension</label>
-                                                                            <input class="form-control" type="text" name="packaging_1_dimension" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">UPC</label>
-                                                                            <input class="form-control" type="text" name="packaging_1_upc" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Cube</label>
-                                                                            <input class="form-control" type="text" name="packaging_1_cube" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Ship Weight</label>
-                                                                            <input class="form-control" type="text" name="packaging_1_weight" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">No. of Units</label>
-                                                                            <input class="form-control" type="text" name="packaging_1_unit" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Size/UOM</label>
-                                                                            <div class="input-group">
-                                                                                <input class="form-control" type="number" name="packaging_1_size_uom" min="0" />
-                                                                                <div class="input-group-addon" style="padding: 0;">
-                                                                                    <select name="packaging_1_size_uom_type" style="border: 0; background: transparent;">
-                                                                                        <?php
-                                                                                            $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
-                                                                                            if ( mysqli_num_rows($selectUOM) > 0 ) {
-                                                                                                while($rowUOM = mysqli_fetch_array($selectUOM)) {
-                                                                                                    echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
-                                                                                                }
-                                                                                            }
-                                                                                        ?>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr>
-
-                                                        <h4><strong>Secondary</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-2">
-                                                                <div class="row">
-                                                                    <div class="col-md-12">
-                                                                        <label>&nbsp;</label>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="packaging_2_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-10">
-                                                                <div class="row">
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Case</label>
-                                                                            <select class="form-control" name="packaging_2">
-                                                                                <option value="0">Select</option>
-
-                                                                                <?php
-                                                                                    $selectSecondary = mysqli_query( $conn,"SELECT * from tbl_products_secondary WHERE deleted = 0" );
-                                                                                    if ( mysqli_num_rows($selectSecondary) > 0 ) {
-                                                                                        while($rowSecondary = mysqli_fetch_array($selectSecondary)) {
-                                                                                            echo '<option value="'.$rowSecondary['ID'].'">'.$rowSecondary['name'].'</option>';
-                                                                                        }
-                                                                                    }
-                                                                                ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Dimension</label>
-                                                                            <input class="form-control" type="text" name="packaging_2_dimension" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">UPC</label>
-                                                                            <input class="form-control" type="text" name="packaging_2_upc" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Cube</label>
-                                                                            <input class="form-control" type="text" name="packaging_2_cube" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Ship Weight</label>
-                                                                            <input class="form-control" type="text" name="packaging_2_weight" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">No. of Units</label>
-                                                                            <input class="form-control" type="text" name="packaging_2_unit" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Size/UOM</label>
-                                                                            <div class="input-group">
-                                                                                <input class="form-control" type="number" name="packaging_2_size_uom" min="0" />
-                                                                                <div class="input-group-addon" style="padding: 0;">
-                                                                                    <select name="packaging_2_size_uom_type" style="border: 0; background: transparent;">
-                                                                                        <?php
-                                                                                            $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
-                                                                                            if ( mysqli_num_rows($selectUOM) > 0 ) {
-                                                                                                while($rowUOM = mysqli_fetch_array($selectUOM)) {
-                                                                                                    echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
-                                                                                                }
-                                                                                            }
-                                                                                        ?>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr>
-
-                                                        <h4><strong>Tertiary</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-2">
-                                                                <div class="row">
-                                                                    <div class="col-md-12">
-                                                                        <label>&nbsp;</label>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="packaging_3_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-10">
-                                                                <div class="row">
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Master Pack</label>
-                                                                            <select class="form-control" name="packaging_3">
-                                                                                <option value="0">Select</option>
-
-                                                                                <?php
-                                                                                    $selectTertiary = mysqli_query( $conn,"SELECT * from tbl_products_tertiary WHERE deleted = 0" );
-                                                                                    if ( mysqli_num_rows($selectTertiary) > 0 ) {
-                                                                                        while($rowTertiary = mysqli_fetch_array($selectTertiary)) {
-                                                                                            echo '<option value="'.$rowTertiary['ID'].'">'.$rowTertiary['name'].'</option>';
-                                                                                        }
-                                                                                    }
-                                                                                ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Dimension</label>
-                                                                            <input class="form-control" type="text" name="packaging_3_dimension" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">UPC</label>
-                                                                            <input class="form-control" type="text" name="packaging_3_upc" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Cube</label>
-                                                                            <input class="form-control" type="text" name="packaging_3_cube" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Ship Weight</label>
-                                                                            <input class="form-control" type="text" name="packaging_3_weight" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">No. of Units</label>
-                                                                            <input class="form-control" type="text" name="packaging_3_unit" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Size/UOM</label>
-                                                                            <div class="input-group">
-                                                                                <input class="form-control" type="number" name="packaging_3_size_uom" min="0" />
-                                                                                <div class="input-group-addon" style="padding: 0;">
-                                                                                    <select name="packaging_3_size_uom_type" style="border: 0; background: transparent;">
-                                                                                        <?php
-                                                                                            $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
-                                                                                            if ( mysqli_num_rows($selectUOM) > 0 ) {
-                                                                                                while($rowUOM = mysqli_fetch_array($selectUOM)) {
-                                                                                                    echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
-                                                                                                }
-                                                                                            }
-                                                                                        ?>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr>
-
-                                                        <h4><strong>Pallet Configuration</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-2">
-                                                                <div class="row">
-                                                                    <div class="col-md-12">
-                                                                        <label>&nbsp;</label>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="pallet_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-10">
-                                                                <div class="row">
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Pallet Type</label>
-                                                                            <select class="form-control" name="pallet_type">
-                                                                                <option value="0">Select</option>
-
-                                                                                <?php
-                                                                                    $selectPallet = mysqli_query( $conn,"
-                                                                                        SELECT 
-                                                                                        p.id AS group_id,
-                                                                                        p.name AS group_name,
-                                                                                        t.id AS desciption_id,
-                                                                                        t.name AS desciption_name
-                                                                                        FROM tbl_products_pallet AS p
-
-                                                                                        LEFT JOIN (
-                                                                                            SELECT
-                                                                                            *
-                                                                                            FROM tbl_products_pallet_type
-                                                                                            WHERE deleted = 0
-                                                                                        ) AS t
-                                                                                        ON p.ID = t.pallet_id
-
-                                                                                        WHERE p.deleted = 0
-                                                                                    " );
-                                                                                    if ( mysqli_num_rows($selectPallet) > 0 ) {
-                                                                                        $pallet_arr = array();
-                                                                                        $pallet_arr_prev = 0;
-                                                                                        while($rowPallet = mysqli_fetch_array($selectPallet)) {
-
-                                                                                            if (!in_array($rowPallet['group_id'], $pallet_arr)) {
-                                                                                                array_push($pallet_arr, $rowPallet['group_id']);
-
-                                                                                                if ($pallet_arr_prev > 0 AND $pallet_arr_prev != $rowPallet['group_id']) {
-                                                                                                    echo '</optgroup>';
-                                                                                                }
-                                                                                                $pallet_arr_prev = $rowPallet['group_id'];
-
-                                                                                                echo '<optgroup label="'.$rowPallet['group_name'].'">';
-                                                                                            }
-
-                                                                                            echo '<option value="'.$rowPallet['desciption_id'].'">'.$rowPallet['desciption_name'].'</option>';
-                                                                                        }
-                                                                                    }
-                                                                                ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Dimension</label>
-                                                                            <input class="form-control" type="text" name="pallet_dimension" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">UPC</label>
-                                                                            <input class="form-control" type="text" name="pallet_upc" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Cube</label>
-                                                                            <input class="form-control" type="text" name="pallet_cube" placeholder="H x L x W" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Ship Weight</label>
-                                                                            <input class="form-control" type="text" name="pallet_weight" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">No. of Units</label>
-                                                                            <input class="form-control" type="text" name="pallet_unit" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">No. of Cartons/Boxes</label>
-                                                                            <input class="form-control" type="text" name="pallet_boxes" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr>
-
-                                                        <h4><strong>Production</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">No. of Units / Day</label>
-                                                                    <input class="form-control" type="text" name="production_day" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">No. of Units / Week</label>
-                                                                    <input class="form-control" type="text" name="production_week" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Production Cost</label>
-                                                                    <input class="form-control" type="text" name="production_cost" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Profit %</label>
-                                                                    <input class="form-control" type="text" name="production_profit" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <h4><strong>Cost Calculation</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Operation</label>
-                                                                    <input class="form-control" type="text" name="cost_operation" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Rent, Utilities</label>
-                                                                    <input class="form-control" type="text" name="cost_rent" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Materials</label>
-                                                                    <input class="form-control" type="text" name="cost_material" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Financing </label>
-                                                                    <input class="form-control" type="text" name="cost_financing" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Transportation </label>
-                                                                    <input class="form-control" type="text" name="cost_transportation" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Lead Time', 1)">Add Lead Times</a>
-                                                                <div class="table-scrollable">
-                                                                    <table class="table table-bordered table-hover tbl-data-1-1">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Material Name</th>
-                                                                                <th style="width: 100px;">Lead Time</th>
-                                                                                <th style="width: 100px;">% in Formula</th>
-                                                                                <th style="width: 100px;">Cost</th>
-                                                                                <th class="text-center" style="width: 135px;">Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane" id="tabDocs">
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <h4>
-                                                                    <strong>Regulatory</strong>
-                                                                    <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Requirements', 5)"><i class="fa fa-plus"></i></a>
-                                                                </h4>
-                                                                <div class="table-scrollable">
-                                                                    <table class="table table-bordered table-hover tbl-data-1-5">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Requirements Name</th>
-                                                                                <th class="text-center" style="width: 100px;">File</th>
-                                                                                <th class="text-center" style="width: 100px;">Document Date</th>
-                                                                                <th class="text-center" style="width: 100px;">Review Due Date</th>
-                                                                                <th class="text-center" style="width: 135px;">Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <h4>
-                                                                    <strong>Product Certification & Document</strong>
-                                                                    <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Documents', 6)"><i class="fa fa-plus"></i></a>
-                                                                </h4>
-                                                                <div class="table-scrollable">
-                                                                    <table class="table table-bordered table-hover tbl-data-1-6">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Documents Name</th>
-                                                                                <th class="text-center" style="width: 100px;">File</th>
-                                                                                <th class="text-center" style="width: 100px;">Document Date</th>
-                                                                                <th class="text-center" style="width: 100px;">Review Due Date</th>
-                                                                                <th class="text-center" style="width: 135px;">Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <h4>
-                                                                    <strong>Lab</strong>
-                                                                    <a href="#modalNewLab" data-toggle="modal" class="btn green" onclick="btnNew_Lab(1)"><i class="fa fa-plus"></i></a>
-                                                                </h4>
-                                                                <div class="table-scrollable">
-                                                                    <table class="table table-bordered table-hover" id="tableLab_1">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Lot #</th>
-                                                                                <th>Lab</th>
-                                                                                <th>Analysis</th>
-                                                                                <th>Method</th>
-                                                                                <th>Sample Size</th>
-                                                                                <th>Unit</th>
-                                                                                <th class="text-center">Date Sent for Lab</th>
-                                                                                <th class="text-center">Date Received</th>
-                                                                                <th class="text-center">Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <h4><strong>Exercises</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Mock Recall Exercise</label>
-                                                                    <input class="form-control" type="date" name="mock_recall" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Product Trace Exercise</label>
-                                                                    <input class="form-control" type="date" name="product_trace" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane" id="tabManufactured">
-                                                        <h4><strong>Manufactured By</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Manufacturer Name</label>
-                                                                    <input class="form-control" type="text" name="manu_name" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Phone</label>
-                                                                    <input class="form-control" type="text" name="manu_phone" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Contact</label>
-                                                                    <input class="form-control" type="text" name="manu_contact" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Facility Address</label>
-                                                                    <input class="form-control" type="text" name="manu_address" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Email</label>
-                                                                    <input class="form-control" type="email" name="manu_email" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Website</label>
-                                                                    <input class="form-control" type="text" name="manu_website" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Facility Registration No.</label>
-                                                                    <input class="form-control" type="text" name="manu_reg_no" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Dunn No.</label>
-                                                                    <input class="form-control" type="text" name="manu_dunn_no" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Certificate', 2)">Add Certificate</a>
-                                                                <div class="table-scrollable">
-                                                                    <table class="table table-bordered table-hover tbl-data-1-2">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Certification Name</th>
-                                                                                <th class="text-center" style="width: 100px;">File</th>
-                                                                                <th class="text-center" style="width: 100px;">Certification Date</th>
-                                                                                <th class="text-center" style="width: 100px;">Due Date</th>
-                                                                                <th class="text-center" style="width: 135px;">Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <h4><strong>Broker Info</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Company Name</label>
-                                                                    <input class="form-control" type="text" name="broker_name" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Phone</label>
-                                                                    <input class="form-control" type="text" name="broker_phone" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Contact</label>
-                                                                    <input class="form-control" type="text" name="broker_contact" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Address</label>
-                                                                    <input class="form-control" type="text" name="broker_address" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Email</label>
-                                                                    <input class="form-control" type="email" name="broker_email" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Website</label>
-                                                                    <input class="form-control" type="text" name="broker_website" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Facility Registration No.</label>
-                                                                    <input class="form-control" type="text" name="broker_reg_no" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Dunn No.</label>
-                                                                    <input class="form-control" type="text" name="broker_dunn_no" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Certificate', 3)">Add Certificate</a>
-                                                                <div class="table-scrollable">
-                                                                    <table class="table table-bordered table-hover tbl-data-1-3">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Certification Name</th>
-                                                                                <th class="text-center" style="width: 100px;">File</th>
-                                                                                <th class="text-center" style="width: 100px;">Certification Date</th>
-                                                                                <th class="text-center" style="width: 100px;">Due Date</th>
-                                                                                <th class="text-center" style="width: 135px;">Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <h4><strong>US Agent Name</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Company Name</label>
-                                                                    <input class="form-control" type="text" name="agent_company" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Phone</label>
-                                                                    <input class="form-control" type="text" name="agent_phone" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Contact</label>
-                                                                    <input class="form-control" type="text" name="agent_contact" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Address</label>
-                                                                    <input class="form-control" type="text" name="agent_address" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Email</label>
-                                                                    <input class="form-control" type="email" name="agent_email" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Website</label>
-                                                                    <input class="form-control" type="text" name="agent_website" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <h4><strong>Importer Info</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Importer Name</label>
-                                                                    <input class="form-control" type="text" name="importer_name" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Phone</label>
-                                                                    <input class="form-control" type="text" name="importer_phone" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Contact</label>
-                                                                    <input class="form-control" type="text" name="importer_contact" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Address</label>
-                                                                    <input class="form-control" type="text" name="importer_address" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Email</label>
-                                                                    <input class="form-control" type="email" name="importer_email" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Website</label>
-                                                                    <input class="form-control" type="text" name="importer_website" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Facility Registration No.</label>
-                                                                    <input class="form-control" type="text" name="importer_reg_no" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Dunn No.</label>
-                                                                    <input class="form-control" type="text" name="importer_dunn_no" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Certificate', 4)">Add Certificate</a>
-                                                                <div class="table-scrollable">
-                                                                    <table class="table table-bordered table-hover tbl-data-1-4">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Certification Name</th>
-                                                                                <th class="text-center" style="width: 100px;">File</th>
-                                                                                <th class="text-center" style="width: 100px;">Certification Date</th>
-                                                                                <th class="text-center" style="width: 100px;">Due Date</th>
-                                                                                <th class="text-center" style="width: 135px;">Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <h4><strong>FSVP Requirements</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Date of FSVP Review</label>
-                                                                    <input class="form-control" type="date" name="fsvp_date_review" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Last Date of FDA FSVP Audit</label>
-                                                                    <input class="form-control" type="date" name="fsvp_date_audit" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Seasonal</label>
-                                                                    <select class="form-control" name="fsvp_seasonal">
-                                                                        <option value="0">No</option>
-                                                                        <option value="1">Yes</option>
+                                                                        ?>
                                                                     </select>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">If Yes, Available Date</label>
-                                                                    <input class="form-control" type="date" name="fsvp_date_available" />
+                                                                    <label class="control-label">Dimension</label>
+                                                                    <input class="form-control" type="text" name="packaging_2_dimension" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">UPC</label>
+                                                                    <input class="form-control" type="text" name="packaging_2_upc" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Cube</label>
+                                                                    <input class="form-control" type="text" name="packaging_2_cube" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Ship Weight</label>
+                                                                    <input class="form-control" type="text" name="packaging_2_weight" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">No. of Units</label>
+                                                                    <input class="form-control" type="text" name="packaging_2_unit" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Size/UOM</label>
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="number" name="packaging_2_size_uom" min="0" />
+                                                                        <div class="input-group-addon" style="padding: 0;">
+                                                                            <select name="packaging_2_size_uom_type" style="border: 0; background: transparent;">
+                                                                                <?php
+                                                                                    $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                                                    if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                                                        while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                                            echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <hr>
+
+                                                <h4><strong>Tertiary</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <label>&nbsp;</label>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                    </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="packaging_3_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Master Pack</label>
+                                                                    <select class="form-control" name="packaging_3">
+                                                                        <option value="0">Select</option>
+
+                                                                        <?php
+                                                                            $selectTertiary = mysqli_query( $conn,"SELECT * from tbl_products_tertiary WHERE deleted = 0" );
+                                                                            if ( mysqli_num_rows($selectTertiary) > 0 ) {
+                                                                                while($rowTertiary = mysqli_fetch_array($selectTertiary)) {
+                                                                                    echo '<option value="'.$rowTertiary['ID'].'">'.$rowTertiary['name'].'</option>';
+                                                                                }
+                                                                            }
+                                                                        ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Dimension</label>
+                                                                    <input class="form-control" type="text" name="packaging_3_dimension" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">UPC</label>
+                                                                    <input class="form-control" type="text" name="packaging_3_upc" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Cube</label>
+                                                                    <input class="form-control" type="text" name="packaging_3_cube" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Ship Weight</label>
+                                                                    <input class="form-control" type="text" name="packaging_3_weight" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">No. of Units</label>
+                                                                    <input class="form-control" type="text" name="packaging_3_unit" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Size/UOM</label>
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="number" name="packaging_3_size_uom" min="0" />
+                                                                        <div class="input-group-addon" style="padding: 0;">
+                                                                            <select name="packaging_3_size_uom_type" style="border: 0; background: transparent;">
+                                                                                <?php
+                                                                                    $selectUOM = mysqli_query( $conn,"SELECT * FROM tbl_products_uom WHERE deleted = 0" );
+                                                                                    if ( mysqli_num_rows($selectUOM) > 0 ) {
+                                                                                        while($rowUOM = mysqli_fetch_array($selectUOM)) {
+                                                                                            echo '<option value="'.$rowUOM['ID'].'">'.$rowUOM['name'].'</option>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+
+                                                <h4><strong>Pallet Configuration</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <label>&nbsp;</label>
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail">
+                                                                        <img src="//placehold.co/120x90/EFEFEF/AAAAAA?text=no+image" class="img-responsive" alt="Avatar" />
+                                                                    </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file btn-xs">
+                                                                            <span class="fileinput-new"> Select image </span>
+                                                                            <span class="fileinput-exists"> Change </span>
+                                                                            <input class="form-control" type="file" name="pallet_image" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Pallet Type</label>
+                                                                    <select class="form-control" name="pallet_type">
+                                                                        <option value="0">Select</option>
+
+                                                                        <?php
+                                                                            $selectPallet = mysqli_query( $conn,"
+                                                                                SELECT 
+                                                                                p.id AS group_id,
+                                                                                p.name AS group_name,
+                                                                                t.id AS desciption_id,
+                                                                                t.name AS desciption_name
+                                                                                FROM tbl_products_pallet AS p
+
+                                                                                LEFT JOIN (
+                                                                                    SELECT
+                                                                                    *
+                                                                                    FROM tbl_products_pallet_type
+                                                                                    WHERE deleted = 0
+                                                                                ) AS t
+                                                                                ON p.ID = t.pallet_id
+
+                                                                                WHERE p.deleted = 0
+                                                                            " );
+                                                                            if ( mysqli_num_rows($selectPallet) > 0 ) {
+                                                                                $pallet_arr = array();
+                                                                                $pallet_arr_prev = 0;
+                                                                                while($rowPallet = mysqli_fetch_array($selectPallet)) {
+
+                                                                                    if (!in_array($rowPallet['group_id'], $pallet_arr)) {
+                                                                                        array_push($pallet_arr, $rowPallet['group_id']);
+
+                                                                                        if ($pallet_arr_prev > 0 AND $pallet_arr_prev != $rowPallet['group_id']) {
+                                                                                            echo '</optgroup>';
+                                                                                        }
+                                                                                        $pallet_arr_prev = $rowPallet['group_id'];
+
+                                                                                        echo '<optgroup label="'.$rowPallet['group_name'].'">';
+                                                                                    }
+
+                                                                                    echo '<option value="'.$rowPallet['desciption_id'].'">'.$rowPallet['desciption_name'].'</option>';
+                                                                                }
+                                                                            }
+                                                                        ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Dimension</label>
+                                                                    <input class="form-control" type="text" name="pallet_dimension" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">UPC</label>
+                                                                    <input class="form-control" type="text" name="pallet_upc" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Cube</label>
+                                                                    <input class="form-control" type="text" name="pallet_cube" />
+                                                                    <small class="help-block">H x L x W (in)</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Ship Weight</label>
+                                                                    <input class="form-control" type="text" name="pallet_weight" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">No. of Units</label>
+                                                                    <input class="form-control" type="text" name="pallet_unit" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">No. of Cartons/Boxes</label>
+                                                                    <input class="form-control" type="text" name="pallet_boxes" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+
+                                                <h4><strong>Production</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">No. of Units / Day</label>
+                                                            <input class="form-control" type="text" name="production_day" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">No. of Units / Week</label>
+                                                            <input class="form-control" type="text" name="production_week" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Production Cost</label>
+                                                            <input class="form-control" type="text" name="production_cost" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Profit %</label>
+                                                            <input class="form-control" type="text" name="production_profit" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <h4><strong>Cost Calculation</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Operation</label>
+                                                            <input class="form-control" type="text" name="cost_operation" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Rent, Utilities</label>
+                                                            <input class="form-control" type="text" name="cost_rent" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Materials</label>
+                                                            <input class="form-control" type="text" name="cost_material" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Financing </label>
+                                                            <input class="form-control" type="text" name="cost_financing" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Transportation </label>
+                                                            <input class="form-control" type="text" name="cost_transportation" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Lead Time', 1)">Add Lead Times</a>
+                                                        <div class="table-scrollable">
+                                                            <table class="table table-bordered table-hover tbl-data-1-1">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Material Name</th>
+                                                                        <th style="width: 100px;">Lead Time</th>
+                                                                        <th style="width: 100px;">% in Formula</th>
+                                                                        <th style="width: 100px;">Cost</th>
+                                                                        <th class="text-center" style="width: 135px;">Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Documents -->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h4>
+                                                            <strong>Regulatory</strong>
+                                                            <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Requirements', 5)"><i class="fa fa-plus"></i></a>
+                                                        </h4>
+                                                        <div class="table-scrollable">
+                                                            <table class="table table-bordered table-hover tbl-data-1-5">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Requirements Name</th>
+                                                                        <th class="text-center" style="width: 100px;">File</th>
+                                                                        <th class="text-center" style="width: 100px;">Document Date</th>
+                                                                        <th class="text-center" style="width: 100px;">Review Due Date</th>
+                                                                        <th class="text-center" style="width: 135px;">Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h4>
+                                                            <strong>Product Certification & Document</strong>
+                                                            <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Documents', 6)"><i class="fa fa-plus"></i></a>
+                                                        </h4>
+                                                        <div class="table-scrollable">
+                                                            <table class="table table-bordered table-hover tbl-data-1-6">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Documents Name</th>
+                                                                        <th class="text-center" style="width: 100px;">File</th>
+                                                                        <th class="text-center" style="width: 100px;">Document Date</th>
+                                                                        <th class="text-center" style="width: 100px;">Review Due Date</th>
+                                                                        <th class="text-center" style="width: 135px;">Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h4>
+                                                            <strong>Lab</strong>
+                                                            <a href="#modalNewLab" data-toggle="modal" class="btn green" onclick="btnNew_Lab(1)"><i class="fa fa-plus"></i></a>
+                                                        </h4>
+                                                        <div class="table-scrollable">
+                                                            <table class="table table-bordered table-hover" id="tableLab_1">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Lot #</th>
+                                                                        <th>Lab</th>
+                                                                        <th>Analysis</th>
+                                                                        <th>Method</th>
+                                                                        <th>Sample Size</th>
+                                                                        <th>Unit</th>
+                                                                        <th class="text-center">Date Sent for Lab</th>
+                                                                        <th class="text-center">Date Received</th>
+                                                                        <th class="text-center">Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <h4><strong>Exercises</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Mock Recall Exercise</label>
+                                                            <input class="form-control" type="date" name="mock_recall" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Product Trace Exercise</label>
+                                                            <input class="form-control" type="date" name="product_trace" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Manufacturer -->
+                                                <h4><strong>Manufactured By</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Manufacturer Name</label>
+                                                            <input class="form-control" type="text" name="manu_name" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Phone</label>
+                                                            <input class="form-control" type="text" name="manu_phone" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Contact</label>
+                                                            <input class="form-control" type="text" name="manu_contact" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Facility Address</label>
+                                                            <input class="form-control" type="text" name="manu_address" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Email</label>
+                                                            <input class="form-control" type="email" name="manu_email" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Website</label>
+                                                            <input class="form-control" type="text" name="manu_website" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Facility Registration No.</label>
+                                                            <input class="form-control" type="text" name="manu_reg_no" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Dunn No.</label>
+                                                            <input class="form-control" type="text" name="manu_dunn_no" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Certificate', 2)">Add Certificate</a>
+                                                        <div class="table-scrollable">
+                                                            <table class="table table-bordered table-hover tbl-data-1-2">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Certification Name</th>
+                                                                        <th class="text-center" style="width: 100px;">File</th>
+                                                                        <th class="text-center" style="width: 100px;">Certification Date</th>
+                                                                        <th class="text-center" style="width: 100px;">Due Date</th>
+                                                                        <th class="text-center" style="width: 135px;">Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <h4><strong>Broker Info</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Company Name</label>
+                                                            <input class="form-control" type="text" name="broker_name" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Phone</label>
+                                                            <input class="form-control" type="text" name="broker_phone" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Contact</label>
+                                                            <input class="form-control" type="text" name="broker_contact" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Address</label>
+                                                            <input class="form-control" type="text" name="broker_address" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Email</label>
+                                                            <input class="form-control" type="email" name="broker_email" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Website</label>
+                                                            <input class="form-control" type="text" name="broker_website" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Facility Registration No.</label>
+                                                            <input class="form-control" type="text" name="broker_reg_no" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Dunn No.</label>
+                                                            <input class="form-control" type="text" name="broker_dunn_no" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Certificate', 3)">Add Certificate</a>
+                                                        <div class="table-scrollable">
+                                                            <table class="table table-bordered table-hover tbl-data-1-3">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Certification Name</th>
+                                                                        <th class="text-center" style="width: 100px;">File</th>
+                                                                        <th class="text-center" style="width: 100px;">Certification Date</th>
+                                                                        <th class="text-center" style="width: 100px;">Due Date</th>
+                                                                        <th class="text-center" style="width: 135px;">Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <h4><strong>US Agent Name</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Company Name</label>
+                                                            <input class="form-control" type="text" name="agent_company" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Phone</label>
+                                                            <input class="form-control" type="text" name="agent_phone" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Contact</label>
+                                                            <input class="form-control" type="text" name="agent_contact" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Address</label>
+                                                            <input class="form-control" type="text" name="agent_address" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Email</label>
+                                                            <input class="form-control" type="email" name="agent_email" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Website</label>
+                                                            <input class="form-control" type="text" name="agent_website" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <h4><strong>Importer Info</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Importer Name</label>
+                                                            <input class="form-control" type="text" name="importer_name" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Phone</label>
+                                                            <input class="form-control" type="text" name="importer_phone" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Contact</label>
+                                                            <input class="form-control" type="text" name="importer_contact" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Address</label>
+                                                            <input class="form-control" type="text" name="importer_address" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Email</label>
+                                                            <input class="form-control" type="email" name="importer_email" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Website</label>
+                                                            <input class="form-control" type="text" name="importer_website" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Facility Registration No.</label>
+                                                            <input class="form-control" type="text" name="importer_reg_no" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Dunn No.</label>
+                                                            <input class="form-control" type="text" name="importer_dunn_no" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <a href="#modalNewData" data-toggle="modal" class="btn green" onclick="btnNew_Data(1, 'Certificate', 4)">Add Certificate</a>
+                                                        <div class="table-scrollable">
+                                                            <table class="table table-bordered table-hover tbl-data-1-4">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Certification Name</th>
+                                                                        <th class="text-center" style="width: 100px;">File</th>
+                                                                        <th class="text-center" style="width: 100px;">Certification Date</th>
+                                                                        <th class="text-center" style="width: 100px;">Due Date</th>
+                                                                        <th class="text-center" style="width: 135px;">Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <h4><strong>FSVP Requirements</strong></h4>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Date of FSVP Review</label>
+                                                            <input class="form-control" type="date" name="fsvp_date_review" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Last Date of FDA FSVP Audit</label>
+                                                            <input class="form-control" type="date" name="fsvp_date_audit" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Seasonal</label>
+                                                            <select class="form-control" name="fsvp_seasonal">
+                                                                <option value="0">No</option>
+                                                                <option value="1">Yes</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">If Yes, Available Date</label>
+                                                            <input class="form-control" type="date" name="fsvp_date_available" />
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn btn-success ladda-button" name="btnSave_Products" id="btnSave_Products" data-style="zoom-out"><span class="ladda-label">Save</span></button>
-                                        </div>
-                                    </form>
+                                            <div class="modal-footer modal-footer--sticky bg-white">
+                                                <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                                <button type="submit" class="btn btn-success ladda-button" name="btnSave_Products" id="btnSave_Products" data-style="zoom-out"><span class="ladda-label">Save</span></button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
+                        <?php } ?>
+                        
                         <div class="modal fade bs-modal-lg" id="modalView" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
@@ -2012,7 +3803,7 @@
                                             <h4 class="modal-title">Product Details</h4>
                                         </div>
                                         <div class="modal-body"></div>
-                                        <div class="modal-footer">
+                                        <div class="modal-footer modal-footer--sticky bg-white">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                             <button type="submit" class="btn btn-success ladda-button" name="btnUpdate_Products" id="btnUpdate_Products" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                                         </div>
@@ -2897,6 +4688,7 @@
                                     `
                                         <div class="btn-group btn-group-circle" style="position: unset;">
                                             <a href="#modalView" data-toggle="modal" data-id="${d.id}" class="btn btn-outline dark btn-sm btnView" onclick="btnView(${d.id}, ${d.source})">View</a>
+                                            <a href="pdf/products?i=${d.id}" class="btn green btn-sm" target="_blank">PDF</a>
                                             
                                             <!-- Button to Show Chart -->
                                             <a href="#modalChart" class="btn btn-info btn-sm btnChart" data-toggle="modal" data-id="${d.id}">
@@ -2907,7 +4699,7 @@
                                     `,
                                 ]).draw();
                                 
-                                
+                                 
                                 
                                 // echo '<div class="mt-action" id="mt_action_'.$row["p_ID"].'_'.$row["p_source"].'">
                                 //     <div class="mt-action-img"><img src="'.$files.'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" /></div>

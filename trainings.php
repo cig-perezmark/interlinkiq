@@ -430,6 +430,10 @@
                 }
                 repeaterForm();
             });
+            
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLHRT='+id;
+            }
             function uiBlock() {
                 $('#tableData').block({
                     message: '<div class="loading-message loading-message-boxed bg-white"><img src="assets/global/img/loading-spinner-grey.gif" align=""><span>&nbsp;&nbsp;LOADING...</span></div>', 

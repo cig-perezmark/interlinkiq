@@ -245,7 +245,7 @@
                                                                     <td>'.htmlentities($cam_description).'</td>
                                                                     <td class="text-center">
                                                                         <div class="btn-group btn-group-circle">
-                                                                            <a href="'.$base_url.'pdf_c?id='.$cam_ID.'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>
+                                                                            <a href="'.$base_url.'pdf/capam?id='.$cam_ID.'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>
                                                                             <a href="#modalEdit" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('. $cam_ID.')">Edit</a>
                                                                             <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnClose('. $cam_ID .')">Close</a>
                                                                         </div>
@@ -322,7 +322,7 @@
                                                                     <td>'.htmlentities($cam_description).'</td>
                                                                     <td class="text-center">
                                                                         <div class="btn-group btn-group-circle">
-                                                                            <a href="'.$base_url.'pdf_c?id='.$cam_ID.'&t=2" target="_blank" class="btn btn-info btn-sm">PDF</a>
+                                                                            <a href="'.$base_url.'pdf/capam?id='.$cam_ID.'&t=2" target="_blank" class="btn btn-info btn-sm">PDF</a>
                                                                             <a href="#modalEdit2" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit2('. $cam_ID.')">Edit</a>
                                                                             <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnClose2('. $cam_ID .')">Close</a>
                                                                         </div>
@@ -428,7 +428,7 @@
                                                                     <td>'.htmlentities($cam_description).'</td>
                                                                     <td class="text-center">
                                                                         <div class="btn-group btn-group-circle">
-                                                                            <a href="'.$base_url.'pdf_c?id='.$cam_ID.'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>
+                                                                            <a href="'.$base_url.'pdf/capam?id='.$cam_ID.'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>
                                                                             <a href="#modalView" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('. $cam_ID.')">View</a>
                                                                             <a href="javascript:;" class="btn btn-primary btn-sm" onclick="btnRevert('. $cam_ID .')">Revert</a>
                                                                         </div>
@@ -480,7 +480,7 @@
                                                                     <td>'.htmlentities($cam_description).'</td>
                                                                     <td class="text-center">
                                                                         <div class="btn-group btn-group-circle">
-                                                                            <a href="'.$base_url.'pdf_c?id='.$cam_ID.'&t=2" target="_blank" class="btn btn-info btn-sm">PDF</a>
+                                                                            <a href="'.$base_url.'pdf/capam?id='.$cam_ID.'&t=2" target="_blank" class="btn btn-info btn-sm">PDF</a>
                                                                             <a href="#modalView2" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView2('. $cam_ID.')">View</a>
                                                                             <a href="javascript:;" class="btn btn-primary btn-sm" onclick="btnRevert2('. $cam_ID .')">Revert</a>
                                                                         </div>
@@ -1370,6 +1370,9 @@
                 $(this).addClass('active');
             })
 
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLCAM='+id; 
+            }
             function selectType(e) {
                 if (e.value == 1) {
                     $(e).parent().parent().parent().find('.sign').addClass('hide');
@@ -1481,7 +1484,7 @@
                         success: function(response){
                             // var view = '<a href="javascript:;" class="btn btn-success btn-circle btn-sm" onclick="btnView('+id+')">View</a>';
                             var view = '<div class="btn-group btn-group-circle">';
-                                view += '<a href="https://interlinkiq.com/pdf_c?id='+id+'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>';
+                                view += '<a href="https://interlinkiq.com/pdf/capam?id='+id+'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>';
                                 view += '<a href="#modalView" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('+id+')">View</a>';
                                 view += '<a href="javascript:;" class="btn btn-primary btn-sm" onclick="btnRevert('+id+')">Revert</a>';
                             view += '</div>';
@@ -1510,7 +1513,7 @@
                         success: function(response){
                             // var view = '<a href="javascript:;" class="btn btn-success btn-circle btn-sm" onclick="btnView('+id+')">View</a>';
                             var view = '<div class="btn-group btn-group-circle">';
-                                view += '<a href="https://interlinkiq.com/pdf_c?id='+id+'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>';
+                                view += '<a href="https://interlinkiq.com/pdf/capam?id='+id+'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>';
                                 view += '<a href="#modalView2" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView2('+id+')">View</a>';
                                 view += '<a href="javascript:;" class="btn btn-primary btn-sm" onclick="btnRevert2('+id+')">Revert</a>';
                             view += '</div>';
@@ -1538,7 +1541,7 @@
                         dataType: "html",
                         success: function(response){
                             var view = '<div class="btn-group btn-group-circle">';
-                                view += '<a href="https://interlinkiq.com/pdf_c?id='+id+'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>';
+                                view += '<a href="https://interlinkiq.com/pdf/capam?id='+id+'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>';
                                 view += '<a href="#modalEdit" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('+id+')">Edit</a>';
                                 view += '<a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnClose('+id+')">Close</a>';
                             view += '</div>';

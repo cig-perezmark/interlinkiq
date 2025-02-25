@@ -24,8 +24,64 @@
 	    padding: 1rem;
 	    width: 100%;
 	}
-</style>
+	.justify-content-center {
+	    justify-content: center;
+	}
+	.gap-2 {
+	    gap: 5px;
+	}
+	.dashed {
+	    border: 1px dashed;
+	}
+	.p-3 {
+	    padding: 3px;
+	    min-width: 50px;
+	    max-width: 50px;
+	}
+	#time_in .table th, #time_in .table td {
+	    font-size: 13px !important;
+	}
+	table.dataTable tbody th, table.dataTable tbody td {
+        padding: 5px;
+    }
+    .wrapper {
+        position: relative;
+        overflow: auto;
+        /*border: 1px solid black;*/
+        /*white-space: nowrap;*/ 
+    }
 
+    .sticky-col {
+        position: -webkit-sticky;
+        position: sticky;
+        border-left: 1px solid #cecece !important;
+        border-right: 1px solid #cecece !important;
+        border-top: 0px !important;
+        border-bottom: 1px solid #cecece !important;
+        /* background-color: white; */
+    }
+
+    .first-cols {
+        width: 30px;
+        min-width: 30px;
+        max-width: 30px;
+        left: 0px;
+        z-index: 2;
+    }
+
+    .second-col {
+        width: 150px;
+        min-width: 150px;
+        max-width: 150px;
+        left: 0px;
+        z-index: 2;
+    }
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+         position: relative; 
+    }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
 <!-- END PAGE HEADER-->
 <div class="row">
     <div class="col-md-12">
@@ -35,7 +91,7 @@
                     <i class="icon-globe theme-font hide"></i>
                     <span class="caption-subject font-blue-madison bold uppercase">Service Time Logs</span>
                 </div>
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-tabs" id="mainNavTabs">
                     <li class="active">
                         <a href="#SERVICES" data-toggle="tab">Services</a>
                     </li>
@@ -66,9 +122,12 @@
                     <li>
                         <a href="#Overtime_fa" data-toggle="tab">Overtime for Approval</a>
                     </li>
-                    <?php if($_COOKIE['ID'] == 387 || $_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 66  || $_COOKIE['ID'] == 100 || $_COOKIE['ID'] == 3 || $_COOKIE['ID'] == 43 || $_COOKIE['ID'] == 34 || $_COOKIE['ID'] == 54): ?>
+                    <?php 
+                        // if($_COOKIE['ID'] == 456):
+                        if($_COOKIE['ID'] == 387 || $_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 66  || $_COOKIE['ID'] == 100 || $_COOKIE['ID'] == 3 || $_COOKIE['ID'] == 43 || $_COOKIE['ID'] == 34 || $_COOKIE['ID'] == 54): 
+                    ?>
                     <li>
-                        <a href="#time_in" data-toggle="tab">Clockin Tracker</a>
+                        <a href="#time_in" data-toggle="tab" class="clockinClockoutTab">Clockin Tracker</a>
                     </li>
                     <?php endif ?>
                 </ul>
@@ -116,66 +175,100 @@
                                             <thead>
                                                 <tr>
                                                     <th>Task ID</th>
-                                                    <th>Name</th>
+                                                    <!--<th>Name</th>-->
+                                                    <th>Task Date</th>
                                                     <th>Description</th>
                                                     <th>Action</th>
                                                     <th>Comment</th>
                                                     <th>Account</th>
-                                                    <th>Task Date</th>
                                                     <th>Minutes</th>
+                                                    <th class="text-center">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php
-                                            $last_month = date('Y-m-d', strtotime('-30 days'));
-                                            $overtime_query = mysqli_query($conn, "select * from tbl_service_logs where deleted = 0 AND not_approved = 1 and minute > 0 and user_id = {$_COOKIE['ID']} 
-                                            AND task_date >= '$last_month' ORDER BY task_date DESC");
-                                            foreach($overtime_query as $ot_row){?>
-                                                <tr id="scope_<?= $ot_row['task_id']; ?>" style="background-color:#F5F3C1;">
-                                                    <td><?= $ot_row['task_id']; ?></td>
-                                                    <td>
-                                                        <?php 
-                                                            $uuser = $ot_row['user_id'];
-                                                            $query_user = mysqli_query($conn, "select * from tbl_user where ID = '$uuser'");
-                                                            foreach($query_user as $uuser_row){
-                                                                echo $uuser_row['first_name'].' '.$uuser_row['last_name'];
-                                                            }
-                                                        ?>
-                                                    </td>
-                                                    <td><?= $ot_row['description']; ?></td>
-                                                    <td><?= $ot_row['action']; ?></td>
-                                                    <td><?= $ot_row['comment']; ?></td>
-                                                    <td><?= $ot_row['account']; ?></td>
-                                                    <td><?= $ot_row['task_date']; ?></td>
-                                                    <td><?= $ot_row['minute']; ?></td>
-                                                </tr>
-                                                <?php }
-                                        ?>
-                                                <?php
-                                            $last_month1 = date('Y-m-d', strtotime('-30 days'));
-                                            $overtime_query1 = mysqli_query($conn, "select * from tbl_service_logs where deleted = 0 AND not_approved = 0 and minute > 0 and user_id = {$_COOKIE['ID']} 
-                                            AND task_date >= '$last_month1' ORDER BY task_date DESC");
-                                            foreach($overtime_query1 as $ot_row){?>
-                                                <tr id="scope1_<?= $ot_row['task_id']; ?>">
-                                                    <td><?= $ot_row['task_id']; ?></td>
-                                                    <td>
-                                                        <?php 
-                                                            $uuser = $ot_row['user_id'];
-                                                            $query_user = mysqli_query($conn, "select * from tbl_user where ID = '$uuser'");
-                                                            foreach($query_user as $uuser_row){
-                                                                echo $uuser_row['first_name'].' '.$uuser_row['last_name'];
-                                                            }
-                                                        ?>
-                                                    </td>
-                                                    <td><?= $ot_row['description']; ?></td>
-                                                    <td><?= $ot_row['action']; ?></td>
-                                                    <td><?= $ot_row['comment']; ?></td>
-                                                    <td><?= $ot_row['account']; ?></td>
-                                                    <td><?= $ot_row['task_date']; ?></td>
-                                                    <td><?= $ot_row['minute']; ?></td>
-                                                </tr>
-                                                <?php }
-                                        ?>
+                                               
+                                                <!--    $last_month1 = date('Y-m-d', strtotime('-30 days'));-->
+                                                <!--    $overtime_query1 = mysqli_query($conn, "-->
+                                                <!--        SELECT-->
+                                                <!--        user_id,-->
+                                                <!--        task_id,-->
+                                                <!--        task_date,-->
+                                                <!--        description,-->
+                                                <!--        action,-->
+                                                <!--        comment,-->
+                                                <!--        account,-->
+                                                <!--        minute-->
+                                                <!--        FROM tbl_service_logs-->
+                                                <!--        WHERE deleted = 0 -->
+                                                <!--        AND not_approved = 0-->
+                                                <!--        AND minute > 0 -->
+                                                <!--        AND user_id = $current_userID-->
+                                                <!--        AND task_date >= '$last_month1'-->
+                                                <!--        ORDER BY task_date DESC-->
+                                                <!--    ");-->
+                                                <!--    foreach($overtime_query1 as $ot_row) {-->
+                                                <!--        echo '<tr id="scope1_'.$ot_row['task_id'].'">-->
+                                                <!--            <td>'.$ot_row['task_id'].'</td>-->
+                                                <!--            <td>';-->
+                                                            
+                                                <!--                $uuser = $ot_row['user_id'];-->
+                                                <!--                $query_user = mysqli_query($conn, "select * from tbl_user where ID = '$uuser'");-->
+                                                <!--                foreach($query_user as $uuser_row){-->
+                                                <!--                    echo $uuser_row['first_name'].' '.$uuser_row['last_name'];-->
+                                                <!--                }-->
+                                                                
+                                                <!--            echo '</td>-->
+                                                <!--            <td>'.$ot_row['description'].'</td>-->
+                                                <!--            <td>'.$ot_row['action'].'</td>-->
+                                                <!--            <td>'.$ot_row['comment'].'</td>-->
+                                                <!--            <td>'.$ot_row['account'].'</td>-->
+                                                <!--            <td>'.$ot_row['task_date'].'</td>-->
+                                                <!--            <td>'.$ot_row['minute'].'</td>-->
+                                                <!--            <td class="text-center">-->
+                                                <!--                <div class="d-flex justify-content-center">-->
+                                                <!--                    <a type="button" class="btn btn-primary btn-sm editTask" id="'.$ot_row['task_id'].'">Edit</a>-->
+                                                <!--                    <a type="button" class="btn btn-danger btn-sm deleteTask" id="'.$ot_row['task_id'].'">Delete</a> -->
+                                                <!--                </div>    -->
+                                                <!--            </td>-->
+                                                <!--        </tr>';-->
+                                                <!--    }-->
+                                                <!--    $last_month1 = date('Y-m-d', strtotime('-30 days'));-->
+                                                <!--    $overtime_query1 = mysqli_query($conn, "-->
+                                                <!--        SELECT-->
+                                                <!--        user_id,-->
+                                                <!--        task_id,-->
+                                                <!--        task_date,-->
+                                                <!--        description,--> 
+                                                <!--        action,-->
+                                                <!--        comment,-->
+                                                <!--        account,--> 
+                                                <!--        minute-->
+                                                <!--        FROM tbl_service_logs-->
+                                                <!--        WHERE deleted = 0 -->
+                                                <!--        AND not_approved = 1 -->
+                                                <!--        AND minute > 0 -->
+                                                <!--        AND user_id = $current_userID-->
+                                                <!--        AND task_date >= '$last_month1'-->
+                                                <!--        ORDER BY task_date DESC-->
+                                                <!--    ");-->
+                                                <!--    foreach($overtime_query1 as $ot_row) {-->
+                                                <!--        echo '<tr id="scope1_'.$ot_row['task_id'].'">-->
+                                                <!--            <td>'.$ot_row['task_id'].'</td>-->
+                                                <!--            <td>';-->
+                                                <!--                $uuser = $ot_row['user_id'];-->
+                                                <!--                $query_user = mysqli_query($conn, "select * from tbl_user where ID = '$uuser'");-->
+                                                <!--                foreach($query_user as $uuser_row){-->
+                                                <!--                    echo $uuser_row['first_name'].' '.$uuser_row['last_name'];-->
+                                                <!--                }-->
+                                                <!--            echo '</td>-->
+                                                <!--            <td>'.$ot_row['description'].'</td>-->
+                                                <!--            <td>'.$ot_row['action'].'</td>-->
+                                                <!--            <td>'.$ot_row['comment'].'</td>-->
+                                                <!--            <td>'.$ot_row['account'].'</td>-->
+                                                <!--            <td>'.$ot_row['task_date'].'</td>-->
+                                                <!--            <td>'.$ot_row['minute'].'</td>-->
+                                                <!--        </tr>';-->
+                                                <!--    }--> 
                                             </tbody>
                                         </table>
                                     </div>
@@ -205,7 +298,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                $overtime_query1 = mysqli_query($conn, "select * from tbl_service_logs where not_approved = 3 and user_id = '".$_COOKIE['ID']."' ");
+                                                $overtime_query1 = mysqli_query($conn, "SELECT * FROM tbl_service_logs WHERE deleted = 0 AND not_approved = 3 AND user_id = '".$_COOKIE['ID']."' ");
                                                 foreach($overtime_query1 as $ot_row){?>
 
                                                         <tr id="scope_<?= $ot_row['task_id']; ?>">
@@ -281,7 +374,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                $overtime_query1 = mysqli_query($conn, "select * from tbl_service_logs where not_approved = 4 and user_id = '".$_COOKIE['ID']."' ");
+                                                $overtime_query1 = mysqli_query($conn, "SELECT * FROM tbl_service_logs WHERE deleted = 0 AND not_approved = 4 AND user_id = '".$_COOKIE['ID']."' ");
                                                 foreach($overtime_query1 as $ot_row){?>
 
                                                         <tr id="scope_<?= $ot_row['task_id']; ?>">
@@ -488,210 +581,11 @@
                                 </div>
                                 <div class="portlet-body">
                                     <div class="tabbable-line">
-                                        <ul class="nav nav-tabs ">
-                                            <li class="active">
-                                                <a href="#ft" data-toggle="tab"> Fulltime </a>
-                                            </li>
-                                            <li>
-                                                <a href="#ojt" data-toggle="tab"> Part-Time Apprentice </a>
-                                            </li>
-                                            <li>
-                                                <a href="#fl" data-toggle="tab"> Part-Time Project </a>
-                                            </li>
+                                        <ul class="nav nav-tabs" id="tab_types">
+                                           
                                         </ul>
-                                        <div class="tab-content">
-                                            <div class="tab-pane active" id="ft">
-                                                <table class="table table-striped table-bordered table-hover" id="timein_ft">
-                                                    <thead>
-                                                        <tr role="row">
-                                                            <th class="text-bold text-center bg-light" aria-controls="timein_summary_table" width="10%">Name</th>
-                                                            <?php
-                                                            $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date 
-                                                                        FROM tbl_timein 
-                                                                        LEFT JOIN tbl_hr_employee 
-                                                                        ON tbl_hr_employee.ID = tbl_timein.user_id 
-                                                                        WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) 
-                                                                        OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) 
-                                                                        AND tbl_hr_employee.type_id = 1 
-                                                                        AND tbl_hr_employee.suspended = 0 
-                                                                        AND tbl_hr_employee.status = 1 
-                                                                        ORDER BY tbl_timein.time_in_datetime DESC";
-                                                
-                                                            $resultQuery = mysqli_query($conn, $query);
-                                                            while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                                echo '<th class="text-bold text-center bg-light" aria-controls="timein_summary_table">' . date('Y-m-d', strtotime($rowQuery['date'])) . '</th>';
-                                                            }
-                                                            ?>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php
-                                                        $query2 = "SELECT * FROM `tbl_hr_employee` WHERE `user_id` = {$switch_user_id} AND `type_id` = 1 AND `suspended` = 0 AND `status` = 1 AND `first_name` != 'Admin' AND `first_name` != 'Arnel'";
-                                                        $resultQuery2 = mysqli_query($conn, $query2);
-                                                        while ($rowQuery2 = mysqli_fetch_array($resultQuery2)) {
-                                                            echo '<tr width="10%" role="row" class="odd">';
-                                                            echo '<td class="text-center">' . $rowQuery2['last_name'] . ' ' . $rowQuery2['first_name'] . '</td>';
-                                                
-                                                            mysqli_data_seek($resultQuery, 0);
-                                                            while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                                $date = date('Y-m-d', strtotime($rowQuery['date']));
-                                                                $query3 = "SELECT MIN(CASE WHEN tbl_timein.action = 'IN' THEN tbl_timein.time_in_datetime END) AS timein,
-                                                                                    MAX(CASE WHEN tbl_timein.action = 'OUT' THEN tbl_timein.time_in_datetime END) AS timeout 
-                                                                            FROM tbl_timein 
-                                                                            WHERE user_id = {$rowQuery2['ID']} AND DATE(tbl_timein.time_in_datetime) = '{$date}'";
-                                                                $resultQuery3 = mysqli_query($conn, $query3);
-                                                                $rowQuery3 = mysqli_fetch_array($resultQuery3);
-                                                                
-                                                                echo '<td class="text-center">';
-                                                                if ($rowQuery3) {
-                                                                    if (!empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                        echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span></a>';
-                                                                    } elseif(!empty($rowQuery3['timein']) && empty($rowQuery3['timeout'])) {
-                                                                        echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">-</span></a>';
-                                                                    }elseif(empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                        echo '<span class="bold text-success">-</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
-                                                                    } else {
-                                                                        echo '<span class="bold text-warning">-</span>';
-                                                                    }
-                                                                } else {
-                                                                    echo '<span class="bold text-warning">-</span>';
-                                                                }
-                                                                echo '</td>';
-                                                            }
-                                                            echo '</tr>';
-                                                        }
-                                                        ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="tab-pane" id="ojt">
-                                                <table class="table table-striped table-bordered table-hover" id="timein_ojt">
-                                                    <thead>
-                                                        <tr role="row">
-                                                            <th class="text-bold text-center bg-light" aria-controls="timein_summary_table" width="10%">Name</th>
-                                                            <?php
-                                                                $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date 
-                                                                            FROM tbl_timein 
-                                                                            LEFT JOIN tbl_hr_employee 
-                                                                            ON tbl_hr_employee.ID = tbl_timein.user_id 
-                                                                            WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) 
-                                                                            OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) 
-                                                                            AND tbl_hr_employee.type_id = 1 
-                                                                            AND tbl_hr_employee.suspended = 0 
-                                                                            AND tbl_hr_employee.status = 1 
-                                                                            ORDER BY tbl_timein.time_in_datetime DESC";
-                                                    
-                                                                $resultQuery = mysqli_query($conn, $query);
-                                                                while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                                    echo '<th class="text-bold text-center bg-light" aria-controls="timein_summary_table">' . date('Y-m-d', strtotime($rowQuery['date'])) . '</th>';
-                                                                }
-                                                            ?>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php
-                                                            $query2 = "SELECT * FROM `tbl_hr_employee` WHERE `user_id` = {$switch_user_id} AND `type_id` = 5 AND `suspended` = 0 AND `status` = 1";
-                                                            $resultQuery2 = mysqli_query($conn, $query2);
-                                                            while ($rowQuery2 = mysqli_fetch_array($resultQuery2)) {
-                                                                echo '<tr width="10%" role="row" class="odd">';
-                                                                echo '<td class="text-center">' . $rowQuery2['last_name'] . ' ' . $rowQuery2['first_name'] . '</td>';
-                                                    
-                                                                mysqli_data_seek($resultQuery, 0);
-                                                                while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                                    $date = date('Y-m-d', strtotime($rowQuery['date']));
-                                                                    $query3 = "SELECT MIN(CASE WHEN tbl_timein.action = 'IN' THEN tbl_timein.time_in_datetime END) AS timein,
-                                                                                        MAX(CASE WHEN tbl_timein.action = 'OUT' THEN tbl_timein.time_in_datetime END) AS timeout 
-                                                                                FROM tbl_timein 
-                                                                                WHERE user_id = {$rowQuery2['ID']} AND DATE(tbl_timein.time_in_datetime) = '{$date}'";
-                                                                    $resultQuery3 = mysqli_query($conn, $query3);
-                                                                    $rowQuery3 = mysqli_fetch_array($resultQuery3);
-                                                                    
-                                                                    echo '<td class="text-center">';
-                                                                    if ($rowQuery3) {
-                                                                        if (!empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                            echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span></a>';
-                                                                        } elseif(!empty($rowQuery3['timein']) && empty($rowQuery3['timeout'])) {
-                                                                            echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">-</span></a>';
-                                                                        }elseif(empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                            echo '<span class="bold text-success">-</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
-                                                                        } else {
-                                                                            echo '<span class="bold text-warning">-</span>';
-                                                                        }
-                                                                    } else {
-                                                                        echo '<span class="bold text-warning">-</span>';
-                                                                    }
-                                                                    echo '</td>';
-                                                                }
-                                                                echo '</tr>';
-                                                            }
-                                                        ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="tab-pane" id="fl">
-                                                <table class="table table-striped table-bordered table-hover" id="timein_fl">
-                                                    <thead>
-                                                        <tr role="row">
-                                                            <th class="text-bold text-center bg-light" aria-controls="timein_summary_table" width="10%">Name</th>
-                                                            <?php
-                                                                $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date 
-                                                                            FROM tbl_timein 
-                                                                            LEFT JOIN tbl_hr_employee 
-                                                                            ON tbl_hr_employee.ID = tbl_timein.user_id 
-                                                                            WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) 
-                                                                            OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) 
-                                                                            AND tbl_hr_employee.type_id = 1 
-                                                                            AND tbl_hr_employee.suspended = 0 
-                                                                            AND tbl_hr_employee.status = 1 
-                                                                            ORDER BY tbl_timein.time_in_datetime DESC";
-                                                    
-                                                                $resultQuery = mysqli_query($conn, $query);
-                                                                while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                                    echo '<th class="text-bold text-center bg-light" aria-controls="timein_summary_table">' . date('Y-m-d', strtotime($rowQuery['date'])) . '</th>';
-                                                                }
-                                                            ?>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php
-                                                            $query2 = "SELECT * FROM `tbl_hr_employee` WHERE `user_id` = {$switch_user_id} AND `type_id` = 2 AND `suspended` = 0 AND `status` = 1";
-                                                            $resultQuery2 = mysqli_query($conn, $query2);
-                                                            while ($rowQuery2 = mysqli_fetch_array($resultQuery2)) {
-                                                                echo '<tr width="10%" role="row" class="odd">';
-                                                                echo '<td class="text-center">' . $rowQuery2['last_name'] . ' ' . $rowQuery2['first_name'] . '</td>';
-                                                    
-                                                                mysqli_data_seek($resultQuery, 0);
-                                                                while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                                    $date = date('Y-m-d', strtotime($rowQuery['date']));
-                                                                    $query3 = "SELECT MIN(CASE WHEN tbl_timein.action = 'IN' THEN tbl_timein.time_in_datetime END) AS timein,
-                                                                                        MAX(CASE WHEN tbl_timein.action = 'OUT' THEN tbl_timein.time_in_datetime END) AS timeout 
-                                                                                FROM tbl_timein 
-                                                                                WHERE user_id = {$rowQuery2['ID']} AND DATE(tbl_timein.time_in_datetime) = '{$date}'";
-                                                                    $resultQuery3 = mysqli_query($conn, $query3);
-                                                                    $rowQuery3 = mysqli_fetch_array($resultQuery3);
-                                                                    
-                                                                    echo '<td class="text-center">';
-                                                                    if ($rowQuery3) {
-                                                                        if (!empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                            echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span></a>';
-                                                                        } elseif(!empty($rowQuery3['timein']) && empty($rowQuery3['timeout'])) {
-                                                                            echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">-</span></a>';
-                                                                        }elseif(empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                            echo '<span class="bold text-success">-</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
-                                                                        } else {
-                                                                            echo '<span class="bold text-warning">-</span>';
-                                                                        }
-                                                                    } else {
-                                                                        echo '<span class="bold text-warning">-</span>';
-                                                                    }
-                                                                    echo '</td>';
-                                                                }
-                                                                echo '</tr>';
-                                                            }
-                                                        ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                        <div class="tab-content" id="tabContainer">
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -1091,18 +985,19 @@
                         <div class="form-group">
                             <label for="task_action" class="col-md-3 control-label">Action</label>
                             <div class="col-md-8">
-                                <select class="form-control mt-multiselect" name="action" id="task_action">
+                                <input list="actions" name="action" class="form-control" id="task_action">
+                                <datalist id="actions">
                                     <?php
                                         $actions = $con->query("SELECT name FROM tbl_service_logs_actions WHERE deleted = 0 ORDER BY name");
-                                        if(mysqli_num_rows($actions) > 0) {
-                                            while($row = $actions->fetch_assoc()) {
+                                        if ($actions && $actions->num_rows > 0) {
+                                            while ($row = $actions->fetch_assoc()) {
                                                 echo "<option value='{$row['name']}'>{$row['name']}</option>";
                                             }
                                         } else {
-                                            echo "<option><i>No items found.</i></option>";
-                                        }
-                                    ?>
-                                </select>
+                                            echo "<option value=''>No items found</option>";
+                                        } 
+                                    ?> 
+                                </datalist>
                             </div>
                         </div>
                         <div class="form-group">
@@ -1115,8 +1010,8 @@
                             <label for="task_account" class="col-md-3 control-label">Account</label>
                             <div class="col-md-8">
                                 <select class="form-control mt-multiselect" name="account" id="task_account">
-                                    <?php
-                                        $accounts = $con->query("SELECT * FROM tbl_service_logs_accounts WHERE owner_pk = $switch_user_id order by name ASC");
+                                    <?php 
+                                        $accounts = $con->query("SELECT * FROM tbl_service_logs_accounts WHERE deleted = 0 AND owner_pk = $switch_user_id order by name ASC");
                                         if(mysqli_num_rows($accounts) > 0) {
                                             while($row = $accounts->fetch_assoc()) {
                                                 echo "<option value='{$row['name']}'>{$row['name']}</option>";
@@ -1152,6 +1047,89 @@
                 <?php }else{ ?>
                     <i>Your Cookies has expired please relogin. Thank you</i>
                 <?php } ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit service log form -->
+<div class="modal fade in" id="editTask" tabindex="-1" role="editTask" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Edit Task</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" id="edit_task_form">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label for="task_description" class="col-md-3 control-label">Description</label>
+                            <div class="col-md-8">
+                                <textarea class="form-control" name="sl_description" id="sl_description" rows="1" placeholder="Describe your task" required></textarea> 
+                                <input class="form-control" name="sl_taskid" id="sl_taskid" type="hidden"> 
+                            </div>
+                        </div>
+                        <div class="form-group"> 
+                            <label for="task_action" class="col-md-3 control-label">Action</label>
+                            <div class="col-md-8">
+                                <input list="actions" name="sl_action" class="form-control" id="sl_action" required>
+                                <datalist id="logActions">
+                                    <?php
+                                        $actions = $con->query("SELECT name FROM tbl_service_logs_actions WHERE deleted = 0 ORDER BY name");
+                                        if ($actions && $actions->num_rows > 0) {
+                                            while ($row = $actions->fetch_assoc()) {
+                                                echo "<option value='{$row['name']}'>{$row['name']}</option>";
+                                            }
+                                        } else {
+                                            echo "<option value=''>No items found</option>";
+                                        } 
+                                    ?> 
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="task_comment" class="col-md-3 control-label">Comment</label>
+                            <div class="col-md-8">
+                                <textarea class="form-control" name="sl_comment" id="sl_comment" placeholder="Add comment" rows="5"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="task_account" class="col-md-3 control-label">Account</label>
+                            <div class="col-md-8">
+                                <select class="form-control" name="sl_account" id="sl_account" required>
+                                    <?php 
+                                        $accounts = $con->query("SELECT name FROM tbl_service_logs_accounts WHERE deleted = 0 AND owner_pk = $switch_user_id ORDER BY name ASC");
+                                        if ($accounts && $accounts->num_rows > 0) {
+                                            while ($row = $accounts->fetch_assoc()) {
+                                                echo "<option value='{$row['name']}'>{$row['name']}</option>";
+                                            }
+                                        } else {
+                                            echo "<option value='' disabled>No accounts available.</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskdate" class="col-md-3 control-label">Task Date</label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="date" name="sl_date" id="sl_date" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="task_minute" class="col-md-3 control-label">Minute</label>
+                            <div class="col-md-8">
+                                <input class="form-control" name="sl_minutes" id="sl_minutes" type="number" min="0.1" step="0.1" required>
+                            </div>
+                        </div>
+                        <input type="hidden" name="task_id" id="task_id"> <!-- Task ID -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn green updateTaskbtn">Update Task</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -1308,10 +1286,355 @@
 <!-- ADVANCE SEARCH FIELD TYPEAHEAD -->
 <script src='assets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js' type='text/javascript'></script>
 <script src='assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js' type='text/javascript'></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <script src="clockin/process.js" type="text/javascript"></script>
 
 <!-- CUSTOM SCRIPT -->
+<script>
+    $(document).ready(function() {
+        appendTimeinRecords(1);
+    })
+    
+    getEmploymentTitle()
+    function getEmploymentTitle() {
+        $.post('task_service_log/clockin_out_operations.php', { action: 'getEmploymentTitle' }, function (response) {
+            const data = JSON.parse(response);
+            if (data.success) {
+                const tabHeading = $('#tab_types');
+                const tabContainer = $('#tabContainer');
+                tabHeading.empty();
+                tabContainer.empty();
+                
+                data.data.forEach(function (type, index) {
+                    const isActive = index === 0 ? 'active' : '';
+                    // Build the tab headings
+                    const tab = `
+                        <li class="${isActive}">
+                            <a href="#type-${type.type}" onclick="appendTimeinRecords(${type.type})" data-toggle="tab"> ${type.title} </a>
+                        </li>
+                    `;
+                    tabHeading.append(tab);
+                    // Build the tab container structure
+                    const container = `
+                        <div class="tab-pane ${isActive}" id="type-${type.type}">
+                            <div class="view">
+                                <div class="wrapper">
+                                    <table class="table table-striped table-bordered" id="table_type${type.type}">
+                                        <thead></thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    tabContainer.append(container);
+                })
+            }
+        })
+    }
+    
+    function appendTimeinRecords(type) {
+        $.post('task_service_log/clockin_out_operations.php', { action: 'getTimeins', type: type }, function (response) {
+            const data = JSON.parse(response);
+            console.log(data);
+            const tableBody = $(`#type-${type} tbody`);
+            tableBody.empty();
+    
+            if (!data.success || Object.keys(data.data).length === 0) {
+                const noDataHtml = `
+                    <tr>
+                        <td colspan="999" class="text-center"><span class="italic">No data found for the last month</span></td>
+                    </tr>
+                `;
+                tableBody.append(noDataHtml);
+                return;
+            }
+    
+            let dates = new Set();
+            Object.values(data.data).forEach(emp => {
+                Object.keys(emp.dates).forEach(date => dates.add(date));
+            });
+            dates = Array.from(dates).sort((a, b) => new Date(b) - new Date(a)); // Sort dates in descending order
+    
+            // Generate Table Headers
+            let datesHeader = `<th class="text-center" width="1%">No.</th>
+                               <th class="text-center sticky-col second-col bg-primary" style="border: none !important" width="10%">Names</th>`;
+    
+            dates.forEach(date => {
+                datesHeader += `<th class="text-center no-sort">${date}</th>`;
+            });
+    
+            $(`#type-${type} thead`).html(`<tr>${datesHeader}</tr>`);
+    
+            // Sort employees by name in ASCENDING order (A-Z)
+            const sortedEmployees = Object.values(data.data).sort((a, b) => a.name.localeCompare(b.name));
+    
+            // Generate Table Rows
+            let rowIndex = 1;
+            sortedEmployees.forEach(employee => {
+                let employeeRow = `<tr><td class="text-center">${rowIndex++}</td>
+                                   <td class="sticky-col second-col" style="background: #c4e4ff; color: #000 !important;">${employee.name}</td>`;
+    
+                dates.forEach(date => {
+                    const record = employee.dates[date] || { timein: '', timeout: '' };
+                    const timein = record.timein ? `<span class="text-success dashed p-3">IN<br>${record.timein}</span>` : '-';
+                    const timeout = record.timeout ? `<span class="text-danger dashed p-3">OUT<br>${record.timeout}</span>` : '-';
+    
+                    employeeRow += `<td class="text-center bold">
+                                        <a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" 
+                                           class="get_clockin_records" data-id="${employee.id}" data-date="${date}">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                ${timein} ${timeout}
+                                            </div>
+                                        </a>
+                                    </td>`;
+                });
+    
+                employeeRow += '</tr>';
+                tableBody.append(employeeRow);
+            });
+    
+            // Initialize or Reinitialize DataTable
+            if ($.fn.DataTable.isDataTable(`#table_type${type}`)) {
+                $(`#table_type${type}`).DataTable().destroy();
+            }
+    
+            $(`#table_type${type}`).DataTable({
+                dom: 'lBfrtip',
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                columnDefs: [
+                    { targets: 0, orderable: true },
+                    { targets: '_all', orderable: false }
+                ],
+                buttons: [
+                    { extend: 'print', exportOptions: { columns: ':visible' } },
+                    { extend: 'pdf', exportOptions: { columns: ':visible' } },
+                    { extend: 'csv', exportOptions: { columns: ':visible' } },
+                    { extend: 'excel', exportOptions: { columns: ':visible' } },
+                    'colvis'
+                ]
+            });
+        });
+    }
 
+    
+    // Function to format date to "Jan 1"
+    function formatDateToShort(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+
+    $(document).ready(function() {
+        getAllServiceLogs();
+        function getAllServiceLogs() {
+            $.post('task_service_log/service_log_operations.php', { action: 'get' }, function (response) {
+                const data = JSON.parse(response);
+                
+                if (data.success) {
+                    const tableBody = $('#tblServiceLog tbody');
+                    tableBody.empty();
+                    
+                    // Loop through each record and append it to the table
+                    data.data.forEach(function (record) {
+                        const row = `
+                            <tr>
+                                <td>${record.task_id}</td>
+                                <td>${record.task_date}</td>
+                                <td>${record.description}</td>
+                                <td>${record.action}</td>
+                                <td>${record.comment}</td>
+                                <td>${record.account}</td>
+                                <td>${record.minute}</td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <a type="button" class="btn btn-primary btn-sm editTask" id="${record.task_id}">Edit</a>
+                                        <a type="button" class="btn btn-danger btn-sm deleteTask" id="${record.task_id}">Delete</a>
+                                    </div>    
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.append(row);
+                    });
+                    
+                    if (!$.fn.dataTable.isDataTable('#tblServiceLog')) {
+                        $('#tblServiceLog').DataTable({
+                            dom: 'lBfrtip',
+                            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                            order: [[0, 'desc']],
+                            buttons: [
+                                {
+                                    extend: 'print',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'pdf',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'csv',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'excel',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                'colvis'
+                            ]
+                        });
+                    }
+                } else {
+                    $('#tblServiceLog tbody').html('<tr><td colspan="8">No records found.</td></tr>');
+                }
+            });
+        }
+
+        $('#edit_task_form').on('submit', function (e) {
+            e.preventDefault();
+            const formData = $(this).serialize();
+            $('.updateTaskbtn').attr('disabled', true).text('Updating ...');
+            $.ajax({
+                url: 'task_service_log/service_log_operations.php',
+                type: 'POST',
+                data: formData + '&action=update',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({ 
+                            title: "Success!",
+                            text: response.message,
+                            icon: "success"
+                        });
+                        $('#editTask').modal('hide');
+                        $('.updateTaskbtn').attr('disabled', false).text('Update Task'); 
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: response.message,
+                            icon: "error"
+                        });
+                    }
+                    $('.updateTaskbtn').attr('disabled', false).text('Update Task');
+                    getAllServiceLogs()
+                    reloadActions()
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', status, error);
+                    Swal.fire({
+                        title: "Error!",
+                        text: "An unexpected error occurred. Please try again.",
+                        icon: "error"
+                    });
+                }
+            });
+        });
+        
+        $('#tblServiceLog').on('click', '.deleteTask', function(e) {
+            e.preventDefault();
+            const taskid = $(this).attr('id')
+            const row = $(this).closest('tr');
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => { 
+                if (result.isConfirmed) {
+                    $.post('task_service_log/service_log_operations.php', {action: 'delete', id: taskid}, function (response) {
+                        const data = JSON.parse(response);
+                        if (data.success) {
+                            row.remove();
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: data.message,
+                                icon: "success"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                icon: "error"
+                            });
+                        }
+                    }).fail(function() {
+                        Swal.fire({
+                            title: "Error!",
+                            text: "An error occurred while processing your request.",
+                            icon: "error"
+                        });
+                    });
+                }
+            });
+        })
+        
+        function reloadActions() {
+            $.post('task_service_log/service_log_operations.php', { action: 'loadActionLogs' }, function (response) {
+                const data = JSON.parse(response);
+                
+                if (data.success) {
+                    const actionList = $('#logActions');
+                    actionList.empty();
+        
+                    data.data.forEach(action => {
+                        actionList.append(`<option value="${action.name}">${action.name}</option>`);
+                    });
+        
+                } else {
+                    console.error(data.message);
+                }
+            });
+        }
+        
+        $('#tblServiceLog').on('click', '.editTask', function (e) {
+            e.preventDefault();
+            const taskid = $(this).attr('id');
+        
+            $.post('task_service_log/service_log_operations.php', { action: 'fetch', taskid: taskid }, function (response) {
+                const data = JSON.parse(response); // Parse the response
+        
+                if (data.success) {
+                    const actionInput = $('#sl_action');
+                    const selectedAction = data.data.action;
+                    console.log(selectedAction);
+        
+                    actionInput.val(selectedAction);
+        
+                    const actionExists = $(`#actions option[value="${selectedAction}"]`).length > 0;
+        
+                    if (!actionExists) {
+                        $('#actions').append(`<option value="${selectedAction}">${selectedAction}</option>`);
+                    }
+                    
+                    const accountSelect = $('#sl_account');
+                    const selectedAccount = data.data.account;
+                    accountSelect.prepend(`<option value="${selectedAccount}" selected>${selectedAccount}</option>`);
+                        
+                    $('#sl_description').val(data.data.description);
+                    $('#sl_comment').val(data.data.comment);
+                    $('#sl_taskid').val(data.data.task_id); 
+                    $('#sl_account').val(data.data.account);
+                    $('#sl_date').val(data.data.task_date); 
+                    $('#sl_minutes').val(data.data.minute); 
+        
+                    $('#editTask').modal('show');
+                } else {
+                    console.error(data.message);
+                }
+            });
+        });
+    })
+</script>
 <script>
     function checkAll() {
         // Get the checkbox that represents "Check All"
@@ -1549,6 +1872,7 @@
         TableDatatablesRowreorderTimeIn.init();
     });
 </script>
+
 <script>
     var TableDatatablesManaged = function() {
     

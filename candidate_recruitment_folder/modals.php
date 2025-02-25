@@ -1,4 +1,4 @@
- <!-- add new -->
+<!-- add new -->
 <div class="modal fade" id="modalAdd_details" tabindex="-1" role="basic" aria-hidden="true">
     <div class="modal-dialog" >
         <div class="modal-content">

@@ -1,4 +1,4 @@
-                    <!-- MODAL SERVICE -->
+<!-- MODAL SERVICE -->
                     <div class="modal fade" id="modalService" tabindex="-1" role="basic" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">

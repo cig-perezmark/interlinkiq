@@ -1,4 +1,4 @@
- <?php
+<?php
            include_once 'database.php';
         
 if($_POST['ids'] == ''){

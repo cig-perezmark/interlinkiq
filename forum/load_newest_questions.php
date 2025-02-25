@@ -256,5 +256,3 @@ $(".view_display").click(function() {
 });
 
 </script>
-
-      

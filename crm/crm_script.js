@@ -1627,67 +1627,53 @@ $(document).ready(function() {
         e.preventDefault();
     
         const formData = new FormData(this);
-        var btn = $('#massUploadFormBtn');
-        var l = Ladda.create(btn[0]);
+        const btn = $('#massUploadFormBtn');
+        const l = Ladda.create(btn[0]);
     
         l.start();
         formData.append('upload_multiple_contacts', 'upload_multiple_contacts');
+    
         $.ajax({
             url: 'crm/controller_functions.php',
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
-    
             success: function(response) {
-                const result = JSON.parse(response);
-                const status = result.status;
-                const message = result.message;
-                const skippedRows = result.skippedRows;
+                try {
+                    console.log("Raw Response:", response); // Debugging
+                    const result = JSON.parse(response);
     
-                if (status === 'success') {
-                    $.bootstrapGrowl(message, {
-                        ele: 'body',
-                        type: 'success',
-                        offset: { from: 'bottom', amount: 50 },
-                        align: 'right',
-                        width: 'auto',
-                        delay: 4000,
-                        allow_dismiss: true,
-                        stackup_spacing: 10
-                    });
-                    $('#modalMultiUpload').modal('hide');
-                    $('#massUploadForm')[0].reset();
-                } else if (status === 'error') {
-                    $('#massUploadResult').modal('show');
-    
-                    // Clear existing table data
-                    $('#existContactEntriesResult tbody').empty();
-    
-                    // Loop through skipped rows and append to the table
-                    skippedRows.forEach((row, index) => {
-                        const rowData = row.data;
-                        const reason = row.reason;
-                        const html = `<tr>
-                            <td>${index + 1}</td>
-                            <td>${rowData[0]}</td>
-                            <td>${rowData[2]}</td>
-                            <td>${rowData[1]}</td>
-                            <td>${rowData[9]}</td>
-                            <td>${reason}</td>
-                        </tr>`;
-                        $('#existContactEntriesResult tbody').append(html);
-                    });
-    
-                    // initializeDataTable2('#existContactEntriesResult');
-                    $('#modalMultiUpload').modal('hide');
-                    $('#massUploadForm')[0].reset();
+                    if (result.status === 'success') {
+                        $.bootstrapGrowl(result.message, { type: 'success', delay: 4000 });
+                        $('#modalMultiUpload').modal('hide');
+                        $('#massUploadForm')[0].reset();
+                    } else {
+                        $('#massUploadResult').modal('show');
+                        $('#existContactEntriesResult tbody').empty();
+                        result.skippedRows.forEach((row, index) => {
+                            $('#existContactEntriesResult tbody').append(
+                                `<tr><td>${index + 1}</td>
+                                    <td>${row.data[0]}</td>
+                                    <td>${row.data[2]}</td>
+                                    <td>${row.data[1]}</td>
+                                    <td>${row.data[9]}</td>
+                                    <td>${row.reason}</td>
+                                </tr>`
+                            );
+                        });
+                        $('#modalMultiUpload').modal('hide');
+                        $('#massUploadForm')[0].reset();
+                    }
+                } catch (error) {
+                    console.error("Parsing Error:", error, response);
+                    alert("An error occurred: " + response);
                 }
-    
                 l.stop();
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX Error:', textStatus, errorThrown);
+                console.error("AJAX Error:", textStatus, errorThrown);
+                alert("AJAX Error: " + textStatus);
                 l.stop();
             }
         });

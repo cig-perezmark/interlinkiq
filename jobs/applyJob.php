@@ -1,4 +1,3 @@
-
 <form  method="post" class="form-horizontal" id="modalApplyJobForm">
             <input type="hidden" id="jobid" name="jobid" >
             <div class="form-body">

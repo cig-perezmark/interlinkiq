@@ -1,5 +1,4 @@
-
-                            <!-- BEGIN PROFILE SIDEBAR -->
+<!-- BEGIN PROFILE SIDEBAR -->
                             <div class="profile-sidebar">
                                 <!-- PORTLET MAIN -->
                                 <div class="portlet light profile-sidebar-portlet ">

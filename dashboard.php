@@ -298,7 +298,7 @@
                                 <div class="col-md-4" style="margin-top: 5px;">
                                     <div class="input-group">
                                         <input class="form-control" id="deliverable_search" type="text" placeholder="Search" />
-                                        <?php if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $switch_user_id == 464 OR $switch_user_id == 1622) { ?>
+                                        <?php if ($current_userID == 34 OR $current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $switch_user_id == 464 OR $switch_user_id == 1622) { ?>
                                             <div class="input-group-btn">
                                                 <button type="button" class="btn green dropdown-toggle" data-toggle="dropdown">Action
                                                     <i class="fa fa-angle-down"></i>
@@ -1503,8 +1503,14 @@
                                         </h4>
                                     </div>
                                     <div class="modal-body">
-                                        <?php
-                                            echo '<div class="form-group">
+                                        <?php 
+                                            echo '<div class="form-group '; echo $switch_user_id == 1649 ? '':'hide'; echo '">
+                                                <label class="col-md-3 control-label">CMMC Points</label>
+                                                <div class="col-md-8">
+                                                    <input type="number" min="0" class="form-control" name="points" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
                                                 <label class="col-md-3 control-label">Business Type</label>
                                                 <div class="col-md-8">';
 
@@ -2063,6 +2069,23 @@
                                     <div class="modal-footer">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         <button type="submit" class="btn green ladda-button" name="btnUpdate_Attached" id="btnUpdate_Attached" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="modalViewInt" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalViewInt">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Internal Details</h4>
+                                    </div>
+                                    <div class="modal-body"></div>
+                                    <div class="modal-footer">
+                                        <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                        <button type="submit" class="btn btn-success ladda-button" name="btnSaveInt_File" id="btnSaveInt_File" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                                     </div>
                                 </form>
                             </div>
@@ -3735,9 +3758,9 @@
 
         
         <?php if($switch_user_id == 464 OR $switch_user_id == 1457 OR $switch_user_id == 1649) { ?>
-            <script src="AnalyticsIQ/compliance_chart.js"></script>
+            
+            <script src='AnalyticsIQ/compliance_chart.js?i=<?php echo $switch_user_id; ?>'></script>
         <?php } ?>
-
 
 
         <script>
@@ -3912,6 +3935,7 @@
         </script>
         <script type="text/javascript">
             var current_userEmployerID = '<?php echo $current_userEmployerID; ?>';
+            var cmmcPoints = [];
             $(document).ready(function(){
                 var collabUser = '<?php echo $collabUser; ?>';
                 widget_summernote();
@@ -3955,16 +3979,17 @@
                         const filteredData = data.filter(item => validIds.has(item.id));
                         
                         
-                        
-                        
                         filteredData.sort((a, b) => a.text.localeCompare(b.text));
                         filteredData.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
                         createJSTree(filteredData);
                         
                         console.log(filteredData);
-                        
                         createJSTree(filteredData);
                         
+                        
+                        // const inputNodes = deductPoints(filteredData);
+                        const inputNodes = updatePoints(filteredData);
+                        cmmcPoints = inputNodes;
                         
                         
                         // alert(json);
@@ -4000,6 +4025,53 @@
                         },
                         plugins : ["types", "search" ]
                     });
+                }
+                // function deductPoints(nodes) {
+                //     const nodeMap = new Map();
+                //     nodes.forEach(node => nodeMap.set(node.id, { ...node, children: [], point: parseInt(node.point, 10) }));
+
+                //     nodes.forEach(node => {
+                //         if (node.parent !== '#') {
+                //             nodeMap.get(node.parent).children.push(nodeMap.get(node.id));
+                //         }
+                //     });
+
+                //     function calculateAndDeductPoints(node) {
+                //         let deductedPoints = node.point;
+                //         node.children.forEach(child => {
+                //             deductedPoints -= calculateAndDeductPoints(child);
+                //         });
+                //         return deductedPoints;
+                //     }
+
+                //     nodes.forEach(node => {
+                //         if (node.parent === '#') {
+                //             nodeMap.get(node.id).point = calculateAndDeductPoints(nodeMap.get(node.id));
+                //         }
+                //     });
+
+                //     return Array.from(nodeMap.values()).map(node => ({ id: node.id, parent: node.parent, point: node.point }));
+                // }
+                function updatePoints(data) {
+                    const updatedData = [...data];
+
+                    const getChildPoints = (id) => {
+                        const children = updatedData.filter(child => child.parent === id);
+                        const childPoints = children.map(child => {
+                            const totalChildPoints = getChildPoints(child.id);
+                            child.point = Math.max(0, child.point - totalChildPoints);
+                            return child.point;
+                        });
+                        return childPoints.reduce((acc, curr) => acc + curr, 0);
+                    };
+
+                    updatedData.forEach(item => {
+                        if (item.parent === '#') {
+                            item.point = Math.max(0, item.point - getChildPoints(item.id));
+                        }
+                    });
+
+                    return updatedData;
                 }
                 
                 // if (current_userEmployerID == 19) {
@@ -4110,6 +4182,7 @@
                             $('#item_'+id).collapse('show');
                             $(".make-switch").bootstrapSwitch();
                             $(".tabbable-tabdrop").tabdrop();
+                            findCMMC();
                         }
                     });
                 }
@@ -4200,6 +4273,7 @@
                             $('#item_'+id).collapse('show');
                             $(".make-switch").bootstrapSwitch();
                             fancyBoxes();
+                            findCMMC();
                         }
                     });
                 }
@@ -4215,6 +4289,18 @@
                     message: '<div class="loading-message loading-message-boxed bg-white"><img src="assets/global/img/loading-spinner-grey.gif" align=""><span>&nbsp;&nbsp;LOADING...</span></div>', 
                     css: { border: '0', width: 'auto' } 
                 });
+            }
+            function findCMMC() {
+                var elements = document.querySelectorAll('[id^="cmmc_"]');
+                elements.forEach(function(element) {
+                    var id = element.id;
+                    var integerPart = parseInt(id.split('_')[1]);
+                    pointValue = getPointValueById(integerPart.toString());
+                    $('#'+id).text(pointValue);
+                });
+            }
+            function getPointValueById(id) {
+                return cmmcPoints.find(node => node.id === id)?.point || 0;
             }
             
             // Approval Section
@@ -4908,7 +4994,7 @@
                     swal("Notification Sent!", "You wrote: " + inputValue, "success");
                 });
             }
-
+ 
             // File Section
             function btnAttached(id) {
                 $.ajax({
@@ -4917,6 +5003,7 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalAttached .modal-body").html(data);
+                        selectMulti();
                     }
                 });
             }
@@ -4972,6 +5059,7 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalAttachedEdit .modal-body").html(data);
+                        selectMulti();
                     }
                 });
             }
@@ -5045,6 +5133,72 @@
                     swal("Notification Sent!", "You wrote: " + inputValue, "success");
                 });
             }
+            function selStatus(val) {
+                if (val == 2) {
+                    $('.intComment').removeClass('hide');
+                    $('.intComment textarea').prop('required', true);
+
+                    $('.intVerify').addClass('hide');
+                    $('.intVerify select').prop('required', false);
+                } else if (val == 1) {
+                    $('.intComment').addClass('hide');
+                    $('.intComment textarea').prop('required', false);
+
+                    $('.intVerify').removeClass('hide');
+                    $('.intVerify select').prop('required', true);
+                } else {
+                    $('.intComment').addClass('hide');
+                    $('.intComment textarea').prop('required', false);
+
+                    $('.intVerify').addClass('hide');
+                    $('.intVerify select').prop('required', false);
+                }
+            }
+            function btnInt(id, type) {
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalInt_File="+id+"&type="+type,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalViewInt .modal-body").html(data);
+                        selectMulti();
+                    }
+                });
+            }
+            $(".modalViewInt").on('submit',(function(e) {
+                e.preventDefault();
+
+                formObj = $(this);
+                if (!formObj.validate().form()) return false;
+                    
+                var formData = new FormData(this);
+                formData.append('btnSaveInt_File',true);
+
+                var l = Ladda.create(document.querySelector('#btnSaveInt_File'));
+                l.start();
+ 
+                $.ajax({
+                    url: "function.php",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData:false,
+                    cache: false,
+                    success: function(response) {
+                        console.log(response);
+                        if ($.trim(response)) {
+                            msg = "Sucessfully Save!";
+                            var obj = jQuery.parseJSON(response);
+                            $('#modalViewInt').modal('hide');
+                        } else {
+                            msg = "Error!"
+                        }
+                        l.stop();
+ 
+                        bootstrapGrowl(msg);
+                    }
+                });
+            }));
 
             // Comment Section
             function btnComment(id) {
@@ -7017,9 +7171,12 @@
 
             // Download File
             function btnDownload(id) {
-                window.location.href = 'function.php?modalDownload='+id;
+                window.location.href = 'export/function.php?modalDownload='+id;
             }
-
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLCD='+id;
+            }
+            
             // File Upload and Compliance Checking
             function btnFileUploads(id, type) {
                 $.ajax({

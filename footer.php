@@ -1,4 +1,4 @@
-                    <!-- MODAL SERVICE -->
+<!-- MODAL SERVICE -->
                     <div class="modal fade" id="modalService" tabindex="-1" role="basic" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -87,6 +87,7 @@
                                     <div class="modal-body">
                                         <input class="form-control" type="hidden" name="ID" value="<?php echo $switch_user_id; ?>" />
                                         <input class="form-control" type="hidden" name="site" value="<?php echo $site; ?>" />
+										<input class="form-control" type="hidden" name="uri" value="<?php echo $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']; ?>" />
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Select Users</label>
                                             <div class="col-md-8">
@@ -109,11 +110,24 @@
                                                                     if (!empty($assigned_to_id)) {
                                                                         $output = json_decode($assigned_to_id, true);
                                                                         $exist = 0;
-                                                                        foreach ($output as $key => $value) {
-                                                                            if ($switch_user_id == $key) {
-                                                                                if (in_array($rowEmployeeID, $value['assigned_to_id'])) {
-                                                                                    $exist++;
-                                                                                    break;
+                                                                        
+																		if (isset($_GET['facility_id'])) {
+																			$f_ID = $_GET['facility_id'];
+																			foreach ($output as $key => $value) {
+																				if ($f_ID == $key) {
+																					if (in_array($rowEmployeeID, $value['assigned_to_id'])) {
+																						$exist++;
+																						break;
+																					}
+																				}
+																			}
+																		} else {
+                                                                            foreach ($output as $key => $value) {
+                                                                                if ($switch_user_id == $key) {
+                                                                                    if (in_array($rowEmployeeID, $value['assigned_to_id'])) {
+                                                                                        $exist++;
+                                                                                        break;
+                                                                                    }
                                                                                 }
                                                                             }
                                                                         }
@@ -337,8 +351,8 @@
                                                 <label for="task_account" class="col-md-3 control-label">Account</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control mt-multiselect" name="account" id="task_account">
-                                                        <?php
-                                                            $accounts = $conn->query("SELECT * FROM tbl_service_logs_accounts WHERE owner_pk = $switch_user_id order by name ASC");
+                                                        <?php 
+                                                            $accounts = $conn->query("SELECT * FROM tbl_service_logs_accounts WHERE deleted = 0 AND owner_pk = $switch_user_id order by name ASC");
                                                             if(mysqli_num_rows($accounts) > 0) {
                                                                 while($row = $accounts->fetch_assoc()) {
                                                                     echo "<option value='{$row['name']}'>{$row['name']}</option>";
@@ -368,7 +382,7 @@
                                     <div class="modal-footer">
                                         <?php if(!empty($_COOKIE['ID'])){ ?>
                                             <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                            <input type="submit" class="btn green" name="btnSave_SL" id="btnSave_SL" value="Submit" />
+                                            <button type="submit" class="btn btn-success ladda-button" name="btnSave_SL" id="btnSave_SL" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
                                         <?php }else{ ?>
                                             <i>Your Cookies has expired please relogin. Thank you</i>
                                         <?php } ?>
@@ -1755,6 +1769,9 @@
                         
                             var formData = new FormData(this);
                             formData.append('btnSave_SL', true);
+
+                            var l = Ladda.create(document.querySelector('#btnSave_SL'));
+                            l.start();
                         
                             $.ajax({
                                 url: "task_service_log/private/add_new_task.php",
@@ -1767,6 +1784,7 @@
                                     $('#modalnewSL').modal('hide');
                                     msg = "Sucessfully Save!";
                                     bootstrapGrowl(msg);
+                                    l.stop();
                                 }
                             });
                         }));

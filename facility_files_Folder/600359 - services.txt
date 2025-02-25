@@ -1,0 +1,86 @@
+ <table class="table table-bordered">
+                            <thead class="bg-primary">
+                                <tr>
+                                    <td>Services Name &nbsp;<i style="color:orange;font-size:12px;">(Subscription/Monthly)</i></td>
+                                     <td>Description</td>
+                                     <!--<td>Price</td>-->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PCQI - Project Support</td>
+                                     <td>Certification, Accreditattion and Regulatory services includes Compliance support 
+                                            Minimum Requirements:  Must have facility mangement tool and a library subcription.
+                                    </td>
+                                     <!--<td>$2400.00</td>-->
+                                </tr>
+                                <tr>
+                                    <td>PCQI - End to End</td>
+                                     <td>Certification, Accreditattion and Regulatory services includes Dedicated Compliance Coordinator = 2.
+                                     Minimum Requirements: Facility Management and Library.  Service Hours; Up to 100 Hours / Month
+                                    </td>
+                                     <!--<td>$3500.00</td>-->
+                                </tr>
+                                
+                                 <tr>
+                                    <td>Virtual General Administrator 1</td>
+                                     <td>Virtual General Administrator - Personnel to support your day-to-day business 
+                                    </td>
+                                     <!--<td>$2400.00</td>-->
+                                </tr>
+                                <tr>
+                                    <td>Virtual General Administrator 2</td>
+                                     <td>
+                                        Virtual General Administrator - Personnel to support your day-to-day business 
+                                    </td>
+                                     <!--<td>$3500.00</td>-->
+                                </tr>
+                                 <tr>
+                                    <td>Sourcing Services 1</td>
+                                     <td>
+                                        Sourcing Services for raw materials, ingredients, packaging materials,
+                                        equipment, potential customers, potential buyers, potential sellers, employees, candidates, consultants, etc.)
+                                    </td>
+                                     <!--<td>$2400.00</td>-->
+                                </tr>
+                                <tr>
+                                    <td>Sourcing Services 2</td>
+                                     <td>
+                                        Sourcing Services for raw materials, ingredients, packaging materials, equipment,
+                                        potential customers, potential buyers, potential sellers, employees, candidates, consultants, etc.)
+                                    </td>
+                                     <!--<td>$3500.00</td>-->
+                                </tr>
+                            </tbody>
+                            <thead class="bg-primary">
+                                <tr>
+                                    <td>Services Name &nbsp;<i style="color:orange;font-size:12px;">(Project-Based)</i></td>
+                                     <td>Description</td>
+                                     <!--<td>Price</td>-->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                   
+                                    <tr>
+                                        <td>PCQI Consultant - On Site Support - US Only</td>
+                                         <td>Provided by Consultare - 5 Days (US Only) Monday to Friday (Travel Days Monday and Friday) Hawaii, Alaska, Guam, Puerto Rico add $1,000
+                                        </td>
+                                         <!--<td>$4200.00</td>-->
+                                    </tr>
+                                    <tr>
+                                        <td>PCQI Consultant - On Site Support - US Only</td>
+                                         <td>Provided by Consultare - 6 Days (US Only) Monday to Friday (Travel Days Sunday and Friday) Hawaii, Alaska, Guam, Puerto Rico - Included
+                                        </td>
+                                         <!--<td>$5200.00</td>-->
+                                    </tr>
+                                     <tr>
+                                        <td>PCQI Consultant - On Site Support - International</td>
+                                         <td>Provided by Consultare - 5 Days International Monday to Friday (Travel Days Sunday and Friday) 
+                                        </td>
+                                         <!--<td>$7200.00</td>-->
+                                    </tr>
+                                    
+                                    
+                                    
+                                </tbody>
+                        </table>

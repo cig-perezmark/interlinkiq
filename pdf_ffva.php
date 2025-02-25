@@ -25,7 +25,7 @@
     $result = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE ID = $id" );
     if ( mysqli_num_rows($result) > 0 ) {
         $row = mysqli_fetch_array($result);
-        $likelihood_user_Id = $row["user_id"];
+        $likelihood_user_id = $row["user_id"];
         $likelihood_type = $row["type"];
         
         $likelihood_answer = $row["likelihood_answer"];
@@ -104,10 +104,10 @@
     $total_likelihood = 0;
     $result_likelihood = 'Undefined';
 
-    $sql_organic = 'WHERE organic = 0';
-    if ($likelihood_user_Id == 256) { $sql_organic = ''; }
+    $sql_organic = ' WHERE organic = 0 ';
+    if ($likelihood_user_id == 256) { $sql_organic = ''; }
     
-    $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+    $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic ORDER BY ordering" );
     if ( mysqli_num_rows($selectLikelihood) > 0 ) {
         while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
             $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
@@ -320,16 +320,30 @@
         if ($likelihood_type == 1) {
             $html .= '<tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Supplier Company Name</b></td>
-                <td colspan="2">'.htmlentities($row["company"]).'</td>
+                <td colspan="2">'.htmlentities($row["company"] ?? '').'</td>
+            </tr>
+            <tr style="background-color: #e1e5ec;">
+                <td colspan="2"><b>Website</b></td>
+                <td colspan="2"><a href="'.htmlentities($row["website"] ?? '').'" target="_blank">'.htmlentities($row["website"] ?? '').'</a></td>
+            </tr>
+            <tr style="background-color: #e1e5ec;">
+                <td colspan="2"><b>Headquarters</b></td>
+                <td colspan="2">'.htmlentities($row["headquarters"] ?? '').'</td>
+            </tr>
+            <tr style="background-color: #e1e5ec;">
+                <td style="text-align: center;"><b>Tel. No.</b></td>
+                <td style="text-align: center;"><b>Email</b></td>
+                <td style="text-align: center;">T: <a href="tel:'.htmlentities($row["telephone"] ?? '').'">'.htmlentities($row["telephone"] ?? '').'</a></td>
+                <td style="text-align: center;"><a href="mailto:'.htmlentities($row["email"] ?? '').'">'.htmlentities($row["email"] ?? '').'</a></td>
             </tr>
             <tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Contact Person</b></td>
-                <td colspan="2">'.htmlentities($row["person"]).'</td>
+                <td colspan="2">'.htmlentities($row["person"] ?? '').'</td>
             </tr>';
         } else if ($likelihood_type == 2) {
             $html .= '<tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Material Name</b></td>
-                <td colspan="2">'.htmlentities($row["product"]).'</td>
+                <td colspan="2">'.htmlentities($row["product"] ?? '').'</td>
             </tr>';
         }
         
@@ -450,7 +464,7 @@
             <td style="text-align: center;"><b>5 - Very Likely/Certain</b></td>
         </tr>
     </table>
-    
+     
     <p></p>
 
     <table cellpadding="7" cellspacing="0" border="1">
@@ -484,7 +498,7 @@
         </tr>';
         
         $index = 0;
-        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic" );
+        $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood $sql_organic ORDER BY ordering" );
         if ( mysqli_num_rows($selectLikelihood) > 0 ) {
             while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                 $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
@@ -497,6 +511,14 @@
                     $likelihood_fairly_likely = $rowLikelihood["fairly_likely"];
                     $likelihood_likely = $rowLikelihood["likely"];
                     $likelihood_very_likely = $rowLikelihood["very_likely"];
+
+                    if ($likelihood_user_id == 1211 AND $likelihood_ID == 7) {
+                        $likelihood_very_unlikely = 'Up to 5% of $375';
+                        $likelihood_unlikely = 'In between 5-100% of $375';
+                        $likelihood_fairly_likely = '$375';
+                        $likelihood_likely = 'More than $375';
+                        $likelihood_very_likely = 'More than 200% of $375';
+                    }
 
                     $ref_content = '';
                     $resultRef = mysqli_query( $conn,"SELECT * FROM tbl_ffva_reference WHERE type = 1 AND element = $likelihood_ID" );
@@ -515,7 +537,7 @@
                         <td style="text-align: center;">';
                             if ($likelihood_answer_arr[$index] == 0) { $html .= 'No'; } else { $html .= 'Yes'; }
                         $html .= '</td>
-                        <td>'.htmlspecialchars($likelihood_comment_arr[$index]).'</td>
+                        <td>'.html_entity_decode($likelihood_comment_arr[$index]).'</td>
                         <td>';
                             if ($likelihood_rate_arr[$index] == 1) {
                                 $html .= '<b>Very Unlikely</b><br><i>'.htmlspecialchars($likelihood_very_unlikely).'</i>';
@@ -554,7 +576,7 @@
                     <td style="text-align: center;">';
                         if ($likelihood_answer_other[$index] == 0) { $html .= 'No'; } else { $html .= 'Yes'; }
                     $html .= '</td>
-                    <td>'.$likelihood_comment_other[$index].'</td>
+                    <td>'.html_entity_decode($likelihood_comment_other[$index]).'</td>
                     <td>';
                         if ($likelihood_rate_other[$index] == 1) {
                             $html .= '<b>Very Unlikely</b>';
@@ -627,7 +649,7 @@
                     <td style="text-align: center;">';
                         if ($consequence_answer_arr[$index] == 0) { $html .= 'No'; } else { $html .= 'Yes'; }
                     $html .= '</td>
-                    <td>'.$consequence_comment_arr[$index].'</td>
+                    <td>'.html_entity_decode($consequence_comment_arr[$index]).'</td>
                     <td>';
                         if ($consequence_rate_arr[$index] == 1) {
                             $html .= '<b>Negligible</b><br><i>'.htmlentities($consequence_negligible).'</i>';
@@ -665,7 +687,7 @@
                     <td style="text-align: center;">';
                         if ($consequence_answer_other[$index] == 0) { $html .= 'No'; } else { $html .= 'Yes'; }
                     $html .= '</td>
-                    <td>'.$consequence_comment_other[$index].'</td>
+                    <td>'.html_entity_decode($consequence_comment_other[$index]).'</td>
                     <td>';
                         if ($consequence_rate_other[$index] == 1) {
                             $html .= '<b>Negligible</b>';
@@ -732,7 +754,10 @@
         if (!empty($row["prevention_other"])) {
             $prevention_other_arr = explode(', ', $row["prevention_other"]);
             foreach ($prevention_other_arr as $value) {
-                $html .= '<tr><td>'.$value.'</td></tr>';
+                $html .= '<tr>
+                    <td>✔</td>
+                    <td>'.$value.'</td>
+                </tr>';
             }
         }
     $html .= '</table>
@@ -766,7 +791,10 @@
         if (!empty($row["detection_other"])) {
             $detection_other_arr = explode(', ', $row["detection_other"]);
             foreach ($detection_other_arr as $value) {
-                $html .= '<tr><td>'.$value.'</td></tr>';
+                $html .= '<tr>
+                    <td>✔</td>
+                    <td>'.$value.'</td>
+                </tr>';
             }
         }
     $html .= '</table>
@@ -800,7 +828,10 @@
         if (!empty($row["mitigation_other"])) {
             $mitigation_other_arr = explode(', ', $row["mitigation_other"]);
             foreach ($mitigation_other_arr as $value) {
-                $html .= '<tr><td>'.$value.'</td></tr>';
+                $html .= '<tr>
+                    <td>✔</td>
+                    <td>'.$value.'</td>
+                </tr>';
             }
         }
     $html .= '</table>

@@ -655,6 +655,9 @@
                 $('#tableData').DataTable();
             });
 
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLA='+id;
+            }
             function btnDelete(id) {
                 swal({
                     title: "Are you sure?",

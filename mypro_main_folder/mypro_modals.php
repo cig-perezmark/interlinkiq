@@ -1,4 +1,4 @@
- <!--view project modal-->
+<!--view project modal-->
  <div class="modal fade bs-modal-lg" id="modalGetMyPro_update" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

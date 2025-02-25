@@ -475,9 +475,9 @@
                                                                 <label class="control-label">Bank Name</label>
                                                                 <select name="bankno" class="form-control" required>
                                                                     <option value="">--Please select--</option>
-                                                                    <?php 
+                                                                    <?php
                                                                         $employee_details = mysqli_query($payroll_connection,"SELECT accountname, accountno, bankno FROM payee WHERE payeeid = '$current_userEmployeeID' " );
-                                                                        $employee_details_row = mysqli_fetch_array($employee_details);
+                                                                        $employee_details_row = mysqli_fetch_array($employee_details); 
                                                                         $accountname = '';
                                                                         $accountno = '';
                                                                         if($employee_details_row){

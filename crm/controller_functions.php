@@ -3,7 +3,11 @@
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
     
-    require '../database.php';
+    require '../custom_db_connection.php';
+    
+    header('Content-Type: text/html; charset=UTF-8');
+    // header('Content-Type: application/json; charset=UTF-8');
+    ini_set('default_charset', 'UTF-8');
     
     $ouput = '';
     if (!empty($_COOKIE['switchAccount'])) {
@@ -1901,171 +1905,351 @@
         }
     }
     
-    if (isset($_POST['upload_multiple_contacts'])) {
-        $file = $_FILES['csvfile']['tmp_name'];
-        $batchSize = 1000;
-        $skippedRows = [];
-    
-        if (($handle = fopen($file, 'r')) !== false) {
-            $conn->begin_transaction();
-        
-            $header = fgetcsv($handle); // Read the header row
-        
-            $insertSQLBase = "INSERT INTO tbl_temp_crm (account_rep, account_name, account_phone, account_email, account_fax, account_product, account_address, account_state, account_country, account_zip, Account_Source, account_website, userID, enterprise_id) VALUES ";
-        
-            $binded_employee_id = $_COOKIE['ID'];
-            $binded_employeer_id = $conn->real_escape_string($user_id);
-        
-            $existingContacts = [];
-        
-            // Fetch existing emails and phone numbers from the database
-            $result = $conn->query("SELECT account_email, account_phone FROM tbl_temp_crm WHERE enterprise_id = '$binded_employeer_id'");
-            while ($row = $result->fetch_assoc()) {
-                $existingContacts[$row['account_email'] ?: ''] = true;
-                $existingContacts[$row['account_phone'] ?: ''] = true;
-            }
-        
-            $batchData = [];
-            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
-                $account_rep = 'InterlinkIQ';
-                $account_name = cleanInput($data[0]);
-                $account_phone = cleanInput($data[1]);
-                $account_email = cleanInput($data[2]);
-                $account_fax = cleanInput($data[3]);
-                $account_product = cleanInput($data[4]);
-                $account_address = cleanInput($data[5]);
-                $account_state = cleanInput($data[6]);
-                $account_zip = cleanInput($data[7]);
-                $account_country = cleanInput($data[8]);
-                $account_source = cleanInput($data[9]);
-                $account_website = cleanInput($data[10]);
-        
-                $checkKey = $account_email ?: $account_phone;
-        
-                // Skip if there's a duplicate email or phone
-                if (isset($existingContacts[$checkKey])) {
-                    $reason = 'Duplicate email or phone';
-                    $skippedRows[] = ['data' => $data, 'reason' => $reason];
-                    continue;
-                }
-        
-                // Add to the existingContacts to avoid further duplicates
-                $existingContacts[$checkKey] = true;
-        
-                // Add the row to the batch data for insertion
-                $batchData[] = [
-                    $account_rep,
-                    $account_name,
-                    $account_phone,
-                    $account_email,
-                    $account_fax,
-                    $account_product,
-                    $account_address,
-                    $account_state,
-                    $account_country,
-                    $account_zip,
-                    $account_source,
-                    $account_website,
-                    $binded_employee_id,
-                    $binded_employeer_id
-                ];
-        
-                // Insert in batches if the batch size is reached
-                if (count($batchData) >= $batchSize) {
-                    insertBatch($conn, $batchData, $insertSQLBase);
-                    $batchData = [];
-                }
-            }
-        
-            // Process remaining batch data
-            if (count($batchData) > 0) {
-                insertBatch($conn, $batchData, $insertSQLBase);
-            }
-        
-            // Additional process: Move records to another table and delete from the current table
-            try {
-                // Insert records from tbl_temp_crm to tbl_Customer_Relationship
-                $insertQuery = "
-                    INSERT INTO tbl_Customer_Relationship (account_name, account_phone, account_email, account_fax, account_product, account_address, account_state, account_zip, account_country, Account_Source, account_website, userID)
-                        SELECT 
-                            account_name, 
-                            account_phone, 
-                            account_email, 
-                            account_fax, 
-                            account_product, 
-                            account_address, 
-                            account_state, 
-                            account_zip, 
-                            account_country, 
-                            Account_Source, 
-                            account_website, 
-                            userID
-                        FROM tbl_temp_crm AS temp
-                        WHERE NOT EXISTS (
-                            SELECT 1
-                            FROM tbl_Customer_Relationship AS cust
-                            WHERE cust.account_email = temp.account_email 
-                              AND cust.enterprise_id = temp.enterprise_id
-                        );
-                ";
-                $conn->query($insertQuery);
-        
-                // Delete all records from tbl_temp_crm
-                $deleteQuery = "DELETE FROM tbl_temp_crm;";
-                $conn->query($deleteQuery);
-            } catch (Exception $e) {
-                $conn->rollback();
-                fclose($handle);
-                echo json_encode(['error' => 'Error during record transfer: ' . $e->getMessage()]);
-                exit;
-            }
-        
-            $conn->commit();
-            fclose($handle);
-        
-            echo json_encode([
-                'status' => count($skippedRows) > 0 ? 'error' : 'success',
-                'message' => count($skippedRows) > 0 ? 'Some entries failed to save.' : 'All entries added successfully.',
-                'skippedRows' => $skippedRows
-            ]);
-        } else {
-            echo json_encode(['error' => 'Error opening the CSV file']);
+//     if (isset($_POST['upload_multiple_contacts'])) {
+//     $file = $_FILES['csvfile']['tmp_name'];
+//     $batchSize = 1000;
+//     $skippedRows = [];
+
+//     if (($handle = fopen($file, 'r')) !== false) {
+//         // Set the charset for the database connection
+//         $conn->set_charset('utf8mb4');
+
+//         // Read the CSV header (first row)
+//         $header = fgetcsv($handle);
+
+//         // Initialize necessary variables
+//         $batchData = [];
+//         $existingContacts = [];
+//         $binded_employee_id = $_COOKIE['ID'];
+//         $binded_employeer_id = $conn->real_escape_string($user_id);
+
+//         // Fetch existing contacts from the database to check for duplicates
+//         $result = $conn->query("SELECT account_email, account_phone FROM crm_temp_table WHERE enterprise_id = '$binded_employeer_id'");
+//         while ($row = $result->fetch_assoc()) {
+//             $existingContacts[$row['account_email'] ?: ''] = true;
+//             $existingContacts[$row['account_phone'] ?: ''] = true;
+//         }
+
+//         // Process each row in the CSV
+//         while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+//             // Convert each CSV field to UTF-8 to handle special characters
+//             $data = array_map(function ($value) {
+//                 return mb_convert_encoding($value, 'UTF-8', 'auto');
+//             }, $data);
+
+//             // Extract and clean data from CSV
+//             $account_rep = 'InterlinkIQ';
+//             $account_name = $data[0];
+//             $account_phone = $data[1];
+//             $account_email = $data[2];
+//             $account_fax = $data[3];
+//             $account_product = $data[4];
+//             $account_address = $data[5];
+//             $account_state = $data[6];
+//             $account_zip = $data[7];
+//             $account_country = $data[8];
+//             $account_source = $data[9];
+//             $account_website = $data[10];
+
+//             // Check if the email or phone already exists to avoid duplicates
+//             $checkKey = $account_email ?: $account_phone;
+//             if (isset($existingContacts[$checkKey])) {
+//                 $reason = 'Duplicate email or phone';
+//                 $skippedRows[] = ['data' => $data, 'reason' => $reason];
+//                 continue;  // Skip duplicates
+//             }
+
+//             $existingContacts[$checkKey] = true;
+
+//             // Add row to the batch data
+//             $batchData[] = [
+//                 $account_rep,
+//                 $account_name,
+//                 $account_phone,
+//                 $account_email,
+//                 $account_fax,
+//                 $account_product,
+//                 $account_address,
+//                 $account_state,
+//                 $account_country,
+//                 $account_zip,
+//                 $account_source,
+//                 $account_website,
+//                 $binded_employee_id,
+//                 $binded_employeer_id
+//             ];
+
+//             // Insert batch when the batch size is reached
+//             if (count($batchData) >= $batchSize) {
+//                 insertBatch($conn, $batchData);
+//                 $batchData = [];  // Reset the batch
+//             }
+//         }
+
+//         // Insert any remaining rows after processing all CSV data
+//         if (count($batchData) > 0) {
+//             insertBatch($conn, $batchData);
+//         }
+
+//         // Transfer data from crm_temp_table to crm_clone_table while avoiding duplicates
+//         try {
+//             $insertQuery = "
+//                 INSERT INTO crm_clone_table (account_name, account_phone, account_email, account_fax, account_product, account_address, account_state, account_zip, account_country, Account_Source, account_website, userID)
+//                 SELECT 
+//                     account_name, 
+//                     account_phone, 
+//                     account_email, 
+//                     account_fax, 
+//                     account_product, 
+//                     account_address, 
+//                     account_state, 
+//                     account_zip, 
+//                     account_country, 
+//                     Account_Source, 
+//                     account_website, 
+//                     userID
+//                 FROM crm_temp_table AS temp
+//                 WHERE NOT EXISTS (
+//                     SELECT 1
+//                     FROM crm_clone_table AS cust
+//                     WHERE cust.account_email = temp.account_email 
+//                       AND cust.enterprise_id = temp.enterprise_id
+//                 );
+//             ";
+//             $conn->query($insertQuery);
+
+//             // Optionally delete from temp table after processing
+//             // $deleteQuery = "DELETE FROM crm_temp_table;";
+//             // $conn->query($deleteQuery);
+//         } catch (Exception $e) {
+//             $conn->rollback();  // Rollback on error
+//             fclose($handle);
+//             echo json_encode(['error' => 'Error during record transfer: ' . $e->getMessage()]);
+//             exit;
+//         }
+
+//         $conn->commit();  // Commit the transaction
+//         fclose($handle);
+
+//         // Return success message
+//         echo json_encode([
+//             'status' => count($skippedRows) > 0 ? 'error' : 'success',
+//             'message' => count($skippedRows) > 0 ? 'Some entries failed to save.' : 'All entries added successfully.',
+//             'skippedRows' => $skippedRows
+//         ]);
+//     } else {
+//         echo json_encode(['error' => 'Error opening the CSV file']);
+//     }
+// }
+
+// function insertBatch($conn, $batchData) {
+//     $insertSQLBase = "INSERT INTO crm_temp_table (account_rep, account_name, account_phone, account_email, account_fax, account_product, account_address, account_state, account_zip, account_country, account_source, account_website, userID, enterprise_id) VALUES ";
+
+//     $placeholders = [];
+//     $values = [];
+
+//     // Prepare placeholders for the batch insert
+//     foreach ($batchData as $row) {
+//         $placeholders[] = "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//         $values = array_merge($values, $row);
+//     }
+
+//     // Prepare and execute the batch insert
+//     $insertSQL = $insertSQLBase . implode(", ", $placeholders);
+//     $stmt = $conn->prepare($insertSQL);
+
+//     if (!$stmt) {
+//         $conn->rollback();  // Rollback if statement preparation fails
+//         die("Error preparing batch insert: " . $conn->error);
+//     }
+
+//     // Bind parameters as UTF-8 (string type for all fields)
+//     $stmt->bind_param(str_repeat("ssssssssssssis", count($batchData)), ...$values);
+
+//     if (!$stmt->execute()) {
+//         $conn->rollback();  // Rollback if execution fails
+//         die("Error executing batch insert: " . $stmt->error);
+//     }
+
+//     $stmt->close();
+// }
+
+if (isset($_POST['upload_multiple_contacts'])) {
+    $file = $_FILES['csvfile']['tmp_name'];
+    $batchSize = 1000;
+    $skippedRows = [];
+
+    // Open the file with 'UTF-8' encoding
+    ini_set('auto_detect_line_endings', true);
+
+    if (($handle = fopen($file, 'r')) !== false) {
+        // Set the charset for the database connection
+        $conn->set_charset('utf8mb4');
+
+        // Read the CSV header (first row)
+        $header = fgetcsv($handle);
+
+        // Initialize necessary variables
+        $batchData = [];
+        $existingContacts = [];
+        $binded_employee_id = $_COOKIE['ID'];
+        $binded_employeer_id = $conn->real_escape_string($user_id);
+
+        // Fetch existing contacts from the database to check for duplicates
+        $result = $conn->query("SELECT account_email, account_phone FROM crm_temp_table WHERE enterprise_id = '$binded_employeer_id'");
+        while ($row = $result->fetch_assoc()) {
+            $existingContacts[$row['account_email'] ?: ''] = true;
+            $existingContacts[$row['account_phone'] ?: ''] = true;
         }
+
+        // Process each row in the CSV
+        while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+            // Ensure each CSV field is interpreted as UTF-8
+            $data = array_map(function ($value) {
+                return mb_convert_encoding($value, 'UTF-8', 'auto');
+            }, $data);
+
+            // Extract and clean data from CSV
+            $account_rep = 'InterlinkIQ';
+            $account_name = htmlspecialchars($data[0], ENT_QUOTES, 'UTF-8');
+            $account_phone = htmlspecialchars($data[1], ENT_QUOTES, 'UTF-8');
+            $account_email = htmlspecialchars($data[2], ENT_QUOTES, 'UTF-8');
+            $account_fax = htmlspecialchars($data[3], ENT_QUOTES, 'UTF-8');
+            $account_product = htmlspecialchars($data[4], ENT_QUOTES, 'UTF-8');
+            $account_address = htmlspecialchars($data[5], ENT_QUOTES, 'UTF-8');
+            $account_state = htmlspecialchars($data[6], ENT_QUOTES, 'UTF-8');
+            $account_zip = htmlspecialchars($data[7], ENT_QUOTES, 'UTF-8');
+            $account_country = htmlspecialchars($data[8], ENT_QUOTES, 'UTF-8');
+            $account_source = htmlspecialchars($data[9], ENT_QUOTES, 'UTF-8');
+            $account_website = htmlspecialchars($data[10], ENT_QUOTES, 'UTF-8');
+
+            // Check if the email or phone already exists to avoid duplicates
+            $checkKey = $account_email ?: $account_phone;
+            if (isset($existingContacts[$checkKey])) {
+                $reason = 'Duplicate email or phone';
+                $skippedRows[] = ['data' => $data, 'reason' => $reason];
+                continue;  // Skip duplicates
+            }
+
+            $existingContacts[$checkKey] = true;
+
+            // Add row to the batch data
+            $batchData[] = [
+                $account_rep,
+                $account_name,
+                $account_phone,
+                $account_email,
+                $account_fax,
+                $account_product,
+                $account_address,
+                $account_state,
+                $account_zip,
+                $account_country,
+                $account_source,
+                $account_website,
+                $binded_employee_id,
+                $binded_employeer_id
+            ];
+
+            // Insert batch when the batch size is reached
+            if (count($batchData) >= $batchSize) {
+                insertBatch($conn, $batchData);
+                $batchData = [];  // Reset the batch
+            }
+        }
+
+        // Insert any remaining rows after processing all CSV data
+        if (count($batchData) > 0) {
+            insertBatch($conn, $batchData);
+        }
+
+        // Transfer data from crm_temp_table to crm_clone_table while avoiding duplicates
+        try {
+            $insertQuery = "
+                INSERT INTO tbl_Customer_Relationship (account_name, account_phone, account_email, account_fax, account_product, account_address, account_state, account_zip, account_country, Account_Source, account_website, userID)
+                SELECT 
+                    account_name, 
+                    account_phone, 
+                    account_email, 
+                    account_fax, 
+                    account_product, 
+                    account_address, 
+                    account_state, 
+                    account_zip, 
+                    account_country, 
+                    Account_Source, 
+                    account_website, 
+                    userID
+                FROM crm_temp_table AS temp
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM tbl_Customer_Relationship AS cust
+                    WHERE cust.account_email = temp.account_email 
+                      AND cust.enterprise_id = temp.enterprise_id
+                );
+            ";
+            $conn->query($insertQuery);
+
+            // Optionally delete from temp table after processing
+            $deleteQuery = "DELETE FROM crm_temp_table;";
+            $conn->query($deleteQuery);
+        } catch (Exception $e) {
+            $conn->rollback();  // Rollback on error
+            fclose($handle);
+            echo json_encode(['error' => 'Error during record transfer: ' . $e->getMessage()]);
+            exit;
+        }
+
+        $conn->commit();  // Commit the transaction
+        fclose($handle);
+
+        // Return success message
+        echo json_encode([
+            'status' => count($skippedRows) > 0 ? 'error' : 'success',
+            'message' => count($skippedRows) > 0 ? 'Some entries failed to save.' : 'All entries added successfully.',
+            'skippedRows' => $skippedRows
+        ]);
+    } else {
+        echo json_encode(['error' => 'Error opening the CSV file']);
+    }
+}
+
+function insertBatch($conn, $batchData) {
+    $insertSQLBase = "INSERT INTO crm_temp_table (account_rep, account_name, account_phone, account_email, account_fax, account_product, account_address, account_state, account_zip, account_country, account_source, account_website, userID, enterprise_id) VALUES ";
+
+    $placeholders = [];
+    $values = [];
+
+    // Prepare placeholders for the batch insert
+    foreach ($batchData as $row) {
+        $placeholders[] = "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $values = array_merge($values, $row);
     }
 
-    
-    /**
-     * Inserts batch data into the database.
-     */
-    function insertBatch($conn, $batchData, $insertSQLBase) {
-        $placeholders = [];
-        $values = [];
-    
-        foreach ($batchData as $row) {
-            $placeholders[] = "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $values = array_merge($values, $row);
-        }
-    
-        $insertSQL = $insertSQLBase . implode(", ", $placeholders);
-        $stmt = $conn->prepare($insertSQL);
-    
-        if (!$stmt) {
-            $conn->rollback(); // Rollback if statement preparation fails
-            die("Error preparing batch insert: " . $conn->error);
-        }
-    
-        $stmt->bind_param(str_repeat("ssssssssssssis", count($batchData)), ...$values);
-    
-        if (!$stmt->execute()) {
-            $conn->rollback(); // Rollback if execution fails
-            die("Error executing batch insert: " . $stmt->error);
-        }
-    
-        $stmt->close();
+    // Prepare and execute the batch insert
+    $insertSQL = $insertSQLBase . implode(", ", $placeholders);
+    $stmt = $conn->prepare($insertSQL);
+
+    if (!$stmt) {
+        $conn->rollback();  // Rollback if statement preparation fails
+        die("Error preparing batch insert: " . $conn->error);
     }
+
+    // Bind parameters as UTF-8 (string type for all fields)
+    $stmt->bind_param(str_repeat("ssssssssssssis", count($batchData)), ...$values);
+
+    if (!$stmt->execute()) {
+        $conn->rollback();  // Rollback if execution fails
+        die("Error executing batch insert: " . $stmt->error);
+    }
+
+    $stmt->close();
+}
+
+
     
     function cleanInput($data) {
-        return htmlspecialchars(trim($data));
+        return trim($data);
     }
 
     

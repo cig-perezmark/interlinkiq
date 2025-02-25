@@ -2666,5 +2666,3 @@ License: You must have a valid license purchased only from themeforest(the above
       document.cookie = 'user_company_id' + "=" + id + ";" + expires + ";path=/";
     }
 </script>
-                    
-                    

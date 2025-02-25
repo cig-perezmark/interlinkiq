@@ -1,4 +1,4 @@
-  <!--==================== FOOTER ====================-->
+<!--==================== FOOTER ====================-->
         <footer class="footer section" style=" background-color: var(--first-color-second);">
             <div class="footer__container  grid">
                 <div class="footer__content grid">

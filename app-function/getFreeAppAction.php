@@ -1,4 +1,3 @@
-
 <?php
 error_reporting(0);
 //action.php

@@ -1,3 +1,14 @@
+const url = document.currentScript.src;
+const switch_user_id = url.split('=')[1];
+console.log(switch_user_id);
+
+var compliance = "Compliance";
+var noncompliance = "Non-Compliance";
+if (switch_user_id == 1649) {
+    compliance = "Met";
+    noncompliance = "Not Met";
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     fetch('AnalyticsIQ/compliance_data.php')
         .then(response => response.json())
@@ -172,9 +183,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Failed to fetch compliance data. Please try again later.');
         });
 });
-
-
-
 
 //LEFT TO RIGHT ANALYTICS
 document.addEventListener('DOMContentLoaded', function() {
@@ -413,9 +421,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 });
 
-
-
-
 //COMPLIANCE AND NON COMPLIANCE ANALYTICS
 $.ajax({
     url: 'AnalyticsIQ/compliance_non_data.php',
@@ -448,11 +453,11 @@ $.ajax({
             if (data.compliantPercentage > 0 || data.nonCompliantPercentage > 0) {
                 chartData = [
                     {
-                        category: "Compliance",
+                        category: compliance,
                         value: data.compliantPercentage
                     },
                     {
-                        category: "Non-Compliance",
+                        category: noncompliance,
                         value: data.nonCompliantPercentage
                     }
                 ];
@@ -470,10 +475,10 @@ $.ajax({
 
             // Apply color to each slice explicitly
             series.slices.each(function(slice) {
-                if (slice.dataItem.dataContext.category === "Compliance") {
+                if (slice.dataItem.dataContext.category === compliance) {
                     slice.set("fill", am5.color(0x5CFF5C)); // Green color for compliance
                     slice.set("stroke", am5.color(0x5CFF5C));
-                } else if (slice.dataItem.dataContext.category === "Non-Compliance") {
+                } else if (slice.dataItem.dataContext.category === noncompliance) {
                     slice.set("fill", am5.color(0xFF0000)); // Red color for non-compliance
                     slice.set("stroke", am5.color(0xFF0000));
                 } else {

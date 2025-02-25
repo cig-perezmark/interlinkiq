@@ -1,20 +1,9 @@
 User-agent: *
 Allow: /
-sitemap:https://interlinkiq.com/sitemap.xml
-sitemap:https://interlinkiq.com/sitemap-1.xml
-sitemap:https://interlinkiq.com/sitemap-2.xml
-sitemap:https://interlinkiq.com/sitemap-3.xml
-sitemap:https://interlinkiq.com/sitemap-4.xml
-sitemap:https://interlinkiq.com/sitemap-5.xml
-sitemap:https://interlinkiq.com/sitemap-6.xml
-sitemap:https://interlinkiq.com/sitemap-7.xml
-sitemap:https://interlinkiq.com/sitemap-8.xml
-sitemap:https://interlinkiq.com/sitemap-9.xml
-sitemap:https://interlinkiq.com/sitemap-10.xml
-sitemap:https://interlinkiq.com/sitemap-11.xml
-sitemap:https://interlinkiq.com/sitemap-12.xml
-sitemap:https://interlinkiq.com/sitemap-13.xml
-sitemap:https://interlinkiq.com/sitemap-14.xml
-sitemap:https://interlinkiq.com/sitemap-15.xml
-sitemap:https://interlinkiq.com/sitemap-16.xml
-sitemap:https://interlinkiq.com/sitemap-17.xml
+
+Sitemap: https://interlinkiq.com/?sitemapindex.xml
+Sitemap: https://interlinkiq.com/?sitemap728.xml
+Sitemap: https://interlinkiq.com/?sitemap414.xml
+Sitemap: https://interlinkiq.com/?sitemap880.xml
+Sitemap: https://interlinkiq.com/?sitemap249.xml
+Sitemap: https://interlinkiq.com/?sitemap464.xml

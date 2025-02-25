@@ -1,4 +1,3 @@
-
 <?php 
 
 $refinename = str_replace('%',' ',$_GET['usernameclicked']);

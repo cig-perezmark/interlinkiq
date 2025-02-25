@@ -617,7 +617,7 @@ if (isset($_POST['key'])) {
                 Services_History_PK,
                 CASE WHEN CIA_progress = 2 THEN 1 ELSE 0 END AS completed
                 FROM tbl_MyProject_Services_Childs_action_Items
-                WHERE CAI_Assign_to = $current_userEmployeeID
+                -- WHERE CAI_Assign_to = $current_userEmployeeID
             ) AS i
             ON h.History_id = i.Services_History_PK
             

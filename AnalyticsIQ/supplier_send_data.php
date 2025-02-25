@@ -79,4 +79,3 @@ $mysqli->close();
 header('Content-Type: application/json');
 echo json_encode(['donutData' => $donutData, 'lineData' => $lineData]);
 ?>
-

@@ -1,4 +1,4 @@
- <div class="top-menu">
+<div class="top-menu">
     <ul class="nav navbar-nav pull-right">
         <li class="dropdown dropdown-user">
             <a href="/" class="dropdown-toggle">

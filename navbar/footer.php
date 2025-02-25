@@ -1,4 +1,4 @@
-  <!-- BEGIN FOOTER -->
+<!-- BEGIN FOOTER -->
         <!-- END FOOTER -->
         
         <!-- BEGIN CORE PLUGINS -->

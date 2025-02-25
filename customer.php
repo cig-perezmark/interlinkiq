@@ -399,7 +399,7 @@
                                                                     )
                                                                 ) AS d2
                                                                 ON s2.ID = d2.supplier_ID
-                                                                AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
+    															AND FIND_IN_SET(REPLACE(d2.name, ', ', ' / '), REPLACE(REPLACE(s2.document_other, ', ', ' / '), ' | ',','  )  ) > 0
                                                                 WHERE s2.page = 2
                                                                 AND s2.is_deleted = 0 
                                                                 AND s2.user_id = $switch_user_id
@@ -565,6 +565,7 @@
         													            $address_arr = implode(", ", $address_array);
 																	} else if (str_contains($address_arr, ',')) {
     													                if (count(explode(", ", $address_arr)) == 5) {
+    													                	$address_arr = explode(", ", $address_arr);
             													            array_push($address_array, htmlentities($address_arr[1]));
             													            array_push($address_array, htmlentities($address_arr[2]));
             													            array_push($address_array, htmlentities($address_arr[3]));
@@ -578,7 +579,8 @@
 
                                                                 echo '<tr id="tr_'.$s_ID.'">';
                                                                     // <td class="hide">'.$s_ID.'</td>
-                                                                    echo '<td>'.htmlentities($s_name ?? '').'</td>
+                                                                    // echo '<td>'.htmlentities($s_name ?? '').'</td>
+                                                                    echo '<td>'.htmlentities($s_name,ENT_COMPAT,'UTF-8',false).'</td>
                                                                     <td>'.htmlentities($c_name ?? '').'</td>
                                                                     <td>'.$material.'</td>
                                                                     <td>'.$address_arr.'</td>
@@ -734,7 +736,7 @@
 															        )
 															    ) AS d2
 															    ON s2.ID = d2.supplier_ID
-															    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
+    															AND FIND_IN_SET(REPLACE(d2.name, ', ', ' / '), REPLACE(REPLACE(s2.document_other, ', ', ' / '), ' | ',','  )  ) > 0
 															    WHERE s2.page = 1
 															    AND s2.is_deleted = 0 
 															    AND s2.email = '".$current_userEmail."'
@@ -894,6 +896,7 @@
         													            $address_arr = implode(", ", $address_array);
 																	} else if (str_contains($address_arr, ',')) {
     													                if (count(explode(", ", $address_arr)) == 5) {
+    													                	$address_arr = explode(", ", $address_arr); 
             													            array_push($address_array, htmlentities($address_arr[1]));
             													            array_push($address_array, htmlentities($address_arr[2]));
             													            array_push($address_array, htmlentities($address_arr[3]));
@@ -907,7 +910,8 @@
 
                                                                 echo '<tr id="tr_'.$s_ID.'">';
                                                                     // <td class="hide">'.$s_ID.'</td>
-                                                                    echo '<td>'.htmlentities($s_name ?? '').'</td>
+                                                                    // echo '<td>'.htmlentities($s_name ?? '').'</td>
+                                                                    echo '<td>'.htmlentities($s_name,ENT_COMPAT,'UTF-8',false).'</td>
                                                                     <td>'.htmlentities($c_name ?? '').'</td>
                                                                     <td>'.$material.'</td>
                                                                     <td>'.$address_arr.'</td>
@@ -2445,6 +2449,9 @@
                 });
             });
 
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLSC='+id;
+            }
             function btnReset(view) {
                 $('#'+view+' form')[0].reset();
             }

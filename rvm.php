@@ -591,6 +591,9 @@
                 fancyBoxes();
             });
 
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLRVM='+id;
+            }
             function btnEdit(id) {
                 $.ajax({
                     type: "GET",

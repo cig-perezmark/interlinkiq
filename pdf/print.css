@@ -1,0 +1,10 @@
+@media print {
+  /* All your print styles go here */
+  body{
+    display: block !important;
+  }
+  
+    body, table, td, tr, th {
+        print-color-adjust: exact !important; 
+    }
+}

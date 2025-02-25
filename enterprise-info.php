@@ -5576,6 +5576,9 @@
 				    $('.Categories_other').addClass('hide');
 				}
 			}
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLE='+id;
+            }
                      
             // addFacility_registration
             $(".addFacility_registration").on('submit',(function(e) {

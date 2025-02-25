@@ -391,7 +391,13 @@
                                                             <th rowspan="2">Vendor Name</th>
                                                             <th rowspan="2">Category</th>
                                                             <th rowspan="2">Materials/Services</th>
-    														<th rowspan="2">Specification File</th>
+														
+    														<?php
+    															if($switch_user_id != 1211 AND $switch_user_id != 1684) {
+    																echo '<th rowspan="2">Specification File</th>';
+    															}
+    														?>
+    														
     														<th rowspan="2">Address</th>
     														<th rowspan="2" class="text-center">Country</th>
                                                             <th colspan="2" class="text-center">Contact Details</th>
@@ -406,6 +412,64 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
+    														$sql_custom = '';
+    														$sql_custom_union = '';
+    														if($switch_user_id == 1211 OR $switch_user_id == 1684) { $sql_custom = ' GROUP BY s_ID '; }
+    														if($switch_user_id != 1211) {
+    														    $sql_custom_union = " 
+    															    UNION ALL
+    															    
+    															    SELECT
+    															    s2.ID AS s_ID,
+    															    s2.vendor_code AS s_vendor_code,
+    															    s2.name AS s_name,
+    															    s2.reviewed_due AS s_reviewed_due,
+    															    s2.status AS s_status,
+    															    s2.material AS s_material,
+    															    s2.service AS s_service,
+    															    s2.address AS s_address,
+    															    s2.category AS s_category,
+    															    s2.contact AS s_contact,
+    															    s2.document_other AS s_document,
+    															    d2.ID AS d_ID,
+    															    d2.type AS d_type,
+    															    d2.name AS d_name,
+    															    d2.file AS d_file,
+    															    d2.file_due AS d_file_due,
+    															    CASE 
+    															        WHEN 
+    															            LENGTH(d2.file) > 0 
+    															            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
+    															            AND d2.reviewed_by > 0
+    															            AND d2.approved_by > 0
+    															        THEN 1 
+    															        ELSE 0 
+    															    END AS d_status,
+    															    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
+    
+    															    FROM tbl_supplier AS s2
+    
+    															    LEFT JOIN (
+    															        SELECT
+    															        * 
+    															        FROM tbl_supplier_document 
+    															        WHERE type = 1
+    															        AND ID IN (
+    															            SELECT
+    															            MAX(ID)
+    															            FROM tbl_supplier_document
+    															            WHERE type = 1
+    															            GROUP BY name, supplier_id
+    															        )
+    															    ) AS d2
+    															    ON s2.ID = d2.supplier_ID
+    															    AND FIND_IN_SET(REPLACE(d2.name, ', ', ' / '), REPLACE(REPLACE(s2.document_other, ', ', ' / '), ' | ',','  )  ) > 0
+    															    WHERE s2.page = 1 
+    															    AND s2.is_deleted = 0 
+    															    AND s2.user_id = $switch_user_id
+                                                                    AND s2.facility_switch = $facility_switch_user_id
+    														    ";   
+    														}
     														$result = mysqli_query( $conn,"
     														    WITH RECURSIVE cte (s_ID, s_vendor_code, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
     															(
@@ -458,58 +522,8 @@
     															    AND s1.is_deleted = 0 
     															    AND s1.user_id = $switch_user_id
                                                                     AND s1.facility_switch = $facility_switch_user_id
-    															    
-    															    UNION ALL
-    															    
-    															    SELECT
-    															    s2.ID AS s_ID,
-    															    s2.vendor_code AS s_vendor_code,
-    															    s2.name AS s_name,
-    															    s2.reviewed_due AS s_reviewed_due,
-    															    s2.status AS s_status,
-    															    s2.material AS s_material,
-    															    s2.service AS s_service,
-    															    s2.address AS s_address,
-    															    s2.category AS s_category,
-    															    s2.contact AS s_contact,
-    															    s2.document_other AS s_document,
-    															    d2.ID AS d_ID,
-    															    d2.type AS d_type,
-    															    d2.name AS d_name,
-    															    d2.file AS d_file,
-    															    d2.file_due AS d_file_due,
-    															    CASE 
-    															        WHEN 
-    															            LENGTH(d2.file) > 0 
-    															            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
-    															            AND d2.reviewed_by > 0
-    															            AND d2.approved_by > 0
-    															        THEN 1 
-    															        ELSE 0 
-    															    END AS d_status,
-    															    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
-    
-    															    FROM tbl_supplier AS s2
-    
-    															    LEFT JOIN (
-    															        SELECT
-    															        * 
-    															        FROM tbl_supplier_document 
-    															        WHERE type = 1
-    															        AND ID IN (
-    															            SELECT
-    															            MAX(ID)
-    															            FROM tbl_supplier_document
-    															            WHERE type = 1
-    															            GROUP BY name, supplier_id
-    															        )
-    															    ) AS d2
-    															    ON s2.ID = d2.supplier_ID
-    															    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
-    															    WHERE s2.page = 1 
-    															    AND s2.is_deleted = 0 
-    															    AND s2.user_id = $switch_user_id
-                                                                    AND s2.facility_switch = $facility_switch_user_id
+                                                                    
+                                                                    $sql_custom_union
     															)
     															SELECT
     															m.ID AS m_ID,
@@ -602,6 +616,8 @@
     															) AS m
     
     															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0
+
+															    $sql_custom
     														" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
@@ -655,10 +671,16 @@
     																		$material = implode(', ', $material_result);
     																	}
     																} else {
-    																	$material = $row["s_material"];
     																	
-    																	if (!empty($row["m_material_name"])) {
-    																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.htmlentities($row["m_material_name"] ?? '').'</a>';
+    																	$material = $row["s_material"];
+    																	if($switch_user_id == 1211 OR $switch_user_id == 1684) {
+    																		if (!empty($row["s_material"])) {
+    																			$material = '<a href="#modalListMaterial" data-toggle="modal" class="btn btn-link" onclick="btnList_Material('.$row["s_ID"].')">View</a>';
+    																		}
+    																	} else{
+    																		if (!empty($row["m_material_name"])) {
+    																		    $material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.htmlentities($row["m_material_name"] ?? '').'</a>';
+    																		}
     																	}
     
     																	if (!empty($row["m_spec_file"])) {
@@ -697,6 +719,7 @@
             													            $address_arr = implode(", ", $address_array);
 																		} else if (str_contains($address_arr, ',')) {
     													                    if (count(explode(", ", $address_arr)) == 5) {
+    													                	    $address_arr = explode(", ", $address_arr);
                 													            array_push($address_array, htmlentities($address_arr[1]));
                 													            array_push($address_array, htmlentities($address_arr[2]));
                 													            array_push($address_array, htmlentities($address_arr[3]));
@@ -712,9 +735,13 @@
     																	<td>'.htmlentities($s_vendor_code ?? '').'</td>
     																	<td>'.$s_name.'</td>
     																	<td>'.htmlentities($c_name ?? '').'</td>
-    																	<td>'.$material.'</td>
-    																	<td class="text-center">'.$material_spec.'</td>
-    																	<td>'.$address_arr.'</td>
+    																	<td class="text-center">'.$material.'</td>';
+
+    																	if($switch_user_id != 1211 AND $switch_user_id != 1684) {
+    																		echo '<td class="text-center">'.$material_spec.'</td>';
+    																	}
+    																	
+    																	echo '<td>'.$address_arr.'</td>
     																	<td class="text-center">'.$address_arr_country.'</td>
     																	<td>'.htmlentities($cn_name ?? '').'</td>
     																	<td class="text-center">
@@ -756,7 +783,13 @@
                                                         <th rowspan="2">Vendor Name</th>
                                                         <th rowspan="2">Category</th>
                                                         <th rowspan="2">Materials/Services</th>
-														<th rowspan="2">Specification File</th>
+														
+														<?php
+															if($switch_user_id != 1211 AND $switch_user_id != 1684) {
+																echo '<th rowspan="2">Specification File</th>';
+															}
+														?>
+														
                                                         <th rowspan="2">Address</th>
 														<th rowspan="2" class="text-center">Country</th>
                                                         <th colspan="2" class="text-center">Contact Details</th>
@@ -771,6 +804,63 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
+														$sql_custom = '';
+														$sql_custom_union = '';
+														if($switch_user_id == 1211 OR $switch_user_id == 1684) { $sql_custom = ' GROUP BY s_ID '; }
+														if($switch_user_id != 1211) {
+														    $sql_custom_union = " 
+															    UNION ALL
+															    
+															    SELECT
+															    s2.ID AS s_ID,
+															    s2.name AS s_name,
+															    s2.reviewed_due AS s_reviewed_due,
+															    s2.status AS s_status,
+															    s2.material AS s_material,
+															    s2.service AS s_service,
+															    s2.address AS s_address,
+															    s2.category AS s_category,
+															    s2.contact AS s_contact,
+															    s2.document_other AS s_document,
+															    d2.ID AS d_ID,
+															    d2.type AS d_type,
+															    d2.name AS d_name,
+															    d2.file AS d_file,
+															    d2.file_due AS d_file_due,
+															    CASE 
+															        WHEN 
+															            LENGTH(d2.file) > 0 
+															            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
+															            AND d2.reviewed_by > 0
+															            AND d2.approved_by > 0
+															        THEN 1 
+															        ELSE 0 
+															    END AS d_status,
+															    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
+
+															    FROM tbl_supplier AS s2
+
+															    LEFT JOIN (
+															        SELECT
+															        * 
+															        FROM tbl_supplier_document 
+															        WHERE type = 1
+															        AND ID IN (
+															            SELECT
+															            MAX(ID)
+															            FROM tbl_supplier_document
+															            WHERE type = 1
+															            GROUP BY name, supplier_id
+															        )
+															    ) AS d2
+															    ON s2.ID = d2.supplier_ID
+    															AND FIND_IN_SET(REPLACE(d2.name, ', ', ' / '), REPLACE(REPLACE(s2.document_other, ', ', ' / '), ' | ',','  )  ) > 0
+															    WHERE s2.page = 2
+															    AND s2.is_deleted = 0 
+                                                                AND s2.facility_switch = $facility_switch_user_id
+															    AND s2.email = '".$current_userEmail."'
+														    ";
+														}
 														$result = mysqli_query( $conn,"
 														    WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
 															(
@@ -823,56 +913,7 @@
                                                                 AND s1.facility_switch = $facility_switch_user_id
 															    AND s1.email = '".$current_userEmail."'
 															    
-															    UNION ALL
-															    
-															    SELECT
-															    s2.ID AS s_ID,
-															    s2.name AS s_name,
-															    s2.reviewed_due AS s_reviewed_due,
-															    s2.status AS s_status,
-															    s2.material AS s_material,
-															    s2.service AS s_service,
-															    s2.address AS s_address,
-															    s2.category AS s_category,
-															    s2.contact AS s_contact,
-															    s2.document_other AS s_document,
-															    d2.ID AS d_ID,
-															    d2.type AS d_type,
-															    d2.name AS d_name,
-															    d2.file AS d_file,
-															    d2.file_due AS d_file_due,
-															    CASE 
-															        WHEN 
-															            LENGTH(d2.file) > 0 
-															            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
-															            AND d2.reviewed_by > 0
-															            AND d2.approved_by > 0
-															        THEN 1 
-															        ELSE 0 
-															    END AS d_status,
-															    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
-
-															    FROM tbl_supplier AS s2
-
-															    LEFT JOIN (
-															        SELECT
-															        * 
-															        FROM tbl_supplier_document 
-															        WHERE type = 1
-															        AND ID IN (
-															            SELECT
-															            MAX(ID)
-															            FROM tbl_supplier_document
-															            WHERE type = 1
-															            GROUP BY name, supplier_id
-															        )
-															    ) AS d2
-															    ON s2.ID = d2.supplier_ID
-															    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
-															    WHERE s2.page = 2
-															    AND s2.is_deleted = 0 
-                                                                AND s2.facility_switch = $facility_switch_user_id
-															    AND s2.email = '".$current_userEmail."'
+															    $sql_custom_union
 															)
 															SELECT
 															m.ID AS m_ID,
@@ -960,7 +1001,9 @@
 															) AS m
 
 															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0
-														" );
+
+															$sql_custom
+														" ); 
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
@@ -1019,9 +1062,14 @@
 																	}
 																} else {
 																	$material = $row["s_material"];
-																	
-																	if (!empty($row["m_material_name"])) {
-																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.htmlentities($row["m_material_name"] ?? '').'</a>';
+																	if($switch_user_id == 1211 OR $switch_user_id == 1684) {
+																		if (!empty($row["s_material"])) {
+																			$material = '<a href="#modalListMaterial" data-toggle="modal" class="btn btn-link" onclick="btnList_Material('.$row["s_ID"].')">View</a>';
+																		}
+																	} else{
+																		if (!empty($row["m_material_name"])) {
+																		    $material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.htmlentities($row["m_material_name"] ?? '').'</a>';
+																		}
 																	}
 
 																	if (!empty($row["m_spec_file"])) {
@@ -1053,6 +1101,7 @@
         													            $address_arr = implode(", ", $address_array);
 																	} else if (str_contains($address_arr, ',')) {
     													                if (count(explode(", ", $address_arr)) == 5) {
+    													                	$address_arr = explode(", ", $address_arr);
             													            array_push($address_array, htmlentities($address_arr[1]));
             													            array_push($address_array, htmlentities($address_arr[2]));
             													            array_push($address_array, htmlentities($address_arr[3]));
@@ -1067,9 +1116,13 @@
 																echo '<tr id="tr_'.$s_ID.'">
 																	<td>'.htmlentities($s_name ?? '').'</td>
 																	<td>'.htmlentities($c_name ?? '').'</td>
-																	<td>'.$material.'</td>
-																	<td class="text-center">'.$material_spec.'</td>
-                                                                    <td>'.$address_arr.'</td>
+																	<td class="text-center">'.$material.'</td>';
+
+																	if($switch_user_id != 1211 AND $switch_user_id != 1684) {
+																		echo '<td class="text-center">'.$material_spec.'</td>';
+																	}
+																	
+																	echo '<td>'.$address_arr.'</td>
                                                                     <td class="text-center">'.$address_arr_country.'</td>
 																	<td>'.htmlentities($cn_name ?? '').'</td>
 																	<td class="text-center">
@@ -1170,7 +1223,7 @@
 
 														GROUP BY c.ID
 													" );
-													if ($switch_user_id == 1211) {
+													if ($switch_user_id == 1211 OR $switch_user_id == 1684) {
     													$selectCategory = mysqli_query( $conn,"
     													    SELECT 
     														m.category AS c_ID,
@@ -1261,7 +1314,7 @@
 															WHERE m.user_id = $switch_user_id
                                                             AND m.facility_switch = $facility_switch_user_id
 														" );
-													    if ($switch_user_id == 1211) {
+													    if ($switch_user_id == 1211 OR $switch_user_id == 1684) {
     														$result = mysqli_query( $conn,"
     														    SELECT 
     															m.ID AS m_ID,
@@ -2311,12 +2364,15 @@
                                                             <?php
                                                                 
                                                                 $sql_supplier = '';
-																if ($switch_user_id == 1649 OR $current_client == 16) { $sql_supplier = 'client = 16 AND '; }
+																$checked = '';
+																$tblOther = 0;
+																if ($switch_user_id == 1649 OR $current_client == 16) { $sql_supplier .= ' client = 16 AND '; }
+                        										if ($switch_user_id == 1211) { $checked = 'CHECKED'; $tblOther = 1; $sql_supplier .= ' required = 1 AND '; }
 																$selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE $sql_supplier organic = 0 ORDER BY name" );
                                                                 if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                                                                     while($row = mysqli_fetch_array($selectRequirement2)) {
                                                                         echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
-                                                                            <input type="checkbox" value="'.$row["ID"].'" name="document[]"  onchange="checked_Requirement(this, 1, 0, 0)" />
+                                                                            <input type="checkbox" value="'.$row["ID"].'" name="document[]"  onchange="checked_Requirement(this, 1, 0, 0)" '.$checked.' />
                                                                             <span></span>
                                                                         </label>';
                                                                     }
@@ -2328,7 +2384,7 @@
                                                             <div class="input-group">
                                                                 <input type="text" class="form-control" name="inputRequirementOther" id="inputRequirementOther_1" placeholder="Specify">
                                                                 <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="btnNew_Requirement(1)">Add</button>
+                                                                    <button class="btn btn-success" type="button" onclick="btnNew_Requirement(1, <?php echo $tblOther; ?>)">Add</button>
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -2345,9 +2401,122 @@
                                                                         <th style="width: 165px;" class="text-center">Compliance</th>
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody></tbody>
+                                                                <tbody>
+																	
+																	<?php
+																		if ($switch_user_id == 1211) {
+																			$selectRequirement2Table = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE $sql_supplier organic = 0 ORDER BY name" );
+																			if ( mysqli_num_rows($selectRequirement2Table) > 0 ) {
+																				while($rowTable = mysqli_fetch_array($selectRequirement2Table)) {
+																					$req_id = $rowTable["ID"];
+	                    															$req_name = htmlentities($rowTable["name"] ?? '');
+
+																					echo '<tr class="tr_'.$req_id.'">
+													                                    <td rowspan="2">
+													                                        <input type="hidden" class="form-control" name="document_name[]" value="'.$req_id.'" required />
+													                                        <b>'.$req_name.'</b>
+													                                    </td>
+													                                    <td class="text-center">
+													                                    	<select class="form-control hide" name="document_filetype[]" onchange="changeType(this)" required>
+												                                                <option value="0">Select option</option>
+												                                                <option value="1">Manual Upload</option>
+												                                                <option value="2">Youtube URL</option>
+												                                                <option value="3">Google Drive URL</option>
+												                                                <option value="4">Sharepoint URL</option>
+												                                            </select>
+												                                            <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
+												                                            <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
+												                                            <p style="margin: 0;"><button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>
+													                                    </td>
+													                                    <td>
+													                                    	<input type="text" class="form-control document_filename" name="document_filename[]" placeholder="Document Name" />
+													                                    </td>
+													                                    <td class="text-center">
+													                                        <div class="input-group">
+													                                            <input type="text" class="form-control daterange daterange_empty" name="document_daterange[]" value="" />
+													                                            <span class="input-group-btn">
+													                                                <button class="btn default date-range-toggle" type="button" onclick="widget_date_clears(this)">
+													                                                    <i class="fa fa-close"></i>
+													                                                </button>
+													                                            </span>
+													                                        </div>
+													                                        <input type="date" class="form-control hide" name="document_date[]" value="" />
+													                                        <input type="date" class="form-control hide" name="document_due[]" value="" />
+													                                    </td>
+													                                    <td rowspan="2" class="text-center '; echo $current_client == 0 ? '':'hide'; echo '">
+													                                        <input type="file" class="form-control hide" name="document_template[]" />';
+
+													                                        $selectTemplate = mysqli_query( $conn,"SELECT * FROM tbl_supplier_template WHERE user_id = $user_id AND requirement_id = $req_id" );
+													                                        if ( mysqli_num_rows($selectTemplate) > 0 ) {
+													                                            $rowTemplate = mysqli_fetch_array($selectTemplate);
+													                                            $temp_ID = $rowTemplate["ID"];
+													                                            $temp_file = $rowTemplate["file"];
+
+													                                            $type = 'iframe';
+													                                            $target = '';
+													                                            $filetype = $rowTemplate["filetype"];
+													                                            $datafancybox = 'data-fancybox';
+													                                            if ($filetype == 1) {
+													                                                $fileExtension = fileExtension($temp_file);
+													                                                $src = $fileExtension['src'];
+													                                                $embed = $fileExtension['embed'];
+													                                                $type = $fileExtension['type'];
+													                                                $file_extension = $fileExtension['file_extension'];
+													                                                $url = $base_url.'uploads/supplier/';
+
+													                                                $temp_file = $src.$url.rawurlencode($temp_file).$embed;
+													                                            } else if ($filetype == 3) {
+													                                                $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+													                                            } else if ($filetype == 4) {
+													                                                $file_extension = 'fa-strikethrough';
+													                                                $target = '_blank';
+													                                                $datafancybox = '';
+													                                            }
+
+													                                            echo '<p style="margin: 0;">
+													                                                <a href="'.$temp_file.'" data-src="'.$temp_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+													                                                <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', '.$temp_ID.', 2)">Upload</a>
+													                                            </p>';
+													                                        } else {
+													                                            echo '<a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', 0, 2)">Upload</a>';
+													                                        }
+
+													                                    echo '</td>
+													                                    <td rowspan="2" class="text-center">0%</td>
+													                                </tr>
+													                                <tr class="tr_'.$req_id.'">
+													                                    <td colspan="3">
+													                                    	<input type="text" class="form-control" name="document_comment[]" placeholder="Comment" />
+													                                    </td>
+													                                </tr>';
+																				}
+																			}
+																		}
+																	?>
+																</tbody>
                                                             </table>
                                                         </div>
+
+														<?php 
+															if ($switch_user_id == 1211) {
+																echo '<div class="table-scrollable">
+																	<table class="table table-bordered table-hover" id="tableData_Requirement_Other_1">
+																		<thead class="bg-blue-ebonyclay bg-font-blue-ebonyclay">
+																			<tr>
+																				<th style="width: 300px;">Other Requirements</th>
+																				<th style="width: 165px;" class="text-center">Document</th>
+																				<th>File Name</th>
+																				<th style="width: 250px;" class="text-center">Document Validity Period</th>
+																				<th style="width: 165px;" class="text-center '; echo $current_client == 0 ? '':'hide'; echo '">Template</th>
+																				<th style="width: 165px;" class="text-center">Compliance</th>
+																			</tr>
+																		</thead>
+																		<tbody>
+																		</tbody>
+																	</table>
+																</div>';
+															}
+														?>
                                                     </div>
                                                     <div class="tab-pane" id="tabMaterials_1">
                                                         <?php
@@ -2785,6 +2954,20 @@
                             </div>
                         </div>
 
+						<div class="modal fade" data-backdrop="static" data-keyboard="false" id="modalListMaterial" tabindex="-1" role="basic" aria-hidden="true">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+										<h4 class="modal-title">Material Details</h4>
+									</div>
+									<div class="modal-body"></div>
+									<div class="modal-footer">
+										<input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+									</div>
+								</div>
+							</div>
+						</div>
                         <div class="modal fade" id="modalNewMaterial" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
@@ -3128,6 +3311,7 @@
 
         <script type="text/javascript">
             var current_client = '<?php echo $_COOKIE['client']; ?>';
+            var switch_user_id = '<?php echo $switch_user_id; ?>';
             $(document).ready(function(){
 		        var site = '<?php echo $site; ?>';
                 // Emjay script starts here
@@ -3204,7 +3388,7 @@
                 if(window.location.href.indexOf('#new') != -1) {
                     $('#modalNew').modal('show');
                 }
-                $('.tableData_Report, #tableData_req').DataTable({
+                $('#tableData_req').DataTable({
 			        dom: 'lBfrtip',
 			        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
                     buttons: [
@@ -3346,6 +3530,7 @@
 
                 widget_tagInput();
                 widget_formRepeater();
+				widget_dates_1();
 				widget_date_audit();
 				$('.selectpicker').selectpicker();
 				changeFrequency(2);
@@ -3427,8 +3612,13 @@
 	            });
             });
 
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLSC='+id; 
+            }
             function btnReset(view) {
                 $('#'+view+' form')[0].reset();
+				widget_dates_1();
+				widget_date_audit();
             }
             function btnClose(view) {
                 $('#'+view+' .modal-body').html('');
@@ -3655,7 +3845,7 @@
                     // });
                 //     swal("Done!", "This item has been deleted.", "success");
                 // });
-            }
+            } 
             function btnReport(id) {
                 $("#modalReport .modal-body table tbody").html('');
                 $.ajax({
@@ -3663,7 +3853,39 @@
                     url: "function.php?modalView_Customer_Report="+id,
                     dataType: "html",
                     success: function(data){
+                        $('.tableData_Report').DataTable().destroy();
                         $("#modalReport .modal-body table tbody").html(data);
+                        $('.tableData_Report').DataTable({
+					        dom: 'lBfrtip',
+					        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+					        buttons: [
+					            {
+					                extend: 'print',
+					                exportOptions: {
+					                    columns: ':visible'
+					                }
+					            },
+					            {
+					                extend: 'pdf',
+					                exportOptions: {
+					                    columns: ':visible'
+					                }
+					            },
+					            {
+					                extend: 'csv',
+					                exportOptions: {
+					                    columns: ':visible'
+					                }
+					            },
+					            {
+					                extend: 'excel',
+					                exportOptions: {
+					                    columns: ':visible'
+					                }
+					            },
+					            'colvis'
+					        ]
+					    });
                     }
                 });
             }
@@ -3780,7 +4002,27 @@
                 }();
                 jQuery(document).ready(function(){FormRepeater.init()});
             }
+			function widget_dates_1() {
+				$('#tableData_Requirement_1 tbody .daterange').daterangepicker({
+					ranges: {
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
+					},
+					"autoApply": true,
+					"showDropdowns": true,
+					"linkedCalendars": false,
+					"alwaysShowCalendars": true,
+					"drops": "auto",
+					"opens": "left"
+				}, function(start, end, label) {
+					console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+				});
+				$('#tableData_Requirement_1 tbody .daterange_empty').val('');
+			}
             function widget_dates() {
+				var switch_user_id = '<?php echo $switch_user_id; ?>';
+				
                 $('#tableData_Requirement_2 tbody .daterange').daterangepicker({
                     ranges: {
                         'Today': [moment(), moment()],
@@ -3797,6 +4039,25 @@
                     console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
                 });
                 $('#tableData_Requirement_2 tbody .daterange_empty').val('');
+
+				if (switch_user_id == 1211) {
+					$('#tableData_Requirement_Other_2 tbody .daterange').daterangepicker({
+						ranges: {
+	                        'Today': [moment(), moment()],
+	                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+	                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
+						},
+						"autoApply": true,
+						"showDropdowns": true,
+						"linkedCalendars": false,
+						"alwaysShowCalendars": true,
+						"drops": "auto",
+						"opens": "left"
+					}, function(start, end, label) {
+						console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+					});
+					$('#tableData_Requirement_Other_2 tbody .daterange_empty').val('');
+				}
             }
             function widget_date(id, modal) {
                 $('#tableData_Requirement_'+modal+' tbody .tr_'+id+' .daterange').daterangepicker({
@@ -3815,22 +4076,40 @@
                     console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
                 });
             }
-            function widget_date_other(id, modal) {
-                $('#tableData_Requirement_'+modal+' tbody .tr_other_'+id+' .daterange').daterangepicker({
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
-                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
-                    },
-                    "autoApply": true,
-                    "showDropdowns": true,
-                    "linkedCalendars": false,
-                    "alwaysShowCalendars": true,
-                    "drops": "auto",
-                    "opens": "left"
-                }, function(start, end, label) {
-                    console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-                });
+            function widget_date_other(id, modal, other) {
+				if (other == 1) {
+					$('#tableData_Requirement_Other_'+modal+' tbody .tr_other_'+id+' .daterange').daterangepicker({
+						ranges: {
+	                        'Today': [moment(), moment()],
+	                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+	                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
+						},
+						"autoApply": true,
+						"showDropdowns": true,
+						"linkedCalendars": false,
+						"alwaysShowCalendars": true,
+						"drops": "auto",
+						"opens": "left"
+					}, function(start, end, label) {
+						console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+					});
+				} else {
+					$('#tableData_Requirement_'+modal+' tbody .tr_other_'+id+' .daterange').daterangepicker({
+						ranges: {
+	                        'Today': [moment(), moment()],
+	                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+	                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
+						},
+						"autoApply": true,
+						"showDropdowns": true,
+						"linkedCalendars": false,
+						"alwaysShowCalendars": true,
+						"drops": "auto",
+						"opens": "left"
+					}, function(start, end, label) {
+						console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+					});
+				}
             }
             function widget_date_clears(e) {
                 $(e).parent().prev('.daterange').val('');
@@ -3838,8 +4117,12 @@
             function widget_date_clear(id, modal) {
                 $('#tableData_Requirement_'+modal+' tbody .tr_'+id+' .daterange').val('');
             }
-            function widget_date_clear_other(id, modal) {
-                $('#tableData_Requirement_'+modal+' tbody .tr_other_'+id+' .daterange').val('');
+            function widget_date_clear_other(id, modal, other) {
+				if (other == 1) {
+					$('#tableData_Requirement_Other_'+modal+' tbody .tr_other_'+id+' .daterange').val('');
+				} else {
+					$('#tableData_Requirement_'+modal+' tbody .tr_other_'+id+' .daterange').val('');
+				}
             }
             function widget_dates_material(e) {
                 $('#modal'+e+'Material .daterange').daterangepicker({
@@ -4069,7 +4352,11 @@
                                 html += '<td>'+obj.supplier_name+'</td>';
                                 html += '<td>'+obj.category+'</td>';
                                 html += '<td>'+obj.material+'</td>';
-                                html += '<td></td>';
+
+								if (switch_user_id != 1211 && switch_user_id != 1684) {
+									html += '<td></td>';
+								}
+								
                                 html += '<td>'+obj.address+'</td>';
                                 html += '<td class="text-center">'+obj.country+'</td>';
                                 html += '<td>'+obj.contact_name+'</td>';
@@ -4158,7 +4445,11 @@
                             html += '<td>'+obj.supplier_name+'</td>';
                             html += '<td>'+obj.category+'</td>';
                             html += '<td>'+obj.material+'</td>';
-                            html += '<td></td>';
+
+							if (switch_user_id != 1211 && switch_user_id != 1684) {
+								html += '<td></td>';
+							}
+							
                             html += '<td>'+obj.address+'</td>';
                             html += '<td class="text-center">'+obj.country+'</td>';
                             html += '<td>'+obj.contact_name+'</td>';
@@ -4384,7 +4675,7 @@
 
 
             // Requirement Section
-            function btnNew_Requirement(modal) {
+            function btnNew_Requirement(modal, other) {
                 var requirement_other = $("#inputRequirementOther_"+modal).val();
                 var switch_user_id = '<?php echo $switch_user_id; ?>';
 
@@ -4392,7 +4683,7 @@
                     let x = Math.floor((Math.random() * 100) + 1);
 
                     var html = '<label class="mt-checkbox mt-checkbox-outline"> '+requirement_other;
-                        html += '<input type="checkbox" value="'+requirement_other+'" name="document_other[]" data-id="'+x+'" onchange="checked_RequirementOther(this, '+modal+')" checked />';
+                        html += '<input type="checkbox" value="'+requirement_other+'" name="document_other[]" data-id="'+x+'" onchange="checked_RequirementOther(this, '+modal+', '+other+')" checked />';
                         html += '<span></span>';
                     html += '</label>';
                     $('#tabDocuments_'+modal+' .mt-checkbox-list').append(html);
@@ -4462,9 +4753,14 @@
                         data += '</td>';
                     data += '</tr>';
 
-                    $('#tableData_Requirement_'+modal+' tbody').append(data);
-                    widget_date_other(x, modal);
-                    widget_date_clear_other(x, modal);
+					if (other == 1) {
+						$('#tableData_Requirement_Other_'+modal+' tbody').append(data);
+					} else {
+						$('#tableData_Requirement_'+modal+' tbody').append(data);
+					}
+
+					widget_date_other(x, modal, other);
+					widget_date_clear_other(x, modal, other);
                 }
             }
             function checked_Requirement(id, modal, main, checked) {
@@ -4484,7 +4780,7 @@
                      $('#tableData_Requirement_'+modal+' tbody .tr_'+id.value).remove();
                 }
             }
-            function checked_RequirementOther(id, modal) {
+            function checked_RequirementOther(id, modal, other) {
                 var x = $(id).attr("data-id");
                 var switch_user_id = '<?php echo $switch_user_id; ?>';
 
@@ -4554,13 +4850,22 @@
                         data += '</td>';
                     data += '</tr>';
 
-                    $('#tableData_Requirement_'+modal+' tbody').append(data);
-                    widget_date_other(x, modal);
-                    widget_date_clear_other(x, modal);
+					if (other == 1) {
+						$('#tableData_Requirement_Other_'+modal+' tbody').append(data);
+					} else {
+						$('#tableData_Requirement_'+modal+' tbody').append(data);
+					}
+					
+					widget_date_other(x, modal, other);
+					widget_date_clear_other(x, modal, other);
                 } else {
-                    $('#tableData_Requirement_'+modal+' tbody .tr_other_'+x).remove();
+					if (other == 1) {
+						$('#tableData_Requirement_Other_'+modal+' tbody .tr_other_'+x).remove();
+					} else {
+						$('#tableData_Requirement_'+modal+' tbody .tr_other_'+x).remove();
+					}
                 }
-            }
+            } 
 
 			// Regulatory
 			function btnNew_Regulatory(id, modal) {
@@ -5024,6 +5329,16 @@
                     swal("Done!", "This item has been removed. Make sure to click SAVE to save the changes.", "success");
                 });
             }
+			function btnList_Material(id) {
+				$.ajax({    
+					type: "GET",
+					url: "function.php?modalList_Supplier_Material="+id,
+					dataType: "html",                  
+					success: function(data){
+						$("#modalListMaterial .modal-body").html(data);
+					}
+				});
+			}
 
             // Service Section
             $(".modalSave_Service").on('submit',(function(e) {

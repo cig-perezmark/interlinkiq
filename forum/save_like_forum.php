@@ -27,4 +27,3 @@ $sql ="INSERT INTO `questions_like`(`question_id`, `liked_by`) VALUES ('$questio
     
 
 ?>
-

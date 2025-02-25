@@ -29,8 +29,39 @@
     
     // print_r($ses->sendEmail($m));
 
+    function php_mailer($to, $user, $subject, $body) {
 
-	function php_mailer($to, $user, $subject, $body) {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->SMTPDebug  = SMTP::DEBUG_SERVER;
+            $mail->Host       = 'interlinkiq.com';
+            $mail->CharSet    = 'UTF-8';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'info@interlinkiq.com';
+            $mail->Password   = ';r8SfB*Ow!xj';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = 465;
+            $mail->clearAddresses();
+            $mail->setFrom('services@interlinkiq.com', 'Interlink IQ');
+            $mail->addAddress($to, $user);
+            // $mail->addReplyTo('services@interlinkiq.com', 'Interlink IQ');
+            // $mail->addReplyTo($to, $user);
+            // $mail->addCC('services@interlinkiq.com');
+
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = $body;
+
+            $mail->send();
+            $msg = 'Message has been sent';
+        } catch (Exception $e) {
+            $msg = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+
+        return $msg;
+    }
+	function php_mailer_old($to, $user, $subject, $body) {
 		$mail = new PHPMailer(true);
         try {
             $mail->isSMTP(true);

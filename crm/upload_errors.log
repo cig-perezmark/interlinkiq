@@ -1,0 +1,10 @@
+[30-Jan-2025 18:16:34 UTC] Insert Batch Error: Batch Insert Execution Failed: Incorrect string value: '\xE9es (1...' for column 'account_product' at row 3
+[30-Jan-2025 18:16:34 UTC] Upload Error: Batch Insert Execution Failed: Incorrect string value: '\xE9es (1...' for column 'account_product' at row 3
+[30-Jan-2025 18:19:38 UTC] Insert Batch Error: Batch Insert Execution Failed: Incorrect string value: '\xE9es (1...' for column 'account_product' at row 3
+[30-Jan-2025 18:19:38 UTC] Upload Error: Batch Insert Execution Failed: Incorrect string value: '\xE9es (1...' for column 'account_product' at row 3
+[30-Jan-2025 18:22:52 UTC] Insert Batch Error: Batch Insert Execution Failed: Incorrect string value: '\xE9-L\xE9ve...' for column 'account_address' at row 3
+[30-Jan-2025 18:22:52 UTC] Upload Error: Batch Insert Execution Failed: Incorrect string value: '\xE9-L\xE9ve...' for column 'account_address' at row 3
+[30-Jan-2025 18:40:25 UTC] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home/brandons/public_html/crm/controller_functions.php:1930
+Stack trace:
+#0 {main}
+  thrown in /home/brandons/public_html/crm/controller_functions.php on line 1930

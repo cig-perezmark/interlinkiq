@@ -60,6 +60,11 @@ function getVASummary() {
     $showAllClause = "AND user_id = $portal_user";
     if(
         // $portal_user == 1105 || 
+        $portal_user == 55 || // chris
+        $portal_user == 42 || // vrigz
+        $portal_user == 317 || // alyn
+        $portal_user == 178 || // zai
+        $portal_user == 43 || // greeg
         $portal_user == 54 || // ms tin
         $portal_user == 387 || // ms girl
         $portal_user == 34 // hr

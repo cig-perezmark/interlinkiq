@@ -1,4 +1,4 @@
-  <?php 
+<?php 
 if(!isset($_COOKIE['ID'])){
     echo '<script>
             if (document.referrer == "") {

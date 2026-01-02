@@ -33,7 +33,7 @@
 	    margin-top: -10px;
 	    right: 1em;
 	    display: inline-block;
-	    content: "✓";
+	    content: "./";
 	    color: inherit;
 	}
 	.table {
@@ -118,6 +118,10 @@
         font-weight:;
         border:solid #fff 2px;
         padding: 0px 10px;
+    }
+    
+    .dt-button-collection {
+        z-index: 99999 !important;
     }
 </style>
 
@@ -204,16 +208,18 @@
                                                     echo $percentage;
 
                                                 echo '%)</td>
-                                                <td>
+                                                <td> 
                                                     <a style="color:#fff;" href="#modalAddActionItem" data-toggle="modal" class="btn green btn-outline btn-xs" onclick="btnNew_File('.$rowMain['m_ID'].')">Add New</a>
                                                     <a style="color:#fff;" class="btn blue btn-outline btn-xs btnViewMyPro_update" data-toggle="modal" href="#modalGetMyPro_update" data-id="'.$rowMain["m_ID"].'">View</a>
+                                                    <a class="btn btn-outline yellow btn-xs view-logs" data-id="'.$rowMain["m_ID"].'">Logs</a>
+                                                    <a style="color:#fff;" class="btn red btn-outline btn-xs remove-mypro" data-key="'.$rowMain["m_ID"].'" data-table="tbl_MyProject_Services" data-id="'.$rowMain["m_ID"].'">Delete</a>
                                                 </td>
                                             </tr>
                                     </table>
                                     </div>
                                 </div>
                             </div>';
-                        }
+                        } 
                     ?>
                     <div class="row">
                         <div class="form-group">
@@ -263,6 +269,24 @@
         </div>
         <!-- / START MODAL AREA -->
             <?php include "mypro_function/mypro_modals.php"; ?>
+            
+        <div class="modal fade bs-modal-lg" id="logsModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                     <form action="mypro_function/function.php" method="POST" enctype="multipart/form-data">
+                        <div class="modal-header bg-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Project Details</h4>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                         </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    
         <!-- / END MODAL AREA -->
                          
         </div>
@@ -284,7 +308,10 @@
         <script src="assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
         <script src="assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
-        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script> 
+        <!-- Remove Mypro and log history script -->
+        <script src="mypro_function/script.js" type="text/javascript"></script>
+        
         <script type="text/javascript">
             // print
             $(document).on('click', '#pdf_report_notstarted', function(){
@@ -1617,6 +1644,10 @@
                 });
             }));
             
+            function selDate(table) {
+                $('#'+table).DataTable().draw();
+            }
+            
             // Not Started
             function filter_notstarted(id) {
                 $.ajax({
@@ -1630,34 +1661,74 @@
             			$('#tableData22').DataTable({
             		        dom: 'lBfrtip',
             		        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-            		        buttons: [
-            		            {
-            		                extend: 'print',
+                            buttons: [
+                                {
+                                    extend: 'print',
+                                    title: function() {
+                                        return $('#exportTitleNS').val() || 'Not Started';
+                                    },
+                                    filename: 'MyPro - Not Started - ' + new Date().toISOString().split('T')[0],
+                                    messageTop: function () {
+                                        return 'Printed on: ' + new Date().toLocaleString();
+                                    },
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
-            		            {
-            		                extend: 'pdf',
+                                },
+                                {
+                                    extend: 'pdf',
+                                    title: function() {
+                                        return $('#exportTitleNS').val() || 'Not Started';
+                                    },
+                                    filename: 'MyPro - Not Started - ' + new Date().toISOString().split('T')[0],
+                                    messageTop: 'Generated on: ' + new Date().toLocaleDateString(),
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
-            		            {
-            		                extend: 'csv',
+                                },
+                                {
+                                    extend: 'csv',
+                                    title: function() {
+                                        return $('#exportTitleNS').val() || 'Not Started';
+                                    },
+                                    filename: 'MyPro - Not Started - ' + new Date().toISOString().split('T')[0],
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
-            		            {
-            		                extend: 'excel',
+                                },
+                                {
+                                    extend: 'excel',
+                                    title: function() {
+                                        return $('#exportTitleNS').val() || 'Not Started';
+                                    },
+                                    filename: 'MyPro - Not Started - ' + new Date().toISOString().split('T')[0],
+                                    messageTop: 'Generated on: ' + new Date().toLocaleDateString(),
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
+                                },
             		            'colvis'
-            		        ]
+                            ]
             		    });
+            		    
+            		    $('.date-picker').datepicker();
+            		    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                            const min = $('#minDateNS').val();
+                            const max = $('#maxDateNS').val();
+                            const date = data[5]; // Adjust index to match your "Due Date" column
+                        
+                            if (!min && !max) return true;
+                        
+                            const rowDate = new Date(date);
+                            const minDate = min ? new Date(min) : null;
+                            const maxDate = max ? new Date(max) : null;
+                        
+                            if ((minDate === null || rowDate >= minDate) &&
+                                (maxDate === null || rowDate <= maxDate)) {
+                                return true;
+                            }
+                            return false;
+                        });
                     }
                 });
             }
@@ -1676,33 +1747,73 @@
             		        dom: 'lBfrtip',
             		        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
             		        buttons: [
-            		            {
-            		                extend: 'print',
+                                {
+                                    extend: 'print',
+                                    title: function() {
+                                        return $('#exportTitleP').val() || 'Inprogress';
+                                    },
+                                    filename: 'MyPro - Inprogress - ' + new Date().toISOString().split('T')[0],
+                                    messageTop: function () {
+                                        return 'Printed on: ' + new Date().toLocaleString();
+                                    },
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
-            		            {
-            		                extend: 'pdf',
+                                },
+                                {
+                                    extend: 'pdf',
+                                    title: function() {
+                                        return $('#exportTitleP').val() || 'Inprogress';
+                                    },
+                                    filename: 'MyPro - Inprogress - ' + new Date().toISOString().split('T')[0],
+                                    messageTop: 'Generated on: ' + new Date().toLocaleDateString(),
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
-            		            {
-            		                extend: 'csv',
+                                },
+                                {
+                                    extend: 'csv',
+                                    title: function() {
+                                        return $('#exportTitleP').val() || 'Inprogress';
+                                    },
+                                    filename: 'MyPro - Inprogress - ' + new Date().toISOString().split('T')[0],
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
-            		            {
-            		                extend: 'excel',
+                                },
+                                {
+                                    extend: 'excel',
+                                    title: function() {
+                                        return $('#exportTitleP').val() || 'Inprogress';
+                                    },
+                                    filename: 'MyPro - Inprogress - ' + new Date().toISOString().split('T')[0],
+                                    messageTop: 'Generated on: ' + new Date().toLocaleDateString(),
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
+                                },
             		            'colvis'
             		        ]
             		    });
+            		    
+            		    $('.date-picker').datepicker();
+            		    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                            const min = $('#minDateP').val();
+                            const max = $('#maxDateP').val();
+                            const date = data[5]; // Adjust index to match your "Due Date" column
+                        
+                            if (!min && !max) return true;
+                        
+                            const rowDate = new Date(date);
+                            const minDate = min ? new Date(min) : null;
+                            const maxDate = max ? new Date(max) : null;
+                        
+                            if ((minDate === null || rowDate >= minDate) &&
+                                (maxDate === null || rowDate <= maxDate)) {
+                                return true;
+                            }
+                            return false;
+                        });
                     }
                 });
             }
@@ -1722,35 +1833,81 @@
             		        dom: 'lBfrtip',
             		        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
             		        buttons: [
-            		            {
-            		                extend: 'print',
+                                {
+                                    extend: 'print',
+                                    title: function() {
+                                        return $('#exportTitleC').val() || 'Completed';
+                                    },
+                                    filename: 'MyPro - Completed - ' + new Date().toISOString().split('T')[0],
+                                    messageTop: function () {
+                                        return 'Printed on: ' + new Date().toLocaleString();
+                                    },
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
-            		            {
-            		                extend: 'pdf',
+                                },
+                                {
+                                    extend: 'pdf',
+                                    title: function() {
+                                        return $('#exportTitleC').val() || 'Completed';
+                                    },
+                                    filename: 'MyPro - Completed - ' + new Date().toISOString().split('T')[0],
+                                    messageTop: 'Generated on: ' + new Date().toLocaleDateString(),
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
-            		            {
-            		                extend: 'csv',
+                                },
+                                {
+                                    extend: 'csv',
+                                    title: function() {
+                                        return $('#exportTitleC').val() || 'Completed';
+                                    },
+                                    filename: 'MyPro - Completed - ' + new Date().toISOString().split('T')[0],
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
-            		            {
-            		                extend: 'excel',
+                                },
+                                {
+                                    extend: 'excel',
+                                    title: function() {
+                                        return $('#exportTitleC').val() || 'Completed';
+                                    },
+                                    filename: 'MyPro - Completed - ' + new Date().toISOString().split('T')[0],
+                                    messageTop: 'Generated on: ' + new Date().toLocaleDateString(),
             		                exportOptions: {
             		                    columns: ':visible'
             		                }
-            		            },
+                                },
             		            'colvis'
             		        ]
             		    });
+            		    
+            		    $('.date-picker').datepicker();
+            		    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                            const min = $('#minDateC').val();
+                            const max = $('#maxDateC').val();
+                            const date = data[5]; // Adjust index to match your "Due Date" column
+                        
+                            if (!min && !max) return true;
+                        
+                            const rowDate = new Date(date);
+                            const minDate = min ? new Date(min) : null;
+                            const maxDate = max ? new Date(max) : null;
+                        
+                            if ((minDate === null || rowDate >= minDate) &&
+                                (maxDate === null || rowDate <= maxDate)) {
+                                return true;
+                            }
+                            return false;
+                        });
                     }
                 });
+            }
+
+            // Helper function to convert dd/mm/yyyy to yyyy-mm-dd
+            function convertToISO(dateStr) {
+                const [day, month, year] = dateStr.split('/');
+                return `${year}-${month}-${day}`;
             }
             
             // File Section

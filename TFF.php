@@ -263,15 +263,15 @@
             <div class="alert_msg text-white"></div>
             <input class="form-control" type="hidden" name="ID" value="<?php echo !empty($invited_id) ? $invited_id : ''; ?>" />
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" required />
+              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" value="<?php echo $predefine === true ? $data_first_name : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
               <label for="first_name">First Name</label>
             </div>
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" required />
+              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo $predefine === true ? $data_last_name : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
               <label for="last_name">Last Name</label>
             </div>
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="email" name="email" placeholder="Email" required />
+              <input type="text" class="form-control" id="email" name="email" placeholder="Email" value="<?php echo $predefine === true ? $data_email : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> placeholder="Email" required />
               <label for="email">Email</label>
             </div>
             <div class="form-floating mb-3">
@@ -371,7 +371,7 @@
 
               prev_link = document.referrer;
               if (prev_link.indexOf('forum/index.php') > -1) { window.location.href = prev_link; }
-              else { window.location.href = 'profile'; }
+              else { window.location.href = obj.page; }
             } else {
               var data = '<div class="alert alert-danger">';
               data += obj.message;

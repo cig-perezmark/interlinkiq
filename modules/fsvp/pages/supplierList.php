@@ -1,107 +1,107 @@
 <style>
-.supplierlist-check .mtCheckUploadFileLink {
-    display: none;
-}
-
-.supplierlist-check:has(input[value="1"]:checked) .mtCheckUploadFileLink {
-    display: block !important;
-}
-
-.fileArrayDates {
-    width: 180px !important;
-    flex-shrink: 0;
-}
-
-.checkFileUpload {
-    display: flex;
-    width: 100%;
-    gap: 2rem;
-}
-
-.checkFileUpload .input-group {
-    flex: 1 0 auto;
-}
-
-.frfUplDoc .row {
-    display: none;
-    margin-bottom: 20px;
-}
-
-.frfUplDoc:has(input:checked) .row {
-    display: block;
-}
-
-.semibold {
-    font-weight: 600;
-}
-
-td,
-th {
-    white-space: normal !important;
-}
-
-.file-viewer {
-    width: 100%;
-    height: 28rem;
-}
-
-#viewFileInfoForm.is-update [data-view-info]:not([data-view-info="upload_date"]),
-#viewFileInfoForm.is-update .vfbtns {
-    display: none !important;
-}
-
-#viewFileInfoForm .form-control,
-#viewFileInfoForm .vfupdt {
-    display: none;
-}
-
-#viewFileInfoForm.is-update .form-control,
-#viewFileInfoForm.is-update .vfupdt {
-    display: block !important;
-}
-
-.border-none {
-    border: none !important;
-}
-
-#modalEvaluationDetails .modal-body [class^="col-md-6"] {
-    margin-bottom: 20px;
-}
-
-[data-ed] {
-    height: auto;
-}
-
-.preview-grid {
-    display: grid;
-    grid-template-columns: 5fr 7fr;
-    gap: 10px;
-    /* Optional: adds space between the columns */
-}
-
-.preview-grid .file-preview {
-    height: 100%;
-    width: 100%;
-}
-
-.liFP:hover {
-    text-decoration: underline;
-}
-
-.liFP {
-    cursor: default;
-}
-
-.p-0 {
-    padding: 0;
-}
-
-img.signature__.display {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    object-position: center;
-} 
+    .supplierlist-check .mtCheckUploadFileLink {
+        display: none;
+    }
+    
+    .supplierlist-check:has(input[value="1"]:checked) .mtCheckUploadFileLink {
+        display: block !important;
+    }
+    
+    .fileArrayDates {
+        width: 180px !important;
+        flex-shrink: 0;
+    }
+    
+    .checkFileUpload {
+        display: flex;
+        width: 100%;
+        gap: 2rem;
+    }
+    
+    .checkFileUpload .input-group {
+        flex: 1 0 auto;
+    }
+    
+    .frfUplDoc .row {
+        display: none;
+        margin-bottom: 20px;
+    }
+    
+    .frfUplDoc:has(input:checked) .row {
+        display: block;
+    }
+    
+    .semibold {
+        font-weight: 600;
+    }
+    
+    td,
+    th {
+        white-space: normal !important;
+    }
+    
+    .file-viewer {
+        width: 100%;
+        height: 28rem;
+    }
+    
+    #viewFileInfoForm.is-update [data-view-info]:not([data-view-info="upload_date"]),
+    #viewFileInfoForm.is-update .vfbtns {
+        display: none !important;
+    }
+    
+    #viewFileInfoForm .form-control,
+    #viewFileInfoForm .vfupdt {
+        display: none;
+    }
+    
+    #viewFileInfoForm.is-update .form-control,
+    #viewFileInfoForm.is-update .vfupdt {
+        display: block !important;
+    }
+    
+    .border-none {
+        border: none !important;
+    }
+    
+    #modalEvaluationDetails .modal-body [class^="col-md-6"] {
+        margin-bottom: 20px;
+    }
+    
+    [data-ed] {
+        height: auto;
+    }
+    
+    .preview-grid {
+        display: grid;
+        grid-template-columns: 5fr 7fr;
+        gap: 10px;
+        /* Optional: adds space between the columns */
+    }
+    
+    .preview-grid .file-preview {
+        height: 100%;
+        width: 100%;
+    }
+    
+    .liFP:hover {
+        text-decoration: underline;
+    }
+    
+    .liFP {
+        cursor: default;
+    }
+    
+    .p-0 {
+        padding: 0;
+    }
+    
+    img.signature__.display {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        object-position: center;
+    } 
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;" id="fstToolbar">
@@ -424,7 +424,30 @@ img.signature__.display {
                     </div>
                 </div>
 
-                <!-- reviewed bt -->
+                <!-- prepared by -->
+                <div class="row">
+                    <div class="col-md-12"><strong>Prepared By</strong></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="efRePreparedBy">Name</label>
+                            <input type="text" name="prepared_by" id="efPreparedBy" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="efPrepareDate">Date</label>
+                            <input type="date" name="prepare_date" id="efPrepareDate" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <div id="preparer_signature" class="signature__"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- reviewed by -->
                 <div class="row">
                     <div class="col-md-12"><strong>Reviewed By</strong></div>
                     <div class="col-md-4">
@@ -484,6 +507,21 @@ img.signature__.display {
                 <button type="submit" class="btn green">Submit </button>
             </div>
         </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEvaluationRecap" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Previous Evaluations</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -824,6 +862,28 @@ img.signature__.display {
                         <div class="form-group">
                             <label for="">Assessment of Results of Foreign Supplier Evaluation</label>
                             <div class="form-control" style="min-height: 7rem;" data-ed="assessment"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- prepared by -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Prepared By</label>
+                            <div data-ed="prepared_by" class="form-control"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <div data-ed="prepare_date" class="form-control"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label> <br>
+                            <img src="#" id="preparer_signature_display" class="signature__ display" />
                         </div>
                     </div>
                 </div>

@@ -135,391 +135,110 @@ error_reporting(0);
                                                             break;
                                                         }
                                                     }
-                                                    if($done == true){?>
-                                                    <!--start-->
-                                                    <div class="tab-pane active" id="EI">
-                                                        <div class="row">
-                                                           <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
-                                                            <div class="form-group">
-                                                                <div class="col-md-12">
-                                                                    <label class="control-label"><strong>Facility Name:<i style="color:orange;" title="This input box is required!!!">*</i></strong></label>
-                                                                    <input type="hidden" class="form-control" name="ids" value="<?php if($users == $row['users_entities']){ echo $row['facility_id'];}else{ echo '';} ?>" required> 
-                                                                    <input type="" class="form-control" name="facility_category" value="<?php echo $row['facility_category']; ?>" > 
+                                                    if($done == true) { ?>
+                                                    
+                                                        <div class="tab-pane active" id="EI">
+                                                            <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
+                                                                <div class="row">
+                                                                    <div class="form-group">
+                                                                        <div class="col-md-12">
+                                                                            <label class="control-label"><strong>Facility Name:<i style="color:orange;" title="This input box is required!!!">*</i></strong></label>
+                                                                            <input type="hidden" class="form-control" name="ids" value="<?php if($users == $row['users_entities']){ echo $row['facility_id'];}else{ echo '';} ?>" required> 
+                                                                            <input type="" class="form-control" name="facility_category" value="<?php echo $row['facility_category']; ?>" > 
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <br>
-                                                        <div class="row">
-                                                            <div class="form-group">
-                                                                <div class="col-md-6">
-                                                                    <label class="control-label"><strong>Country:<i style="color:orange;" title="This input box is required!!!">*</i></strong></label>
-                                                                    <select class="form-control mt-multiselects" name="countrys" >
-                                                                        <option value="0">---Select---</option>
-                                                                        
-                                                                        <?php 
-                                                                            while($rowcountry = mysqli_fetch_array($resultcountry)) {
-                                                                                echo '<option value="'.$rowcountry['id'].'" '; echo $rowcountry['id'] == $row['country'] ? 'SELECTED':''; echo '>'.utf8_encode($rowcountry['name']).'</option>';
-                                                                            }
-                                                                        ?>                                                                        
-                                                                    </select>
+                                                                <br>
+                                                                <div class="row">
+                                                                    <div class="form-group">
+                                                                        <div class="col-md-6">
+                                                                            <label class="control-label"><strong>Country:<i style="color:orange;" title="This input box is required!!!">*</i></strong></label>
+                                                                            <select class="form-control mt-multiselects" name="countrys" >
+                                                                                <option value="0">---Select---</option>
+                                                                                
+                                                                                <?php 
+                                                                                    while($rowcountry = mysqli_fetch_array($resultcountry)) {
+                                                                                        echo '<option value="'.$rowcountry['id'].'" '; echo $rowcountry['id'] == $row['country'] ? 'SELECTED':''; echo '>'.utf8_encode($rowcountry['name']).'</option>';
+                                                                                    }
+                                                                                ?>                                                                        
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <br>
-                                                        <div class="row">
-                                                            <table class="table">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <td>Bldg No./Street</td>  
-                                                                        <td>City</td>
-                                                                        <td>State</td>
-                                                                        <td>Zip Code</td>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <input class=" form-control" name="Bldg" value="<?php echo htmlentities($row['Bldg'] ?? ''); ?>" >
-                                                                        </td>  
-                                                                        <td>
-                                                                            <input class="form-control" name="city" value="<?php echo htmlentities($row['city'] ?? ''); ?>" >
-                                                                        </td>
-                                                                        <td>
-                                                                            <input class="form-control" name="States" value="<?php echo htmlentities($row['States'] ?? ''); ?>">
-                                                                        </td>
-                                                                        <td>
-                                                                            <input class=" form-control" name="ZipCode" value="<?php echo htmlentities($row['ZipCode'] ?? ''); ?>" >
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        <br>
-                                                        <div class="row">
-                                                            <table class="table" >
-                                                                <thead>
-                                                                    <tr>
-                                                                        <td>Phone</td>
-                                                                        <td>FAX</td>
-                                                                        <td>Email address</td>
-                                                                        <td>Website</td>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td><input type="text" min="6" class=" form-control" name="facility_phone" value="<?php echo htmlentities($row['facility_phone'] ?? ''); ?>"></td>
-                                                                        <td><input type="text" class=" form-control" name="facility_fax" value="<?php echo htmlentities($row['facility_fax'] ?? ''); ?>" ></td>
-                                                                        <td><input type="email" class=" form-control" name="facility_Address" value="<?php echo htmlentities($row['facility_Address'] ?? ''); ?>"></td>
-                                                                        <td><input type="" class=" form-control" name="facility_website" value="<?php echo htmlentities($row['facility_website'] ?? ''); ?>"></td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <input type="submit" name="submitFacility_Details" value="Save Changes" class="btn btn-success">
-                                                            </div>
-                                                        </div>
-                                                        </form>
-                                                        <hr>
-                                                        <!--Business- Contact Person(s)-->
-                                                        <h4><strong>Contact Person(s)</strong> &nbsp;<a data-toggle="modal" href="#addContactModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                        <div class="row">
-                                                            <table class="table">
-                                                                <thead style="border-bottom:solid #003865 2px;">
-                                                                    <tr>
-                                                                        <td>First Name</td>
-                                                                        <td>Last Name</td>
-                                                                        <td>Title</td>
-                                                                        <td>Cell No.</td>
-                                                                        <td>Phone</td>
-                                                                        <td>FAX</td>
-                                                                        <td>Email address</td>
-                                                                        <td></td>
-                                                                    </tr>
-                                                                </thead>
-                                                                <?php 
-                                                                    // $usersQuery = $_COOKIE['ID'];
-                                                                    $usersQuery = $switch_user_id;
-                                                                    $facility_id = $_GET['facility_id'];
-                                                                    $queries = "SELECT * FROM tblFacilityDetails_contact where deleted = 0 AND user_cookies = $usersQuery and facility_entities = $facility_id ";
-                                                                    $resultQuery = mysqli_query($conn, $queries);
-                                                                    while($rowc = mysqli_fetch_array($resultQuery)){?>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td> 
-                                                                                    <?php echo htmlentities($rowc['contactpersonname'] ?? ''); ?>
-                                                                                </td>
-                                                                                <td>  <?php echo htmlentities($rowc['contactpersonlastname'] ?? ''); ?></td>
-                                                                                <td> <?php echo htmlentities($rowc['titles'] ?? ''); ?></td>
-                                                                                <td>  <?php echo htmlentities($rowc['contactpersoncellno'] ?? ''); ?></td>
-                                                                                <td> <?php echo htmlentities($rowc['contactpersonphone'] ?? ''); ?></td>
-                                                                                <td>  <?php echo htmlentities($rowc['contactpersonfax'] ?? ''); ?></td>
-                                                                                <td> <?php echo htmlentities($rowc['contactpersonemailAddress'] ?? ''); ?></td>
-                                                                                <td style="text-align: right;">
-                                                                                    <a class="btn blue btn-outline btnViewCon " data-toggle="modal" href="#modalGetContact" data-id="<?php echo $rowc["con_id"]; ?>">VIEW</a>
-                                                                                    <a class="btn btn-outline red" onclick="btnDelete_F_Contact(<?php echo $rowc["con_id"]; ?>, this)">Delete</a>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    <?php } 
-                                                                ?>
-                                                            </table>
-                                                        </div>
-                                                        <hr >
-                                                        <!--Business - EMERGENCY: Contact Person(s)-->
-                                                        <h4><strong>Emergency: Contact Person(s)</strong> 
-                                                        <!-- &nbsp;<input type="checkbox" id="" name="" value="" ><label for="Direct Buyer"> None</label>-->
-                                                        &nbsp;<a data-toggle="modal" href="#addEmergencyContactModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                        <div class="row">
-                                                            <table class="table" >
-                                                                <thead style="border-bottom:solid #003865 2px;">
-                                                                    <tr>
-                                                                        <td>First Name</td>
-                                                                        <td>Last Name</td>
-                                                                        <td>Title</td>
-                                                                        <td>Cell No.</td>
-                                                                        <td>Phone</td>
-                                                                        <td>FAX</td>
-                                                                        <td>Email address</td>
-                                                                        <td></td>
-                                                                    </tr>
-                                                                </thead>
-                                                                <?php 
-                                                                    // $usersQuery = $_COOKIE['ID'];
-                                                                    $usersQuery = $switch_user_id;
-                                                                    $facility_id = $_GET['facility_id'];
-                                                                    $queries = "SELECT * FROM tblFacilityDetails_Emergency where deleted = 0 AND user_cookies = $usersQuery and emergency_contact_entities = $facility_id";
-                                                                    $resultQuery = mysqli_query($conn, $queries);
-                                                                    while($rowq = mysqli_fetch_array($resultQuery)){ ?>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td> <?php echo htmlentities($rowq['emergencyname'] ?? ''); ?></td>
-                                                                                <td> <?php echo htmlentities($rowq['emergencycontact_last_name'] ?? ''); ?></td>
-                                                                                <td> <?php echo htmlentities($rowq['emergency_contact_title'] ?? ''); ?></td>
-                                                                                <td> <?php echo htmlentities($rowq['emergencycellno'] ?? ''); ?></td>
-                                                                                <td> <?php echo htmlentities($rowq['emergencyphone'] ?? ''); ?></td>
-                                                                                <td>  <?php echo htmlentities($rowq['emergencyfax'] ?? ''); ?></td>
-                                                                                <td>  <?php echo htmlentities($rowq['emergencyemailAddress'] ?? ''); ?></td>
-                                                                                <td style="text-align: right;">
-                                                                                    <a class="btn blue btn-outline btnView " data-toggle="modal" href="#modalGetEmergencyContact" data-id="<?php echo $rowq["emerg_id"]; ?>">VIEW</a>
-                                                                                    <a class="btn btn-outline red" onclick="btnDelete_F_Emergency(<?php echo $rowq["emerg_id"]; ?>, this)">Delete</a>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    <?php }
-                                                                ?>
-                                                            </table>
-                                                            <hr>
-                                                        </div>
-                                                    </div>
-                                                    <!--end--> 
-                                                    <!--start-->
-                                                    <div class="tab-pane" id="ro">
-                                                        <h4><strong><?php echo $_COOKIE['client'] == 1 ? 'Licensing and Permitting Requirements':'Regulatory Compliance Requirements'; ?></strong>&nbsp;<a data-toggle="modal" href="#addFacility_registration" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                        
-                                                        <div class="row">
-                                                            <div class="table-scrollable">
-                                                                <table class="table table-bordered">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>Registration</th>
-                                                                            <th>Supporting Files</th>
-                                                                            <th>Registration Date</th>
-                                                                            <th>Expiration Date</th>
-                                                                            <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody id="data_registration">
-                                                                        <?php 
-                                                                            $usersQuery = $_COOKIE['ID'];
-                                                                            $facility_id = $_GET['facility_id'];
-                                                                            $query_reg = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_registration where ownedby = $switch_user_id and table_entities = 2 and facility_id = $facility_id");
-                                                                            foreach($query_reg as $row_reg){ ?>
-                                                                                <tr id="row_registration<?= $row_reg['reg_id']; ?>">
-                                                                                    <td><?= htmlentities($row_reg['registration_name'] ?? ''); ?></td>
-                                                                                    <td><a href="facility_files_Folder/<?= $row_reg['supporting_file']; ?>" target="_blank"><?= $row_reg['supporting_file']; ?></a></td>
-                                                                                    <td><?= date('Y-m-d', strtotime($row_reg['registration_date'])); ?></td>
-                                                                                    <td><?= date('Y-m-d', strtotime($row_reg['expiry_date'])); ?></td>
-                                                                                    <td width="150px">
-                                                                                        <div class="btn-group btn-group-circle">
-                                                                                            <a  href="#modal_update_registration" data-toggle="modal" type="button" id="update_registration" data-id="<?=$row_reg['reg_id']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
-                                                                    	                    <a href="#modal_delete_registration" data-toggle="modal" type="button" id="delete_registration" data-id="<?=$row_reg['reg_id']; ?>" class="btn btn-danger btn-sm" onclick="">Delete</a>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            <?php }
-                                                                        ?>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                        <hr>
-                                                        <?php if($_COOKIE['client'] != 1 ): ?>
-                                                            <h4><strong>Facility Organization</strong>&nbsp;<a data-toggle="modal" href="#addFacility_Organization" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                            <h4>Facility Representative</h4>
-                                                            <div class="row">
-                                                                <div class="col-md-12">
+                                                                <br>
+                                                                <div class="row">
                                                                     <table class="table">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th>Name</th>
-                                                                                <th>Title</th>
-                                                                                <th>Phone</th>
-                                                                                <th>Cell No</th>
-                                                                                <th>Email</th>
-                                                                                <th></th>
+                                                                                <td>Bldg No./Street</td>  
+                                                                                <td>City</td>
+                                                                                <td>State</td>
+                                                                                <td>Zip Code</td>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            <?php 
-                                                                                // $usersQuery = $_COOKIE['ID'];
-                                                                                $usersQuery = $switch_user_id;
-                                                                                $facility_id = $_GET['facility_id'];
-                                                                                $queries = "SELECT * FROM tblFacilityDetails_Facility_Organization where user_entities = $usersQuery and facility_entities = $facility_id  order by Org_id desc";
-                                                                                $resultQuery = mysqli_query($conn, $queries);
-                                                                                while($rowr = mysqli_fetch_array($resultQuery)){ ?>
-                                                                                    <tr>
-                                                                                        <td><?php echo htmlentities($rowr['Organization_name'] ?? ''); ?>&nbsp;<?php echo htmlentities($rowr['Organization_last_name'] ?? ''); ?></td>
-                                                                                        <td><?php echo htmlentities($rowr['Organization_title'] ?? ''); ?></td>
-                                                                                        <td><?php echo htmlentities($rowr['Organization_cellno'] ?? ''); ?></td>
-                                                                                        <td><?php echo htmlentities($rowr['Organization_phone'] ?? ''); ?></td>
-                                                                                        <td><?php echo htmlentities($rowr['Organization_emailAddress']); ?></td>
-                                                                                        <td>
-                                                                                            <a class="btn blue btn-outline btnViewOrganization " data-toggle="modal" href="#modalGeFacilitytOrganization" data-id="<?php echo $rowr["Org_id"]; ?>" style="float:right;margin-right:20px;">VIEW</a>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                <?php }
-                                                                            ?>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <input class=" form-control" name="Bldg" value="<?php echo htmlentities($row['Bldg'] ?? ''); ?>" >
+                                                                                </td>  
+                                                                                <td>
+                                                                                    <input class="form-control" name="city" value="<?php echo htmlentities($row['city'] ?? ''); ?>" >
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input class="form-control" name="States" value="<?php echo htmlentities($row['States'] ?? ''); ?>">
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input class=" form-control" name="ZipCode" value="<?php echo htmlentities($row['ZipCode'] ?? ''); ?>" >
+                                                                                </td>
+                                                                            </tr>
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                    <!--end-->
-                                                    <!--start-->
-                                                    <div class="tab-pane" id="cc">
-                                                        <h4><strong>Crisis Management Team</strong> &nbsp;<a data-toggle="modal" href="#modalNew" class="btn btn-xs btn-primary"> <i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <table class="table table-bordered">
-                                                                    <thead>
+                                                                <br>
+                                                                <div class="row">
+                                                                    <table class="table" >
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <td>Phone</td>
+                                                                                <td>FAX</td>
+                                                                                <td>Email address</td>
+                                                                                <td>Website</td>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td><input type="text" min="6" class=" form-control" name="facility_phone" value="<?php echo htmlentities($row['facility_phone'] ?? ''); ?>"></td>
+                                                                                <td><input type="text" class=" form-control" name="facility_fax" value="<?php echo htmlentities($row['facility_fax'] ?? ''); ?>" ></td>
+                                                                                <td><input type="email" class=" form-control" name="facility_Address" value="<?php echo htmlentities($row['facility_Address'] ?? ''); ?>"></td>
+                                                                                <td><input type="" class=" form-control" name="facility_website" value="<?php echo htmlentities($row['facility_website'] ?? ''); ?>"></td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <input type="submit" name="submitFacility_Details" value="Save Changes" class="btn btn-success">
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                            <hr>
+                                                            <!--Business- Contact Person(s)-->
+                                                            <h4>
+                                                                <strong>Contact Person(s)</strong>
+                                                                <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addContactModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                            </h4>
+                                                            <div class="row">
+                                                                <table class="table">
+                                                                    <thead style="border-bottom:solid #003865 2px;">
                                                                         <tr>
-                                                                            <th>No.</th>
-                                                                            <th>Primary Name</th>
-                                                                            <th>Phone</th>
-                                                                            <th>Email</th>
-                                                                            <th>Alternate Name</th>
-                                                                            <th>Phone</th>
-                                                                            <th>Email</th>
-                                                                            <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php 
-                                                                            $i = 1;
-                                                                            $facility_id = $_GET['facility_id'];
-                                                                            // $queriesPri = "SELECT * FROM tbl_critical_operation left join tbl_hr_employee on ID = addPrimaryNameField where user_cookies = $switch_user_id and assign_area = $facility_id";
-                                                                            // $resultQuery = mysqli_query($conn, $queriesPri);
-                                                                            $resultQuery = mysqli_query($conn, "
-                                                                                SELECT 
-                                                                                c.critical_operation_id AS c_ID,
-                                                                                e1.first_name AS e1_first_name,
-                                                                                e1.last_name AS e1_last_name,
-                                                                                e1.email AS e1_email,
-                                                                                ui1.mobile AS ui1_mobile,
-                                                                                e2.first_name AS e2_first_name,
-                                                                                e2.last_name AS e2_last_name,
-                                                                                e2.email AS e2_email,
-                                                                                ui2.mobile AS ui2_mobile
-                                                                                
-                                                                                FROM tbl_critical_operation AS c
-                                                                                
-                                                                                LEFT JOIN (
-                                                                                	SELECT
-                                                                                    ID, first_name, last_name, email
-                                                                                    FROM tbl_hr_employee
-                                                                                ) AS e1
-                                                                                ON c.addPrimaryNameField = e1.ID
-                                                                                
-                                                                                LEFT JOIN (
-                                                                                	SELECT
-                                                                                    ID, employee_id
-                                                                                    FROM tbl_user
-                                                                                ) AS u1
-                                                                                ON u1.employee_id = e1.ID
-                                                                                
-                                                                                LEFT JOIN (
-                                                                                	SELECT
-                                                                                    ID, user_id, mobile
-                                                                                    FROM tbl_user_info
-                                                                                ) AS ui1
-                                                                                ON u1.ID = ui1.user_id
-                                                                                
-                                                                                LEFT JOIN (
-                                                                                	SELECT
-                                                                                    ID, first_name, last_name, email
-                                                                                    FROM tbl_hr_employee
-                                                                                ) AS e2
-                                                                                ON c.addAlternateNameField = e2.ID
-                                                                                
-                                                                                LEFT JOIN (
-                                                                                	SELECT
-                                                                                    ID, employee_id
-                                                                                    FROM tbl_user
-                                                                                ) AS u2
-                                                                                ON u2.employee_id = e2.ID
-                                                                                
-                                                                                LEFT JOIN (
-                                                                                	SELECT
-                                                                                    ID, user_id, mobile
-                                                                                    FROM tbl_user_info
-                                                                                ) AS ui2
-                                                                                ON u2.ID = ui2.user_id
-                                                                                
-                                                                                WHERE c.deleted = 0
-                                                                                AND c.user_cookies = $switch_user_id
-                                                                                AND c.assign_area = $facility_id
-                                                                            ");
-                                                                            while($rowPri = mysqli_fetch_array($resultQuery)){ 
-                                                                                $alt = htmlentities($rowPri['addAlternateNameField'] ?? '');
-                                                                                $altEmail = htmlentities($rowPri['email'] ?? '');
-                                                                                
-                                                                                $queriesAlt = "SELECT * FROM tbl_hr_employee where ID = $alt";
-                                                                                $resultQueryAlt = mysqli_query($conn, $queriesAlt);
-                                                                                
-                                                                                echo '<tr>
-                                                                                    <td>'.$i++.'</td>
-                                                                                    <td>'.htmlentities($rowPri['e1_first_name'] ?? '').' '.htmlentities($rowPri['e1_last_name'] ?? '').'</td>
-                                                                                    <td>'.htmlentities($rowPri['ui1_mobile'] ?? '').'</td>
-                                                                                    <td>'.htmlentities($rowPri['e1_email'] ?? '').'</td>
-                                                                                    <td>'.htmlentities($rowPri['e2_first_name'] ?? '').' '.htmlentities($rowPri['e2_last_name'] ?? '').'</td>
-                                                                                    <td>'.htmlentities($rowPri['ui2_mobile'] ?? '').'</td>
-                                                                                    <td>'.htmlentities($rowPri['e2_email'] ?? '').'</td>
-                                                                                    <td class="text-center">
-                                                                                        <a class="btn btn-sm blue btn-outline btnViewCMT" data-toggle="modal" href="#modalViewCMT" data-id="'.$rowPri['c_ID'].'">VIEW</a>
-                                                                                        <a class="btn btn-sm btn-outline red" onclick="btnDelete_CMT('.$rowPri['c_ID'].', this)">Delete</a>
-                                                                                    </td>
-                                                                                </tr>';
-                                                                            }
-                                                                        ?>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                        <hr>
-                                                        <h4><strong>Customer Service Team</strong>&nbsp;<a data-toggle="modal" href="#addService_Team" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <table class="table table-bordered">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>Name</th>
-                                                                            <th>Title</th>
-                                                                            <th>Phone</th>
-                                                                            <th>Cell No</th>
-                                                                            <th>Email</th>
+                                                                            <td>First Name</td>
+                                                                            <td>Last Name</td>
+                                                                            <td>Title</td>
+                                                                            <td>Cell No.</td>
+                                                                            <td>Phone</td>
+                                                                            <td>FAX</td>
+                                                                            <td>Email address</td>
+                                                                            <td></td>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -527,289 +246,411 @@ error_reporting(0);
                                                                             // $usersQuery = $_COOKIE['ID'];
                                                                             $usersQuery = $switch_user_id;
                                                                             $facility_id = $_GET['facility_id'];
-                                                                            $queries = "SELECT * FROM tblFacilityDetails_Service_Team where user_entities = $usersQuery and facility_entities = $facility_id order by Service_Team_id desc";
+                                                                            $queries = "SELECT * FROM tblFacilityDetails_contact where deleted = 0 AND user_cookies = $usersQuery and facility_entities = $facility_id ";
                                                                             $resultQuery = mysqli_query($conn, $queries);
-                                                                            while($rowr = mysqli_fetch_array($resultQuery)){ ?>
-                                                                                <tr>
-                                                                                    <td><?php echo htmlentities($rowr['Service_Team_name'] ?? ''); ?>&nbsp;<?php echo htmlentities($rowr['Service_Team_last_name'] ?? ''); ?></td>
-                                                                                    <td><?php echo htmlentities($rowr['Service_Team_title'] ?? ''); ?></td>
-                                                                                    <td><?php echo htmlentities($rowr['Service_Team_cellno'] ?? ''); ?></td>
-                                                                                    <td><?php echo htmlentities($rowr['Service_Team_phone'] ?? ''); ?></td>
-                                                                                    <td><?php echo htmlentities($rowr['Service_Team_emailAddress'] ?? ''); ?></td>
-                                                                                    <td>
-                                                                                        <a class="btn blue btn-outline btnViewService_Team" data-toggle="modal" href="#modalGetService_Team" data-id="<?php echo $rowr["Service_Team_id"]; ?>" style="float:right;margin-right:20px;">
-                                                                                            VIEW
-                                                                                        </a>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            <?php }
+                                                                            while($rowc = mysqli_fetch_array($resultQuery)) {
+                                                                                echo '<tr>
+                                                                                    <td>'.htmlentities($rowc['contactpersonname'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowc['contactpersonlastname'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowc['titles'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowc['contactpersoncellno'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowc['contactpersonphone'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowc['contactpersonfax'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowc['contactpersonemailAddress'] ?? '').'</td>
+                                                                                    <td style="text-align: right;">';
+                                                                                    
+                                                                                        if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                            echo '<a class="btn blue btn-outline btnViewCon " data-toggle="modal" href="#modalGetContact" data-id="<?php echo $rowc["con_id"]; ?>">VIEW</a>';
+                                                                                        }
+                                                                                        if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                            echo '<a class="btn btn-outline red" onclick="btnDelete_F_Contact(<?php echo $rowc["con_id"]; ?>, this)">Delete</a>';
+                                                                                        }
+                                                                                        
+                                                                                    echo '</td>
+                                                                                </tr>';
+                                                                            }
                                                                         ?>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
-                                                        </div>
-                                                        <?php if($_COOKIE['client'] == 1 OR $_COOKIE['ID'] == 38): ?>
-                                                            <hr>
-                                                            <h4><strong>Community Relations Program</strong>&nbsp;<a data-toggle="modal" href="#addCST" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
+                                                            <hr >
+                                                            <!--Business - EMERGENCY: Contact Person(s)-->
+                                                            <!-- &nbsp;<input type="checkbox" id="" name="" value="" ><label for="Direct Buyer"> None</label>-->
+                                                            <h4>
+                                                                <strong>Emergency: Contact Person(s)</strong>
+                                                                <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addEmergencyContactModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                            </h4>
                                                             <div class="row">
-                                                                <div class="table-scrollable" style="border:none;">
+                                                                <table class="table" >
+                                                                    <thead style="border-bottom:solid #003865 2px;">
+                                                                        <tr>
+                                                                            <td>First Name</td>
+                                                                            <td>Last Name</td>
+                                                                            <td>Title</td>
+                                                                            <td>Cell No.</td>
+                                                                            <td>Phone</td>
+                                                                            <td>FAX</td>
+                                                                            <td>Email address</td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <?php 
+                                                                            // $usersQuery = $_COOKIE['ID'];
+                                                                            $usersQuery = $switch_user_id;
+                                                                            $facility_id = $_GET['facility_id'];
+                                                                            $queries = "SELECT * FROM tblFacilityDetails_Emergency where deleted = 0 AND user_cookies = $usersQuery and emergency_contact_entities = $facility_id";
+                                                                            $resultQuery = mysqli_query($conn, $queries);
+                                                                            while($rowq = mysqli_fetch_array($resultQuery)) {
+                                                                                echo '<tr>
+                                                                                    <td>'.htmlentities($rowq['emergencyname'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowq['emergencycontact_last_name'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowq['emergency_contact_title'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowq['emergencycellno'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowq['emergencyphone'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowq['emergencyfax'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowq['emergencyemailAddress'] ?? '').'</td>
+                                                                                    <td style="text-align: right;">';
+                                                                                    
+                                                                                        if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                            echo '<a class="btn blue btn-outline btnView " data-toggle="modal" href="#modalGetEmergencyContact" data-id="'.$rowq["emerg_id"].'">VIEW</a>';
+                                                                                        }
+                                                                                        if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                            echo '<a class="btn btn-outline red" onclick="btnDelete_F_Emergency('.$rowq["emerg_id"].', this)">Delete</a>';   
+                                                                                        }
+                                                                                        
+                                                                                    echo '</td>
+                                                                                </tr>';
+                                                                            }
+                                                                        ?>
+                                                                    </tbody>
+                                                                </table>
+                                                                <hr>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane" id="ro">
+                                                            <h4>
+                                                                <strong><?php echo $_COOKIE['client'] == 1 ? 'Licensing and Permitting Requirements':'Regulatory Compliance Requirements'; ?></strong>
+                                                                <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addFacility_registration" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                            </h4>
+                                                            <div class="row">
+                                                                <div class="table-scrollable">
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Registration</th>
+                                                                                <th>Supporting Files</th>
+                                                                                <th>Registration Date</th>
+                                                                                <th>Expiration Date</th>
+                                                                                <th></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="data_registration">
+                                                                            <?php 
+                                                                                $usersQuery = $_COOKIE['ID'];
+                                                                                $facility_id = $_GET['facility_id'];
+                                                                                $query_reg = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_registration where ownedby = $switch_user_id and table_entities = 2 and facility_id = $facility_id");
+                                                                                foreach($query_reg as $row_reg) {
+                                                                                    echo '<tr id="row_registration'.$row_reg['reg_id'].'">
+                                                                                        <td>'.htmlentities($row_reg['registration_name'] ?? '').'</td>
+                                                                                        <td><a href="facility_files_Folder/'.$row_reg['supporting_file'].'" target="_blank">'.$row_reg['supporting_file'].'</a></td>
+                                                                                        <td>'.date('Y-m-d', strtotime($row_reg['registration_date'])).'</td>
+                                                                                        <td>'.date('Y-m-d', strtotime($row_reg['expiry_date'])).'</td>
+                                                                                        <td width="150px">';
+                                                                                        
+                                                                                            if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                echo '<a  href="#modal_update_registration" data-toggle="modal" type="button" id="update_registration" data-id="'.$row_reg['reg_id'].'" class="btn btn-outline dark btn-sm">Edit</a>';
+                                                                                            }
+                                                                                            if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                        	                    echo '<a href="#modal_delete_registration" data-toggle="modal" type="button" id="delete_registration" data-id="'.$row_reg['reg_id'].'" class="btn btn-danger btn-sm" onclick="">Delete</a>';
+                                                                                            }
+                                                                                            
+                                                                                        echo '</td>
+                                                                                    </tr>';
+                                                                                }    
+                                                                            ?>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <hr>
+                                                            <?php if($_COOKIE['client'] != 1 ): ?>
+                                                                <h4>
+                                                                    <strong>Facility Organization</strong>
+                                                                    <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addFacility_Organization" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                                </h4>
+                                                                <h4>Facility Representative</h4>
+                                                                <div class="row">
                                                                     <div class="col-md-12">
-                                                                        <table class="table table-bordered">
+                                                                        <table class="table">
                                                                             <thead>
                                                                                 <tr>
+                                                                                    <th>Name</th>
                                                                                     <th>Title</th>
-                                                                                    <th>Supporting Files</th>
-                                                                                    <th>Expiration Date</th>
+                                                                                    <th>Phone</th>
+                                                                                    <th>Cell No</th>
+                                                                                    <th>Email</th>
                                                                                     <th></th>
                                                                                 </tr>
                                                                             </thead>
-                                                                            <tbody id="data_cst">
+                                                                            <tbody>
                                                                                 <?php 
+                                                                                    // $usersQuery = $_COOKIE['ID'];
+                                                                                    $usersQuery = $switch_user_id;
                                                                                     $facility_id = $_GET['facility_id'];
-                                                                                    $query_cst = mysqli_query($conn, "select * from tblFacilityDetails_community where enterprise_pk = $switch_user_id and facility_entities = $facility_id");
-                                                                                    foreach($query_cst as $row_cst){?>
-                                                                                        <tr id="row_cst<?= $row_cst['cst_pk']; ?>">
-                                                                                            <td><?=htmlentities($row_cst['cst_title'] ?? ''); ?></td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_cst['cst_files']; ?>" target="_blank"><?= htmlentities($row_cst['cst_files'] ?? ''); ?></a></td>
-                                                                                            <td><?= date('Y-m-d', strtotime($row_cst['expiry_date'])); ?></td>
-                                                                                            <td width="150px">
-                                                                                                <div class="btn-group btn-group-circle">
-                                                                                                    <a  href="#modal_update_cst" data-toggle="modal" type="button" id="update_cst" data-id="<?=$row_cst['cst_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
-                                                                            	                    <a href="#modal_delete_cst" data-toggle="modal" type="button" id="delete_diagram" data-id="<?=$row_cst['cst_pk']; ?>" class="btn btn-danger btn-sm" onclick="">Delete</a>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    <?php }
+                                                                                    $queries = "SELECT * FROM tblFacilityDetails_Facility_Organization where user_entities = $usersQuery and facility_entities = $facility_id  order by Org_id desc";
+                                                                                    $resultQuery = mysqli_query($conn, $queries);
+                                                                                    while($rowr = mysqli_fetch_array($resultQuery)) {
+                                                                                        echo '<tr>
+                                                                                            <td>'.htmlentities($rowr['Organization_name'] ?? '').' '.htmlentities($rowr['Organization_last_name'] ?? '').'</td>
+                                                                                            <td>'.htmlentities($rowr['Organization_title'] ?? '').'</td>
+                                                                                            <td>'.htmlentities($rowr['Organization_cellno'] ?? '').'</td>
+                                                                                            <td>'.htmlentities($rowr['Organization_phone'] ?? '').'</td>
+                                                                                            <td>'.htmlentities($rowr['Organization_emailAddress']).'</td>
+                                                                                            <td>';
+                                                                                            
+                                                                                                if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                    echo '<a class="btn blue btn-outline btnViewOrganization " data-toggle="modal" href="#modalGeFacilitytOrganization" data-id="'.$rowr["Org_id"].'" style="float:right;margin-right:20px;">VIEW</a>';
+                                                                                                }
+                                                                                                
+                                                                                            echo '</td>
+                                                                                        </tr>';
+                                                                                    }
                                                                                 ?>
                                                                             </tbody>
                                                                         </table>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                    <!--end-->
-                                                     <!--start-->
-                                                    <div class="tab-pane" id="CA">
-                                                       <h4><strong>Accreditation</strong>&nbsp;<a data-toggle="modal" href="#addAccreditationModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                        <div class="row">
-                                                            <table class="table">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>No.</th>
-                                                                        <th>Accreditation</th>
-                                                                        <th>Type</th>
-                                                                        <th>Description</th>
-                                                                        <th>Issue Date</th>
-                                                                        <th>Expiration Date</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <?php 
-                                                                        $i = 1;
-                                                                        // $usersQuery = $_COOKIE['ID'];
-                                                                        $usersQuery = $switch_user_id;
-                                                                        $facility_id = $_GET['facility_id'];
-                                                                        $queries = "SELECT * FROM tblFacilityDetails_Accreditation where user_cookies = $usersQuery and facility_entities = $facility_id  order by Accreditation_id desc";
-                                                                        $resultQuery = mysqli_query($conn, $queries);
-                                                                        while($rowAcc = mysqli_fetch_array($resultQuery)){ 
-                                                                            $idate=date_create($rowAcc['Issue_Date_Type_Accreditation']);
-                                                                            $edate=date_create($rowAcc['Expiration_Date_Type_Accreditation']);
-                                                                        ?>
-
-                                                                            <tr>
-                                                                                <td><?php echo $i++; ?></td>
-                                                                                <td><a href="facility_files_Folder/<?php echo $rowAcc['Accreditation']; ?>" target="_blank"><?php echo htmlentities($rowAcc['Accreditation'] ?? ''); ?></a></td>
-                                                                                <td><?php echo htmlentities($rowAcc['Type_Accreditation'] ?? ''); ?></td>
-                                                                                <td><?php echo htmlentities($rowAcc['Descriptions_Accreditation'] ?? ''); ?></td>
-                                                                                <td><?php echo date_format($idate,"Y/m/d"); ?></td>
-                                                                                <td><?php echo date_format($edate,"Y/m/d"); ?></td>
-                                                                            </tr>
-                                                                         <?php }
-                                                                    ?>
-                                                                </tbody>
-                                                            </table>
+                                                            <?php endif; ?>
                                                         </div>
-                                                        <hr>
-                                                        <h4><strong>Accreditation History</strong></h4>
-                                                        <div class="row">
-                                                            <table class="table">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Date of Accreditation</th>
-                                                                        <th>Audit Type</th>
-                                                                        <th>Accreditation Segment</th>
-                                                                        <th>Accreditation Authority</th>
-                                                                        <th>Scope of Accreditation</th>
-                                                                        <th>Accreditation Rating/Status</th>
-                                                                        <th>Audit Report</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        <hr>
-                                                        <h4><strong>Certification</strong>&nbsp;<a data-toggle="modal" href="#addCertificationModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                        <div class="row" >
-                                                            <table class="table">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>No.</th>
-                                                                        <th>Certification</th>
-                                                                        <th>Type</th>
-                                                                        <th>Description</th>
-                                                                        <th>Issue Date</th>
-                                                                        <th>Expiration Date</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                   <?php 
-                                                                        $i = 1;
-                                                                        // $usersQuery = $_COOKIE['ID'];
-                                                                        $usersQuery = $switch_user_id;
-                                                                        $facility_id = $_GET['facility_id'];
-                                                                        $queries = "SELECT * FROM tblFacilityDetails_Certification WHERE deleted = 0 AND user_cookies = $usersQuery and facility_entities = $facility_id  order by Certification_id desc";
-                                                                        $resultQuery = mysqli_query($conn, $queries);
-                                                                        while($rowAcc = mysqli_fetch_array($resultQuery)){ 
-                                                                            $idate=date_create($rowAcc['Issue_Date_Certification']);
-                                                                            $edate=date_create($rowAcc['Expiration_Date_Certification']);
-                                                                        ?>
-                                                                            <tr>
-                                                                                <td><?php echo $i++; ?></td>
-                                                                                <td><a href="facility_files_Folder/<?php echo $rowAcc['Certification']; ?>" target="_blank"><?php echo htmlentities($rowAcc['Certification'] ?? ''); ?></a></td>
-                                                                                <td><?php echo htmlentities($rowAcc['Type_Certification'] ?? ''); ?></td>
-                                                                                <td><?php echo htmlentities($rowAcc['Descriptions_Certification'] ?? ''); ?></td>
-                                                                                <td><?php echo date_format($idate,"Y/m/d"); ?></td>
-                                                                                <td><?php echo date_format($edate,"Y/m/d"); ?></td>
-                                                                            </tr>
-                                                                        <?php }
-                                                                    ?>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        <hr>
-                                                        <h4><strong>Certification  History</strong></h4>
-                                                        <div class="row">
-                                                            <table class="table">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Date of Certification </th>
-                                                                        <th>Audit Type</th>
-                                                                        <th>Accreditation Segment</th>
-                                                                        <th>Accreditation Authority</th>
-                                                                        <th>Scope of Accreditation</th>
-                                                                        <th>Accreditation Rating/Status</th>
-                                                                        <th>Audit Report</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <!--end-->
-                                                    <!--start-->
-                                                    <div class="tab-pane" id="fo">
-                                                        <h4><strong>Facility Functions</strong> &nbsp;<a data-toggle="modal" href="#addFFModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                        <br>
-                                                        <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
+                                                        <div class="tab-pane" id="cc">
+                                                            <h4>
+                                                                <strong>Facility Organization</strong>
+                                                                <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addFacility_Organization" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                            </h4>
+                                                            <h4>
+                                                                <strong>Crisis Management Team</strong>
+                                                                <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#modalNew" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                            </h4>
                                                             <div class="row">
                                                                 <div class="col-md-12">
-                                                                    <?php
-                                                                        $array_data = explode(", ", $row["Facilty_Functions"]);
-                                                                        
-                                                                        echo '<ul class="list-unstyled list-column-break mt-checkbox-list">';
-                                                                            $selectFunction = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_Function WHERE deleted = 0");
-                                                                            if ($current_client == 16 OR $switch_user_id == 1649) {
-                                                                                $selectFunction = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_Function WHERE deleted = 0 AND user_id = $switch_user_id");
-                                                                            }
-                                                                            while($rowFunction = mysqli_fetch_array($selectFunction)){ 
-                                                                                $f_ID = $rowFunction['ID'];
-                                                                                $f_name = htmlentities($rowFunction['name'] ?? '');
-                                                                                
-                                                                                echo '<li>
-                                                                                    <label class="mt-checkbox mt-checkbox-outline">
-                                                                                        <input type="checkbox" name="Facilty_Functions[]" value="'.$f_ID.'" '; in_array($f_ID, $array_data) ? 'CHECKED':''; echo '> '.$f_name.'
-                                                                                        <span></span>
-                                                                                    </label>
-                                                                                </li>';
-                                                                            }
-                                                                        echo '</ul>';
-                                                                    ?>
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>No.</th>
+                                                                                <th>Primary Name</th>
+                                                                                <th>Phone</th>
+                                                                                <th>Email</th>
+                                                                                <th>Alternate Name</th>
+                                                                                <th>Phone</th>
+                                                                                <th>Email</th>
+                                                                                <th></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <?php 
+                                                                                $i = 1;
+                                                                                $facility_id = $_GET['facility_id'];
+                                                                                // $queriesPri = "SELECT * FROM tbl_critical_operation left join tbl_hr_employee on ID = addPrimaryNameField where user_cookies = $switch_user_id and assign_area = $facility_id";
+                                                                                // $resultQuery = mysqli_query($conn, $queriesPri);
+                                                                                $resultQuery = mysqli_query($conn, "
+                                                                                    SELECT 
+                                                                                    c.critical_operation_id AS c_ID,
+                                                                                    e1.first_name AS e1_first_name,
+                                                                                    e1.last_name AS e1_last_name,
+                                                                                    e1.email AS e1_email,
+                                                                                    ui1.mobile AS ui1_mobile,
+                                                                                    e2.first_name AS e2_first_name,
+                                                                                    e2.last_name AS e2_last_name,
+                                                                                    e2.email AS e2_email,
+                                                                                    ui2.mobile AS ui2_mobile
+                                                                                    
+                                                                                    FROM tbl_critical_operation AS c
+                                                                                    
+                                                                                    LEFT JOIN (
+                                                                                    	SELECT
+                                                                                        ID, first_name, last_name, email
+                                                                                        FROM tbl_hr_employee
+                                                                                    ) AS e1
+                                                                                    ON c.addPrimaryNameField = e1.ID
+                                                                                    
+                                                                                    LEFT JOIN (
+                                                                                    	SELECT
+                                                                                        ID, employee_id
+                                                                                        FROM tbl_user
+                                                                                    ) AS u1
+                                                                                    ON u1.employee_id = e1.ID
+                                                                                    
+                                                                                    LEFT JOIN (
+                                                                                    	SELECT
+                                                                                        ID, user_id, mobile
+                                                                                        FROM tbl_user_info
+                                                                                    ) AS ui1
+                                                                                    ON u1.ID = ui1.user_id
+                                                                                    
+                                                                                    LEFT JOIN (
+                                                                                    	SELECT
+                                                                                        ID, first_name, last_name, email
+                                                                                        FROM tbl_hr_employee
+                                                                                    ) AS e2
+                                                                                    ON c.addAlternateNameField = e2.ID
+                                                                                    
+                                                                                    LEFT JOIN (
+                                                                                    	SELECT
+                                                                                        ID, employee_id
+                                                                                        FROM tbl_user
+                                                                                    ) AS u2
+                                                                                    ON u2.employee_id = e2.ID
+                                                                                    
+                                                                                    LEFT JOIN (
+                                                                                    	SELECT
+                                                                                        ID, user_id, mobile
+                                                                                        FROM tbl_user_info
+                                                                                    ) AS ui2
+                                                                                    ON u2.ID = ui2.user_id
+                                                                                    
+                                                                                    WHERE c.deleted = 0
+                                                                                    AND c.user_cookies = $switch_user_id
+                                                                                    AND c.assign_area = $facility_id
+                                                                                ");
+                                                                                while($rowPri = mysqli_fetch_array($resultQuery)){ 
+                                                                                    $alt = htmlentities($rowPri['addAlternateNameField'] ?? '');
+                                                                                    $altEmail = htmlentities($rowPri['email'] ?? '');
+                                                                                    
+                                                                                    $queriesAlt = "SELECT * FROM tbl_hr_employee where ID = $alt";
+                                                                                    $resultQueryAlt = mysqli_query($conn, $queriesAlt);
+                                                                                    
+                                                                                    echo '<tr>
+                                                                                        <td>'.$i++.'</td>
+                                                                                        <td>'.htmlentities($rowPri['e1_first_name'] ?? '').' '.htmlentities($rowPri['e1_last_name'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowPri['ui1_mobile'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowPri['e1_email'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowPri['e2_first_name'] ?? '').' '.htmlentities($rowPri['e2_last_name'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowPri['ui2_mobile'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowPri['e2_email'] ?? '').'</td>
+                                                                                        <td class="text-center">';
+                                                                                        
+                                                                                            if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                echo '<a class="btn btn-sm blue btn-outline btnViewCMT" data-toggle="modal" href="#modalViewCMT" data-id="'.$rowPri['c_ID'].'">VIEW</a>';
+                                                                                            }
+                                                                                            if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                                echo '<a class="btn btn-sm btn-outline red" onclick="btnDelete_CMT('.$rowPri['c_ID'].', this)">Delete</a>';
+                                                                                            }
+                                                                                            
+                                                                                        echo '</td>
+                                                                                    </tr>';
+                                                                                }
+                                                                            ?>
+                                                                        </tbody>
+                                                                    </table>
                                                                 </div>
                                                             </div>
                                                             <hr>
+                                                            <h4>
+                                                                <strong>Customer Service Team</strong>
+                                                                <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addService_Team" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                            </h4>
                                                             <div class="row">
-                                                                <?php if($switch_user_id != 1649): ?>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label>Number of Shifts:</label>
-                                                                            <input type="number" class="form-control" name="Number_of_Shifts" value="<?php echo $row["Number_of_Shifts"]?>">
+                                                                <div class="col-md-12">
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Name</th>
+                                                                                <th>Title</th>
+                                                                                <th>Phone</th>
+                                                                                <th>Cell No</th>
+                                                                                <th>Email</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <?php 
+                                                                                // $usersQuery = $_COOKIE['ID'];
+                                                                                $usersQuery = $switch_user_id;
+                                                                                $facility_id = $_GET['facility_id'];
+                                                                                $queries = "SELECT * FROM tblFacilityDetails_Service_Team WHERE deleted = 0 AND user_entities = $usersQuery and facility_entities = $facility_id ORDER BY Service_Team_id desc";
+                                                                                $resultQuery = mysqli_query($conn, $queries);
+                                                                                while($rowr = mysqli_fetch_array($resultQuery)){
+                                                                                    echo '<tr>
+                                                                                        <td>'.htmlentities($rowr['Service_Team_name'] ?? '').' '.htmlentities($rowr['Service_Team_last_name'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowr['Service_Team_title'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowr['Service_Team_cellno'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowr['Service_Team_phone'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowr['Service_Team_emailAddress'] ?? '').'</td>
+                                                                                        <td>';
+                                                                                        
+                                                                                            if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                echo '<a class="btn blue btn-outline btnViewService_Team" data-toggle="modal" href="#modalGetService_Team" data-id="'.$rowr["Service_Team_id"].'">VIEW</a>';
+                                                                                            }
+                                                                                            if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                                echo '<a class="btn btn-sm btn-outline red" onclick="btnDelete_CSTT('.$rowr['Service_Team_id'].', this)">Delete</a>';
+                                                                                            }
+                                                                                            
+                                                                                        echo '</td>
+                                                                                    </tr>';
+                                                                                }
+                                                                            ?>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <?php if($_COOKIE['client'] == 1 OR $_COOKIE['ID'] == 38): ?>
+                                                                <hr>
+                                                                <h4>
+                                                                    <strong>Community Relations Program</strong>
+                                                                    <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addCST" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                                </h4>
+                                                                <div class="row">
+                                                                    <div class="table-scrollable" style="border:none;">
+                                                                        <div class="col-md-12">
+                                                                            <table class="table table-bordered">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th>Title</th>
+                                                                                        <th>Supporting Files</th>
+                                                                                        <th>Expiration Date</th>
+                                                                                        <th></th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody id="data_cst">
+                                                                                    <?php 
+                                                                                        $facility_id = $_GET['facility_id'];
+                                                                                        $query_cst = mysqli_query($conn, "select * from tblFacilityDetails_community where enterprise_pk = $switch_user_id and facility_entities = $facility_id");
+                                                                                        foreach($query_cst as $row_cst) {
+                                                                                            echo '<tr id="row_cst'.$row_cst['cst_pk'].'">
+                                                                                                <td>'.htmlentities($row_cst['cst_title'] ?? '').'</td>
+                                                                                                <td><a href="facility_files_Folder/'.$row_cst['cst_files'].'" target="_blank">'.htmlentities($row_cst['cst_files'] ?? '').'</a></td>
+                                                                                                <td>'.date('Y-m-d', strtotime($row_cst['expiry_date'])).'</td>
+                                                                                                <td width="150px">';
+                                                                                                
+                                                                                                    if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                        echo '<a  href="#modal_update_cst" data-toggle="modal" type="button" id="update_cst" data-id="'.$row_cst['cst_pk'].'" class="btn btn-outline dark btn-sm">Edit</a>';
+                                                                                                    }
+                                                                                                    if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                	                    echo '<a href="#modal_delete_cst" data-toggle="modal" type="button" id="delete_diagram" data-id="'.$row_cst['cst_pk'].'" class="btn btn-danger btn-sm" onclick="">Delete</a>';
+                                                                                                    }
+                                                                                                    
+                                                                                                echo '</td>
+                                                                                            </tr>';
+                                                                                        }    
+                                                                                    ?>
+                                                                                </tbody>
+                                                                            </table>
                                                                         </div>
-                                                                    </div>
-                                                                <?php endif; ?>
-                                                                
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label>Number of Employees:</label>
-                                                                        <input type="number" class="form-control" name="Number_of_Employees" value="<?php echo $row["Number_of_Employees"]?>">
                                                                     </div>
                                                                 </div>
-                                                                
-                                                                <?php if($_COOKIE['client'] != 1 AND $switch_user_id != 1649): ?>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label>Number of Lines:</label>
-                                                                            <input type="number" class="form-control" name="Number_of_Lines" value="<?php echo $row["Number_of_Lines"]?>">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label>Number of HACCPs / Food Safety Plans</label>
-                                                                            <input type="number" class="form-control" name="Number_of_HACCPs" value="<?php echo $row["Number_of_HACCPs"]?>">
-                                                                        </div>
-                                                                    </div>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                            <hr>
-                                                            <h4><strong>Details</strong></h4>
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label"><strong>Year Established:</strong></label>
-                                                                        <input type="date" name="Year_Establish" value="<?php echo $row["Year_Establish"]?>" class="form-control">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <input type="submit" name="btn_form_function" value="Save" class="btn btn-success" style="float:right;margin-right:20px;">
-                                                            <br>
-                                                        </form>
-                                                        <hr>
-                                                        <?php if($_COOKIE['client'] != 1 ): ?>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <div class="tab-pane" id="CA">
+                                                            <h4>
+                                                                <strong>Accreditation</strong>
+                                                                <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addAccreditationModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                            </h4>
                                                             <div class="row">
                                                                 <table class="table">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th>Permits &nbsp;<a data-toggle="modal" href="#addPermitsModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></th>
+                                                                            <th>No.</th>
+                                                                            <th>Accreditation</th>
                                                                             <th>Type</th>
                                                                             <th>Description</th>
                                                                             <th>Issue Date</th>
@@ -819,518 +660,780 @@ error_reporting(0);
                                                                     </thead>
                                                                     <tbody>
                                                                         <?php 
+                                                                            $i = 1;
                                                                             // $usersQuery = $_COOKIE['ID'];
                                                                             $usersQuery = $switch_user_id;
                                                                             $facility_id = $_GET['facility_id'];
-                                                                            $queries = "SELECT * FROM tblFacilityDetails_Permits where user_cookies = $usersQuery and facility_entities = $facility_id";
+                                                                            $queries = "SELECT * FROM tblFacilityDetails_Accreditation where deleted = 0 AND user_cookies = $usersQuery and facility_entities = $facility_id  order by Accreditation_id desc";
                                                                             $resultQuery = mysqli_query($conn, $queries);
-                                                                            while($rowq = mysqli_fetch_array($resultQuery)){ ?>
-                                                                                <tr>
-                                                                                    <td><a href="facility-function/facility-download-functions.php?pathPermits=<?php echo $rowq['Permits_id']; ?>"><?php echo htmlentities($rowq['Permits'] ?? ''); ?></a></td>
-                                                                                    <td><?php echo htmlentities($rowq['Type_s'] ?? ''); ?></td>
-                                                                                    <td><?php echo htmlentities($rowq['Descriptions'] ?? ''); ?></td>
-                                                                                    <td><?php echo htmlentities($rowq['Issue_Date'] ?? ''); ?></td>
-                                                                                    <td><?php echo htmlentities($rowq['Expiration_Date'] ?? ''); ?></td>
-                                                                                    <td>
-                                                                                        <a class="btn blue btn-outline btnViewPermits" data-toggle="modal" href="#modalGetPermits" data-id="<?php echo $rowq["Permits_id"]; ?>" style="float:right;margin-right:20px;">
-                                                                                            Edit
-                                                                                        </a>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            <?php }
+                                                                            while($rowAcc = mysqli_fetch_array($resultQuery)) { 
+                                                                                $idate=date_create($rowAcc['Issue_Date_Type_Accreditation']);
+                                                                                $edate=date_create($rowAcc['Expiration_Date_Type_Accreditation']);
+                                                                                
+                                                                                echo '<tr>
+                                                                                    <td>'.$i++.'</td>
+                                                                                    <td><a href="facility_files_Folder/'.$rowAcc['Accreditation'].'" target="_blank">'.htmlentities($rowAcc['Accreditation'] ?? '').'</a></td>
+                                                                                    <td>'.htmlentities($rowAcc['Type_Accreditation'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowAcc['Descriptions_Accreditation'] ?? '').'</td>
+                                                                                    <td>'.date_format($idate,"Y/m/d").'</td>
+                                                                                    <td>'.date_format($edate,"Y/m/d").'</td>
+                                                                                    <td class="text-right">';
+                                                                                    
+                                                                                        if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                            echo '<a class="btn btn-outline red" onclick="btnDeleteCAA('.$rowAcc['Accreditation_id'].', this)">Delete</a>';
+                                                                                        }
+                                                                                        
+                                                                                    echo '</td>
+                                                                                </tr>';
+                                                                            }
                                                                         ?>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                    <!--end-->
-                                                     <!--start-->
-                                                    <div class="tab-pane" id="aq">
-                                                        <h4><strong>Allergens List (Handled in the Facility)</strong></h4>
-                                                        <br>
-                                                        <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
-                                                            <?php if($switch_user_id != 1649): ?>
-                                                                <div class="row">
-                                                                    <?php
-                                                                        $array_Allergens = explode(", ", $row["Allergens"]); 
-                                                                    ?>
-                                                                    <div class="col-md-4">
-                                                                        <input type="hidden" class="form-control" name="ids" value="<?php if($users == $row['users_entities']){ echo $row['facility_id'];}else{ echo '';} ?>" required> 
-                                                                        <input type="checkbox" name="Allergens[]" value="1" <?php if(in_array('1', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Milk</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Allergens[]" value="2" <?php if(in_array('2', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Tree Nuts</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Allergens[]" value="3" <?php if(in_array('3', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Eggs</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Allergens[]" value="4" <?php if(in_array('4', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Peanuts</label>
-                                                                        <br>      
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <input type="checkbox" name="Allergens[]" value="5" <?php if(in_array('5', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Fish</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Allergens[]" value="6" <?php if(in_array('6', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Wheat</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Allergens[]" value="7" <?php if(in_array('7', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Shell Fish</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Allergens[]" value="8" <?php if(in_array('8', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Soy Beans</label>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <input type="checkbox" name="Allergens[]" value="9" <?php if(in_array('9', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Sesame</label>
-                                                                        <br>
-                                                                        <input type="checkbox" name="Allergens[]" value="10" <?php if(in_array('10', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
-                                                                        <label>Other</label>
-                                                                        <br>
-                                                                        <input class="form-control" type="" name="Allergens_specify" value="<?php echo $row['Allergens_specify']; ?>"> 
-                                                                    </div>
-                                                                </div>
+                                                            <h4 class="hide"><strong>Accreditation History</strong></h4>
+                                                            <div class="row hide">
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Date of Accreditation</th>
+                                                                            <th>Audit Type</th>
+                                                                            <th>Accreditation Segment</th>
+                                                                            <th>Accreditation Authority</th>
+                                                                            <th>Scope of Accreditation</th>
+                                                                            <th>Accreditation Rating/Status</th>
+                                                                            <th>Audit Report</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                             <hr>
-                                                            <?php endif; ?>
-                                                            <h4><strong>Quality System Used?</strong> &nbsp;<a data-toggle="modal" href="#addQSModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                            <br>
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <?php
-                                                                        $array_Quality_System = explode(", ", $row["Quality_System"]);
-                                                                        
-                                                                        echo '<ul class="list-unstyled list-column-break mt-checkbox-list">';
-                                                                            $selectQS = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_QS WHERE deleted = 0");
-                                                                            if ($current_client == 16 OR $switch_user_id == 1649) {
-                                                                                $selectQS = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_QS WHERE deleted = 0 AND user_id = $switch_user_id");
-                                                                            }
-                                                                            while($rowQS = mysqli_fetch_array($selectQS)){ 
-                                                                                $q_ID = $rowQS['ID'];
-                                                                                $q_name = htmlentities($rowQS['name'] ?? '');
+                                                            <h4>
+                                                                <strong>Certification</strong>
+                                                                <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addCertificationModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                            </h4>
+                                                            <div class="row" >
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>No.</th>
+                                                                            <th>Certification</th>
+                                                                            <th>Type</th>
+                                                                            <th>Description</th>
+                                                                            <th>Issue Date</th>
+                                                                            <th>Expiration Date</th>
+                                                                            <th></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                       <?php 
+                                                                            $i = 1;
+                                                                            // $usersQuery = $_COOKIE['ID'];
+                                                                            $usersQuery = $switch_user_id;
+                                                                            $facility_id = $_GET['facility_id'];
+                                                                            $queries = "SELECT * FROM tblFacilityDetails_Certification WHERE deleted = 0 AND user_cookies = $usersQuery and facility_entities = $facility_id  order by Certification_id desc";
+                                                                            $resultQuery = mysqli_query($conn, $queries);
+                                                                            while($rowAcc = mysqli_fetch_array($resultQuery)) { 
+                                                                                $idate=date_create($rowAcc['Issue_Date_Certification']);
+                                                                                $edate=date_create($rowAcc['Expiration_Date_Certification']);
                                                                                 
-                                                                                echo '<li>
-                                                                                    <label class="mt-checkbox mt-checkbox-outline">
-                                                                                        <input type="checkbox" name="Quality_System[]" value="'.$q_ID.'" '; in_array($q_ID, $array_Quality_System) ? 'CHECKED':''; echo '> '.$q_name.'
-                                                                                        <span></span>
-                                                                                    </label>
-                                                                                </li>';
+                                                                                echo '<tr>
+                                                                                    <td>'.$i++.'</td>
+                                                                                    <td><a href="facility_files_Folder/'.$rowAcc['Certification'].'" target="_blank">'.htmlentities($rowAcc['Certification'] ?? '').'</a></td>
+                                                                                    <td>'.htmlentities($rowAcc['Type_Certification'] ?? '').'</td>
+                                                                                    <td>'.htmlentities($rowAcc['Descriptions_Certification'] ?? '').'</td>
+                                                                                    <td>'.date_format($idate,"Y/m/d").'</td>
+                                                                                    <td>'.date_format($edate,"Y/m/d").'</td>
+                                                                                    <td class="text-right">';
+                                                                                    
+                                                                                        if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                            echo '<a class="btn btn-outline red" onclick="btnDeleteCAC('.$rowAcc['Certification_id'].', this)">Delete</a>';
+                                                                                        }
+                                                                                        
+                                                                                    echo '</td>
+                                                                                </tr>';
                                                                             }
-                                                                            echo '<li class="hide">
-                                                                                <label class="mt-checkbox mt-checkbox-outline">
-                                                                                    <input type="checkbox" name="Quality_System[]" value="11"> Others
-                                                                                    <span></span>
-                                                                                </label>
-                                                                            </li>';
-                                                                        echo '</ul>';
-                                                                    ?>
-                                                                </div>
+                                                                        ?>
+                                                                    </tbody>
+                                                                </table>
                                                             </div>
-                                                            <br>
-                                                            <input type="submit" name="btn_aqs_function" value="Save" class="btn btn-success" style="float:right;margin-right:20px;">
-                                                            <br>
-                                                            <br>
-                                                        </form>
-                                                    </div> 
-                                                    <!--end-->
-                                                    <!--start-->
-                                                    <div class="tab-pane" id="ppf">
-                                                        <?php if($_COOKIE['client'] == 1 OR $_COOKIE['ID'] == 38): ?>
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <h4><strong>Premises Diagram</strong>&nbsp;<a data-toggle="modal" href="#addDiagram" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                                    <br>
-                                                                    <table class="table table-bordered">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Title</th>
-                                                                                <th>Supporting Files</th>
-                                                                                <th>Expiration Date</th>
-                                                                                <!--<th></th>-->
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody id="data_diagram">
-                                                                            <?php
-                                                                                $facility_id = $_GET['facility_id'];
-                                                                                $query_pm = mysqli_query($conn, "select * from tblFacilityDetails_Diagram where enterprise_pk = $switch_user_id and facility_id = $facility_id");
-                                                                                if(mysqli_fetch_row($query_pm)){
-                                                                                foreach($query_pm as $row_pm){?>
-                                                                                    <tr id="row_diagram<?=$row_pm['diagram_pk']; ?>">
-                                                                                        <td><?=htmlentities($row_pm['diagram_title'] ?? ''); ?></td>
-                                                                                        <td><a href="facility_files_Folder/<?= $row_pm['diagram_files']; ?>" target="_blank"><?= htmlentities($row_pm['diagram_files'] ?? ''); ?></a></td>
-                                                                                        <td><?= htmlentities($row_pm['expiry_date'] ?? ''); ?></td>
-                                                                                        <td width="150px">
-                                                                                            <div class="btn-group btn-group-circle">
-                                                                                                <a  href="#modal_update_diagram" data-toggle="modal" type="button" id="update_diagram" data-id="<?=$row_pm['diagram_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
-                                                                        	                    <a href="#modal_delete_diagram" data-toggle="modal" type="button" id="delete_diagram" data-id="<?=$row_pm['diagram_pk']; ?>" class="btn btn-danger btn-sm" onclick="">Delete</a>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                <?php } 
-                                                                                }
-                                                                            ?>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                                <div class="col-md-12">
-                                                                    <hr>
-                                                                    <h4><strong>Security Plan</strong>&nbsp;<a data-toggle="modal" href="#addPlan" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                                    <br>
-                                                                    <table class="table table-bordered">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Title</th>
-                                                                                <th>Supporting Files</th>
-                                                                                <th>Expiration Date</th>
-                                                                                <!--<th></th>-->
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody id="data_plan">
-                                                                            <?php
-                                                                                $facility_id = $_GET['facility_id'];
-                                                                                $query_plan = mysqli_query($conn, "select * from tblFacilityDetails_Plan where enterprise_pk = $switch_user_id and facility_id = $facility_id");
-                                                                                if(mysqli_fetch_row($query_plan)){
-                                                                                    foreach($query_plan as $row_plan){?>
-                                                                                        <tr id="row_plan<?=$row_plan['plan_pk']; ?>">
-                                                                                            <td><?=htmlentities($row_plan['plan_title'] ?? ''); ?></td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_plan['plan_files']; ?>" target="_blank"><?= htmlentities($row_plan['plan_files'] ?? ''); ?></a></td>
-                                                                                            <td><?= htmlentities($row_plan['expiry_date'] ?? ''); ?></td>
-                                                                                            <td width="150px">
-                                                                                                <div class="btn-group btn-group-circle">
-                                                                                                    <a  href="#modal_update_plan" data-toggle="modal" type="button" id="update_plan" data-id="<?= $row_plan['plan_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
-                                                                            	                    <a href="#modal_delete_plan" data-toggle="modal" type="button" id="delete_plan" data-id="<?= $row_plan['plan_pk']; ?>" class="btn btn-danger btn-sm" onclick="">Delete</a>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    <?php } 
-                                                                                }
-                                                                            ?>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
+                                                            <h4 class="hide"><strong>Certification  History</strong></h4>
+                                                            <div class="row hide">
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Date of Certification </th>
+                                                                            <th>Audit Type</th>
+                                                                            <th>Accreditation Segment</th>
+                                                                            <th>Accreditation Authority</th>
+                                                                            <th>Scope of Accreditation</th>
+                                                                            <th>Accreditation Rating/Status</th>
+                                                                            <th>Audit Report</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
                                                             </div>
-                                                        <?php endif; ?>
-                                                        <?php if($_COOKIE['client'] != 1 ): ?>
-                                                            <?php
-                                                                $array_N_A = explode(", ", $row["N_A"]); 
-                                                            ?>
+                                                        </div>
+                                                        <div class="tab-pane" id="fo">
+                                                            <h4>
+                                                                <strong>Facility Functions</strong>
+                                                                <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addFFModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                            </h4>
+                                                            <br>
                                                             <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
                                                                 <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <input type="hidden" class="form-control" name="ids" value="<?php  echo $_GET['facility_id']; ?>" required> 
-                                                                        <div class="col-md-4">
-                                                                        <label>Facility / Plant Total Sq. Ft.</label>
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input class="form-control" name="Facility_Plant_Total_Sq" id="FPT" value="<?php echo $row['Facility_Plant_Total_Sq']; ?>" <?php  if($row['Facility_Plant_Total_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="N_A[]"  id="FPTNA" onclick="FPTfunction()" value="1" <?php if(in_array('1', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
-                                                                            <label>N/A</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="col-md-4">
-                                                                            <label>Warehouse Sq. Ft.</label>
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input class="form-control" name="Warehouse_Sq" id="WS" value="<?php echo $row['Warehouse_Sq']; ?>" <?php  if($row['Warehouse_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="N_A[]" id="WSNA" onclick="WSfunction()" value="2" <?php if(in_array('2', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
-                                                                            <label>N/A</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <br>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="col-md-4">
-                                                                            <label>Cooler(s) / Chiller(s) Sq. Ft.</label>
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input class="form-control" name="Cooler_Chiller_Sq" id="CC" value="<?php echo $row['Cooler_Chiller_Sq']; ?>" <?php  if($row['Cooler_Chiller_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="N_A[]" id="CCNA" onclick="CCfunction()" value="3" <?php if(in_array('3', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
-                                                                            <label>N/A</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="col-md-4">
-                                                                            <label>Freezer(s) Sq. Ft.</label>
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input class="form-control" name="Freezer_Sq" id="FS" value="<?php echo $row['Freezer_Sq']; ?>" <?php  if($row['Freezer_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="N_A[]" id="FSNA" onclick="FSfunction()" value="4" <?php if(in_array('4', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
-                                                                            <label>N/A</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <br>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="col-md-4">
-                                                                            <label>Production Area Sq. Ft.</label>
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input class="form-control" name="Production_Area_Sq" id="PA" value="<?php echo $row['Production_Area_Sq']; ?>" <?php  if($row['Production_Area_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="N_A[]" id="PANA" onclick="PAfunction()" value="5" <?php if(in_array('5', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
-                                                                            <label>N/A</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="col-md-4">
-                                                                        <label>Packaging Area Sq. Ft</label>
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input class="form-control" name="Packaging_Area_Sq" id="PAS" value="<?php echo $row['Packaging_Area_Sq']; ?>" <?php  if($row['Packaging_Area_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="N_A[]" id="PASNA" onclick="PASfunction()" value="6" <?php if(in_array('6', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
-                                                                            <label>N/A</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <br>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="col-md-4">
-                                                                            <label>Farm Area Sq. Ft.</label>
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input class="form-control" name="Farm_Area_Sq" id="FA" value="<?php echo $row['Farm_Area_Sq']; ?>" <?php  if($row['Farm_Area_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
-                                                                        </div>
-                                                                        <div class="col-md-4">
-                                                                            <input type="checkbox" name="N_A[]" id="FANA" onclick="FAfunction()" value="7" <?php if(in_array('7', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
-                                                                            <label>N/A</label>
-                                                                        </div>
+                                                                    <div class="col-md-12">
+                                                                        <?php
+                                                                            $array_data = explode(", ", $row["Facilty_Functions"]);
+                                                                            
+                                                                            echo '<input type="hidden" class="form-control" name="ids" value="'; if($users == $row['users_entities']){ echo $row['facility_id'];}else{ echo '';} echo '"> 
+                                                                            <ul class="list-unstyled list-column-break mt-checkbox-list">';
+                                                                                $selectFunction = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_Function WHERE deleted = 0");
+                                                                                if ($current_client == 16 OR $switch_user_id == 1649) {
+                                                                                    $selectFunction = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_Function WHERE deleted = 0 AND user_id = $switch_user_id");
+                                                                                }
+                                                                                while($rowFunction = mysqli_fetch_array($selectFunction)){ 
+                                                                                    $f_ID = $rowFunction['ID'];
+                                                                                    $f_name = htmlentities($rowFunction['name'] ?? '');
+                                                                                    
+                                                                                    echo '<li>
+                                                                                        <label class="mt-checkbox mt-checkbox-outline">
+                                                                                            <input type="checkbox" name="Facilty_Functions[]" value="'.$f_ID.'" '; echo in_array($f_ID, $array_data) ? 'CHECKED':''; echo '> '.$f_name.'
+                                                                                            <span></span>
+                                                                                        </label>
+                                                                                    </li>';
+                                                                                }
+                                                                            echo '</ul>';
+                                                                        ?>
                                                                     </div>
                                                                 </div>
                                                                 <hr>
                                                                 <div class="row">
-                                                                     <div class="col-md-6">
-                                                                        <input type="submit" name="save_Btnsq" class="btn btn-success" value="Save">
+                                                                    <?php if($switch_user_id != 1649): ?>
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <label>Number of Shifts:</label>
+                                                                                <input type="number" class="form-control" name="Number_of_Shifts" value="<?php echo $row["Number_of_Shifts"]?>">
+                                                                            </div>
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                    
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>Number of Employees:</label>
+                                                                            <input type="number" class="form-control" name="Number_of_Employees" value="<?php echo $row["Number_of_Employees"]?>">
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <?php if($_COOKIE['client'] != 1 AND $switch_user_id != 1649): ?>
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <label>Number of Lines:</label>
+                                                                                <input type="number" class="form-control" name="Number_of_Lines" value="<?php echo $row["Number_of_Lines"]?>">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <label>Number of HACCPs / Food Safety Plans</label>
+                                                                                <input type="number" class="form-control" name="Number_of_HACCPs" value="<?php echo $row["Number_of_HACCPs"]?>">
+                                                                            </div>
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                </div>
+                                                                <hr>
+                                                                <h4><strong>Details</strong></h4>
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label"><strong>Year Established:</strong></label>
+                                                                            <input type="date" name="Year_Establish" value="<?php echo $row["Year_Establish"]?>" class="form-control">
+                                                                        </div>
                                                                     </div>
                                                                 </div>
+                                                                <input type="submit" name="btn_form_function" value="Save" class="btn btn-success" style="float:right;margin-right:20px;">
+                                                                <br>
                                                             </form>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                    <!--end--> 
-                                                    <!--start-->
-                                                    
-                                                    <?php if($_COOKIE['client'] == 1 OR $_COOKIE['ID'] == 38): ?>
-                                                        <div class="tab-pane" id="bond">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <h4><strong>Insurance</strong>&nbsp;<a data-toggle="modal" href="#addInsurance1" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                                    <br>
-                                                                    <table class="table table-bordered">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Insurance Company Name</th>
-                                                                                <th>Policy Number</th>
-                                                                                <th>Effective Date</th>
-                                                                                <th>Expiration Date</th>
-                                                                                <th></th>
-                                                                                <th>Status</th>
-                                                                                <th>Supporting Files</th>
-                                                                                <th></th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody id="data_ib1">
-                                                                            <?php
-                                                                                $facility_id = $_GET['facility_id'];
-                                                                                $query_ib = mysqli_query($conn, "select * from tblFacilityDetails_Bond where enterprise_pk = $switch_user_id and type_id = 1 and is_deleted = 0 and facility_id = $facility_id");
-                                                                                if(mysqli_fetch_row($query_ib)){
-                                                                                    foreach($query_ib as $row_ib){?>
-                                                                                        <tr id="row_bond<?=$row_ib['bond_pk']; ?>">
-                                                                                            <td><?=  htmlentities($row_ib['ib_title'] ?? ''); ?></td>
-                                                                                            <td><?= htmlentities($row_ib['policy_number'] ?? ''); ?></td>
-                                                                                            <td><?= date('Y-m-d', strtotime($row_ib['effective_date'])); ?></td>
-                                                                                            <td><?= date('Y-m-d', strtotime($row_ib['expiry_date'])); ?></td>
-                                                                                            <td><?= htmlentities($row_ib['policy_type'] ?? ''); ?></td>
-                                                                                            <td>
-                                                                                                <?php 
-                                                                                                    if($row_ib['in_status'] == 1){ echo 'Active';}else{ echo 'Inactive'; }
-                                                                                                ?>
-                                                                                            </td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_ib['ib_files']; ?>" target="_blank"><?= htmlentities($row_ib['ib_files'] ?? ''); ?></a></td>
-                                                                                            <td width="150px">
-                                                                                                <div class="btn-group btn-group-circle">
-                                                                                                    <a  href="#modal_update_bond1" data-toggle="modal" type="button" id="update_bond1" data-id="<?=$row_ib['bond_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
-                                                                            	                    <a href="#modal_delete_bond" data-toggle="modal" type="button" id="delete_bond" data-id="<?=$row_ib['bond_pk']; ?>" class="btn btn-danger btn-sm" onclick="">Delete</a>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    <?php } 
-                                                                                }
-                                                                            ?>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
                                                             <hr>
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <h4><strong>Bond</strong>&nbsp;<a data-toggle="modal" href="#addInsurance2" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                                    <br>
-                                                                    <table class="table table-bordered">
+                                                            <?php if($_COOKIE['client'] != 1 ): ?>
+                                                                <div class="row">
+                                                                    <table class="table">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th>Bond Company Name</th>
-                                                                                <th>Bond Number</th>
-                                                                                <th>Effective Date</th>
+                                                                                <th>Permits &nbsp;<a data-toggle="modal" href="#addPermitsModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></th>
+                                                                                <th>Type</th>
+                                                                                <th>Description</th>
+                                                                                <th>Issue Date</th>
                                                                                 <th>Expiration Date</th>
-                                                                                <th>Cannabis Bond Type</th>
-                                                                                <th>Supporting Files</th>
                                                                                 <th></th>
                                                                             </tr>
                                                                         </thead>
-                                                                        <tbody id="data_ib2">
-                                                                            <?php
+                                                                        <tbody>
+                                                                            <?php 
+                                                                                // $usersQuery = $_COOKIE['ID'];
+                                                                                $usersQuery = $switch_user_id;
                                                                                 $facility_id = $_GET['facility_id'];
-                                                                                $query_ib = mysqli_query($conn, "select * from tblFacilityDetails_Bond where enterprise_pk = $switch_user_id and type_id = 2 and is_deleted = 0 and facility_id = $facility_id");
-                                                                                if(mysqli_fetch_row($query_ib)){
-                                                                                    foreach($query_ib as $row_ib){?>
-                                                                                        <tr id="row_bond<?=$row_ib['bond_pk']; ?>">
-                                                                                            <td><?=  htmlentities($row_ib['ib_title'] ?? ''); ?></td>
-                                                                                            <td><?= htmlentities($row_ib['policy_number'] ?? ''); ?></td>
-                                                                                            <td><?= date('Y-m-d', strtotime($row_ib['effective_date'])); ?></td>
-                                                                                            <td><?= date('Y-m-d', strtotime($row_ib['expiry_date'])); ?></td>
-                                                                                            <td><?= htmlentities($row_ib['policy_type'] ?? ''); ?></td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_ib['ib_files']; ?>" target="_blank"><?= htmlentities($row_ib['ib_files'] ?? ''); ?></a></td>
-                                                                                            <td width="150px">
-                                                                                                <div class="btn-group btn-group-circle">
-                                                                                                    <a  href="#modal_update_bond" data-toggle="modal" type="button" id="update_bond" data-id="<?=$row_ib['bond_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
-                                                                            	                    <a href="#modal_delete_bond" data-toggle="modal" type="button" id="delete_bond" data-id="<?=$row_ib['bond_pk']; ?>" class="btn btn-danger btn-sm" onclick="">Delete</a>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    <?php } 
-                                                                                }
+                                                                                $queries = "SELECT * FROM tblFacilityDetails_Permits where user_cookies = $usersQuery and facility_entities = $facility_id";
+                                                                                $resultQuery = mysqli_query($conn, $queries);
+                                                                                while($rowq = mysqli_fetch_array($resultQuery)) {
+                                                                                    echo '<tr>
+                                                                                        <td><a href="facility-function/facility-download-functions.php?pathPermits='.$rowq['Permits_id'].'">'.htmlentities($rowq['Permits'] ?? '').'</a></td>
+                                                                                        <td>'.htmlentities($rowq['Type_s'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowq['Descriptions'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowq['Issue_Date'] ?? '').'</td>
+                                                                                        <td>'.htmlentities($rowq['Expiration_Date'] ?? '').'</td>
+                                                                                        <td>';
+                                                                                        
+                                                                                            if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                echo '<a class="btn blue btn-outline btnViewPermits" data-toggle="modal" href="#modalGetPermits" data-id="'.$rowq["Permits_id"].'" style="float:right;margin-right:20px;">Edit</a>';
+                                                                                            }
+                                                                                            
+                                                                                        echo '</td>
+                                                                                    </tr>';
+                                                                                }    
                                                                             ?>
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
-                                                            </div>
+                                                            <?php endif; ?>
                                                         </div>
-                                                        <!--end-->
-                                                        <!--start-->
-                                                        <div class="tab-pane" id="vehicles">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <h4><strong>Vehicles</strong>&nbsp;<a data-toggle="modal" href="#addVehicles" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
+                                                        <div class="tab-pane" id="aq">
+                                                            <h4><strong>Allergens List (Handled in the Facility)</strong></h4>
+                                                            <br>
+                                                            <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
+                                                                <?php if($switch_user_id != 1649): ?>
+                                                                    <div class="row">
+                                                                        <?php
+                                                                            $array_Allergens = explode(", ", $row["Allergens"]); 
+                                                                        ?>
+                                                                        <div class="col-md-4">
+                                                                            <input type="hidden" class="form-control" name="ids" value="<?php if($users == $row['users_entities']){ echo $row['facility_id'];}else{ echo '';} ?>" required> 
+                                                                            <input type="checkbox" name="Allergens[]" value="1" <?php if(in_array('1', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Milk</label>
+                                                                            <br>
+                                                                            <input type="checkbox" name="Allergens[]" value="2" <?php if(in_array('2', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Tree Nuts</label>
+                                                                            <br>
+                                                                            <input type="checkbox" name="Allergens[]" value="3" <?php if(in_array('3', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Eggs</label>
+                                                                            <br>
+                                                                            <input type="checkbox" name="Allergens[]" value="4" <?php if(in_array('4', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Peanuts</label>
+                                                                            <br>      
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <input type="checkbox" name="Allergens[]" value="5" <?php if(in_array('5', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Fish</label>
+                                                                            <br>
+                                                                            <input type="checkbox" name="Allergens[]" value="6" <?php if(in_array('6', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Wheat</label>
+                                                                            <br>
+                                                                            <input type="checkbox" name="Allergens[]" value="7" <?php if(in_array('7', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Shell Fish</label>
+                                                                            <br>
+                                                                            <input type="checkbox" name="Allergens[]" value="8" <?php if(in_array('8', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Soy Beans</label>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <input type="checkbox" name="Allergens[]" value="9" <?php if(in_array('9', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Sesame</label>
+                                                                            <br>
+                                                                            <input type="checkbox" name="Allergens[]" value="10" <?php if(in_array('10', $array_Allergens)){echo 'checked';}else{echo '';} ?>> 
+                                                                            <label>Other</label>
+                                                                            <br>
+                                                                            <input class="form-control" type="" name="Allergens_specify" value="<?php echo $row['Allergens_specify']; ?>"> 
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                <?php endif; ?>
+                                                                
+                                                                <h4>
+                                                                    <strong>Quality System Used?</strong>
+                                                                    <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addQSModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                                </h4>
+                                                                <br>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <?php
+                                                                            $array_Quality_System = explode(", ", $row["Quality_System"]);
+                                                                            
+                                                                            echo '<ul class="list-unstyled list-column-break mt-checkbox-list">';
+                                                                                $selectQS = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_QS WHERE deleted = 0");
+                                                                                if ($current_client == 16 OR $switch_user_id == 1649) {
+                                                                                    $selectQS = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_QS WHERE deleted = 0 AND user_id = $switch_user_id");
+                                                                                }
+                                                                                while($rowQS = mysqli_fetch_array($selectQS)){ 
+                                                                                    $q_ID = $rowQS['ID'];
+                                                                                    $q_name = htmlentities($rowQS['name'] ?? '');
+                                                                                    
+                                                                                    echo '<li>
+                                                                                        <label class="mt-checkbox mt-checkbox-outline">
+                                                                                            <input type="checkbox" name="Quality_System[]" value="'.$q_ID.'" '; echo in_array($q_ID, $array_Quality_System) ? 'CHECKED':''; echo '> '.$q_name.'
+                                                                                            <span></span>
+                                                                                        </label>
+                                                                                    </li>';
+                                                                                }
+                                                                                echo '<li class="hide">
+                                                                                    <label class="mt-checkbox mt-checkbox-outline">
+                                                                                        <input type="checkbox" name="Quality_System[]" value="11"> Others
+                                                                                        <span></span>
+                                                                                    </label>
+                                                                                </li>';
+                                                                            echo '</ul>';
+                                                                        ?>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <input type="submit" name="btn_aqs_function" value="Save" class="btn btn-success" style="float:right;margin-right:20px;">
+                                                                <br>
+                                                                <br>
+                                                            </form>
+                                                        </div> 
+                                                        <div class="tab-pane" id="ppf">
+                                                            <?php if($_COOKIE['client'] == 1 OR $_COOKIE['ID'] == 38): ?>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <h4>
+                                                                            <strong>Premises Diagram</strong>
+                                                                            <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addDiagram" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                                        </h4>
+                                                                        <br>
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Title</th>
+                                                                                    <th>Supporting Files</th>
+                                                                                    <th>Expiration Date</th>
+                                                                                    <!--<th></th>-->
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="data_diagram">
+                                                                                <?php
+                                                                                    $facility_id = $_GET['facility_id'];
+                                                                                    $query_pm = mysqli_query($conn, "select * from tblFacilityDetails_Diagram where enterprise_pk = $switch_user_id and facility_id = $facility_id");
+                                                                                    if(mysqli_fetch_row($query_pm)) {
+                                                                                        foreach($query_pm as $row_pm) {
+                                                                                            echo '<tr id="row_diagram'.$row_pm['diagram_pk'].'">
+                                                                                                <td>'.htmlentities($row_pm['diagram_title'] ?? '').'</td>
+                                                                                                <td><a href="facility_files_Folder/'.$row_pm['diagram_files'].'" target="_blank">'.htmlentities($row_pm['diagram_files'] ?? '').'</a></td>
+                                                                                                <td>'.htmlentities($row_pm['expiry_date'] ?? '').'</td>
+                                                                                                <td width="150px">';
+                                                                                                
+                                                                                                    if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                        echo '<a  href="#modal_update_diagram" data-toggle="modal" type="button" id="update_diagram" data-id="'.$row_pm['diagram_pk'].'" class="btn btn-outline dark btn-sm">Edit</a>';
+                                                                                                    }
+                                                                                                    if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                	                    echo '<a href="#modal_delete_diagram" data-toggle="modal" type="button" id="delete_diagram" data-id="'.$row_pm['diagram_pk'].'" class="btn btn-danger btn-sm" onclick="">Delete</a>';
+                                                                                                    }
+                                                                                                    
+                                                                                                echo '</td>
+                                                                                            </tr>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div class="col-md-12">
+                                                                        <hr>
+                                                                        <h4>
+                                                                            <strong>Security Plan</strong>
+                                                                            <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addPlan" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                                        </h4>
+                                                                        <br>
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Title</th>
+                                                                                    <th>Supporting Files</th>
+                                                                                    <th>Expiration Date</th>
+                                                                                    <!--<th></th>-->
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="data_plan">
+                                                                                <?php
+                                                                                    $facility_id = $_GET['facility_id'];
+                                                                                    $query_plan = mysqli_query($conn, "select * from tblFacilityDetails_Plan where enterprise_pk = $switch_user_id and facility_id = $facility_id");
+                                                                                    if(mysqli_fetch_row($query_plan)) {
+                                                                                        foreach($query_plan as $row_plan) {
+                                                                                            echo '<tr id="row_plan'.$row_plan['plan_pk'].'">
+                                                                                                <td>'.htmlentities($row_plan['plan_title'] ?? '').'</td>
+                                                                                                <td><a href="facility_files_Folder/'.$row_plan['plan_files'].'" target="_blank">'.htmlentities($row_plan['plan_files'] ?? '').'</a></td>
+                                                                                                <td>'.htmlentities($row_plan['expiry_date'] ?? '').'</td>
+                                                                                                <td width="150px">';
+                                                                                                    
+                                                                                                    if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                        echo '<a  href="#modal_update_plan" data-toggle="modal" type="button" id="update_plan" data-id="'.$row_plan['plan_pk'].'" class="btn btn-outline dark btn-sm">Edit</a>';
+                                                                                                    }
+                                                                                                    if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                	                    echo '<a href="#modal_delete_plan" data-toggle="modal" type="button" id="delete_plan" data-id="'.$row_plan['plan_pk'].'" class="btn btn-danger btn-sm" onclick="">Delete</a>';
+                                                                                                    }
+                                                                                                    
+                                                                                                echo '</td>
+                                                                                            </tr>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                            <?php if($_COOKIE['client'] != 1 ): ?>
+                                                                <?php
+                                                                    $array_N_A = explode(", ", $row["N_A"]); 
+                                                                ?>
+                                                                <form action="facility-function/facility-update-function.php" method="POST" enctype="multipart/form-data">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <input type="hidden" class="form-control" name="ids" value="<?php  echo $_GET['facility_id']; ?>" required> 
+                                                                            <div class="col-md-4">
+                                                                            <label>Facility / Plant Total Sq. Ft.</label>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input class="form-control" name="Facility_Plant_Total_Sq" id="FPT" value="<?php echo $row['Facility_Plant_Total_Sq']; ?>" <?php  if($row['Facility_Plant_Total_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input type="checkbox" name="N_A[]"  id="FPTNA" onclick="FPTfunction()" value="1" <?php if(in_array('1', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
+                                                                                <label>N/A</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="col-md-4">
+                                                                                <label>Warehouse Sq. Ft.</label>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input class="form-control" name="Warehouse_Sq" id="WS" value="<?php echo $row['Warehouse_Sq']; ?>" <?php  if($row['Warehouse_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input type="checkbox" name="N_A[]" id="WSNA" onclick="WSfunction()" value="2" <?php if(in_array('2', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
+                                                                                <label>N/A</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                     <br>
-                                                                    <table class="table table-bordered">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Driver's Name</th>
-                                                                                <th>License Plate Number</th>
-                                                                                <th>Year</th>
-                                                                                <th>Make</th>
-                                                                                <th>Model</th>
-                                                                                <th>Vin #.</th>
-                                                                                <th>Color</th>
-                                                                                <th>Status</th>
-                                                                                <th>Supporting Files</th>
-                                                                                <th></th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody id="data_vehicle">
-                                                                            <?php
-                                                                                $facility_id = $_GET['facility_id'];
-                                                                                $query_vehicle = mysqli_query($conn, "select * from tblFacilityDetails_vehicles where enterprise_pk = $switch_user_id and is_deleted = 0 and facility_id = $facility_id");
-                                                                                if(mysqli_fetch_row($query_vehicle)){
-                                                                                    foreach($query_vehicle as $row_vehicle){?>
-                                                                                        <tr id="row_vehicle<?=$row_vehicle['vehicle_pk']; ?>">
-                                                                                            <td>
-                                                                                                <?php
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <div class="col-md-4">
+                                                                                <label>Cooler(s) / Chiller(s) Sq. Ft.</label>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input class="form-control" name="Cooler_Chiller_Sq" id="CC" value="<?php echo $row['Cooler_Chiller_Sq']; ?>" <?php  if($row['Cooler_Chiller_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input type="checkbox" name="N_A[]" id="CCNA" onclick="CCfunction()" value="3" <?php if(in_array('3', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
+                                                                                <label>N/A</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="col-md-4">
+                                                                                <label>Freezer(s) Sq. Ft.</label>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input class="form-control" name="Freezer_Sq" id="FS" value="<?php echo $row['Freezer_Sq']; ?>" <?php  if($row['Freezer_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input type="checkbox" name="N_A[]" id="FSNA" onclick="FSfunction()" value="4" <?php if(in_array('4', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
+                                                                                <label>N/A</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <br>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <div class="col-md-4">
+                                                                                <label>Production Area Sq. Ft.</label>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input class="form-control" name="Production_Area_Sq" id="PA" value="<?php echo $row['Production_Area_Sq']; ?>" <?php  if($row['Production_Area_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input type="checkbox" name="N_A[]" id="PANA" onclick="PAfunction()" value="5" <?php if(in_array('5', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
+                                                                                <label>N/A</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="col-md-4">
+                                                                            <label>Packaging Area Sq. Ft</label>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input class="form-control" name="Packaging_Area_Sq" id="PAS" value="<?php echo $row['Packaging_Area_Sq']; ?>" <?php  if($row['Packaging_Area_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input type="checkbox" name="N_A[]" id="PASNA" onclick="PASfunction()" value="6" <?php if(in_array('6', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
+                                                                                <label>N/A</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <br>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <div class="col-md-4">
+                                                                                <label>Farm Area Sq. Ft.</label>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input class="form-control" name="Farm_Area_Sq" id="FA" value="<?php echo $row['Farm_Area_Sq']; ?>" <?php  if($row['Farm_Area_Sq'] == ""){echo 'readonly';}else{echo '';} ?>> 
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <input type="checkbox" name="N_A[]" id="FANA" onclick="FAfunction()" value="7" <?php if(in_array('7', $array_N_A) || is_null($row["N_A"])){echo 'checked';}else{echo '';} ?>> 
+                                                                                <label>N/A</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                         <div class="col-md-6">
+                                                                            <input type="submit" name="save_Btnsq" class="btn btn-success" value="Save">
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        
+                                                        <?php if($_COOKIE['client'] == 1 OR $_COOKIE['ID'] == 38): ?>
+                                                            <div class="tab-pane" id="bond">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <h4>
+                                                                            <strong>Insurance</strong>
+                                                                            <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addInsurance1" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                                        </h4>
+                                                                        <br>
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Insurance Company Name</th>
+                                                                                    <th>Policy Number</th>
+                                                                                    <th>Effective Date</th>
+                                                                                    <th>Expiration Date</th>
+                                                                                    <th></th>
+                                                                                    <th>Status</th>
+                                                                                    <th>Supporting Files</th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="data_ib1">
+                                                                                <?php
+                                                                                    $facility_id = $_GET['facility_id'];
+                                                                                    $query_ib = mysqli_query($conn, "select * from tblFacilityDetails_Bond where enterprise_pk = $switch_user_id and type_id = 1 and is_deleted = 0 and facility_id = $facility_id");
+                                                                                    if(mysqli_fetch_row($query_ib)) {
+                                                                                        foreach($query_ib as $row_ib) {
+                                                                                            echo '<tr id="row_bond'.$row_ib['bond_pk'].'">
+                                                                                                <td>'.htmlentities($row_ib['ib_title'] ?? '').'</td>
+                                                                                                <td>'.htmlentities($row_ib['policy_number'] ?? '').'</td>
+                                                                                                <td>'.date('Y-m-d', strtotime($row_ib['effective_date'])).'</td>
+                                                                                                <td>'.date('Y-m-d', strtotime($row_ib['expiry_date'])).'</td>
+                                                                                                <td>'.htmlentities($row_ib['policy_type'] ?? '').'</td>
+                                                                                                <td>'; echo $row_ib['in_status'] == 1 ? 'Active':'Inactive'; echo '</td>
+                                                                                                <td><a href="facility_files_Folder/'.$row_ib['ib_files'].'" target="_blank">'.htmlentities($row_ib['ib_files'] ?? '').'</a></td>
+                                                                                                <td width="150px">';
+                                                                                                
+                                                                                                    if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                        echo '<a  href="#modal_update_bond1" data-toggle="modal" type="button" id="update_bond1" data-id="'.$row_ib['bond_pk'].'" class="btn btn-outline dark btn-sm">Edit</a>';
+                                                                                                    }
+                                                                                                    if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                	                    echo '<a href="#modal_delete_bond" data-toggle="modal" type="button" id="delete_bond" data-id="'.$row_ib['bond_pk'].'" class="btn btn-danger btn-sm" onclick="">Delete</a>';
+                                                                                                    }
+                                                                                                    
+                                                                                                echo '</td>
+                                                                                            </tr>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <h4>
+                                                                            <strong>Bond</strong>
+                                                                            <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addInsurance2" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                                        </h4>
+                                                                        <br>
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Bond Company Name</th>
+                                                                                    <th>Bond Number</th>
+                                                                                    <th>Effective Date</th>
+                                                                                    <th>Expiration Date</th>
+                                                                                    <th>Cannabis Bond Type</th>
+                                                                                    <th>Supporting Files</th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="data_ib2">
+                                                                                <?php
+                                                                                    $facility_id = $_GET['facility_id'];
+                                                                                    $query_ib = mysqli_query($conn, "select * from tblFacilityDetails_Bond where enterprise_pk = $switch_user_id and type_id = 2 and is_deleted = 0 and facility_id = $facility_id");
+                                                                                    if(mysqli_fetch_row($query_ib)) {
+                                                                                        foreach($query_ib as $row_ib) {
+                                                                                            echo '<tr id="row_bond'.$row_ib['bond_pk'].'">
+                                                                                                <td>'.htmlentities($row_ib['ib_title'] ?? '').'</td>
+                                                                                                <td>'.htmlentities($row_ib['policy_number'] ?? '').'</td>
+                                                                                                <td>'.date('Y-m-d', strtotime($row_ib['effective_date'])).'</td>
+                                                                                                <td>'.date('Y-m-d', strtotime($row_ib['expiry_date'])).'</td>
+                                                                                                <td>'.htmlentities($row_ib['policy_type'] ?? '').'</td>
+                                                                                                <td><a href="facility_files_Folder/'.$row_ib['ib_files'].'" target="_blank">'.htmlentities($row_ib['ib_files'] ?? '').'</a></td>
+                                                                                                <td width="150px">';
+                                                                                                
+                                                                                                    if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                        echo '<a  href="#modal_update_bond" data-toggle="modal" type="button" id="update_bond" data-id="'.$row_ib['bond_pk'].'" class="btn btn-outline dark btn-sm">Edit</a>';
+                                                                                                    }
+                                                                                                    if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                	                    echo '<a href="#modal_delete_bond" data-toggle="modal" type="button" id="delete_bond" data-id="'.$row_ib['bond_pk'].'" class="btn btn-danger btn-sm" onclick="">Delete</a>';
+                                                                                                    }
+                                                                                                    
+                                                                                                echo '</td>
+                                                                                            </tr>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane" id="vehicles">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <h4>
+                                                                            <strong>Vehicles</strong>
+                                                                            <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addVehicles" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                                        </h4>
+                                                                        <br>
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Driver's Name</th>
+                                                                                    <th>License Plate Number</th>
+                                                                                    <th>Year</th>
+                                                                                    <th>Make</th>
+                                                                                    <th>Model</th>
+                                                                                    <th>Vin #.</th>
+                                                                                    <th>Color</th>
+                                                                                    <th>Status</th>
+                                                                                    <th>Supporting Files</th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="data_vehicle">
+                                                                                <?php
+                                                                                    $facility_id = $_GET['facility_id'];
+                                                                                    $query_vehicle = mysqli_query($conn, "select * from tblFacilityDetails_vehicles where enterprise_pk = $switch_user_id and is_deleted = 0 and facility_id = $facility_id");
+                                                                                    if(mysqli_fetch_row($query_vehicle)) {
+                                                                                        foreach($query_vehicle as $row_vehicle) {
+                                                                                            echo '<tr id="row_vehicle'.$row_vehicle['vehicle_pk'].'">
+                                                                                                <td>';
+                                                                                                
                                                                                                     $drivers_id = $row_vehicle['driver_name']; 
                                                                                                     $drivers = mysqli_query($conn, "select * from tbl_hr_employee where ID = '$drivers_id'");
                                                                                                     foreach($drivers as $name_driver){
                                                                                                         echo htmlentities($name_driver['first_name'] ?? '').' '.htmlentities($name_driver['last_name'] ?? '');
                                                                                                     }
-                                                                                                ?>
-                                                                                            </td>
-                                                                                            <td><?=htmlentities($row_vehicle['lisence_plate'] ?? ''); ?></td>
-                                                                                            <td><?=htmlentities($row_vehicle['vehicle_yr'] ?? ''); ?></td>
-                                                                                            <td><?=htmlentities($row_vehicle['vehicle_make'] ?? ''); ?></td>
-                                                                                            <td><?=htmlentities($row_vehicle['vehicle_model'] ?? ''); ?></td>
-                                                                                            <td><?=htmlentities($row_vehicle['vin_number'] ?? ''); ?></td>
-                                                                                            <td><?=htmlentities($row_vehicle['vehicle_color'] ?? ''); ?></td>
-                                                                                            <td>
-                                                                                                <?php 
-                                                                                                    if($row_vehicle['vehicle_status']== 1){ echo 'Active'; }else{ echo'Inactive'; } 
-                                                                                                ?>
-                                                                                            </td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_vehicle['vehicle_files']; ?>" target="_blank"><?= htmlentities($row_vehicle['vehicle_files'] ?? ''); ?></a></td>
-                                                                                            <td width="150px">
-                                                                                                <div class="btn-group btn-group-circle">
-                                                                                                    <a  href="#modal_update_vehicle" data-toggle="modal" type="button" id="update_vehicle" data-id="<?=$row_vehicle['vehicle_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
-                                                                            	                    <a href="#modal_delete_vehicle" data-toggle="modal" type="button" id="delete_vehicle" data-id="<?=$row_vehicle['vehicle_pk']; ?>" class="btn btn-danger btn-sm" onclick="">Delete</a>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    <?php } 
-                                                                                }
-                                                                            ?>
-                                                                        </tbody>
-                                                                    </table>
+                                                                                                        
+                                                                                                echo '</td>
+                                                                                                <td>'.htmlentities($row_vehicle['lisence_plate'] ?? '').'</td>
+                                                                                                <td>'.htmlentities($row_vehicle['vehicle_yr'] ?? '').'</td>
+                                                                                                <td>'.htmlentities($row_vehicle['vehicle_make'] ?? '').'</td>
+                                                                                                <td>'.htmlentities($row_vehicle['vehicle_model'] ?? '').'</td>
+                                                                                                <td>'.htmlentities($row_vehicle['vin_number'] ?? '').'</td>
+                                                                                                <td>'.htmlentities($row_vehicle['vehicle_color'] ?? '').'</td>
+                                                                                                <td>'; echo $row_vehicle['vehicle_status']== 1 ? 'Active':'Inactive'; echo '</td>
+                                                                                                <td><a href="facility_files_Folder/'.$row_vehicle['vehicle_files'].'" target="_blank">'.htmlentities($row_vehicle['vehicle_files'] ?? '').'</a></td>
+                                                                                                <td width="150px">';
+                                                                                                
+                                                                                                    if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                        echo '<a  href="#modal_update_vehicle" data-toggle="modal" type="button" id="update_vehicle" data-id="'.$row_vehicle['vehicle_pk'].'" class="btn btn-outline dark btn-sm">Edit</a>';
+                                                                                                    }
+                                                                                                    if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                	                    echo '<a href="#modal_delete_vehicle" data-toggle="modal" type="button" id="delete_vehicle" data-id="'.$row_vehicle['vehicle_pk'].'" class="btn btn-danger btn-sm" onclick="">Delete</a>';
+                                                                                                    }
+                                                                                                    
+                                                                                                echo '</td>
+                                                                                            </tr>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="tab-pane" id="deficiency">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <h4><strong>Deficiency Notice</strong>&nbsp;<a data-toggle="modal" href="#addDeficiency" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;ADD</a></h4>
-                                                                    <br>
-                                                                    <table class="table table-bordered">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Regulatory Agency</th>
-                                                                                <th>Date of Issuance</th>
-                                                                                <th>Date Due</th>
-                                                                                <th>Number of Violations</th>
-                                                                                <th>Supporting Files</th>
-                                                                                <th></th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody id="data_deficiency">
-                                                                            <?php
-                                                                                $facility_id = $_GET['facility_id'];
-                                                                                $query_deficiency = mysqli_query($conn, "select * from tblFacilityDetails_deficiency where enterprise_pk = $switch_user_id and is_deleted = 0 and facility_id = $facility_id");
-                                                                                if(mysqli_fetch_row($query_deficiency)){
-                                                                                    foreach($query_deficiency as $row_deficiency){?>
-                                                                                        <tr id="row_deficiency<?=$row_deficiency['deficiency_pk']; ?>">
-                                                                                            <td><?=htmlentities($row_deficiency['regulatory_agency'] ?? ''); ?></td>
-                                                                                            <td><?= date('Y-m-d', strtotime($row_deficiency['date_issuance'])); ?></td>
-                                                                                            <td><?= date('Y-m-d', strtotime($row_deficiency['date_due'])); ?></td>
-                                                                                            <td><?= htmlentities($row_deficiency['number_violations'] ?? ''); ?></td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_deficiency['deficiency_files']; ?>" target="_blank"><?= htmlentities($row_deficiency['deficiency_files'] ?? ''); ?></a></td>
-                                                                                            <td width="150px">
-                                                                                                <div class="btn-group btn-group-circle">
-                                                                                                    <a  href="#modal_update_deficiency" data-toggle="modal" type="button" id="update_deficiency" data-id="<?=$row_deficiency['deficiency_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
-                                                                            	                    <a href="#modal_delete_deficiency" data-toggle="modal" type="button" id="delete_deficiency" data-id="<?=$row_deficiency['deficiency_pk']; ?>" class="btn btn-danger btn-sm" onclick="">Delete</a>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    <?php } 
-                                                                                }
-                                                                            ?>
-                                                                        </tbody>
-                                                                    </table>
+                                                            <div class="tab-pane" id="deficiency">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <h4>
+                                                                            <strong>Deficiency Notice</strong>
+                                                                            <?php echo (empty($current_permission_array_key) OR in_array(2, $permission)) ? ' <a data-toggle="modal" href="#addDeficiency" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> ADD</a>':''; ?>
+                                                                        </h4>
+                                                                        <br>
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Regulatory Agency</th>
+                                                                                    <th>Date of Issuance</th>
+                                                                                    <th>Date Due</th>
+                                                                                    <th>Number of Violations</th>
+                                                                                    <th>Supporting Files</th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="data_deficiency">
+                                                                                <?php
+                                                                                    $facility_id = $_GET['facility_id'];
+                                                                                    $query_deficiency = mysqli_query($conn, "select * from tblFacilityDetails_deficiency where enterprise_pk = $switch_user_id and is_deleted = 0 and facility_id = $facility_id");
+                                                                                    if(mysqli_fetch_row($query_deficiency)) {
+                                                                                        foreach($query_deficiency as $row_deficiency) {
+                                                                                            echo '<tr id="row_deficiency'.$row_deficiency['deficiency_pk'].'">
+                                                                                                <td>'.htmlentities($row_deficiency['regulatory_agency'] ?? '').'</td>
+                                                                                                <td>'.date('Y-m-d', strtotime($row_deficiency['date_issuance'])).'</td>
+                                                                                                <td>'.date('Y-m-d', strtotime($row_deficiency['date_due'])).'</td>
+                                                                                                <td>'.htmlentities($row_deficiency['number_violations'] ?? '').'</td>
+                                                                                                <td><a href="facility_files_Folder/'.$row_deficiency['deficiency_files'].'" target="_blank">'.htmlentities($row_deficiency['deficiency_files'] ?? '').'</a></td>
+                                                                                                <td width="150px">';
+                                                                                                
+                                                                                                    if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                                        echo '<a  href="#modal_update_deficiency" data-toggle="modal" type="button" id="update_deficiency" data-id="'.$row_deficiency['deficiency_pk'].'" class="btn btn-outline dark btn-sm">Edit</a>';
+                                                                                                    }
+                                                                                                    if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                	                    echo '<a href="#modal_delete_deficiency" data-toggle="modal" type="button" id="delete_deficiency" data-id="'.$row_deficiency['deficiency_pk'].'" class="btn btn-danger btn-sm" onclick="">Delete</a>';
+                                                                                                    }
+                                                                                                    
+                                                                                                echo '</td>
+                                                                                            </tr>';
+                                                                                        }
+                                                                                    }
+                                                                                ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                        <!--end-->
+                                                        <?php endif; ?>
+                                                    
                                                     <?php } ?>
                                                 </div>
                                             </div>
@@ -3058,6 +3161,48 @@ error_reporting(0);
                   document.getElementById("PAS").readOnly = false;
               }
             }
+            function btnDeleteCAA(id, e) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be deleted!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "facility-function/function.php?btnDeleteCAA="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $(e).parent().parent().remove();
+                        }
+                    });
+                    swal("Done!", "This item has been deleted.", "success");
+                });
+            }
+            function btnDeleteCAC(id, e) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be deleted!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "facility-function/function.php?btnDeleteCAC="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $(e).parent().parent().remove();
+                        }
+                    });
+                    swal("Done!", "This item has been deleted.", "success");
+                });
+            }
             function btnDelete_CMT(id, e) {
                 swal({
                     title: "Are you sure?",
@@ -3071,6 +3216,27 @@ error_reporting(0);
                     $.ajax({
                         type: "GET",
                         url: "facility-function/function.php?btnDelete_CMT="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $(e).parent().parent().remove();
+                        }
+                    });
+                    swal("Done!", "This item has been deleted.", "success");
+                });
+            }
+            function btnDelete_CSTT(id, e) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be deleted!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "facility-function/function.php?btnDelete_CSTT="+id,
                         dataType: "html",
                         success: function(response){
                             $(e).parent().parent().remove();

@@ -495,9 +495,9 @@
 	}
 
 
-    // echo $html;
+    echo $html;
     
-	$mpdf->WriteHTML($html);
-	$mpdf->Output();
+// 	$mpdf->WriteHTML($html);
+// 	$mpdf->Output();
 
 ?>

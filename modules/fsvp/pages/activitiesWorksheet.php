@@ -221,6 +221,75 @@
                         </div>
                     </div>
                  </div>
+
+                <!-- prepared bt -->
+                <div class="row">
+                    <div class="col-md-12"><strong>Prepared By</strong></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="preName">Name</label>
+                            <input type="text" name="prepared_by" id="preName" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="preDate">Date</label>
+                            <input type="date" name="prepare_date" id="preDate" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <div id="preparer_signature" class="signature__"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- reviewed bt -->
+                <div class="row">
+                    <div class="col-md-12"><strong>Reviewed By</strong></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="revName">Name</label>
+                            <input type="text" name="reviewed_by" id="revName" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="revDate">Date</label>
+                            <input type="date" name="review_date" id="revDate" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <div id="reviewer_signature" class="signature__"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- approved by -->
+                <div class="row">
+                    <div class="col-md-12"><strong>Approved By</strong></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="apbName">Name</label>
+                            <input type="text" name="approved_by" id="apbName" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="apbDate">Date</label>
+                            <input type="date" name="approve_date" id="apbDate" class="form-control" >
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <div id="approver_signature" class="signature__"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>

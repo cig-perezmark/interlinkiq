@@ -32,6 +32,11 @@ jQuery(function() {
             data.append('editawid', onViewAWId);
         }
 
+        // signatures
+        data.append('preparer_sign', $('#preparer_signature').eSign("getData"));
+        data.append('reviewer_sign', $('#reviewer_signature').eSign("getData"));
+        data.append('approver_sign', $('#approver_signature').eSign("getData"));
+        
         $.ajax({
             url,
             type: "POST",
@@ -61,6 +66,8 @@ jQuery(function() {
     $('#modalActWorksheet').on('hidden.bs.modal', function() {
         resetAWForm();
     });
+    
+    $('.signature__').eSign();
 
     function SSOnChange(option) {
         const address = $('#awForeignSupplierSelect option:selected').attr('data-address') || '';
@@ -118,6 +125,18 @@ jQuery(function() {
                 $('#modalActWorksheet [name=corrective_actions]').val(data.corrective_actions);
                 $('#modalActWorksheet [name=reevaluation_date]').val(data.reevaluation_date);
                 $('#modalActWorksheet [name=comments]').val(data.comments);
+                
+                $('#modalActWorksheet [name=prepared_by]').val(data.prepared_by);
+                $('#modalActWorksheet [name=prepare_date]').val(data.prepare_date);
+                $('#modalActWorksheet [name=reviewed_by]').val(data.reviewed_by);
+                $('#modalActWorksheet [name=review_date]').val(data.review_date);
+                $('#modalActWorksheet [name=approved_by]').val(data.approved_by);
+                $('#modalActWorksheet [name=approve_date]').val(data.approve_date);
+                
+                
+                $('#preparer_signature').eSign("set", data.prepared_by_sign);
+                $('#reviewer_signature').eSign("set", data.reviewed_by_sign);
+                $('#approver_signature').eSign("set", data.approved_by_sign);
 
                 $('#modalActWorksheet').modal('show');
             },
@@ -132,6 +151,12 @@ jQuery(function() {
         supplierSelect.reset();
         fsvpqiSelect.reset();
         importerSelect.reset();
+        
+        // signatures
+        $('#preparer_signature').eSign("destroy");
+        $('#reviewer_signature').eSign("destroy");
+        $('#approver_signature').eSign("destroy");
+        
     
         onViewAWId = null;
     }

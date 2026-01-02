@@ -1495,9 +1495,21 @@
               
         }
     }
+    if( isset($_GET['btnDeleteCAA']) ) {
+        $id = $_GET['btnDeleteCAA'];
+        mysqli_query( $conn,"UPDATE tblFacilityDetails_Accreditation SET deleted = 1 WHERE Accreditation_id = $id" );
+    }
+    if( isset($_GET['btnDeleteCAC']) ) {
+        $id = $_GET['btnDeleteCAC'];
+        mysqli_query( $conn,"UPDATE tblFacilityDetails_Certification SET deleted = 1 WHERE Certification_id = $id" );
+    }
     if( isset($_GET['btnDelete_CMT']) ) {
         $id = $_GET['btnDelete_CMT'];
         mysqli_query( $conn,"UPDATE tbl_critical_operation SET deleted = 1 WHERE critical_operation_id = $id" );
+    }
+    if( isset($_GET['btnDelete_CSTT']) ) {
+        $id = $_GET['btnDelete_CSTT'];
+        mysqli_query( $conn,"UPDATE tblFacilityDetails_Service_Team SET deleted = 1 WHERE Service_Team_id = $id" );
     }
     if( isset($_GET['btnDelete_F_Contact']) ) {
         $id = $_GET['btnDelete_F_Contact'];

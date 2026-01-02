@@ -863,50 +863,97 @@ if( isset($_GET['modal_filter_status']) ) {
 	$ID = $_GET['modal_filter_status'];
     ?>
 	<input class="form-control" type="hidden" name="ID" value="<?= $ID; ?>'" />
-	 <?php if($_COOKIE['ID'] == 38): ?>
-       <div class="col-md-12">
-           <div class="form-group">
+	<?php if($_COOKIE['ID'] == 43): ?>
+        <div class="col-md-12">
+            <div class="form-group">
                 <a style="float:right;" class="btn red btn-xs" type="button" id="pdf_report_notstarted" data-id="<?= $ID; ?>"><i class="fa fa-print"></i> PDF</a>
-           </div>
-       </div>
+            </div>
+        </div>
+        
+        
     <?php endif; ?>
+        
+        <table class="margin-bottom-15">
+            <tbody>
+                <tr>
+                    <td>Start Date:</td>
+                    <td style="padding: 7px;">
+                        <div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
+                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="minDateNS" onchange="selDate('tableData22')">
+                            <span class="input-group-btn">
+                                <button class="btn default" type="button">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>End Date:</td>
+                    <td style="padding: 7px;">
+                        <div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
+                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="maxDateNS" onchange="selDate('tableData22')">
+                            <span class="input-group-btn">
+                                <button class="btn default" type="button">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Custom Export Title:</td>
+                    <td style="padding: 7px;"><textarea class="form-control" id="exportTitleNS" rows="2" cols="50" placeholder="Enter your report title here..."></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+
         <table class="table table-bordered " id="tableData22">
             <thead class="bg-info">
                 <tr>
                     <th>Assign to</th>
+                    <th>Scope</th>
                     <th>Task Name</th>
                     <th>Description</th>
                     <th>Status</th>
                     <th>Desired Due Date</th>
                 </tr>
             </thead>
-             <tbody>
-                 <?php
+            <tbody>
+                <?php
                     $query = "SELECT * FROM tbl_MyProject_Services_Childs_action_Items where is_deleted=0 and CIA_progress = 0 and Parent_MyPro_PK = $ID order by CAI_id DESC";
                     $result = mysqli_query($conn, $query);
-                    while($row = mysqli_fetch_array($result))
-                     { ?>
-                            <tr>
+                    while($row = mysqli_fetch_array($result)) { ?>
+                        <tr>
                             <td>
                                 <?php
                                     $emp_id =$row['CAI_Assign_to'];
                                     $query_emp = "SELECT * FROM tbl_hr_employee where ID = $emp_id";
                                     $result_emp = mysqli_query($conn, $query_emp);
-                                    while($row_emp = mysqli_fetch_array($result_emp))
-                                     {
-                                         echo $row_emp['first_name'];
-                                     }
+                                    while($row_emp = mysqli_fetch_array($result_emp)) {
+                                        echo $row_emp['first_name'];
+                                    }
                                 ?>
-                                </td>
-                                <td><?= $row['CAI_filename']; ?></td>
-                                <td><?= $row['CAI_description']; ?></td>
-                                <td>Not Started</td>
-                                <td><?= $row['CAI_Action_due_date']; ?></td>
-                            </tr>
+                            </td>
+                            <td>
+                                <?php
+                                    $scope_id = $row['scope'];
+                                    if (!empty($scope_id)) {
+                                        $result_scope = mysqli_query($conn, "SELECT * FROM tbl_service_logs_scope WHERE ID = $scope_id");
+                                        $rowScope = mysqli_fetch_array($result_scope);
+                                        echo $rowScope['name'];
+                                    }
+                                ?>
+                            </td>
+                            <td><?= $row['CAI_filename']; ?></td>
+                            <td><?= $row['CAI_description']; ?></td>
+                            <td>Not Started</td>
+                            <td><?= date("Y-m-d", strtotime($row['CAI_Action_due_date'])); ?></td>
+                        </tr>
                     <?php }
-                 ?>
+                ?>
             </tbody>
-         </table>
+        </table>
          
    <?php }
     
@@ -921,10 +968,47 @@ if( isset($_GET['modal_filter_status_progress']) ) {
            </div>
        </div>
     <?php endif; ?>
+        
+        <table class="margin-bottom-15">
+            <tbody>
+                <tr>
+                    <td>Start Date:</td>
+                    <td style="padding: 7px;">
+                        <div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
+                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="minDateP" onchange="selDate('sample_11')">
+                            <span class="input-group-btn">
+                                <button class="btn default" type="button">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>End Date:</td>
+                    <td style="padding: 7px;">
+                        <div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
+                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="maxDateP" onchange="selDate('sample_11')">
+                            <span class="input-group-btn">
+                                <button class="btn default" type="button">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Custom Export Title:</td>
+                    <td style="padding: 7px;"><textarea class="form-control" id="exportTitleP" rows="2" cols="50" placeholder="Enter your report title here..."></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+        
         <table class="table table-bordered " id="sample_11">
             <thead class="bg-info">
                 <tr>
                     <th>Assign to</th>
+                    <th>Scope</th>
                     <th>Task Name</th>
                     <th>Description</th>
                     <th>Status</th>
@@ -935,10 +1019,9 @@ if( isset($_GET['modal_filter_status_progress']) ) {
                  <?php
                     $query = "SELECT * FROM tbl_MyProject_Services_Childs_action_Items where is_deleted=0 and CIA_progress = 1 and Parent_MyPro_PK = $ID order by CAI_Action_due_date ASC";
                     $result = mysqli_query($conn, $query);
-                    while($row = mysqli_fetch_array($result))
-                     { ?>
-                            <tr>
-                                <td>
+                    while($row = mysqli_fetch_array($result)) { ?>
+                        <tr>
+                            <td>
                                 <?php 
                                     $emp_id =$row['CAI_Assign_to'];
                                     $query_emp = "SELECT * FROM tbl_hr_employee where ID = $emp_id";
@@ -948,12 +1031,22 @@ if( isset($_GET['modal_filter_status_progress']) ) {
                                          echo $row_emp['first_name'];
                                      }
                                 ?>
-                                </td>
-                                <td><?= $row['CAI_filename']; ?></td>
-                                <td><?= $row['CAI_description']; ?></td>
-                                <td>In Progress</td>
-                                <td><?= $row['CAI_Action_due_date']; ?></td>
-                            </tr>
+                            </td>
+                            <td>
+                                <?php
+                                    $scope_id = $row['scope'];
+                                    if (!empty($scope_id)) {
+                                        $result_scope = mysqli_query($conn, "SELECT * FROM tbl_service_logs_scope WHERE ID = $scope_id");
+                                        $rowScope = mysqli_fetch_array($result_scope);
+                                        echo $rowScope['name'];
+                                    }
+                                ?>
+                            </td>
+                            <td><?= $row['CAI_filename']; ?></td>
+                            <td><?= $row['CAI_description']; ?></td>
+                            <td>In Progress</td>
+                            <td><?= date("Y-m-d", strtotime($row['CAI_Action_due_date'])); ?></td>
+                        </tr>
                    <?php  }
                 ?>
             </tbody>
@@ -964,7 +1057,7 @@ if( isset($_GET['modal_filter_status_progress']) ) {
 if( isset($_GET['modal_filter_status_completed']) ) {
 $ID = $_GET['modal_filter_status_completed'];
 ?>
-<input class="form-control" type="hidden" name="ID" value="<?= $ID; ?>" />
+    <input class="form-control" type="hidden" name="ID" value="<?= $ID; ?>" />
     <?php if($_COOKIE['ID'] == 38): ?>
        <div class="col-md-12">
            <div class="form-group">
@@ -972,10 +1065,47 @@ $ID = $_GET['modal_filter_status_completed'];
            </div>
        </div>
     <?php endif; ?>
+    
+    <table class="margin-bottom-15">
+        <tbody>
+            <tr>
+                <td>Start Date:</td>
+                <td style="padding: 7px;">
+                    <div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
+                        <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="minDateC" onchange="selDate('sample_44')">
+                        <span class="input-group-btn">
+                            <button class="btn default" type="button">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>End Date:</td>
+                <td style="padding: 7px;">
+                    <div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
+                        <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="maxDateC" onchange="selDate('sample_44')">
+                        <span class="input-group-btn">
+                            <button class="btn default" type="button">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Custom Export Title:</td>
+                <td style="padding: 7px;"><textarea class="form-control" id="exportTitleC" rows="2" cols="50" placeholder="Enter your report title here..."></textarea></td>
+            </tr>
+        </tbody>
+    </table>
+    
     <table class="table table-bordered " id="sample_44">
         <thead class="bg-info">
             <tr>
                 <th>Assign to</th>
+                <th>Scope</th>
                 <th>Task Name</th>
                 <th>Description</th>
                 <th>Status</th>
@@ -986,26 +1116,34 @@ $ID = $_GET['modal_filter_status_completed'];
              <?php
                 $query = "SELECT * FROM tbl_MyProject_Services_Childs_action_Items where is_deleted=0 and CIA_progress = 2 and Parent_MyPro_PK = $ID order by Date_Completed DESC";
                 $result = mysqli_query($conn, $query);
-                while($row = mysqli_fetch_array($result))
-                 { ?>
-
-                        <tr>
-                            <td>
-                                <?php
-                                    $emp_id =$row['CAI_Assign_to'];
-                                    $query_emp = "SELECT * FROM tbl_hr_employee where ID = $emp_id";
-                                    $result_emp = mysqli_query($conn, $query_emp);
-                                    while($row_emp = mysqli_fetch_array($result_emp))
-                                     {
-                                         echo $row_emp['first_name'];
-                                     }
-                                ?>
-                                </td>
-                            <td><?= $row['CAI_filename']; ?></td>
-                            <td><?= $row['CAI_description']; ?></td>
-                            <td>Completed</td>
-                            <td><?= $row['Date_Completed']; ?></td>
-                        </tr>
+                while($row = mysqli_fetch_array($result)) { ?>
+                    <tr>
+                        <td>
+                            <?php
+                                $emp_id =$row['CAI_Assign_to'];
+                                $query_emp = "SELECT * FROM tbl_hr_employee where ID = $emp_id";
+                                $result_emp = mysqli_query($conn, $query_emp);
+                                while($row_emp = mysqli_fetch_array($result_emp))
+                                 {
+                                     echo $row_emp['first_name'];
+                                 }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                                $scope_id = $row['scope'];
+                                if (!empty($scope_id)) {
+                                    $result_scope = mysqli_query($conn, "SELECT * FROM tbl_service_logs_scope WHERE ID = $scope_id");
+                                    $rowScope = mysqli_fetch_array($result_scope);
+                                    echo $rowScope['name'];
+                                }
+                            ?>
+                        </td>
+                        <td><?= $row['CAI_filename']; ?></td>
+                        <td><?= $row['CAI_description']; ?></td>
+                        <td>Completed</td>
+                        <td><?= date("Y-m-d", strtotime($row['Date_Completed'])); ?></td>
+                    </tr>
                 <?php }
              ?>
         </tbody>

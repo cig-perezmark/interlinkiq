@@ -1,34 +1,86 @@
 <?php
 	require '../database.php';
+	
+    $facility_switch_user_id = 0;
+    if (isset($_COOKIE['facilityswitchAccount'])) {
+        $facility_switch_user_id = $_COOKIE['facilityswitchAccount'];
+    }
+    $base_url = "https://interlinkiq.com/";
+    
+    function fileExtension($file) {
+        $extension = pathinfo($file, PATHINFO_EXTENSION);
+        $src = 'https://view.officeapps.live.com/op/embed.aspx?src=';
+        $embed = '&embedded=true';
+        $type = 'iframe';
+        if (strtolower($extension) == "pdf") { $src = ''; $embed = ''; $type = ''; $file_extension = "fa-file-pdf-o"; }
+        else if (strtolower($extension) == "doc" OR strtolower($extension) == "docx") { $file_extension = "fa-file-word-o"; }
+        else if (strtolower($extension) == "ppt" OR strtolower($extension) == "pptx") { $file_extension = "fa-file-powerpoint-o"; }
+        else if (strtolower($extension) == "xls" OR strtolower($extension) == "xlsb" OR strtolower($extension) == "xlsm" OR strtolower($extension) == "xlsx" OR strtolower($extension) == "csv" OR strtolower($extension) == "xlsx") { $file_extension = "fa-file-excel-o"; }
+        else if (strtolower($extension) == "gif" OR strtolower($extension) == "jpg"  OR strtolower($extension) == "jpeg" OR strtolower($extension) == "png" OR strtolower($extension) == "ico") { $src = ''; $embed = ''; $type = ''; $file_extension = "fa-file-image-o"; }
+        else if (strtolower($extension) == "mp4" OR strtolower($extension) == "mov"  OR strtolower($extension) == "wmv" OR strtolower($extension) == "flv" OR strtolower($extension) == "avi" OR strtolower($extension) == "avchd" OR strtolower($extension) == "webm" OR strtolower($extension) == "mkv") { $src = ''; $embed = ''; $type = ''; $file_extension = "fa-file-video-o"; }
+        else { $src = ''; $embed = ''; $type = ''; $file_extension = "fa-file-code-o"; }
+
+        $output['src'] = $src;
+        $output['embed'] = $embed;
+        $output['type'] = $type;
+        $output['file_extension'] = $file_extension;
+        $output['file_mime'] = $extension;
+        return $output;
+    }
+    
 	// Get status only
-if (!empty($_COOKIE['switchAccount'])) {
-	$portal_user = $_COOKIE['ID'];
-	$user_id = $_COOKIE['switchAccount'];
-	$current_userEmployerID = employerID($portal_user);
-}
-else {
-	$portal_user = $_COOKIE['ID'];
-	$user_id = employerID($portal_user);
-	$current_userEmployerID = employerID($portal_user);
-}
-function employerID($ID) {
-	global $conn;
-
-	$selectUser = mysqli_query( $conn,"SELECT * from tbl_user WHERE ID = $ID" );
-    $rowUser = mysqli_fetch_array($selectUser);
-    $current_userEmployeeID = $rowUser['employee_id'];
-
-    $current_userEmployerID = $ID;
-    if ($current_userEmployeeID > 0) {
-        $selectEmployer = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND ID=$current_userEmployeeID" );
-        if ( mysqli_num_rows($selectEmployer) > 0 ) {
-            $rowEmployer = mysqli_fetch_array($selectEmployer);
-            $current_userEmployerID = $rowEmployer["user_id"];
+    if (!empty($_COOKIE['switchAccount'])) {
+    	$portal_user = $_COOKIE['ID'];
+    	$user_id = $_COOKIE['switchAccount'];
+    	$current_userEmployerID = employerID($portal_user);
+    }
+    else {
+    	$portal_user = $_COOKIE['ID'];
+    	$user_id = employerID($portal_user);
+    	$current_userEmployerID = employerID($portal_user);
+    }
+    function employerID($ID) {
+    	global $conn;
+    
+    	$selectUser = mysqli_query( $conn,"SELECT * from tbl_user WHERE ID = $ID" );
+        $rowUser = mysqli_fetch_array($selectUser);
+        $current_userEmployeeID = $rowUser['employee_id'];
+    
+        $current_userEmployerID = $ID;
+        if ($current_userEmployeeID > 0) {
+            $selectEmployer = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND ID=$current_userEmployeeID" );
+            if ( mysqli_num_rows($selectEmployer) > 0 ) {
+                $rowEmployer = mysqli_fetch_array($selectEmployer);
+                $current_userEmployerID = $rowEmployer["user_id"];
+            }
+        }
+    
+        return $current_userEmployerID;
+    }
+    
+    $facility_switch_user_id = 0;
+    if (isset($_COOKIE['facilityswitchAccount'])) {
+        $facility_switch_user_id = $_COOKIE['facilityswitchAccount'];
+    } else {
+        $selectUser = mysqli_query( $conn,"SELECT * from tbl_user WHERE ID = $portal_user" );
+        $rowUser = mysqli_fetch_array($selectUser);
+        $current_userEmployeeID = $rowUser['employee_id'];
+        
+        if ($current_userEmployeeID > 0) {
+            $selectEmployeeFacility = mysqli_query( $conn,"SELECT facility_switch FROM tbl_hr_employee WHERE facility_switch > 0 AND ID = $current_userEmployeeID" );
+            if ( mysqli_num_rows($selectEmployeeFacility) > 0 ) {
+                $rowEmployeeFacility = mysqli_fetch_array($selectEmployeeFacility);
+                $facility_switch_user_id = $rowEmployeeFacility["facility_switch"];
+            }
+        } else {
+            $selectSupplierFacility = mysqli_query( $conn,"SELECT facility_switch FROM tbl_supplier WHERE facility_switch > 0 AND email = '".$current_userEmail."'" );
+            if ( mysqli_num_rows($selectSupplierFacility) > 0 ) {
+                $rowSupplierFacility = mysqli_fetch_array($selectSupplierFacility);
+                $facility_switch_user_id = $rowSupplierFacility["facility_switch"];
+            }
         }
     }
-
-    return $current_userEmployerID;
-}
+    
 if( isset($_GET['GetDetails']) ) {
 	$ID = $_GET['GetDetails'];
 	$today = date('Y-m-d');
@@ -72,7 +124,7 @@ if( isset($_GET['GetDetails']) ) {
                             <tbody id="meeting_action_items">
                             <?php
                                        
-                                $query_open = "SELECT * FROM tbl_meeting_minutes_action_items where action_meeting_id = $ID and status = 'Open' order by inserted_at ASC";
+                                $query_open = "SELECT * FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = $ID and status = 'Open' order by inserted_at ASC";
                                 $result_open = mysqli_query($conn, $query_open);
                                 while($row_open = mysqli_fetch_array($result_open))
                                      { ?>
@@ -112,7 +164,12 @@ if( isset($_GET['GetDetails']) ) {
                                                     ?>
                                             </a>
                                         </td>
-                                        <td><a href="#modal_update_status" data-toggle="modal" class="btn red btn-xs" type="button" id="add_status" data-id="<?php echo $row_open['action_id']; ?>" >Update</a></td>
+                                        <td class="text-center">
+                                            <div class="btn-group btn-group-circle">
+                                                <a href="#modal_update_status" data-toggle="modal" class="btn btn-info btn-xs" type="button" id="add_status" data-id="<?php echo $row_open['action_id']; ?>" >Update</a>
+                                                <a href="javascript:;" class="btn btn-danger btn-xs" onclick="btnDeleteAction(<?php echo $row_open['action_id']; ?>, this)">Delete</a>
+                                            </div>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -136,7 +193,7 @@ if( isset($_GET['GetDetails']) ) {
                             <tbody>
                             <?php
                                        
-                                $query_Follow = "SELECT * FROM tbl_meeting_minutes_action_items where action_meeting_id = $ID and status = 'Follow Up' order by inserted_at ASC";
+                                $query_Follow = "SELECT * FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = $ID and status = 'Follow Up' order by inserted_at ASC";
                                 $result_Follow = mysqli_query($conn, $query_Follow);
                                 while($row_Follow = mysqli_fetch_array($result_Follow))
                                      { ?>
@@ -161,22 +218,27 @@ if( isset($_GET['GetDetails']) ) {
                                         <td><?php echo $row_Follow['target_due_date']; ?></td>
                                         <td><?php echo $row_Follow['status']; ?></td>
                                         <td width="60px">
-                                                <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $row_Follow['action_id']; ?>">
-                                                    <i class="icon-speech" style="font-size:16px;"></i>
-                                                        <?php
-                                                            $ai_id = $row_Follow['action_id'];
-                                                            $comment_count = mysqli_query($conn,"select COUNT(*) as count from tbl_meeting_minutes_ai_comment where ai_id=$ai_id");
-                                                            foreach($comment_count as  $ccout){ 
-                                                            if($ccout['count'] != 0){$color= 'blue';}else{$color= 'red';}
-                                                            ?>
-                                                                 <span class="badge" style="background-color:<?=$color; ?>;margin-left:-7px;"><b style="font-size:12px;">
-                                                                    <?= $ccout['count']; ?>
-                                                                </b></span>
-                                                           <?php }
+                                            <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $row_Follow['action_id']; ?>">
+                                                <i class="icon-speech" style="font-size:16px;"></i>
+                                                    <?php
+                                                        $ai_id = $row_Follow['action_id'];
+                                                        $comment_count = mysqli_query($conn,"select COUNT(*) as count from tbl_meeting_minutes_ai_comment where ai_id=$ai_id");
+                                                        foreach($comment_count as  $ccout){ 
+                                                        if($ccout['count'] != 0){$color= 'blue';}else{$color= 'red';}
                                                         ?>
-                                                </a>
-                                            </td>
-                                        <td><a href="#modal_update_status" data-toggle="modal" class="btn red btn-xs" type="button" id="add_status" data-id="<?php echo $row_Follow['action_id']; ?>" >Update</a></td>
+                                                             <span class="badge" style="background-color:<?=$color; ?>;margin-left:-7px;"><b style="font-size:12px;">
+                                                                <?= $ccout['count']; ?>
+                                                            </b></span>
+                                                       <?php }
+                                                    ?>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group btn-group-circle">
+                                                <a href="#modal_update_status" data-toggle="modal" class="btn btn-info btn-xs" type="button" id="add_status" data-id="<?php echo $row_Follow['action_id']; ?>" >Update</a>
+                                                <a href="javascript:;" class="btn btn-danger btn-xs" onclick="btnDeleteAction(<?php echo $row_open['action_id']; ?>, this)">Delete</a>
+                                            </div>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                                 <tr id="meeting_action_items"></tr>
@@ -201,7 +263,7 @@ if( isset($_GET['GetDetails']) ) {
                             <tbody>
                             <?php
                                        
-                                $query_Close = "SELECT * FROM tbl_meeting_minutes_action_items where action_meeting_id = $ID and status = 'Close' order by inserted_at ASC";
+                                $query_Close = "SELECT * FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = $ID and status = 'Close' order by inserted_at ASC";
                                 $result_Close = mysqli_query($conn, $query_Close);
                                 while($row_Close = mysqli_fetch_array($result_Close))
                                      { ?>
@@ -228,20 +290,25 @@ if( isset($_GET['GetDetails']) ) {
                                         <td width="60px">
                                             <a href="#modal_comment_ai" data-toggle="modal" type="button" id="comment_AI" data-id="<?php echo $row_Close['action_id']; ?>">
                                                 <i class="icon-speech" style="font-size:16px;"></i>
-                                                    <?php
-                                                        $ai_id = $row_Close['action_id'];
-                                                        $comment_count = mysqli_query($conn,"select COUNT(*) as count from tbl_meeting_minutes_ai_comment where ai_id=$ai_id");
-                                                        foreach($comment_count as  $ccout){ 
-                                                        if($ccout['count'] != 0){$color= 'blue';}else{$color= 'red';}
-                                                        ?>
-                                                             <span class="badge" style="background-color:<?=$color; ?>;margin-left:-7px;"><b style="font-size:12px;">
-                                                                <?= $ccout['count']; ?>
-                                                            </b></span>
-                                                       <?php }
+                                                <?php
+                                                    $ai_id = $row_Close['action_id'];
+                                                    $comment_count = mysqli_query($conn,"select COUNT(*) as count from tbl_meeting_minutes_ai_comment where ai_id=$ai_id");
+                                                    foreach($comment_count as  $ccout){ 
+                                                    if($ccout['count'] != 0){$color= 'blue';}else{$color= 'red';}
                                                     ?>
+                                                         <span class="badge" style="background-color:<?=$color; ?>;margin-left:-7px;"><b style="font-size:12px;">
+                                                            <?= $ccout['count']; ?>
+                                                        </b></span>
+                                                   <?php }
+                                                ?>
                                             </a>
                                         </td>
-                                        <td><a href="#modal_update_status" data-toggle="modal" class="btn red btn-xs" type="button" id="add_status" data-id="<?php echo $row_Close['action_id']; ?>" >Update</a></td>
+                                        <td class="text-center">
+                                            <div class="btn-group btn-group-circle">
+                                                <a href="#modal_update_status" data-toggle="modal" class="btn btn-info btn-xs" type="button" id="add_status" data-id="<?php echo $row_Close['action_id']; ?>" >Update</a>
+                                                <a href="javascript:;" class="btn btn-danger btn-xs" onclick="btnDeleteAction(<?php echo $row_open['action_id']; ?>, this)">Delete</a>
+                                            </div>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                                 <tr id="meeting_action_items"></tr>
@@ -483,7 +550,7 @@ if( isset($_GET['postDetails']) ) {
                         <tbody>
                         <?php
                                    
-                            $queryA = "SELECT * FROM tbl_meeting_minutes_action_items where action_meeting_id = '$ID' order by inserted_at ASC";
+                            $queryA = "SELECT * FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = '$ID' order by inserted_at ASC";
                             $resultA = mysqli_query($conn, $queryA);
                             while($rowA = mysqli_fetch_array($resultA))
                                  { ?>
@@ -626,7 +693,7 @@ if( isset($_POST['btnSave_details']) ) {
           <td>
             <?php
                 $getId = $row['id'];
-                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where action_meeting_id = $getId ";
+                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = $getId ";
                 $resultOpen = mysqli_query($conn, $queryOpen);
                 while($rowOpen = mysqli_fetch_array($resultOpen))
                 { 
@@ -683,12 +750,19 @@ if( isset($_GET['postDetails2']) ) {
                 <div class="tab-pane active" id="tabMeeting">
                     <div class="form-group">
                         <div class="col-md-6">
-                            <label class="control-label">Account Name</label>
+                            <label class="control-label">Company Name</label>
                             <select class="form-control mt-multiselect btn btn-default" type="text" name="account" required>
                                 <option value="0">---Select---</option>
                                 <?php
                                     if($user_id == 34 || $_COOKIE['ID']== 450 ) {
-                                        $queryAcc = "SELECT * FROM tbl_service_logs_accounts order by name ASC";
+                                        $queryAcc = "SELECT * FROM tbl_service_logs_accounts WHERE owner_pk = $user_id ORDER BY name ASC";
+                                        $resultAcc = mysqli_query($conn, $queryAcc);
+                                        while($rowAcc = mysqli_fetch_array($resultAcc)) { 
+                                            echo '<option value="'.$rowAcc['name'].'" '; echo $rowAcc['name'] == $row_proj['account'] ? 'selected' : ''; echo'>'.$rowAcc['name'].'</option>'; 
+                                        }
+                                    }
+                                    else if($user_id == 1687) {
+                                        $queryAcc = "SELECT name FROM tbl_supplier WHERE user_id = $user_id AND page = 1 AND is_deleted = 0 ORDER BY name";
                                         $resultAcc = mysqli_query($conn, $queryAcc);
                                         while($rowAcc = mysqli_fetch_array($resultAcc)) { 
                                             echo '<option value="'.$rowAcc['name'].'" '; echo $rowAcc['name'] == $row_proj['account'] ? 'selected' : ''; echo'>'.$rowAcc['name'].'</option>'; 
@@ -703,6 +777,7 @@ if( isset($_GET['postDetails2']) ) {
                                     else if($user_id == 457){echo '<option value="PF" '; echo $row_proj['account'] == "PF" ? 'selected' : ''; echo'>PF</option>'; }
                                     else if($user_id == 253){echo '<option value="AFIA" '; echo $row_proj['account'] == "AFIA" ? 'selected' : ''; echo'>AFIA</option>'; }
                                     else if($user_id == 1362){echo '<option value="Longevity Nutra Inc." '; echo $row_proj['account'] == "Longevity Nutra Inc." ? 'selected' : ''; echo'>Longevity Nutra Inc.</option>'; }
+                                    else if($user_id == 1486){echo '<option value="Marukan Vinegar (U.S.A.) Inc." SELECTED>Marukan Vinegar (U.S.A.) Inc.</option>'; }
                                 ?>
                             </select>
                         </div>
@@ -724,31 +799,66 @@ if( isset($_GET['postDetails2']) ) {
                     <div class="col-md-12">
                         <div class="form-group">
                             <label class="control-label">Agenda</label>
-                            <textarea class="form-control"  name="agenda" ><?php echo $row_proj["agenda"]; ?></textarea>
+                            <div class="mt-checkbox-list">
+                                <?php
+                                    echo '<label class="mt-checkbox mt-checkbox-outline">Select All
+                                        <input type="checkbox" onclick="checkedAll(this, \'Agenda\')" />
+                                        <span></span>
+                                    </label>';
+                                    
+                                    $array_data_agendas = explode(", ", $row_proj["agendas"]);
+                                    $selectAgenda = mysqli_query($conn, "SELECT * FROM tbl_meeting_minutes_agenda WHERE deleted = 0 ORDER BY name");
+                                    while($rowAgendas = mysqli_fetch_array($selectAgenda)) {
+                                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.$rowAgendas['name'].'
+                                            <input type="checkbox" class="Agenda" value="'.$rowAgendas['ID'].'" name="agendas[]"  '; echo in_array($rowAgendas['ID'], $array_data_agendas) ? 'checked' : ''; echo ' />
+                                            <span></span>
+                                        </label>';
+                                    }
+                                ?>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Other Agenda (If Applicable)</label>
+                            <textarea class="form-control"  name="agenda"><?php echo $row_proj["agenda"]; ?></textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
                             <label class="control-label">Attendees</label>
-                            <select class="form-control mt-multiselect btn btn-default" type="text" name="attendees[]" multiple required>
-                                <option value="0">---Select---</option>
+                            <div class="mt-checkbox-list">
                                 <?php
+                                    echo '<label class="mt-checkbox mt-checkbox-outline">Select All
+                                        <input type="checkbox" onclick="checkedAll(this, \'Attendee\')" />
+                                        <span></span>
+                                    </label>';
+                                    
                                     $array_data_attd = explode(", ", $row_proj["attendees"]);
-                                    $queryAssignto = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id order by first_name ASC";
+                                    
+                                    $queryAssignto = "SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY first_name ASC";
+                                    if ($user_id == 1687) {
+                                        $queryAssignto = "SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = 34 AND facility_switch = $facility_switch_user_id ORDER BY first_name ASC";
+                                    }
+                                    
                                     $resultAssignto = mysqli_query($conn, $queryAssignto);
-                                    while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
-                                        echo '<option value="'.$rowAssignto['ID'].'" '; if(in_array($rowAssignto['ID'],$array_data_attd)){echo 'selected';}else{echo '';} echo'>'.$rowAssignto['first_name'].'</option>'; 
+                                    while($rowAssignto = mysqli_fetch_array($resultAssignto)) {
+                                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.$rowAssignto['first_name'].' '.$rowAssignto['last_name'].'
+                                            <input type="checkbox" class="Attendee" value="'.$rowAssignto['ID'].'" name="attendees[]"  '; echo in_array($rowAssignto['ID'], $array_data_attd) ? 'checked' : ''; echo ' />
+                                            <span></span>
+                                        </label>';
                                     }
                                     
                                     if($user_id == 1362){
-                                        $queryAttd = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND ID IN (83, 71, 69, 129, 72, 80, 209) order by first_name ASC";
+                                        $queryAttd = "SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = 34 AND ID IN (83, 71, 69, 129, 72, 80, 209) ORDER BY first_name ASC";
                                         $resultAttd = mysqli_query($conn, $queryAttd);
-                                        while($rowAttd = mysqli_fetch_array($resultAttd)) { 
-                                            echo '<option value="'.$rowAttd['ID'].'" '; if(in_array($rowAttd['ID'],$array_data_attd)){echo 'selected';}else{echo '';} echo'>'.$rowAttd['first_name'].' '.$rowAttd['last_name'].'</option>'; 
+                                        while($rowAttd = mysqli_fetch_array($resultAttd)) {
+                                            echo '<label class="mt-checkbox mt-checkbox-outline"> '.$rowAttd['first_name'].' '.$rowAttd['last_name'].'
+                                                <input type="checkbox" class="Attendee" value="'.$rowAttd['ID'].'" name="attendees[]"  '; echo in_array($rowAttd['ID'], $array_data_attd) ? 'checked' : ''; echo ' />
+                                                <span></span>
+                                            </label>';
                                         }
                                     }
                                 ?>
-                            </select>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group <?php if (!isset($_COOKIE['switchAccount']) AND $current_userEmployerID == 34) { echo 'hide'; } ?>">
@@ -799,7 +909,7 @@ if( isset($_GET['postDetails2']) ) {
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label class="control-label">Remarks</label>
+                            <label class="control-label">Remarks (If Applicable)</label>
                             <textarea class="form-control" name="remarks"><?php echo $row_proj['remarks']; ?></textarea>
                         </div>
                     </div>
@@ -825,8 +935,11 @@ if( isset($_GET['postDetails2']) ) {
                                         }
                                     }
                                     
-                                    // $queryPres = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id or user_id = 34 order by first_name ASC";
-                                    $queryPres = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id order by first_name ASC";
+                                    $queryPres = "SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id  AND facility_switch = $facility_switch_user_id ORDER BY first_name ASC";
+                                    if ($user_id == 1687) {
+                                        $queryPres = "SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = 34  AND facility_switch = $facility_switch_user_id ORDER BY first_name ASC";
+                                    }
+                                    
                                     $resultPres = mysqli_query($conn, $queryPres);
                                     while($rowPres = mysqli_fetch_array($resultPres)) { 
                                         echo '<option value="'.$rowPres['ID'].'" '; echo $row_proj['presider'] == $rowPres['ID'] ? 'selected' : ''; echo'>'.$rowPres['first_name'].' '.$rowPres['last_name'].'</option>'; 
@@ -868,7 +981,11 @@ if( isset($_GET['postDetails2']) ) {
                                         }
                                     }
                                     
-                                    $queryTaker = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id order by first_name ASC";
+                                    $queryTaker = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id order by first_name ASC";
+                                    if ($user_id == 1687) {
+                                        $queryTaker = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND facility_switch = $facility_switch_user_id order by first_name ASC";
+                                    }
+                                    
                                     $resultTaker = mysqli_query($conn, $queryTaker);
                                     while($rowTaker = mysqli_fetch_array($resultTaker)) { 
                                         echo '<option value="'.$rowTaker['ID'].'" '; echo $row_proj['note_taker'] == $rowTaker['ID'] ? 'selected' : ''; echo'>'.$rowTaker['first_name'].' '.$rowTaker['last_name'].'</option>'; 
@@ -910,7 +1027,11 @@ if( isset($_GET['postDetails2']) ) {
                                         }
                                     }
                                     
-                                    $queryVeri = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id order by first_name ASC";
+                                    $queryVeri = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id order by first_name ASC";
+                                    if ($user_id == 1687) {
+                                        $queryVeri = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND facility_switch = $facility_switch_user_id order by first_name ASC";
+                                    }
+                                    
                                     $resultVeri = mysqli_query($conn, $queryVeri);
                                     while($rowVeri = mysqli_fetch_array($resultVeri)) { 
                                         echo '<option value="'.$rowVeri['ID'].'" '; echo $row_proj['verified_by'] == $rowVeri['ID'] ? 'selected' : ''; echo'>'.$rowVeri['first_name'].' '.$rowVeri['last_name'].'</option>'; 
@@ -952,7 +1073,11 @@ if( isset($_GET['postDetails2']) ) {
                                         }
                                     }
                                     
-                                    $queryAppr = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id order by first_name ASC";
+                                    $queryAppr = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id order by first_name ASC";
+                                    if ($user_id == 1687) {
+                                        $queryAppr = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND facility_switch = $facility_switch_user_id order by first_name ASC";
+                                    }
+                                    
                                     $resultAppr = mysqli_query($conn, $queryAppr);
                                     while($rowAppr = mysqli_fetch_array($resultAppr)) { 
                                         echo '<option value="'.$rowAppr['ID'].'" '; echo $row_proj['approved_by'] == $rowAppr['ID'] ? 'selected' : ''; echo'>'.$rowAppr['first_name'].' '.$rowAppr['last_name'].'</option>'; 
@@ -991,20 +1116,25 @@ if( isset($_GET['postDetails2']) ) {
                                     <tr>
                                         <td>
                                             <label class="control-label">Action Item</label>
-                                            <input class="form-control action_list" name="action_details[]" placeholder="Action Items"><br>
-                                            
-                                            <label class="control-label">Action Item</label>
+                                            <input class="form-control action_list" name="action_details[]" placeholder="Action Items">
+                                        </td>
+                                        <td>
+                                            <label class="control-label">Assigned To</label>
                                             <select class="form-control name_list" type="text" name="assigned_to[]">
                                                 <option value="0">---Select---</option>
                                                 <?php
-                                                    // $query_App = "SELECT * FROM tbl_hr_employee where user_id = $user_id or user_id = 34 order by first_name ASC";
-                                                    $result_App = mysqli_query($conn, "SELECT * FROM tbl_hr_employee where user_id = $user_id order by first_name ASC");
+                                                    $result_App = mysqli_query($conn, "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id order by first_name ASC");
+                                                    if ($user_id == 1687) {
+                                                        $result_App = mysqli_query($conn, "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND facility_switch = $facility_switch_user_id order by first_name ASC");
+                                                    }
+                                                    
                                                     while($row_App = mysqli_fetch_array($result_App)) { 
                                                        echo '<option value="'.$row_App['ID'].'">'.$row_App['first_name'].'</option>'; 
                                                     }
                                                 ?>
-                                            </select><br>
-                                            
+                                            </select>
+                                        </td>
+                                        <td>
                                             <label class="control-label">Status</label>
                                             <select class="form-control status_s" type="text" name="status[]">
                                                 <option value="Open">Open</option>
@@ -1012,17 +1142,21 @@ if( isset($_GET['postDetails2']) ) {
                                                 <option value="Close">Close</option>
                                             </select>
                                         </td>
+                                        <td rowspan="2" style="text-align: center; vertical-align: middle;"><button type="button" name="update_btn" id="update_btn" class="btn btn-success">Add</button></td>
+                                    </tr>
+                                    <tr>
                                         <td>
                                             <label class="control-label">Request Date</label>
-                                            <input type="date" name="target_request_date[]" placeholder="Request Date" class="form-control requestdate" value="<?= date('Y-m-d'); ?>"><br>
-                                            
+                                            <input type="date" name="target_request_date[]" placeholder="Request Date" class="form-control requestdate" value="<?= date('Y-m-d'); ?>">
+                                        </td>
+                                        <td>
                                             <label class="control-label">Start Date</label>
-                                            <input type="date" name="target_start_date[]" placeholder="Start Date" class="form-control startdate" value="<?= date('Y-m-d'); ?>"><br>
-                                            
+                                            <input type="date" name="target_start_date[]" placeholder="Start Date" class="form-control startdate" value="<?= date('Y-m-d'); ?>">
+                                        </td>
+                                        <td>
                                             <label class="control-label">Due Date</label>
                                             <input type="date" name="target_due_date[]" placeholder="Due Date" class="form-control duedate" value="<?= date('Y-m-d'); ?>">
                                         </td>
-                                        <td><button type="button" name="update_btn" id="update_btn" class="btn btn-success">Add</button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1049,7 +1183,7 @@ if( isset($_GET['postDetails2']) ) {
                         <tbody>
                         <?php
                                    
-                            $queryA = "SELECT * FROM tbl_meeting_minutes_action_items where action_meeting_id = '$ID' order by inserted_at ASC";
+                            $queryA = "SELECT * FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = '$ID' order by inserted_at ASC";
                             $resultA = mysqli_query($conn, $queryA);
                             while($rowA = mysqli_fetch_array($resultA)) { ?>
                                 <tr id="statusTbl_<?php echo $rowA['action_id'];  ?>">
@@ -1088,7 +1222,12 @@ if( isset($_GET['postDetails2']) ) {
                                                 ?>
                                         </a>
                                     </td>
-                                    <td><a href="#modal_update_status" data-toggle="modal" class="btn red btn-xs" type="button" id="add_status" data-id="<?php echo $rowA['action_id']; ?>" >Update</a></td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-circle">
+                                            <a href="#modal_update_status" data-toggle="modal" class="btn btn-info btn-xs" type="button" id="add_status" data-id="<?php echo $rowA['action_id']; ?>" >Update</a>
+                                            <a href="javascript:;" class="btn btn-danger btn-xs" onclick="btnDeleteAction(<?php echo $rowA['action_id']; ?>, this)">Delete</a>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php } ?>
                             <tr id="meeting_action_items"></tr>
@@ -1108,10 +1247,27 @@ if( isset($_GET['postDetails2']) ) {
                         <tbody>
                             <?php
                                 $resultr = mysqli_query($conn, "SELECT * FROM tbl_meeting_minutes_ref WHERE deleted = 0 AND meeting_id = '$ID' order by title_name ASC");
-                                while($rowr = mysqli_fetch_array($resultr)) { 
+                                while($rowr = mysqli_fetch_array($resultr)) {
+                                    // echo '<tr>
+                                    //     <td>'.$rowr['title_name'].'</td>
+                                    //     <td><a href="meeting_references/'.$rowr['file_docs'].'" target="_blank">'.$rowr['file_docs'].'</a></td>
+                                    //     <td class="text-center"><a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('.$rowr['ref_id'].', this)">Delete</a></td>
+                                    // </tr>';
+                                
+                                    $datafancybox = 'data-fancybox';
+                                    $files = htmlentities($rowr['file_docs'] ?? '');
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'meeting_references/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                    
                                     echo '<tr>
                                         <td>'.$rowr['title_name'].'</td>
-                                        <td><a href="meeting_references/'.$rowr['file_docs'].'" target="_blank">'.$rowr['file_docs'].'</a></td>
+                                        <td><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">'.$rowr['file_docs'].'</a></td>
                                         <td class="text-center"><a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('.$rowr['ref_id'].', this)">Delete</a></td>
                                     </tr>';
                                 }
@@ -1126,6 +1282,10 @@ if( isset($_GET['postDetails2']) ) {
 if( isset($_GET['btnDelete_Ref']) ) {
     $id = $_GET['btnDelete_Ref'];
     mysqli_query( $conn,"UPDATE tbl_meeting_minutes_ref SET deleted = 1 WHERE ref_id = $id" );
+}
+if( isset($_GET['btnDelete_Action']) ) {
+    $id = $_GET['btnDelete_Action'];
+    mysqli_query( $conn,"UPDATE tbl_meeting_minutes_action_items SET deleted = 1 WHERE action_id = $id" );
 }
 if( isset($_POST['btnSave_details2']) ) {
 	
@@ -1153,6 +1313,12 @@ if( isset($_POST['btnSave_details2']) ) {
  	$note_taker_compliance = mysqli_real_escape_string($conn,$_POST['note_taker_compliance']);
  	$verified_by_compliance = mysqli_real_escape_string($conn,$_POST['verified_by_compliance']);
  	$approved_by_compliance = mysqli_real_escape_string($conn,$_POST['approved_by_compliance']);
+ 	
+    $agendas = '';
+    if (!empty($_POST['agendas'])) {
+        $agendas = implode(", ",$_POST['agendas']);
+    }
+    
     if(!empty($_POST["attendees"])) {
         foreach($_POST["attendees"] as $attendees) {
             $aattendees .= $attendees.', ';
@@ -1175,7 +1341,7 @@ if( isset($_POST['btnSave_details2']) ) {
     $attendees_compliance = substr($attendees_compliance, 0, -2);
     $gguest = substr($gguest, 0, -2);
     $gguest_email = substr($gguest_email, 0, -2);
-    $sql = "UPDATE tbl_meeting_minutes set user_ids='$user_id',account ='$account',meeting_date='$meeting_date',agenda='$agenda',duration_start='$duration_start',duration_end='$duration_end',attendees='$aattendees',attendees_compliance='$attendees_compliance',remarks='$remarks',guest='$gguest',discussion_notes='$discussion_notes',guest_email='$gguest_email',presider='$presider',note_taker='$note_taker',verified_by='$verified_by',approved_by='$approved_by',presider_compliance='$presider_compliance',note_taker_compliance='$note_taker_compliance',verified_by_compliance='$verified_by_compliance',approved_by_compliance='$approved_by_compliance' where id = $ID";
+    $sql = "UPDATE tbl_meeting_minutes set user_ids='$user_id',account ='$account',meeting_date='$meeting_date',agendas='$agendas',agenda='$agenda',duration_start='$duration_start',duration_end='$duration_end',attendees='$aattendees',attendees_compliance='$attendees_compliance',remarks='$remarks',guest='$gguest',discussion_notes='$discussion_notes',guest_email='$gguest_email',presider='$presider',note_taker='$note_taker',verified_by='$verified_by',approved_by='$approved_by',presider_compliance='$presider_compliance',note_taker_compliance='$note_taker_compliance',verified_by_compliance='$verified_by_compliance',approved_by_compliance='$approved_by_compliance' where id = $ID";
     if(mysqli_query($conn, $sql)){
         $ID = $_POST['ID'];
         $action_details = count($_POST["action_details"]);
@@ -1214,7 +1380,7 @@ if( isset($_POST['btnSave_details2']) ) {
           <td>
             <?php
                 $getId = $row['id'];
-                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where action_meeting_id = $getId ";
+                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = $getId ";
                 $resultOpen = mysqli_query($conn, $queryOpen);
                 while($rowOpen = mysqli_fetch_array($resultOpen))
                 { 
@@ -1295,7 +1461,7 @@ if( isset($_POST['btnNew_details']) ) {
           <td>
             <?php
                 $getId = $row['id'];
-                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where action_meeting_id = $getId ";
+                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = $getId ";
                 $resultOpen = mysqli_query($conn, $queryOpen);
                 while($rowOpen = mysqli_fetch_array($resultOpen))
                 { 
@@ -1512,7 +1678,7 @@ if( isset($_POST['btnNew_added']) ) {
           <td>
             <?php
                 $getId = $row['id'];
-                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where action_meeting_id = $getId ";
+                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = $getId ";
                 $resultOpen = mysqli_query($conn, $queryOpen);
                 while($rowOpen = mysqli_fetch_array($resultOpen))
                 { 
@@ -1691,6 +1857,12 @@ if( isset($_POST['btnNew_added2']) ) {
  	$note_taker_compliance = mysqli_real_escape_string($conn,$_POST['note_taker_compliance']);
  	$verified_by_compliance = mysqli_real_escape_string($conn,$_POST['verified_by_compliance']);
  	$approved_by_compliance = mysqli_real_escape_string($conn,$_POST['approved_by_compliance']);
+ 	
+    $agendas = '';
+    if (!empty($_POST['agendas'])) {
+        $agendas = implode(", ",$_POST['agendas']);
+    }
+    
     if(!empty($_POST["attendees"])) {
         foreach($_POST["attendees"] as $attendees) {
             $aattendees .= $attendees.', ';
@@ -1713,8 +1885,8 @@ if( isset($_POST['btnNew_added2']) ) {
     $attendees_compliance = substr($attendees_compliance, 0, -2);
     $gguest = substr($gguest, 0, -2);
     $gguest_email = substr($gguest_email, 0, -2);
-    $sql = "INSERT INTO tbl_meeting_minutes (account,meeting_date,duration_start,duration_end,agenda,remarks,guest,discussion_notes,guest_email,presider,note_taker,verified_by,approved_by,presider_compliance,note_taker_compliance,verified_by_compliance,approved_by_compliance,attendees,attendees_compliance,user_ids,added_by_id) 
-    VALUES ('$account','$meeting_date','$duration_start','$duration_end','$agenda','$remarks','$gguest','$discussion_notes','$gguest_email','$presider','$note_taker','$verified_by','$approved_by','$presider_compliance','$note_taker_compliance','$verified_by_compliance','$approved_by_compliance','$aattendees','$attendees_compliance','$user_id','$cookie')";
+    $sql = "INSERT INTO tbl_meeting_minutes (account,meeting_date,duration_start,duration_end,agendas,agenda,remarks,guest,discussion_notes,guest_email,presider,note_taker,verified_by,approved_by,presider_compliance,note_taker_compliance,verified_by_compliance,approved_by_compliance,attendees,attendees_compliance,user_ids,facility_switch,added_by_id) 
+    VALUES ('$account','$meeting_date','$duration_start','$duration_end','$agendas','$agenda','$remarks','$gguest','$discussion_notes','$gguest_email','$presider','$note_taker','$verified_by','$approved_by','$presider_compliance','$note_taker_compliance','$verified_by_compliance','$approved_by_compliance','$aattendees','$attendees_compliance','$user_id','$facility_switch_user_id','$cookie')";
     if(mysqli_query($conn, $sql)){
         
         $last_id = mysqli_insert_id($conn);
@@ -1724,13 +1896,14 @@ if( isset($_POST['btnNew_added2']) ) {
            for($i=0; $i<$action_details; $i++)
             {
                 $assigned_to = $_POST["assigned_to"][$i];
+                $target_request_date = $_POST["target_request_date"][$i];
+                $target_start_date = $_POST["target_start_date"][$i];
                 $target_due_date = $_POST["target_due_date"][$i];
                 $status = $_POST["status"][$i];
                 
-                $sql2 = "INSERT INTO tbl_meeting_minutes_action_items(action_details,action_meeting_id,assigned_to,target_due_date,status) 
-                VALUES('".mysqli_real_escape_string($conn, $_POST["action_details"][$i])."','$last_id','$assigned_to','$target_due_date','$status')";
+                $sql2 = "INSERT INTO tbl_meeting_minutes_action_items(action_details,action_meeting_id,assigned_to,target_request_date,target_start_date,target_due_date,status) 
+                VALUES('".mysqli_real_escape_string($conn, $_POST["action_details"][$i])."','$last_id','$assigned_to','$target_request_date','$target_start_date','$target_due_date','$status')";
                 mysqli_query($conn, $sql2);
-                
             }
         }
         
@@ -1756,7 +1929,7 @@ if( isset($_POST['btnNew_added2']) ) {
           <td>
             <?php
                 $getId = $row['id'];
-                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where action_meeting_id = $getId ";
+                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = $getId ";
                 $resultOpen = mysqli_query($conn, $queryOpen);
                 while($rowOpen = mysqli_fetch_array($resultOpen))
                 { 
@@ -1996,7 +2169,7 @@ if( isset($_POST['btnNew_added3']) ) {
           <td>
             <?php
                 $getId = $row['id'];
-                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where action_meeting_id = $getId ";
+                $queryOpen = "SELECT COUNT(*) as countOpen FROM tbl_meeting_minutes_action_items where deleted = 0 AND action_meeting_id = $getId ";
                 $resultOpen = mysqli_query($conn, $queryOpen);
                 while($rowOpen = mysqli_fetch_array($resultOpen))
                 { 
@@ -2273,7 +2446,12 @@ if( isset($_GET['GetAI']) ) {
                             <select class="form-control mt-multiselect btn btn-default" type="text" name="assigned_to" required>
                             <?php
                                 $id = $row['assigned_to'];
-                                $assigned_to = mysqli_query($conn,"select * from tbl_hr_employee where user_id = $user_id and status = 1 order by first_name ASC");
+                                
+                                $assigned_to = mysqli_query($conn,"select * from tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id order by first_name ASC");
+                                if ($user_id == 1687) {
+                                    $assigned_to = mysqli_query($conn,"select * from tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 order by first_name ASC");
+                                }
+                                
                                 foreach($assigned_to as $emp_row){?>
                                     <option value="<?=$emp_row['ID']; ?>" <?php if($emp_row['ID']==$id){echo 'selected';}else{echo '';} ?>><?=$emp_row['first_name']; ?><?=$emp_row['last_name']; ?></option>
                                 <?php }
@@ -2397,7 +2575,7 @@ if( isset($_GET['getAI_comment']) ) {
                         </label>
                     </div>
                     <div class="col-md-12">
-                        <p style="margin-top:-1.5rem;">'.$comment_row['ai_comment'].'<i style="font-size:10px;">'.date('Y-m-d h:i:s a', strtotime($comment_row['ai_added'])).'</i></p>
+                        <p style="margin-top:-1.5rem;">'.nl2br($comment_row['ai_comment']).'<br><i style="font-size:10px;">'.date('Y-m-d h:i:s a', strtotime($comment_row['ai_added'])).'</i></p>
                     </div>
                 </div>';
             }

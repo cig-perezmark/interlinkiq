@@ -81,6 +81,8 @@ $(function () {
     $('#tableIngredients').on('click', '[data-editipr]', function() {
         const id = this.dataset.editipr;
         const data = ProductRegisterData[id];
+        
+        console.log(data);
 
         $('#modalIngProdReg .form-group:has(#productSelect2)').hide();
         $('#modalIngProdReg [name=product_id]').val(data.id);

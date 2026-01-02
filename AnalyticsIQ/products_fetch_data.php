@@ -45,11 +45,10 @@ WITH filtered_products AS (
     FROM
         tbl_products p
     JOIN
-        tbl_products_category c ON p.category = c.ID
+        tbl_products_category_group_description c ON p.category_group = c.ID
     WHERE
         p.user_id = $user_id
         AND p.deleted = 0
-        AND c.name IN ('Food', 'Beverages', 'Dietary Supplements', 'Pharmaceuticals', 'Produce', 'Medical Food', 'Cannabis', 'Cosmetics', 'Others', 'Equipment', 'Utensils', 'Consumables', 'Systems', 'Animal Feed', 'Chemicals', 'Confections', 'CPG/FMCG', 'Flavoring', 'Functional Foods', 'Herbal / Herbs', 'Nutraceuticals', 'Packaging', 'Pet Food', 'Raw Materials', 'Spices', 'Manufacturing', 'Distributed', 'Traded', 'Branded')
 ),
 category_aggregation AS (
     SELECT

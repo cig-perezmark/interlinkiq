@@ -90,14 +90,14 @@
         $Number_of_HACCPs = mysqli_real_escape_string($conn,$_POST["Number_of_HACCPs"]);
         $Year_Establish = mysqli_real_escape_string($conn,$_POST["Year_Establish"]);
     
-        if(!empty($_POST["Facilty_Functions"]))
-        {
-            foreach($_POST["Facilty_Functions"] as $Facilty_Functions)
-                {
-                    $fFacilty_Functions .= $Facilty_Functions . ', ';
-                }
+        if(!empty($_POST["Facilty_Functions"])) {
+            
+            $fFacilty_Functions = implode(', ', $_POST["Facilty_Functions"]);
+            // foreach($_POST["Facilty_Functions"] as $Facilty_Functions) {
+            //     $fFacilty_Functions .= $Facilty_Functions . ', ';
+            // }
         }
-        $fFacilty_Functions = substr($fFacilty_Functions, 0, -2);
+        // $fFacilty_Functions = substr($fFacilty_Functions, 0, -2);
         mysqli_query($conn,"update tblFacilityDetails set Facilty_Functions ='$fFacilty_Functions',Number_of_Shifts='$Number_of_Shifts',Number_of_Employees='$Number_of_Employees',Number_of_Lines='$Number_of_Lines',Number_of_HACCPs='$Number_of_HACCPs',Year_Establish='$Year_Establish' where facility_id='$ids'");  
        echo '<script> window.location.href = "../facility-info?facility_id='.$ids.'#fo";</script>';
     }

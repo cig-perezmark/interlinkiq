@@ -187,9 +187,12 @@
                                                     echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
                                                 }
                                             }
+                                            
+                                            if (empty($current_permission_array_key) OR in_array(2, $permission)) {
+                                                echo '<a href="#modalNew" class="btn btn-circle btn-success btn-xs" data-toggle="modal" onclick="btnNew(1, \'modalNew\')">Add New Training</a>';
+                                            }
                                         ?>
                                         
-                                        <a href="#modalNew" class="btn btn-circle btn-success btn-xs" data-toggle="modal" onclick="btnNew(1, 'modalNew')">Add New Training</a>
                                     </div>
                                     <ul class="nav nav-tabs">
                                         <li class="active">
@@ -254,7 +257,7 @@
                                         <div class="modal-body dashboard-stat2"></div>
                                         <div class="modal-footer">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="btnSave_HR_Trainings" id="btnSave_HR_Trainings" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                            <button type="submit" class="btn green ladda-button" name="btnSave_HR_Trainings" id="btnSave_HR_Trainings" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -271,7 +274,7 @@
                                         <div class="modal-body"></div>
                                         <div class="modal-footer">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_HR_Trainings" id="btnUpdate_HR_Trainings" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_HR_Trainings" id="btnUpdate_HR_Trainings" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -444,25 +447,39 @@
                 uiBlock();
                 $.ajax({
                     type: "GET",
-                    url: "function.php?modalView_HR_Trainings_Type="+id,
+                    url: "function.php?modalView_HR_Trainings_Type="+id+"&p="+current_permission_array_key,
                     dataType: "html",
                     success: function(data){
                         var obj = jQuery.parseJSON(data);
                         $("#tableDataActive tbody").html(obj.tblActive);
                         $("#tableDataInactive tbody").html(obj.tblInactive);
                     }
-                });
+                }); 
             }
             function btnViewAll(id) {
                 $.ajax({
-                    type: "GET",
-                    url: "function.php?modalView_HR_Trainings_TypeAll="+id,
+                    type: "GET",  
+                    url: "function.php?modalView_HR_Trainings_TypeAll="+id+"&p="+current_permission_array_key,
                     dataType: "html",
                     success: function(data){
-                        $('#tableDataViewAll').addClass('hide');
+                        $('#tableDataViewAll').addClass('hide'); 
                         $("#tableData tbody").html(data);
                     }
                 });
+            }
+            function selectSource(source) {
+                if (source.value == "1") { 
+                    $('#new-training-form-document').addClass('hide'); 
+                    $('#new-training-form-quiz').addClass('hide');
+                    $('#edit-training-form-document').addClass('hide'); 
+                    $('#edit-training-form-quiz').addClass('hide');
+                } else { 
+                    $('#new-training-form-document').removeClass('hide');
+                    $('#new-training-form-quiz').removeClass('hide'); 
+                    $('#edit-training-form-document').removeClass('hide');
+                    $('#edit-training-form-quiz').removeClass('hide'); 
+                    
+                }
             }
             function selectType(id) {
                 if (id.value == "other") { $('.type_other').removeClass('hide'); }
@@ -525,7 +542,7 @@
                 btnReset(view);
                 $.ajax({    
                     type: "GET",
-                    url: "function.php?modalNew_HR_Trainings="+id,
+                    url: "function.php?modalNew_HR_Trainings="+id+"&p="+current_permission_array_key,
                     dataType: "html",
                     success: function(data){
                         $("#modalNew .modal-body").html(data);
@@ -539,7 +556,7 @@
                 btnClose(view);
                 $.ajax({    
                     type: "GET",
-                    url: "function.php?modalView_HR_Trainings="+id+"&c="+count+"&t="+tab,
+                    url: "function.php?modalView_HR_Trainings="+id+"&c="+count+"&t="+tab+"&p="+current_permission_array_key,
                     dataType: "html",
                     success: function(data){
                         $("#modalView .modal-body").html(data);
@@ -596,12 +613,14 @@
                                 result += '<td class="text-center">'+obj.compliance+'</td>';
                                 result += '<td class="text-center"><span class="label label-sm label-success">Active</span></td>';
                                 result += '<td class="text-center">';
-                                    result += '<div class="mt-action-buttons">';
-                                        result += '<div class="btn-group btn-group-circle">';
-                                            result += '<a href="#modalView" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('+obj.ID+','+tbl_counter+', \'modalView\')">View</a>';
-                                            result += '<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDelete('+obj.ID+')">Delete</a>';
-                                        result += '</div>';
-                                    result += '</div>';
+                                    
+                                    if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("5")) {
+                                        result += '<a href="#modalView" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('+obj.ID+','+tbl_counter+', \'modalView\')">View</a>';
+                                    }
+                                    if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("6")) {
+                                        result += '<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDelete('+obj.ID+')">Delete</a>';
+                                    }
+                                    
                                 result += '</td>';
                             result += '</tr>';
 
@@ -685,12 +704,14 @@
                             else { result += '<td class="text-center"><span class="label label-sm label-danger">Inactive</span></td>'; }
 
                             result += '<td class="text-center">';
-                                result += '<div class="mt-action-buttons">';
-                                    result += '<div class="btn-group btn-group-circle">';
-                                        result += '<a href="#modalView" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('+obj.ID+', '+obj.c+', \'modalView\')">View</a>';
-                                        result += '<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDelete('+obj.ID+')">Delete</a>';
-                                    result += '</div>';
-                                result += '</div>';
+                            
+                                if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("5")) {
+                                    result += '<a href="#modalView" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnView('+obj.ID+', '+obj.c+', \'modalView\')">View</a>';
+                                }
+                                if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("6")) {
+                                    result += '<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDelete('+obj.ID+')">Delete</a>';
+                                }
+                                
                             result += '</td>';
 
                             if (obj.t == 1) {

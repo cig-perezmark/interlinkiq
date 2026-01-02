@@ -230,10 +230,16 @@
                                                                                 echo '<span class="label label-sm label-warning">Suspended</span>';
                                                                             }
                                                                         echo '</td>
-                                                                        <td class="text-center">
-                                                                            <a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', '.$table_counter++.', \'modalView\')">View</a>
-                                                                            <a class="btn btn-danger red" onclick="btnDelete('. $row["ID"].', this)">Delete</a>
-                                                                        </td>
+                                                                        <td class="text-center">';
+
+                                                                            if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                echo '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', '.$table_counter++.', \'modalView\')">View</a>';
+                                                                            }
+                                                                            if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                echo '<a class="btn btn-danger red" onclick="btnDelete('. $row["ID"].', this)">Delete</a>';
+                                                                            }
+                                                                            
+                                                                        echo '</td>
                                                                     </tr>';
                                                                 }
                                                                 
@@ -313,10 +319,16 @@
                                                                                 echo '<span class="label label-sm label-warning">Suspended</span>';
                                                                             }
                                                                         echo '</td>
-                                                                        <td class="text-center">
-                                                                            <a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', '.$table_counter++.', \'modalView\')">View</a>
-                                                                            <a class="btn btn-danger red" onclick="btnDelete('. $row["ID"].', this)">Delete</a>
-                                                                        </td>
+                                                                        <td class="text-center">';
+
+                                                                            if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                echo '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', '.$table_counter++.', \'modalView\')">View</a>';
+                                                                            }
+                                                                            if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                                echo '<a class="btn btn-danger red" onclick="btnDelete('. $row["ID"].', this)">Delete</a>';
+                                                                            }
+                                                                            
+                                                                        echo '</td>
                                                                     </tr>';
                                                                 }
                                                                 
@@ -358,7 +370,7 @@
                                                     <textarea class="form-control" name="description" style="height:150px;" required ></textarea>
                                                 </div>
                                             </div>
-                                            <div class="form-group <?php echo $_COOKIE['client'] == 1 ? 'hide':''; ?>">
+                                            <div class="form-group <?php echo(empty($current_permission_array_key) OR in_array(3, $permission)) ? '':'hide'; ?>">
                                                 <label class="col-md-3 control-label">Document</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="filetype" onchange="changeType(this)" required>
@@ -381,7 +393,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="btnSave_HR_Department" id="btnSave_HR_Department" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                            <button type="submit" class="btn green ladda-button" name="btnSave_HR_Department" id="btnSave_HR_Department" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -398,7 +410,7 @@
                                         <div class="modal-body"></div>
                                         <div class="modal-footer">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_HR_Department" id="btnUpdate_HR_Department" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_HR_Department" id="btnUpdate_HR_Department" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -607,7 +619,7 @@
                 btnClose(view);
                 $.ajax({    
                     type: "GET",
-                    url: "function.php?modalView_HR_Department="+id+"&c="+count,             
+                    url: "function.php?modalView_HR_Department="+id+"&c="+count+"&p="+current_permission_array_key,
                     dataType: "html",                  
                     success: function(data){                    
                         $("#modalView .modal-body").html(data);
@@ -681,8 +693,14 @@
                             result += '<td class="text-center">'+obj.viewFile+'</td>';
                             result += '<td class="text-center"><span class="label label-sm label-success">Active</span></td>';
                             result += '<td class="text-center">';
-                                result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+', '+tbl_counter+', \'modalView\')">View</a>';
-                                result += '<a class="btn btn-danger red" onclick="btnDelete('+obj.ID+', this)">Delete</a>';
+                            
+                                if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("5")) {
+                                    result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+', '+tbl_counter+', \'modalView\')">View</a>';
+                                }
+                                if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("6")) {
+                                    result += '<a class="btn btn-danger red" onclick="btnDelete('+obj.ID+', this)">Delete</a>';
+                                }
+                                
                             result += '</td>';
                             result += '</tr>';
 
@@ -763,8 +781,14 @@
                                 else { result += '<span class="label label-sm label-danger">Inactive</span>'; }
                             result += '</td>';
                             result += '<td class="text-center">';
-                                result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+', '+obj.c+', \'modalView\')">View</a>';
-                                result += '<a class="btn btn-danger red" onclick="btnDelete('+obj.ID+', this)">Delete</a>';
+                            
+                                if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("5")) {
+                                    result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+', '+obj.c+', \'modalView\')">View</a>';
+                                }
+                                if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("6")) {
+                                    result += '<a class="btn btn-danger red" onclick="btnDelete('+obj.ID+', this)">Delete</a>';
+                                }
+                                
                             result += '</td>';
 
                             // Check if Active or Inactive

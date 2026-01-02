@@ -1,6 +1,7 @@
 const url = document.currentScript.src;
 const switch_user_id = url.split('=')[1];
-console.log(switch_user_id);
+// const facility_switch_user_id = url.split('=')[2];
+// console.log(switch_user_id);
 
 var compliance = "Compliance";
 var noncompliance = "Non-Compliance";
@@ -15,15 +16,15 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (!data || !data.folderData || !data.folderData.length || !data.fileData) {
                 console.error('Invalid data format:', data);
-                alert('Received invalid data. Please check the server response.');
+                // alert('Received invalid data. Please check the server response.');
                 return;
             }
 
             am5.ready(function() {
                 var root = am5.Root.new("comchartdiv");
 
-                 // Remove amCharts logo
-                 root._logo.dispose();
+                // Remove amCharts logo
+                root._logo.dispose();
 
                 root.setThemes([am5themes_Animated.new(root)]);
               
@@ -180,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error fetching data:', error);
-            alert('Failed to fetch compliance data. Please try again later.');
+            // alert('Failed to fetch compliance data. Please try again later.');
         });
 });
 
@@ -191,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (!data || !data.folderData || !data.folderData.length || !data.fileData) {
                 console.error('Invalid data format:', data);
-                alert('Received invalid data. Please check the server response.');
+                // alert('Received invalid data. Please check the server response.');
                 return;
             }
 
@@ -417,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error fetching data:', error);
-            alert('Failed to fetch compliance data. Please try again later.');
+            // alert('Failed to fetch compliance data. Please try again later.');
         });
 });
 

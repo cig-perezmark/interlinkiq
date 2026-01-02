@@ -33,22 +33,28 @@ if(isset($_POST['key'])){
     $i = 1;
     if ($_POST['key'] == 'ids') {
         $i++;
-        $response .= '<tr id="row'; $response .= $i;  $response .= '">
+        $response .= '<tr class="row'.$i.'">
             <td>
                 <label class="control-label">Action Item</label>
-                <input class="form-control action_list" name="action_details[]" placeholder="Action Items"><br>
-                
-                <label class="control-label">Action Item</label>
+                <input class="form-control action_list" name="action_details[]" placeholder="Action Items">
+            </td>
+            <td>
+                <label class="control-label">Assigned To</label>
                 <select class="form-control name_list" type="text" name="assigned_to[]">
                     <option value="0">---Select---</option>';
                     
-                    $resultApp = mysqli_query($conn, "SELECT * FROM tbl_hr_employee where user_id = $user_id or user_id = 34 order by first_name ASC");
+                    $resultApp = mysqli_query($conn, "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = $user_id order by first_name ASC");
+                    if ($user_id == 1687) {
+                        $resultApp = mysqli_query($conn, "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 order by first_name ASC");
+                    }
+                    
                     while($rowApp = mysqli_fetch_array($resultApp)) { 
                        $response .= '<option value="'.$rowApp['ID'].'">'.$rowApp['first_name'].'</option>'; 
                     }
                     
-                $response .= '</select><br>
-                
+                $response .= '</select>
+            </td>
+            <td>
                 <label class="control-label">Status</label>
                 <select class="form-control status_s" type="text" name="status[]">
                     <option value="Open">Open</option>
@@ -56,17 +62,21 @@ if(isset($_POST['key'])){
                     <option value="Close">Close</option>
                 </select>
             </td>
+            <td rowspan="2" style="text-align: center; vertical-align: middle;"><button type="button" name="remove" id="'; $response .= $i;  $response .= '" class="btn btn-danger btn_remove">Remove</button></td>
+        </tr>
+        <tr class="row'.$i.'">
             <td>
                 <label class="control-label">Request Date</label>
-                <input type="date" name="target_request_date[]" placeholder="Request Date" class="form-control requestdate" value="'.date('Y-m-d').'"><br>
-                
+                <input type="date" name="target_request_date[]" placeholder="Request Date" class="form-control requestdate" value="'.date('Y-m-d').'">
+            </td>
+            <td>
                 <label class="control-label">Start Date</label>
-                <input type="date" name="target_start_date[]" placeholder="Start Date" class="form-control startdate" value="'.date('Y-m-d').'"><br>
-                
+                <input type="date" name="target_start_date[]" placeholder="Start Date" class="form-control startdate" value="'.date('Y-m-d').'">
+            </td>
+            <td>
                 <label class="control-label">Due Date</label>
                 <input type="date" name="target_due_date[]" placeholder="Due Date" class="form-control duedate" value="'.date('Y-m-d').'">
             </td>
-            <td><button type="button" name="remove" id="'; $response .= $i;  $response .= '" class="btn btn-danger btn_remove">Remove</button></td>
         </tr>';
     }
    exit($response);

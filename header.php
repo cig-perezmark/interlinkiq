@@ -1,21 +1,21 @@
 <?php include_once 'database_iiq.php'; ?>
 
 <?php
-//     $servername='localhost';
-// 	$username='brandons_interlinkiq';
-// 	$password='L1873@2019new';
-// 	$dbname = "brandons_interlinkiq";
-// 	$conn=mysqli_connect($servername,$username,$password,"$dbname");
-// 	if(!$conn){
-// 	   die('Could not Connect My Sql:' .mysql_error());
-// 	}
-//     $breadcrumbs = '';
-//     $sub_breadcrumbs = '';
-
-//     if ($sub_breadcrumbs) {
-//         $breadcrumbs .= '<li><span>'. $sub_breadcrumbs .'</span><i class="fa fa-angle-right"></i></li>';
-//     }
-//     $breadcrumbs .= '<li><span>'. $title .'</span></li>';
+    // $servername='localhost';
+    // $username='brandons_interlinkiq';
+    // $password='L1873@2019new';
+    // $dbname = "brandons_interlinkiq";
+    // $conn=mysqli_connect($servername,$username,$password,"$dbname");
+    // if(!$conn){
+    //   die('Could not Connect My Sql:' .mysql_error());
+    // }
+    // $breadcrumbs = '';
+    // $sub_breadcrumbs = '';
+    
+    // if ($sub_breadcrumbs) {
+    //     $breadcrumbs .= '<li><span>'. $sub_breadcrumbs .'</span><i class="fa fa-angle-right"></i></li>';
+    // }
+    // $breadcrumbs .= '<li><span>'. $title .'</span></li>';
     
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
@@ -31,6 +31,8 @@
     $user_id = '';
     $current_client = 0;
     $current_userID = '';
+    $current_userID_switch = '';
+    $current_userInvited = 0;
     $current_userEmployeeID = '';
     $current_userEmployerID = '';
     $current_userAdminAccess = 0;
@@ -39,6 +41,7 @@
     $current_userEmail = '';
     $current_userType = '';
     $current_userMobile = '';
+    $current_userMobile2 = '';
     $current_userInterest = '';
     $current_userAddress = '';
     $current_userDLicense = '';
@@ -107,6 +110,7 @@
         if ( mysqli_num_rows($selectUser) > 0 ) {
             $rowUser = mysqli_fetch_array($selectUser);
             $current_userID = $rowUser['ID'];
+            $current_userInvited = $rowUser['invited'];
             $current_userEmployeeID = $rowUser['employee_id'];
             $current_userFName = htmlentities($rowUser['first_name'] ?? '');
             $current_userLName = htmlentities($rowUser['last_name'] ?? '');
@@ -118,6 +122,7 @@
         if ( mysqli_num_rows($selectUserInfo) > 0 ) {
             $rowUserInfo = mysqli_fetch_array($selectUserInfo);
             $current_userMobile = htmlentities($rowUserInfo['mobile'] ?? '');
+            $current_userMobile2 = htmlentities($rowUserInfo['mobile2'] ?? '');
             $current_userInterest = htmlentities($rowUserInfo['interest'] ?? '');
             $current_userAddress = htmlentities($rowUserInfo['address'] ?? '');
             $current_userDLicense = htmlentities($rowUserInfo['driver_license'] ?? '');
@@ -137,6 +142,7 @@
             $current_userPage = htmlentities($rowSM['page'] ?? '');
         }
         
+        $current_userEmployerID = $current_userID;
         if ($current_userEmployeeID > 0) {
             $selectEmployer = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND ID=$current_userEmployeeID" );
             if ( mysqli_num_rows($selectEmployer) > 0 ) {
@@ -146,14 +152,36 @@
                 $current_userAdminAccess = $rowEmployer["admin"];
                 $current_userAlarmCode = $rowEmployer['alarm_code'];
             }
+        }
+    
+        
+        // For Facility Switch Account
+        $facility_switch_user_id = 0;
+        if (isset($_COOKIE['facilityswitchAccount'])) {
+            $facility_switch_user_id = $_COOKIE['facilityswitchAccount'];
         } else {
-            $current_userEmployerID = $current_userID;
+            if ($current_userEmployeeID > 0) {
+                $selectEmployeeFacility = mysqli_query( $conn,"SELECT facility_switch FROM tbl_hr_employee WHERE facility_switch > 0 AND ID = $current_userEmployeeID" );
+                if ( mysqli_num_rows($selectEmployeeFacility) > 0 ) {
+                    $rowEmployeeFacility = mysqli_fetch_array($selectEmployeeFacility);
+                    $facility_switch_user_id = $rowEmployeeFacility["facility_switch"];
+                }
+            } else {
+                $selectSupplierFacility = mysqli_query( $conn,"SELECT facility_switch FROM tbl_supplier WHERE facility_switch > 0 AND email = '".$current_userEmail."'" );
+                if ( mysqli_num_rows($selectSupplierFacility) > 0 ) {
+                    $rowSupplierFacility = mysqli_fetch_array($selectSupplierFacility);
+                    $facility_switch_user_id = $rowSupplierFacility["facility_switch"];
+                }
+            }
         }
         
         // For Switch Account Profie
         $enterp_iso2 = '';
+        $current_userID_switch = $current_userID;
+        $switch_user_id = $current_userEmployerID;
         if (isset($_COOKIE['switchAccount'])) {
             $id = $_COOKIE['switchAccount'];
+            $current_userID_switch = $id;
             // $FreeAccess = false;
     
             // $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $id" );
@@ -183,6 +211,14 @@
                 $enterp_userID = $rowEnterprise['users_entities'];
                 $enterp_iso2 = $rowEnterprise['iso2'];
             }
+            
+            $switch_user_id = $_COOKIE['switchAccount'];
+    
+            $selectUserSwitch=mysqli_query($conn, "SELECT * from tbl_user WHERE ID = $switch_user_id");
+            if (mysqli_num_rows($selectUserSwitch) > 0) {
+                $rowUserSwitch = mysqli_fetch_array($selectUserSwitch);
+                $current_userEmail = htmlentities($rowUserSwitch['email']);
+            }
         } else {
             // $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $current_userEmployerID" );
             $selectEnterprise = mysqli_query( $conn,"
@@ -211,59 +247,8 @@
                 $enterp_userID = $rowEnterprise['users_entities'];
                 $enterp_iso2 = $rowEnterprise['iso2'];
             }
-                
-            // For Employee ONLY
-            if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) {
-        
-                if ($current_userAdminAccess == 0) {
-                    // Base on Current Page
-                    $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE collab = 1 AND deleted = 0 AND name='".$site."'" );
-                    if ( mysqli_num_rows($selectMenu) > 0 ) {
-                        $rowMenu = mysqli_fetch_array($selectMenu);
-                        $assigned_to_id = $rowMenu['assigned_to_id'];
-            
-                        // Redirect to 404 if no assigned
-                        if (!empty($assigned_to_id)) {
-                            $output = json_decode($assigned_to_id, true);
-                            $exist = 0;
-                            
-							if (isset($_GET['facility_id'])) {
-								$f_ID = $_GET['facility_id'];
-								foreach ($output as $key => $value) {
-									if ($f_ID == $key) {
-										if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
-											$exist++;
-											break;
-										}
-									}
-								} 
-							} else {
-                                foreach ($output as $key => $value) {
-                                    if ($current_userEmployerID == $key) {
-                                        if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
-                                            $exist++;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-            
-                            if ($exist == 0) {
-                                echo '<script>window.location.href = "404";</script>';
-                            }
-                        } else {
-                            echo '<script>window.location.href = "404";</script>';
-                        }
-                    }
-                }
-            }
-            
-            // $selectCustomer = mysqli_query( $conn,"SELECT * from tbl_supplier WHERE page = 2 AND status = 1 AND is_deleted = 0 AND email = '".$current_userEmail."'" );
-            // if ( mysqli_num_rows($selectCustomer) > 0 ) { $FreeAccess = false; }
         }
         if (empty($enterp_iso2)) { $enterp_iso2 = 'US'; }
-        
-
     }
 
     function fileExtension($file) {
@@ -303,6 +288,13 @@
         }
 
         return $current_userEmployerID;
+    }
+
+    $selectAPI = mysqli_query( $conn,"SELECT ID FROM tbl_api_keys" );
+    if ( mysqli_num_rows($selectAPI) > 0 ) {
+        $rowAPI = mysqli_fetch_array($selectAPI);
+        $api_key = $rowAPI["ID"]; // 32 chars for AES-256
+        $api_iv = openssl_random_pseudo_bytes(16);
     }
 ?>
 
@@ -429,41 +421,6 @@ License: You must have a valid license purchased only from themeforest(the above
     <!--end chat bot-->
     <style type="text/css">
         <?php 
-            if (isset($_COOKIE['switchAccount'])) {
-                $switch_user_id = $_COOKIE['switchAccount'];
-        
-                $selectUserSwitch=mysqli_query($conn, "SELECT * from tbl_user WHERE ID = $switch_user_id");
-                if (mysqli_num_rows($selectUserSwitch) > 0) {
-                    $rowUserSwitch = mysqli_fetch_array($selectUserSwitch);
-                    $current_userEmail = htmlentities($rowUserSwitch['email']);
-                }
-            }
-            else { $switch_user_id = $current_userEmployerID; }
-        
-            $facility_switch_user_id = 0;
-            if (isset($_COOKIE['facilityswitchAccount'])) {
-                $facility_switch_user_id = $_COOKIE['facilityswitchAccount'];
-            } else {
-                if ($current_userEmployeeID > 0) {
-                    $selectEmployeeFacility = mysqli_query( $conn,"SELECT facility_switch FROM tbl_hr_employee WHERE facility_switch > 0 AND ID = $current_userEmployeeID" );
-                    if ( mysqli_num_rows($selectEmployeeFacility) > 0 ) {
-                        $rowEmployeeFacility = mysqli_fetch_array($selectEmployeeFacility);
-                        $facility_switch_user_id = $rowEmployeeFacility["facility_switch"];
-                    }
-                } else {
-                    $selectSupplierFacility = mysqli_query( $conn,"SELECT facility_switch FROM tbl_supplier WHERE facility_switch > 0 AND email = '".$current_userEmail."'" );
-                    if ( mysqli_num_rows($selectSupplierFacility) > 0 ) {
-                        $rowSupplierFacility = mysqli_fetch_array($selectSupplierFacility);
-                        $facility_switch_user_id = $rowSupplierFacility["facility_switch"];
-                    }
-                }
-    
-                if ($facility_switch_user_id > 0) {
-                    setcookie('facilityswitchAccount', $switch_user_id, time() + (86400 * 1), "/");  // 86400 = 1 day
-                }
-            }
-        
-        
             // $selectCustomer = mysqli_query( $conn,"SELECT * from tbl_supplier WHERE page = 2 AND status = 1 AND is_deleted = 0 AND email = '".$current_userEmail."'" );
             // if ( mysqli_num_rows($selectCustomer) > 0 ) {
             $selectMenuAccess=mysqli_query($conn, "SELECT * FROM tbl_menu WHERE module = 1 AND type = 0 AND deleted = 0 AND url = '".$site."'");
@@ -891,61 +848,18 @@ License: You must have a valid license purchased only from themeforest(the above
         #jTimeoutAlert .ja_title > div {
             font-size: 4rem;
         }
+        
+        
+        .li-whole > a > i {
+            color: #ffff00 !important;
+        }
+        .li-whole > a > .title {
+            color: #ffff00;
+            font-weight: bold;
+        }
     </style>
 </head>
 <!-- END HEAD -->
-
-<?php
-        function menu($name, $current_userEmployerID, $current_userEmployeeID) {
-            global $conn;
-            global $current_userAdminAccess;
-
-            if ($current_userAdminAccess == 0) {
-                $displayMenu = "hide";
-                
-                if (!isset($_COOKIE['switchAccount'])) {
-                    $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE name='".$name."'" );
-                    if ( mysqli_num_rows($selectMenu) > 0 ) {
-                        $rowMenu = mysqli_fetch_array($selectMenu);
-                        $assigned_to_id = $rowMenu['assigned_to_id'];
-        
-                        if (!empty($assigned_to_id)) {
-                            $output = json_decode($assigned_to_id, true);
-                            $exist = 0;
-                            
-                            if (isset($_GET['facility_id'])) {
-                                $f_ID = $_GET['facility_id'];
-                                foreach ($output as $key => $value) {
-                                    if ($f_ID == $key) {
-                                        if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
-                                            $exist++;
-                                            break;
-                                        }
-                                    }
-                                }
-                            } else {
-                                foreach ($output as $key => $value) {
-                                    if ($current_userEmployerID == $key) {
-                                        if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
-                                            $exist++;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-        
-                            if ($exist > 0) { $displayMenu = ""; }
-                        }
-                    }
-                } else {
-                    $displayMenu = "";
-                }
-    
-                return $displayMenu;
-            }
-        }
-    ?>
-
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid" id="bodyView">
     <!-- BEGIN HEADER -->
@@ -1066,6 +980,94 @@ License: You must have a valid license purchased only from themeforest(the above
                                 echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
                             }
                             
+                        } else if ($current_client == 16) {
+                            if ($switch_user_id == 1649) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/204412 - Intel Comp Logo.png" height="60px" alt="logo" /></a>';
+                                }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/204412 - Intel Comp Logo.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 18) {
+                            if ($switch_user_id == 1684) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/425830 - Trinity logo.jpg" height="60px" alt="logo" /></a>';
+                                }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/425830 - Trinity logo.jpg" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 19) {
+                            if ($switch_user_id == 1867) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/211237 - VENDORMATCH (5).png" height="60px" alt="logo" /></a>';
+                                }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/211237 - VENDORMATCH (5).png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 20) {
+                            if ($switch_user_id == 1738) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/895462 - logo.png" height="60px" alt="logo" /></a>';
+                                }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/895462 - logo.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 22) {
+                            if ($switch_user_id == 1773) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/399120 - Logo.png" height="60px" alt="logo" /></a>';
+                                }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/399120 - Logo.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 23) {
+                            if ($switch_user_id == 1774) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/810495 - Logo.png" height="60px" alt="logo" /></a>';
+                                }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/810495 - Logo.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 24) {
+                            if ($switch_user_id == 1781) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/257287 - shi.png" height="60px" alt="logo" /></a>';
+                                }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/257287 - shi.png" height="60px" alt="logo" /></a>';
+                            }
+                            
+                        } else if ($current_client == 25) {
+                            if ($switch_user_id == 1795) {
+                                if(!empty($enterp_logo)) {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/459765 - Ashire-Technologies-transparent-file-Cherisa-Jerez-e1683595660908.png" height="60px" alt="logo" /></a>';
+                                }
+                            } else {
+                                echo '<a href="dashboard"><img src="companyDetailsFolder/459765 - Ashire-Technologies-transparent-file-Cherisa-Jerez-e1683595660908.png" height="60px" alt="logo" /></a>';
+                            }
+                            
                         } else {
                             if (isset($_COOKIE['switchAccount'])) {
                                 echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
@@ -1152,93 +1154,95 @@ License: You must have a valid license purchased only from themeforest(the above
                 }
             ?>
             <?php
-                    if ($current_client == 1) {
-                        echo '<div class="page-actions" style="margin-top: 10px;">
-                            <div id="resultCheck" style="color: red; font-weight: 700; font-size: 1.5rem;">
-                                <div style="display: flex">';
-                                
-                                    $contactHeader = '';
-                                    $selectHeader = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_Header WHERE LENGTH(content) > 0 AND user_id = $switch_user_id");
-                                    if(mysqli_num_rows($selectHeader) > 0) {
-                                        $rowHeader = mysqli_fetch_assoc($selectHeader);
-                                        $contactHeader = $rowHeader['content'];
-                                        
-                                        $data = json_decode($contactHeader, true);
-                                        $sections = array_column($data, "section"); 
-                                        $unique_sections = array_unique($sections);
-                                        $arr = implode(', ', $unique_sections);
-                                        $arr_ex = explode(', ', $arr);
-                                        
-                                        // $unique_sections = count(array_unique(array_column($data, 'section')));
+                if ($current_client == 1) {
+                    echo '<div class="page-actions" style="margin-top: 10px;">
+                        <div id="resultCheck" style="color: red; font-weight: 700; font-size: 1.5rem;">
+                            <div style="display: flex">';
                             
+                                $contactHeader = '';
+                                $selectHeader = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_Header WHERE LENGTH(content) > 0 AND user_id = $switch_user_id");
+                                if(mysqli_num_rows($selectHeader) > 0) {
+                                    $rowHeader = mysqli_fetch_assoc($selectHeader);
+                                    $contactHeader = $rowHeader['content'];
                                     
-                                        for ($x = 0; $x < count($unique_sections); $x++) {
-                                            echo '<div style="margin-right: 15px;">';
-                                                if($arr_ex[$x] == 1) { echo 'Contact Person'; }
-                                                else if($arr_ex[$x] == 2) { echo 'Emergency Contact'; }
-                                                else if($arr_ex[$x] == 3) { echo 'Private Patrol Officer'; }
-                                                else if($arr_ex[$x] == 4) {
-                                                    // $selectHeaderSet = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_Contact_Set WHERE LENGTH(content) > 0 AND user_id = $switch_user_id");
-                                                    // $selectHeaderSet = mysqli_query($conn, "SELECT 
-                                                    //     s.title AS s_title 
-                                                    //     FROM tblEnterpiseDetails_Contact_SetData AS d
-                                                        
-                                                    //     LEFT JOIN (
-                                                    //     	SELECT
-                                                    //         *
-                                                    //         FROM tblEnterpiseDetails_Contact_Set
-                                                    //         WHERE deleted = 0
-                                                    //     ) AS s
-                                                    //     ON d.set_id = s.ID
-                                                        
-                                                    //     WHERE d.deleted = 0
-                                                    //     AND d.ID = 1");
-                                                    // if(mysqli_num_rows($selectHeaderSet) > 0) {
-                                                    //     $rowHeader = mysqli_fetch_assoc($selectHeaderSet);
-                                                    //     $contactHeader = $rowHeader['content'];
-                                                        
-                                                    // }
-                                                    echo 'Others';
-                                                }
-                                                
-                                                echo '<ul class="list-inline">';
-                                                
-                                                    foreach ($data as $key => $value) {
-                                                        if ($arr_ex[$x] == $value['section']) {
-                                                            echo '<li class="list-inline-item">'.$value['value'].'</li>';
-                                                        }
-                                                    }
+                                    $data = json_decode($contactHeader, true);
+                                    $sections = array_column($data, "section"); 
+                                    $unique_sections = array_unique($sections);
+                                    $arr = implode(', ', $unique_sections);
+                                    $arr_ex = explode(', ', $arr);
+                                    
+                                    // $unique_sections = count(array_unique(array_column($data, 'section')));
+                        
+                                
+                                    for ($x = 0; $x < count($unique_sections); $x++) {
+                                        echo '<div style="margin-right: 15px;">';
+                                            if($arr_ex[$x] == 1) { echo 'Contact Person'; }
+                                            else if($arr_ex[$x] == 2) { echo 'Emergency Contact'; }
+                                            else if($arr_ex[$x] == 3) { echo 'Private Patrol Officer'; }
+                                            else if($arr_ex[$x] == 4) {
+                                                // $selectHeaderSet = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_Contact_Set WHERE LENGTH(content) > 0 AND user_id = $switch_user_id");
+                                                // $selectHeaderSet = mysqli_query($conn, "SELECT 
+                                                //     s.title AS s_title 
+                                                //     FROM tblEnterpiseDetails_Contact_SetData AS d
+                                                    
+                                                //     LEFT JOIN (
+                                                //     	SELECT
+                                                //         *
+                                                //         FROM tblEnterpiseDetails_Contact_Set
+                                                //         WHERE deleted = 0
+                                                //     ) AS s
+                                                //     ON d.set_id = s.ID
+                                                    
+                                                //     WHERE d.deleted = 0
+                                                //     AND d.ID = 1");
+                                                // if(mysqli_num_rows($selectHeaderSet) > 0) {
+                                                //     $rowHeader = mysqli_fetch_assoc($selectHeaderSet);
+                                                //     $contactHeader = $rowHeader['content'];
+                                                    
+                                                // }
+                                                echo 'Others';
+                                            }
                                             
-                                                echo '</ul>
-                                            </div>';
-                                        }
+                                            echo '<ul class="list-inline">';
+                                            
+                                                foreach ($data as $key => $value) {
+                                                    if ($arr_ex[$x] == $value['section']) {
+                                                        echo '<li class="list-inline-item">'.$value['value'].'</li>';
+                                                    }
+                                                }
+                                        
+                                            echo '</ul>
+                                        </div>';
                                     }
-                                                
-                                echo '</div>
-                            </div>
-                        </div>';
-                    }
-                ?>
+                                }
+                                            
+                            echo '</div>
+                        </div>
+                    </div>';
+                }
+            ?>
             <!-- END PAGE ACTIONS -->
             <!-- BEGIN PAGE TOP -->
             <div class="page-top">
                 <?php if ($current_client == 0) { ?>
-                <!-- BEGIN HEADER SEARCH BOX -->
-                <!-- DOC: Apply "search-form-expanded" right after the "search-form" class to have half expanded search box -->
-                <form class="search-form search-form-expanded hide" action="page_general_search_3.html" method="GET">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." name="query">
-                        <span class="input-group-btn">
-                            <a href="javascript:;" class="btn submit">
-                                <i class="icon-magnifier"></i>
-                            </a>
-                        </span>
-                    </div>
-                </form>
+                    <!-- BEGIN HEADER SEARCH BOX -->
+                    <!-- DOC: Apply "search-form-expanded" right after the "search-form" class to have half expanded search box -->
+                    <form class="search-form search-form-expanded hide" action="page_general_search_3.html" method="GET">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search..." name="query">
+                            <span class="input-group-btn">
+                                <a href="javascript:;" class="btn submit">
+                                    <i class="icon-magnifier"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </form>
                 <!-- END HEADER SEARCH BOX -->
                 <?php } ?>
 
                 <?php
+                    $menu_tff = ' d-nonex ';
+                    if($current_client == 18 AND $current_userEmployeeID == 0 AND $switch_user_id != 1684) { $menu_tff = ' hide '; }
                     if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
                         echo '<div class="offcanvas offcanvas-end" id="chatbox">
                             <div class="offcanvas-header pb-0">';
@@ -1336,64 +1340,64 @@ License: You must have a valid license purchased only from themeforest(the above
                 <div class="top-menu">
 
                     <ul class="nav navbar-nav pull-right">
-                        <?php if ($current_client == 0 OR $current_client == 10 OR $current_client == 11) { ?>
-                        <li class="dropdown dropdown-extended" id="googleTranslate">
-                            <div id="google_translate_element"></div>
-                            <script type="text/javascript">
-                            // function googleTranslateElementInit() {
-                            //     new google.translate.TranslateElement({
-                            //         pageLanguage: 'en',
-                            //         autoDisplay: 'true',
-                            //         includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw',
-                            //         layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-                            //     }, 'google_translate_element');
-                            // }
-                            </script>
-
-                            <!--<div id="customLang"></div>-->
-                            <!--<select class="selectpicker notranslate" data-width="fit" onchange="translateLanguage(this.value);">-->
-                            <!--    <option data-content='<span class="fi fi-us"></span> English' value="English">English</option>-->
-                            <!--    <option data-content='<span class="fi fi-sa"></span> Arabic' value="Arabic" <?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ar') { echo 'SELECTED'; } ?> >Arabic</option>-->
-                            <!--    <option data-content='<span class="fi fi-fr"></span> French' value="French"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/fr') { echo 'SELECTED'; } ?> >French</option>-->
-                            <!--    <option data-content='<span class="fi fi-it"></span> Italian' value="Italian"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/it') { echo 'SELECTED'; } ?> >Italian</option>-->
-                            <!--    <option data-content='<span class="fi fi-jp"></span> Japanese' value="Japanese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ja') { echo 'SELECTED'; } ?> >Japanese</option>-->
-                            <!--    <option data-content='<span class="fi fi-kr"></span> Korean' value="Korean"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ko') { echo 'SELECTED'; } ?> >Korean</option>-->
-                            <!--    <option data-content='<span class="fi fi-pt"></span> Portuguese' value="Portuguese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/pt') { echo 'SELECTED'; } ?> >Portuguese</option>-->
-                            <!--    <option data-content='<span class="fi fi-es"></span> Spanish' value="Spanish"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/es') { echo 'SELECTED'; } ?> >Spanish</option>-->
-                            <!--</select>-->
-                            <script type="text/javascript">
-                            function googleTranslateElementInit() {
-                                new google.translate.TranslateElement({
-                                    pageLanguage: 'en',
-                                    autoDisplay: 'true',
-                                    includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw,uk',
-                                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-                                }, 'google_translate_element');
-                            }
-                            // function googleTranslateElementInit() {
-                            //     // new google.translate.TranslateElement({
-                            //     //     pageLanguage: 'en',
-                            //     //     autoDisplay: 'true',
-                            //     //     layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-                            //     // }, 'google_translate_element');
-                            // }
-
-                            function translateLanguage(lang) {
-                                googleTranslateElementInit();
-                                var $frame = $('.goog-te-menu-frame:first');
-                                // if (!$frame.size()) {
-                                //     alert("Error: Could not find Google translate frame.");
-                                //     return false;
+                        <?php if ($switch_user_id != 1649 AND $switch_user_id != 1795 AND $switch_user_id != 1886) { ?>
+                            <li class="dropdown dropdown-extended" id="googleTranslate">
+                                <div id="google_translate_element"></div>
+                                <script type="text/javascript">
+                                // function googleTranslateElementInit() {
+                                //     new google.translate.TranslateElement({
+                                //         pageLanguage: 'en',
+                                //         autoDisplay: 'true',
+                                //         includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw',
+                                //         layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                                //     }, 'google_translate_element');
                                 // }
-                                if (lang == "English") {
-                                    location.reload();
+                                </script>
+    
+                                <!--<div id="customLang"></div>-->
+                                <!--<select class="selectpicker notranslate" data-width="fit" onchange="translateLanguage(this.value);">-->
+                                <!--    <option data-content='<span class="fi fi-us"></span> English' value="English">English</option>-->
+                                <!--    <option data-content='<span class="fi fi-sa"></span> Arabic' value="Arabic" <?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ar') { echo 'SELECTED'; } ?> >Arabic</option>-->
+                                <!--    <option data-content='<span class="fi fi-fr"></span> French' value="French"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/fr') { echo 'SELECTED'; } ?> >French</option>-->
+                                <!--    <option data-content='<span class="fi fi-it"></span> Italian' value="Italian"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/it') { echo 'SELECTED'; } ?> >Italian</option>-->
+                                <!--    <option data-content='<span class="fi fi-jp"></span> Japanese' value="Japanese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ja') { echo 'SELECTED'; } ?> >Japanese</option>-->
+                                <!--    <option data-content='<span class="fi fi-kr"></span> Korean' value="Korean"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ko') { echo 'SELECTED'; } ?> >Korean</option>-->
+                                <!--    <option data-content='<span class="fi fi-pt"></span> Portuguese' value="Portuguese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/pt') { echo 'SELECTED'; } ?> >Portuguese</option>-->
+                                <!--    <option data-content='<span class="fi fi-es"></span> Spanish' value="Spanish"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/es') { echo 'SELECTED'; } ?> >Spanish</option>-->
+                                <!--</select>-->
+                                <script type="text/javascript">
+                                function googleTranslateElementInit() {
+                                    new google.translate.TranslateElement({
+                                        pageLanguage: 'en',
+                                        autoDisplay: 'true',
+                                        includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw,uk',
+                                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                                    }, 'google_translate_element');
                                 }
-                                $frame.contents().find('.goog-te-menu2-item span.text:contains(' + lang + ')').get(0).click();
-                                return false;
-                            }
-                            </script>
-                            <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript"></script>
-                        </li>
+                                // function googleTranslateElementInit() {
+                                //     // new google.translate.TranslateElement({
+                                //     //     pageLanguage: 'en',
+                                //     //     autoDisplay: 'true',
+                                //     //     layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                                //     // }, 'google_translate_element');
+                                // }
+    
+                                function translateLanguage(lang) {
+                                    googleTranslateElementInit();
+                                    var $frame = $('.goog-te-menu-frame:first');
+                                    // if (!$frame.size()) {
+                                    //     alert("Error: Could not find Google translate frame.");
+                                    //     return false;
+                                    // }
+                                    if (lang == "English") {
+                                        location.reload();
+                                    }
+                                    $frame.contents().find('.goog-te-menu2-item span.text:contains(' + lang + ')').get(0).click();
+                                    return false;
+                                }
+                                </script>
+                                <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript"></script>
+                            </li>
                         <?php } ?>
                         <?php
                             // if ($switch_user_id == 1) {
@@ -1417,7 +1421,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </a>
                                 </li>';
                             }
-                            if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163 OR $switch_user_id == 1649) {
+                            if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163 OR $switch_user_id == 1649 OR $switch_user_id == 464 OR $switch_user_id == 459 OR $switch_user_id == 522 OR $switch_user_id == 463 OR $switch_user_id == 480 OR $switch_user_id == 499 OR $switch_user_id == 465 OR $switch_user_id == 516 OR $switch_user_id == 566) { 
                                 echo '<li class="dropdown dropdown-extended">
                                     <a href="task-management" target="_blank">
                                         <button type="button" class="btn btn-circle btn-info">TM</button>
@@ -1620,78 +1624,79 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
 
                         <?php if($_COOKIE['ID'] == 481): ?>
-                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i class="icon-bell"></i>
-                                <span class="badge badge-default"> 1 </span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="external">
-                                    <h3>
-                                        <span class="bold">1 pending</span> notifications
-                                    </h3>
-                                    <a href="#">view all</a>
-                                </li>
-                                <li>
-                                    <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
-                                        <li>
-                                            <a href="javascript:;">
-                                                <span class="time">30 min. ago</span>
-                                                <span class="details"> Cindiy Compliance fail to review the Health Declaration Form. </span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <?php endif; ?>
+                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-bell"></i>
+                                    <span class="badge badge-default"> 1 </span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="external">
+                                        <h3>
+                                            <span class="bold">1 pending</span> notifications
+                                        </h3>
+                                        <a href="#">view all</a>
+                                    </li>
+                                    <li>
+                                        <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
+                                            <li>
+                                                <a href="javascript:;">
+                                                    <span class="time">30 min. ago</span>
+                                                    <span class="details"> Cindiy Compliance fail to review the Health Declaration Form. </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 1 || $user_id == 2 || $user_id == 13 || $user_id == 42 || $user_id == 44 || $user_id == 185 || $user_id == 95 || $user_id == 38): ?>
-                            <a href="blog_pages.php" class="dropdown-toggle">
-                                <i class="icon-earphones-alt"></i>
-                            </a>
+                                <a href="blog_pages.php" class="dropdown-toggle">
+                                    <i class="icon-earphones-alt"></i>
+                                </a>
                             <?php endif; ?>
                         </li>
 
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 163 OR $user_id == 1): ?>
-                            <a data-toggle="modal" data-target="#modal_video" class="dropdown-toggle">
-                                <i class="icon-cloud-upload"></i>
-                            </a>
+                                <a data-toggle="modal" data-target="#modal_video" class="dropdown-toggle">
+                                    <i class="icon-cloud-upload"></i>
+                                </a>
                             <?php endif; ?>
                         </li>
                         <?php if($_COOKIE['ID'] == 108): ?>
-                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i class="icon-bell"></i>
-                                <span class="badge badge-default"> 9 </span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <?php
+                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-bell"></i>
+                                    <span class="badge badge-default"> 9 </span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <?php
                                         $select_pending = mysqli_query($conn, "SELECT * FROM leave_details INNER JOIN leave_types ON leave_types.leave_id = leave_details.leave_id INNER JOIN tbl_user ON tbl_user.ID = leave_details.payeeid WHERE approve_status = 0");
                                     ?>
-                                <li class="external">
-                                    <h3>
-                                        <span class="bold">9 pending</span> for approval
-                                    </h3>
-                                    <a href="page_user_profile_1.html">view all</a>
-                                </li>
-                                <li>
-                                    <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
-                                        <li>
-                                            <?php foreach($select_pending as $row): ?>
-                                            <a href="pto_request_for_approve.php">
-                                                <span class="time"><?= $row['leave_name'] ?></span>
-                                                <span class="details">
-                                                    <span class="label label-sm label-icon label-success">
-                                                        <i class="fa fa-check"></i>
-                                                    </span> <?= htmlentities($row['first_name'] ?? '').' '.htmlentities($row['last_name'] ?? '') ?> </span>
-                                            </a>
-                                            <?php endforeach; ?>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
+                                    <li class="external">
+                                        <h3>
+                                            <span class="bold">9 pending</span> for approval
+                                        </h3>
+                                        <a href="page_user_profile_1.html">view all</a>
+                                    </li>
+                                    <li>
+                                        <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
+                                            <li>
+                                                <?php foreach($select_pending as $row): ?>
+                                                    <a href="pto_request_for_approve.php">
+                                                        <span class="time"><?= $row['leave_name'] ?></span>
+                                                        <span class="details">
+                                                            <span class="label label-sm label-icon label-success">=<i class="fa fa-check"></i></span>
+                                                            <?= htmlentities($row['first_name'] ?? '').' '.htmlentities($row['last_name'] ?? '') ?>
+                                                        </span>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
                         <?php endif; ?>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 108 OR $user_id == 1): ?>
@@ -1702,20 +1707,18 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453 || $user_id == 1481 || $user_id == 481 || $switch_user_id == 34): ?>
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-
-                                <i class="icon-bell"></i>
-                                <span class="badge badge-default">
-                                    <?php    
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-bell"></i>
+                                    <span class="badge badge-default">
+                                        <?php    
                                             $users = $user_id;
                                             $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE deleted = 0 AND client = $current_client ORDER BY ID desc");
-                                                                                                
                                             while($row = mysqli_fetch_array($result)) {
                                                 echo $row['count'];
                                             }
                                         ?>
-                                </span>
-                            </a>
+                                    </span>
+                                </a>
                             <?php endif; ?>
                             <ul class="dropdown-menu">
                                 <li class="external">
@@ -1774,7 +1777,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     
                                                     order by enterp_id desc
                                                 ");
-                                                                                                    
                                                 while($row = mysqli_fetch_array($result)) {
                                                     echo '<li>
                                                         <form action="enterprise-function/export_users.php" method="POST" style="margin-top: 10px;">
@@ -1796,63 +1798,49 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <a href="javascript:;">
                                                 <span class="time">10 mins</span>
                                                 <span class="details">
-                                                    <span class="label label-sm label-icon label-warning">
-                                                        <i class="fa fa-bell-o"></i>
-                                                    </span> Server #2 not responding. </span>
+                                                <span class="label label-sm label-icon label-warning"><i class="fa fa-bell-o"></i></span> Server #2 not responding. </span>
                                             </a>
                                         </li>
                                         <li class="hide">
                                             <a href="javascript:;">
                                                 <span class="time">14 hrs</span>
                                                 <span class="details">
-                                                    <span class="label label-sm label-icon label-info">
-                                                        <i class="fa fa-bullhorn"></i>
-                                                    </span> Application error. </span>
+                                                    <span class="label label-sm label-icon label-info"><i class="fa fa-bullhorn"></i></span> Application error. </span>
                                             </a>
                                         </li>
                                         <li class="hide">
                                             <a href="javascript:;">
                                                 <span class="time">2 days</span>
                                                 <span class="details">
-                                                    <span class="label label-sm label-icon label-danger">
-                                                        <i class="fa fa-bolt"></i>
-                                                    </span> Database overloaded 68%. </span>
+                                                    <span class="label label-sm label-icon label-danger">i class="fa fa-bolt"></i></span> Database overloaded 68%. </span>
                                             </a>
                                         </li>
                                         <li class="hide">
                                             <a href="javascript:;">
                                                 <span class="time">3 days</span>
                                                 <span class="details">
-                                                    <span class="label label-sm label-icon label-danger">
-                                                        <i class="fa fa-bolt"></i>
-                                                    </span> A user IP blocked. </span>
+                                                <span class="label label-sm label-icon label-danger"><i class="fa fa-bolt"></i></span> A user IP blocked. </span>
                                             </a>
                                         </li>
                                         <li class="hide">
                                             <a href="javascript:;">
                                                 <span class="time">4 days</span>
                                                 <span class="details">
-                                                    <span class="label label-sm label-icon label-warning">
-                                                        <i class="fa fa-bell-o"></i>
-                                                    </span> Storage Server #4 not responding dfdfdfd. </span>
+                                                <span class="label label-sm label-icon label-warning"><i class="fa fa-bell-o"></i></span> Storage Server #4 not responding dfdfdfd. </span>
                                             </a>
                                         </li>
                                         <li class="hide">
                                             <a href="javascript:;">
                                                 <span class="time">5 days</span>
                                                 <span class="details">
-                                                    <span class="label label-sm label-icon label-info">
-                                                        <i class="fa fa-bullhorn"></i>
-                                                    </span> System Error. </span>
+                                                <span class="label label-sm label-icon label-info"><i class="fa fa-bullhorn"></i></span> System Error. </span>
                                             </a>
                                         </li>
                                         <li class="hide">
                                             <a href="javascript:;">
                                                 <span class="time">9 days</span>
                                                 <span class="details">
-                                                    <span class="label label-sm label-icon label-danger">
-                                                        <i class="fa fa-bolt"></i>
-                                                    </span> Storage server failed. </span>
+                                                <span class="label label-sm label-icon label-danger"><i class="fa fa-bolt"></i></span> Storage server failed. </span>
                                             </a>
                                         </li>
                                     </ul>
@@ -2053,12 +2041,12 @@ License: You must have a valid license purchased only from themeforest(the above
                         <li class="dropdown dropdown-user">
                             <a href="javascript:;" class="dropdown-toggle profile-avatar" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                 <?php
-                                        if ( empty($current_userAvatar) ) {
-                                            echo '<img src="//placehold.co/150x150/EFEFEF/AAAAAA?text=no+image" class="img-circle" alt="Avatar" style="object-fit: cover; object-position:center;" />';
-                                        } else {
-                                            echo '<img src="uploads/avatar/'. $current_userAvatar .'" class="img-circle" alt="Avatar" style="object-fit: cover; object-position:center;" />';
-                                        }
-                                    ?>
+                                    if ( empty($current_userAvatar) ) {
+                                        echo '<img src="//placehold.co/150x150/EFEFEF/AAAAAA?text=no+image" class="img-circle" alt="Avatar" style="object-fit: cover; object-position:center;" />';
+                                    } else {
+                                        echo '<img src="uploads/avatar/'. $current_userAvatar .'" class="img-circle" alt="Avatar" style="object-fit: cover; object-position:center;" />';
+                                    }
+                                ?>
                                 <span class="username username-hide-on-mobile"><?php echo $current_userFName .' '. $current_userLName; ?></span>
                                 <i class="fa fa-angle-down"></i>
                             </a>
@@ -2067,78 +2055,62 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <a href="profile"><i class="icon-user"></i> My Profile </a>
                                 </li>
                                 <?php if($user_id == 35 || $user_id == 42 || $user_id == 185 || $user_id == 38 || $user_id == 95): ?>
-                                <li>
-                                    <a href="executive_assistant_services"><i class="icon-layers"></i>Mgmt. Services </a>
-                                </li>
+                                    <li>
+                                        <a href="executive_assistant_services"><i class="icon-layers"></i>Mgmt. Services </a>
+                                    </li>
                                 <?php endif; ?>
-                                <?php // if ($current_userEmployerID == 1) { ?>
                                 <li><a href="#modalSwitch" data-toggle="modal"><i class="icon-equalizer"></i> Switch Account </a></li>
-                                <?php // } ?>
                                 <li class="hide">
                                     <a href="app_calendar.html"><i class="icon-calendar"></i> My Calendar </a>
                                 </li>
-                                <?php if ($current_userEmployerID == 34 || $user_id == 34) { ?>
-                                <li>
-                                    <a href="service_log_index.php"><i class="icon-pie-chart"></i> Service logs</a>
-                                </li>
+                                <?php if ($current_userEmployerID == 34 || $user_id == 34 || $user_id == 189) { ?>
+                                    <li><a href="service_log_index.php"><i class="icon-pie-chart"></i> Service logs</a></li>
                                 <?php } ?>
-                                <li class="hide">
-                                    <a href="app_inbox.html"><i class="icon-envelope-open"></i> My Inbox <span class="badge badge-danger">3</span></a>
-                                </li>
+                                <li class="hide"><a href="app_inbox.html"><i class="icon-envelope-open"></i> My Inbox <span class="badge badge-danger">3</span></a></li>
                                 <?php if ($current_userEmployerID == 34 || $user_id == 34) { ?>
-                                <li>
-                                    <a href="auto_service_log.php"><i class="icon-rocket"></i> Auto Logs <span class="badge badge-success myTask"></span></a>
-                                </li>
+                                    <li><a href="auto_service_log.php"><i class="icon-rocket"></i> Auto Logs <span class="badge badge-success myTask"></span></a></li>
                                 <?php } ?>
                                 <?php if ($_COOKIE['ID'] == 456) { ?>
-                                <li>
-                                    <a href="#generateLogsModal" data-toggle="modal"><i class="icon-rocket"></i> Generate Logs</a>
-                                </li>
+                                    <li><a href="#generateLogsModal" data-toggle="modal"><i class="icon-rocket"></i> Generate Logs</a></li>
                                 <?php } ?>
-                                <li>
-                                    <a href="#"><i class="icon-rocket"></i> My Tasks <span class="badge badge-success myTask"></span></a>
-                                </li>
-                                <li class="divider"> </li>
+                                <li><a href="#"><i class="icon-rocket"></i> My Tasks <span class="badge badge-success myTask"></span></a></li>
+                                <li class="divider"></li>
                                 <?php
-                                        if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27 || $current_userEmployerID == 464 || $current_userID == 1360 || $current_userID == 1365 || $current_userID == 1366 || $current_userID == 1453) {
-                                            if ($current_userEmployeeID == 0 || ($current_userEmployeeID > 0 && $current_userAdminAccess == 1)) {
-                                                echo '<li><a href="sidebar"><i class="icon-login"></i> Sidebar Setting</a></li>';
-                                            }
+                                    if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27 || $current_userEmployerID == 464 || $current_userID == 1360 || $current_userID == 1365 || $current_userID == 1366 || $current_userID == 1453) {
+                                        if ($current_userEmployeeID == 0 || ($current_userEmployeeID > 0 && $current_userAdminAccess == 1)) {
+                                            echo '<li><a href="sidebar"><i class="icon-login"></i> Sidebar Setting</a></li>';
                                         }
-                                    ?>
-                                <li>
-                                    <a href="javascript:;" onclick="btnLocked()"><i class="icon-lock"></i> Lock Screen</a>
-                                </li>
+                                    }
+                                ?>
+                                <li><a href="javascript:;" onclick="btnLocked()"><i class="icon-lock"></i> Lock Screen</a></li>
                                 <?php if ($current_userEmployerID == 1) { ?>
-                                <li><a href="settings"><i class="icon-settings"></i> System Settings</a></li>
+                                    <li><a href="settings"><i class="icon-settings"></i> System Settings</a></li>
                                 <?php } ?>
                                 <?php if($switch_user_id == 34): ?>
-                                <li><a href="#request_pto" data-toggle="modal"><i class="icon-calendar"></i> Request PTO</a></li>
+                                    <li><a href="#request_pto" data-toggle="modal"><i class="icon-calendar"></i> Request PTO</a></li>
                                 <?php endif; ?>
                                 <?php if ($user_id == 34  OR $_COOKIE['ID'] == 456 OR $_COOKIE['ID'] == 108 ) { ?>
-                                <li><a href="pto_request.php"><i class="icon-calendar"></i> PTO For Approval(HR)</a></li>
+                                    <li><a href="pto_request.php"><i class="icon-calendar"></i> PTO For Approval(HR)</a></li>
                                 <?php } ?>
                                 <?php if($switch_user_id == 34 && $user_id != 34 ): ?>
-                                <li><a href="pto_request_for_approve.php"><i class="icon-calendar"></i> PTO For Approval</a></li>
+                                    <li><a href="pto_request_for_approve.php"><i class="icon-calendar"></i> PTO For Approval</a></li>
                                 <?php endif ?>
                                 <?php if($switch_user_id == 34 && $user_id != 34 ): ?>
-                                <li><a href="pto.php"><i class="icon-calendar"></i>My PTO Dashboard</a></li>
+                                    <li><a href="pto.php"><i class="icon-calendar"></i>My PTO Dashboard</a></li>
                                 <?php endif ?>
                                 <?php if ($user_id == 108 OR $user_id == 1 OR $user_id == 2 OR $user_id == 387 OR $user_id == 54 OR $user_id == 1105  OR $user_id == 32 OR $user_id == 189 OR $user_id == 1105) { ?>
-                                <li><a href="https://interlinkiq.com/Accounting_system/Login/login_validation/<?= $user_id ?>" target="_blank"><i class="icon-calendar"></i> Accounting</a></li>
+                                    <li><a href="https://interlinkiq.com/Accounting_system/Login/login_validation/<?= $user_id ?>" target="_blank"><i class="icon-calendar"></i> Accounting</a></li>
                                 <?php } ?>
                                 <?php if ($current_userEmployerID == 34) { ?>
-                                <li><a href="payslip"><i class="icon-wallet"></i> Payslip</a></li>
+                                    <li><a href="payslip"><i class="icon-wallet"></i> Payslip</a></li>
                                 <?php } ?>
                                 <?php if ($_COOKIE['ID'] == 108) { ?>
-                                <li><a href="#generate_pto" data-toggle="modal"><i class="icon-wallet"></i> Generate PTO</a></li>
+                                    <li><a href="#generate_pto" data-toggle="modal"><i class="icon-wallet"></i> Generate PTO</a></li>
                                 <?php } ?>
                                 <?php if($switch_user_id == 34 && $user_id == 34 ): ?>
-                                <li><a href="pto_tracker.php"><i class="icon-calendar"></i> PTO Tracker</a></li>
+                                    <li><a href="pto_tracker.php"><i class="icon-calendar"></i> PTO Tracker</a></li>
                                 <?php endif ?>
-                                <li>
-                                    <a href="javascript:;" onclick="btnLogout()"><i class="icon-key"></i> Log Out</a>
-                                </li>
+                                <li><a href="javascript:;" onclick="btnLogout()"><i class="icon-key"></i> Log Out</a></li>
                             </ul>
                         </li>
                         <!-- END USER LOGIN DROPDOWN -->
@@ -2177,323 +2149,545 @@ License: You must have a valid license purchased only from themeforest(the above
                 <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
                 <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
                 <ul class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenux page-sidebar-menu-compact" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-
-                    <li class="nav-item <?php echo $site === "dashboard" ? "active" : ""; ?>">
-                        <a href="dashboard" class="nav-link">
-                            <i class="icon-check"></i>
-                            <span class="title">Compliance</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 1210 || $_COOKIE['ID'] == 42):?>
-                    <li class="nav-item d-none">
-                        <a href="custom_crm.php" class="nav-link nav-toggle">
-                            <i class="icon-users"></i>
-                            <span class="title">CRM <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 42)echo '<i class="font-yellow" style="font-size: 12px; margin-left:4px"> ( Customize )</i>';?></span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php endif?>
-                    <?php
-                        if ($switch_user_id == 1479) {
-                            echo '<li class="nav-item ">
-                                <a href="paid" class="nav-link">
-                                    <i class="icon-tag"></i>
-                                    <span class="title" style="color: #ffff00; font-weight: bold;">My Tools</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                            <li class="nav-item ">
-                                <a href="form-owned" class="nav-link">
-                                    <i class="icon-graph"></i>
-                                    <span class="title" style="color: #ffff00; font-weight: bold;">My Forms</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                            <li class="nav-item ">
-                                <a href="free-access" class="nav-link">
-                                    <i class="icon-heart"></i>
-                                    <span class="title" style="color: #ffff00; font-weight: bold;">Free Access</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>';
-                        }
-                    ?>
-                    <?php if(($current_client == 0 AND $switch_user_id != 1106 AND $switch_user_id != 1680 ) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145 OR $switch_user_id == 1469) { ?>
-                        <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
-                            <a href="tracking" class="nav-link">
-                                <i class="icon-target"></i>
-                                <span class="title">Tracking Dashboard</span>
+                    <?php if($_COOKIE['ID'] == 1):?>
+                        <li class="nav-item <?php echo $menu_tff; echo $site === "dashboard" ? "active" : ""; ?>">
+                            <a href="dashboard" class="nav-link">
+                                <i class="icon-check"></i>
+                                <span class="title">Compliance</span>
                                 <span class="selected"></span>
                             </a>
                         </li>
-                        <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="app-store" class="nav-link">
-                                <i class="icon-grid"></i>
-                                <span class="title">App Catalog</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-    
+                        <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 1210 || $_COOKIE['ID'] == 42):?>
+                            <li class="nav-item d-none">
+                                <a href="custom_crm.php" class="nav-link nav-toggle">
+                                    <i class="icon-users"></i>
+                                    <span class="title">CRM <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 42)echo '<i class="font-yellow" style="font-size: 12px; margin-left:4px"> ( Customize )</i>';?></span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        <?php endif?>
                         <?php
-                            if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
+                            if ($switch_user_id == 1479) {
                                 echo '<li class="nav-item ">
+                                    <a href="paid" class="nav-link">
+                                        <i class="icon-tag"></i>
+                                        <span class="title" style="color: #ffff00; font-weight: bold;">My Tools</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
                                     <a href="form-owned" class="nav-link">
                                         <i class="icon-graph"></i>
-                                        <span class="title">E-Forms</span>
+                                        <span class="title" style="color: #ffff00; font-weight: bold;">My Forms</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="free-access" class="nav-link">
+                                        <i class="icon-heart"></i>
+                                        <span class="title" style="color: #ffff00; font-weight: bold;">Free Access</span>
                                         <span class="selected"></span>
                                     </a>
                                 </li>';
                             }
                         ?>
+                        <?php if(($current_client == 0 AND $switch_user_id != 1106 AND $switch_user_id != 1680 ) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145 OR $switch_user_id == 1469) { ?>
+                            <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
+                                <a href="tracking" class="nav-link">
+                                    <i class="icon-target"></i>
+                                    <span class="title">Tracking Dashboard</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                            <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="app-store" class="nav-link">
+                                    <i class="icon-grid"></i>
+                                    <span class="title">App Catalog</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+        
+                            <?php
+                                if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
+                                    echo '<li class="nav-item ">
+                                        <a href="form-owned" class="nav-link">
+                                            <i class="icon-graph"></i>
+                                            <span class="title">E-Forms</span>
+                                            <span class="selected"></span>
+                                        </a>
+                                    </li>';
+                                }
+                            ?>
+        
+                            <li class="nav-item">
+                                <a href="javascript:;" class="nav-link nav-toggle">
+                                    <i class="icon-support" style="color: #ffff00;"></i>
+                                    <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow"></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li class="nav-item">
+                                        <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Qualification Survey</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Food and Beverage</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
     
-                        <li class="nav-item">
+                        <?php } ?>
+    
+                        <li class="nav-item <?php echo $menu_tff; echo $site === "enterprise-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info', $current_userEmployerID, $current_userEmployeeID); } ?>">
                             <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-support" style="color: #ffff00;"></i>
-                                <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
+                                <i class="icon-layers"></i>
+                                <span class="title">Enterprise</span>
                                 <span class="selected"></span>
-                                <span class="arrow"></span>
+                                <span class="arrow <?php echo $site === "enterprise-info" ? "open" : ""; ?>"></span>
                             </a>
                             <ul class="sub-menu">
-                                <li class="nav-item">
-                                    <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
+                                <li class="nav-item <?php echo $site === "enterprise-info" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                    <a href="enterprise-info" class="nav-link ">
                                         <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Qualification Survey</span>
+                                        <span class="title">Organization </span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
+    
+                                <?php if($user_id==19 OR $user_id==1 OR $user_id==481 OR $user_id==963): ?>
+                                    <li class="nav-item <?php echo $site === "insurance_info" ? "active " : ""; 
+                                         //if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('insurance_info', $current_userEmployerID, $current_userEmployeeID); } 
+                                         ?>
+                                         ">
+                                        <!--<a href="insurance_info" class="nav-link ">-->
+                                        <a href="risk_and_liabilities" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Risk And Liabilities</span>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                                <li class="nav-item hide hidden <?php echo $site === "enterprise-info-subscription" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                    <a href="#" class="nav-link ">
                                         <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Food and Beverage</span>
+                                        <span class="title">Subscription </span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-
-                    <?php } ?>
-
-                    <li class="nav-item <?php echo $site === "enterprise-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-layers"></i>
-                            <span class="title">Enterprise</span>
-                            <span class="selected"></span>
-                            <span class="arrow <?php echo $site === "enterprise-info" ? "open" : ""; ?>"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item <?php echo $site === "enterprise-info" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="enterprise-info" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Organization </span>
+                        
+                        <?php
+                            $queryFacility = mysqli_query( $conn,"
+                                SELECT 
+                                e.enterp_id AS e_id,
+                                e.facility_switch AS e_facility_switch,
+                                f.facility_id AS f_id,
+                                f.facility_category AS f_category
+                                FROM tblEnterpiseDetails AS e
+                                
+                                LEFT JOIN (
+                                	SELECT
+                                    *
+                                    FROM tblFacilityDetails
+                                ) AS f
+                                ON e.users_entities = f.users_entities
+                                
+                                WHERE e.users_entities = $switch_user_id
+                                AND e.enterpriseOperation = 'YES'
+                            " );
+                            if ( mysqli_num_rows($queryFacility) > 0 ) {
+                                echo '<li class="nav-item hide '; echo $site === "facility-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } echo '" id="menuFacility">
+                                    <a href="javascript:;" class="nav-link nav-toggle">
+                                        <i class="icon-layers"></i>
+                                        <span class="title">Facility</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow '; echo $site === "facility-info" ? "open" : ""; echo '"></span>
+                                    </a>
+                                    <ul class="sub-menu">';
+                                        $e_facility_switch_arr = array();
+                                        while($rowFacility = mysqli_fetch_array($queryFacility)) {
+                                            if (!in_array($rowFacility['e_id'], $e_facility_switch_arr) AND $rowFacility['e_facility_switch'] == 1) {
+                                                array_push($e_facility_switch_arr, $rowFacility['e_id']);
+                                                echo '<li class="nav-item">
+                                                    <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch(0)">
+                                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                        <span class="title">Switch to Main Account</span>
+                                                    </a>
+                                                </li>';
+                                            }
+                                            
+                                            if ($rowFacility['e_facility_switch'] == 1) {
+                                                echo '<li class="nav-item  '; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('facility-info', $rowFacility['f_id'], $current_userEmployeeID); } echo '">
+                                                    <a href="javascript:;" class="nav-link nav-toggle">
+                                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                        <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
+                                                        <span class="arrow"></span>
+                                                    </a>
+                                                    <ul class="sub-menu">
+                                                        <li class="nav-item ">
+                                                            <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch('.$rowFacility['f_id'].')">Switch Account</a>
+                                                        </li>
+                                                        <li class="nav-item ">
+                                                            <a href="facility-info?facility_id='.$rowFacility['f_id'].'" class="nav-link ">View Details</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>';
+                                            } else {
+                                                echo '<li class="nav-item  '; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('facility-info', $rowFacility['f_id'], $current_userEmployeeID); } echo '">
+                                                    <a href="facility-info?facility_id='.$rowFacility['f_id'].'" class="nav-link ">
+                                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                        <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
+                                                    </a>
+                                                </li>';
+                                            }
+                                        }
+                                    echo '</ul>
+                                </li>';
+                            }
+                        ?>
+    
+                        <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseEmployees = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
+                            <li class="nav-item hide <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "active open start" : ""; ?>" id="menuHR">
+                                <a href="javascript:;" class="nav-link nav-toggle">
+                                    <i class="icon-user-female"></i>
+                                    <span class="title">HR/Training Management</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "open" : ""; ?>"></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li class="nav-item <?php echo $site === "department" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('department', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="department" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Department</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php echo $site === "job-description" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-description', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="job-description" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Job Description</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php echo $site === "employee" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('employee', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="employee" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Employee Roster</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php echo $site === "trainings" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('trainings', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="trainings" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Trainings</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php echo $site === "quiz" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('quiz', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="quiz" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Comprehension Quiz</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php echo $site === "training-requirements" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('training-requirements', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="training-requirements" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Training Requirements</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        <?php } ?>
+    
+                        <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
+                            <li class="nav-item <?php echo $site === "products" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="products" class="nav-link">
+                                    <i class="icon-social-dropbox"></i>
+                                    <span class="title">Products</span>
+                                    <span class="selected"></span>
                                 </a>
                             </li>
-
-                            <?php if($user_id==19 OR $user_id==1 OR $user_id==481 OR $user_id==963): ?>
-                            <li class="nav-item <?php echo $site === "insurance_info" ? "active " : ""; 
-                                 //if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('insurance_info', $current_userEmployerID, $current_userEmployeeID); } 
-                                 ?>
-                                 ">
-                                <!--<a href="insurance_info" class="nav-link ">-->
-                                <a href="risk_and_liabilities" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Risk And Liabilities</span>
+                        <?php } ?>
+    
+                        <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseServices = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
+                            <li class="nav-item <?php echo $site === "services" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('services', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="services" class="nav-link">
+                                    <i class="icon-list"></i>
+                                    <span class="title">Services</span>
+                                    <span class="selected"></span>
                                 </a>
                             </li>
-                            <?php endif; ?>
-                            <li class="nav-item hide hidden <?php echo $site === "enterprise-info-subscription" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="#" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Subscription </span>
+                        <?php } ?>
+    
+                        <li class="nav-item <?php echo $site === "customer" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('customer', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="customer" class="nav-link">
+                                <i class="icon-users"></i>
+                                <span class="title">Customer</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $menu_tff; echo $site === "supplier" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('supplier', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="supplier" class="nav-link">
+                                <i class="icon-basket-loaded"></i>
+                                <span class="title">Supplier</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+    
+                        <?php if($switch_user_id == 34) { ?>
+                            <li class="nav-item <?php echo $site === "Directory_Dashboard" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Directory_Dashboard', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="Directory_Dashboard" class="nav-link">
+                                    <i class="icon-layers"></i>
+                                    <span class="title">Directory</span>
+                                    <span class="selected"></span>
                                 </a>
                             </li>
-                        </ul>
-                    </li>
+                        <?php } ?>
+    
+                        <?php if($current_client == 0 AND ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163)) { ?>
+                            <li class="nav-item <?php echo $site === "listing" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('listing', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="listing" class="nav-link">
+                                    <i class="icon-briefcase"></i>
+                                    <span class="title">Listing</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        <?php } ?>
+                        <?php if($_COOKIE['ID'] == 481): ?>
+                            <li class="nav-item">
+                                <a href="eform_dashboard" class="nav-link" disabled>
+                                    <i class="icon-graph"></i>
+                                    <span class="title">E-Form Dashboard</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+    
+                        <!--if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); }-->
+                        <?php //  if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
+                        <?php 
+                            if($current_userEmployeeID == 0) { 
+                                $sql_custom = '';
+                                $count_JTS = 0;
+                                if ($switch_user_id != 34) { $sql_custom = ' WHERE r.switch_user_id = '.$switch_user_id; }
+                                $selectJTS = mysqli_query( $conn,"
+                                    SELECT
+                                    COUNT(*) AS count_JTS
+                                    FROM (
+                                        SELECT
+                                        s_assigned_to_id
+                                        FROM (
+                                            SELECT 
+                                            s.ID AS s_ID,
+                                            s.assigned_to_id AS s_assigned_to_id,
+                                            s.type AS s_type,
+                                            u.ID AS u_ID,
+                                            u.employee_id AS u_employee_id,
+                                            e.user_id AS e_user_id,
+                                            CASE WHEN LENGTH(e.user_id) > 0 THEN e.user_id ELSE u.ID END AS switch_user_id
+                                    
+                                            FROM tbl_services AS s
+                                    
+                                            LEFT JOIN (
+                                                SELECT
+                                                *
+                                                FROM tbl_user
+                                            ) AS u
+                                            ON s.user_id = u.ID
+                                    
+                                            LEFT JOIN (
+                                                SELECT
+                                                *
+                                                FROM tbl_hr_employee
+                                            ) AS e
+                                            ON u.employee_id = e.ID
+                                    
+                                            WHERE s.status = 0 
+                                            AND s.type = 0
+                                            AND s.deleted = 0
+                                        ) r
+                                    
+                                        LEFT JOIN (
+                                            SELECT
+                                            *
+                                            FROM tbl_hr_employee
+                                        ) AS ee
+                                        ON FIND_IN_SET(ee.ID, REPLACE(REPLACE(r.s_assigned_to_id, ' ', ''), '|',','  )  ) > 0
+                                    
+                                        $sql_custom
+                                    
+                                        GROUP BY s_ID
+                                    
+                                        ORDER BY s_ID
+                                    ) r2
+                                    WHERE LENGTH(r2.s_assigned_to_id) = 0 OR r2.s_assigned_to_id IS NULL
+                                " );
+                                if ( mysqli_num_rows($selectJTS) > 0 ) {
+                                    $rowJTS = mysqli_fetch_array($selectJTS);
+                                    $count_JTS = $rowJTS['count_JTS'];
+                                }
+                                echo '<li class="nav-item '; echo $menu_tff; echo $site === "job-ticket" ? "active " : ""; echo '">
+                                    <a href="job-ticket" class="nav-link">
+                                        <i class="icon-earphones-alt"></i>
+                                        <span class="title">Job Ticket Tracker</span>
+                                        <span class="selected"></span>';
+                                        echo $count_JTS > 0 ? '<span class="badge badge-danger">'.$count_JTS.'</span>':'';
+                                    echo '</a>
+                                </li>';
+                            } else {
+                                $sql_custom = '';
+                                $count_JTS = 0;
+                                if ($switch_user_id != 34) { $sql_custom .= ' AND r.switch_user_id = '.$switch_user_id; }
+                                if ( !empty(menu('job-ticket', $current_userEmployerID, $current_userEmployeeID)) ) { $sql_custom .= " AND FIND_IN_SET($current_userEmployeeID, REPLACE(r.s_assigned_to_id, ' ', '')) "; }
+                                $selectJTS = mysqli_query( $conn,"
+                                    SELECT
+                                    COUNT(*) AS count_JTS
+                                    FROM (
+                                        SELECT
+                                        s_assigned_to_id
+                                        FROM (
+                                            SELECT 
+                                            s.ID AS s_ID,
+                                            s.assigned_to_id AS s_assigned_to_id,
+                                            s.type AS s_type,
+                                            u.ID AS u_ID,
+                                            u.employee_id AS u_employee_id,
+                                            e.user_id AS e_user_id,
+                                            CASE WHEN LENGTH(e.user_id) > 0 THEN e.user_id ELSE u.ID END AS switch_user_id
+                                    
+                                            FROM tbl_services AS s
+                                    
+                                            LEFT JOIN (
+                                                SELECT
+                                                *
+                                                FROM tbl_user
+                                            ) AS u
+                                            ON s.user_id = u.ID
+                                    
+                                            LEFT JOIN (
+                                                SELECT
+                                                *
+                                                FROM tbl_hr_employee
+                                            ) AS e
+                                            ON u.employee_id = e.ID
+                                    
+                                            WHERE s.status = 0 
+                                            AND s.type = 0
+                                            AND s.deleted = 0
+                                        ) r
+                                    
+                                        LEFT JOIN (
+                                            SELECT
+                                            *
+                                            FROM tbl_hr_employee
+                                        ) AS ee
+                                        ON FIND_IN_SET(ee.ID, REPLACE(REPLACE(r.s_assigned_to_id, ' ', ''), '|',','  )  ) > 0
+                                    
+                                        WHERE r.u_ID != $current_userID
+                                        $sql_custom
+                                    
+                                        GROUP BY s_ID
+                                    
+                                        ORDER BY s_ID
+                                    ) r2
+                                    WHERE LENGTH(r2.s_assigned_to_id) = 0 OR r2.s_assigned_to_id IS NULL
+                                " );
+                                if ( mysqli_num_rows($selectJTS) > 0 ) {
+                                    $rowJTS = mysqli_fetch_array($selectJTS);
+                                    $count_JTS = $rowJTS['count_JTS'];
+                                }
+                                
+                                $count_JTR = 0;
+                                $selectJTR = mysqli_query( $conn,"
+                                    SELECT 
+                                    COUNT(s.ID) AS count_JTR
+                                    FROM 
+                                    tbl_services AS s
+                                    
+                                    LEFT JOIN (
+                                        SELECT
+                                        ID,
+                                        first_name,
+                                        last_name
+                                        FROM tbl_hr_employee
+                                    ) AS e
+                                     ON FIND_IN_SET(e.ID, REPLACE(REPLACE(s.assigned_to_id, ' ', ''), '|',','  )  ) > 0
+                                    
+                                    WHERE s.status = 0 
+                                    AND s.type = 0
+                                    AND s.deleted = 0 
+                                    AND s.user_id = $current_userID
+                                    
+                                    GROUP BY s.ID
+                                    
+                                    ORDER BY s.ID
+                                " );
+                                if ( mysqli_num_rows($selectJTR) > 0 ) {
+                                    $rowJTR = mysqli_fetch_array($selectJTR);
+                                    $count_JTR = $rowJTR['count_JTR'];
+                                }
+                                
+                                echo '<li class="nav-item '; echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; echo '">
+                                    <a href="javascript:;" class="nav-link nav-toggle">
+                                        <i class="icon-earphones" '; if ($count_JTR > 0 OR $count_JTS > 0 ) { echo 'style="color: #ffff00;"'; } echo '></i>
+                                        <span class="title" '; if ($count_JTR > 0 OR $count_JTS > 0 ) { echo 'style="color: #ffff00; font-weight: bold;"'; } echo '>Job Ticket Tracker</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow '; echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; echo '"></span>
+                                    </a>
+                                    <ul class="sub-menu">';
+                                    
+                                        echo '<li class="nav-item '; echo $site === "job-ticket-request" ? "active" : ""; echo '">
+                                            <a href="job-ticket-request" class="nav-link ">
+                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                <span class="title">Request</span>
+                                                <span class="selected"></span>';
+                                                echo $count_JTR > 0 ? '<span class="badge badge-danger">'.$count_JTR.'</span>':'';
+                                            echo '</a>
+                                        </li>
+                                        <li class="nav-item '; echo $site === "job-ticket-service" ? "active" : ""; echo '">
+                                            <a href="job-ticket-service" class="nav-link ">
+                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                <span class="title">Service</span>
+                                                <span class="selected"></span>';
+                                                echo $count_JTS > 0 ? '<span class="badge badge-danger">'.$count_JTS.'</span>':'';
+                                            echo '</a>
+                                        </li>';
+                                            
+                                    echo '</ul>
+                                </li>';
+                            }
+                        ?>
+                        <?php if($switch_user_id == 1684) { ?>
+                            <!--<li class="nav-item ">-->
+                            <!--    <a href="fsvp" class="nav-link">-->
+                            <!--        <i class="icon-graph"></i>-->
+                            <!--        <span class="title">FSVP</span>-->
+                            <!--        <span class="selected"></span>-->
+                            <!--    </a>-->
+                            <!--</li>-->
+                        <?php } ?>
+                        <?php if($switch_user_id == 1479 || $_COOKIE['ID'] == 481) { ?>
+                             <li class="nav-item ">
+                                <a href="food-safety-plan" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Food Safety Plan</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        <?php } ?>
+                        <?php if($_COOKIE['ID'] == 481) { ?>
+                            <li class="nav-item ">
+                                <a href="rvm" class="nav-link">
+                                    <i class="icon-docs"></i>
+                                    <span class="title">RVM</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        <?php } ?>
+                    <?php endif?>
                     
                     <?php
-                        $queryFacility = mysqli_query( $conn,"
-                            SELECT 
-                            e.enterp_id AS e_id,
-                            e.facility_switch AS e_facility_switch,
-                            f.facility_id AS f_id,
-                            f.facility_category AS f_category
-                            FROM tblEnterpiseDetails AS e
-                            
-                            LEFT JOIN (
-                            	SELECT
-                                *
-                                FROM tblFacilityDetails
-                            ) AS f
-                            ON e.users_entities = f.users_entities
-                            
-                            WHERE e.users_entities = $switch_user_id
-                            AND e.enterpriseOperation = 'YES'
-                        " );
-                        if ( mysqli_num_rows($queryFacility) > 0 ) {
-                            echo '<li class="nav-item hide '; echo $site === "facility-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } echo '" id="menuFacility">
-                                <a href="javascript:;" class="nav-link nav-toggle">
-                                    <i class="icon-layers"></i>
-                                    <span class="title">Facility</span>
-                                    <span class="selected"></span>
-                                    <span class="arrow '; echo $site === "facility-info" ? "open" : ""; echo '"></span>
-                                </a>
-                                <ul class="sub-menu">';
-                                    $e_facility_switch_arr = array();
-                                    while($rowFacility = mysqli_fetch_array($queryFacility)) {
-                                        if (!in_array($rowFacility['e_id'], $e_facility_switch_arr) AND $rowFacility['e_facility_switch'] == 1) {
-                                            array_push($e_facility_switch_arr, $rowFacility['e_id']);
-                                            echo '<li class="nav-item">
-                                                <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch(0)">
-                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                                    <span class="title">Switch to Main Account</span>
-                                                </a>
-                                            </li>';
-                                        }
-                                        
-                                        if ($rowFacility['e_facility_switch'] == 1) {
-                                            echo '<li class="nav-item  '; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('facility-info', $rowFacility['f_id'], $current_userEmployeeID); } echo '">
-                                                <a href="javascript:;" class="nav-link nav-toggle">
-                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                                    <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
-                                                    <span class="arrow"></span>
-                                                </a>
-                                                <ul class="sub-menu">
-                                                    <li class="nav-item ">
-                                                        <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch('.$rowFacility['f_id'].')">Switch Account</a>
-                                                    </li>
-                                                    <li class="nav-item ">
-                                                        <a href="facility-info?facility_id='.$rowFacility['f_id'].'" class="nav-link ">View Details</a>
-                                                    </li>
-                                                </ul>
-                                            </li>';
-                                        } else {
-                                            echo '<li class="nav-item  '; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('facility-info', $rowFacility['f_id'], $current_userEmployeeID); } echo '">
-                                                <a href="facility-info?facility_id='.$rowFacility['f_id'].'" class="nav-link ">
-                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                                    <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
-                                                </a>
-                                            </li>';
-                                        }
-                                    }
-                                echo '</ul>
-                            </li>';
-                        }
-                    ?>
-
-                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseEmployees = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                    <li class="nav-item hide <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "active open start" : ""; ?>" id="menuHR">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-user-female"></i>
-                            <span class="title">HR/Training Management</span>
-                            <span class="selected"></span>
-                            <span class="arrow <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "open" : ""; ?>"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item <?php echo $site === "department" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('department', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="department" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Department</span>
-                                </a>
-                            </li>
-                            <li class="nav-item <?php echo $site === "job-description" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-description', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="job-description" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Job Description</span>
-                                </a>
-                            </li>
-                            <li class="nav-item <?php echo $site === "employee" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('employee', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="employee" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Employee Roster</span>
-                                </a>
-                            </li>
-                            <li class="nav-item <?php echo $site === "trainings" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('trainings', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="trainings" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Trainings</span>
-                                </a>
-                            </li>
-                            <li class="nav-item <?php echo $site === "quiz" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('quiz', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="quiz" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Comprehension Quiz</span>
-                                </a>
-                            </li>
-                            <li class="nav-item <?php echo $site === "training-requirements" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('training-requirements', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="training-requirements" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Training Requirements</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <?php } ?>
-
-                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                    <li class="nav-item <?php echo $site === "products" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="products" class="nav-link">
-                            <i class="icon-social-dropbox"></i>
-                            <span class="title">Products</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php } ?>
-
-                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseServices = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                    <li class="nav-item <?php echo $site === "services" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('services', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="services" class="nav-link">
-                            <i class="icon-list"></i>
-                            <span class="title">Services</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php } ?>
-
-                    <li class="nav-item <?php echo $site === "customer" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('customer', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="customer" class="nav-link">
-                            <i class="icon-users"></i>
-                            <span class="title">Customer</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item <?php echo $site === "supplier" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('supplier', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="supplier" class="nav-link">
-                            <i class="icon-basket-loaded"></i>
-                            <span class="title">Supplier</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-
-                    <?php if($switch_user_id == 34) { ?>
-                    <li class="nav-item <?php echo $site === "Directory_Dashboard" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Directory_Dashboard', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="Directory_Dashboard" class="nav-link">
-                            <i class="icon-layers"></i>
-                            <span class="title">Directory</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php } ?>
-
-                    <?php if($current_client == 0 AND ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163)) { ?>
-                    <li class="nav-item <?php echo $site === "listing" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('listing', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="listing" class="nav-link">
-                            <i class="icon-briefcase"></i>
-                            <span class="title">Listing</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php } ?>
-                    <?php if($_COOKIE['ID'] == 481): ?>
-                    <li class="nav-item">
-                        <a href="eform_dashboard" class="nav-link" disabled>
-                            <i class="icon-graph"></i>
-                            <span class="title">E-Form Dashboard</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php endif; ?>
-
-                    <!--if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); }-->
-                    <?php //  if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
-                    <?php 
+                        // Fetch Job Ticket
                         if($current_userEmployeeID == 0) { 
                             $sql_custom = '';
                             $count_JTS = 0;
@@ -2554,14 +2748,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                 $rowJTS = mysqli_fetch_array($selectJTS);
                                 $count_JTS = $rowJTS['count_JTS'];
                             }
-                            echo '<li class="nav-item '; echo $site === "job-ticket" ? "active " : ""; echo '">
-                                <a href="job-ticket" class="nav-link">
-                                    <i class="icon-earphones-alt"></i>
-                                    <span class="title">Job Ticket Tracker</span>
-                                    <span class="selected"></span>';
-                                    echo $count_JTS > 0 ? '<span class="badge badge-danger">'.$count_JTS.'</span>':'';
-                                echo '</a>
-                            </li>';
                         } else {
                             $sql_custom = '';
                             $count_JTS = 0;
@@ -2625,7 +2811,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                 $count_JTS = $rowJTS['count_JTS'];
                             }
                             
-                            
                             $count_JTR = 0;
                             $selectJTR = mysqli_query( $conn,"
                                 SELECT 
@@ -2655,73 +2840,533 @@ License: You must have a valid license purchased only from themeforest(the above
                                 $rowJTR = mysqli_fetch_array($selectJTR);
                                 $count_JTR = $rowJTR['count_JTR'];
                             }
-                            
-                            echo '<li class="nav-item '; echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; echo '">
-                                <a href="javascript:;" class="nav-link nav-toggle">
-                                    <i class="icon-earphones" '; if ($count_JTR > 0 OR $count_JTS > 0 ) { echo 'style="color: #ffff00;"'; } echo '></i>
-                                    <span class="title" '; if ($count_JTR > 0 OR $count_JTS > 0 ) { echo 'style="color: #ffff00; font-weight: bold;"'; } echo '>Job Ticket Tracker</span>
-                                    <span class="selected"></span>
-                                    <span class="arrow '; echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; echo '"></span>
-                                </a>
-                                <ul class="sub-menu">';
-                                
-                                    echo '<li class="nav-item '; echo $site === "job-ticket-request" ? "active" : ""; echo '">
-                                        <a href="job-ticket-request" class="nav-link ">
-                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                            <span class="title">Request</span>
-                                            <span class="selected"></span>';
-                                            echo $count_JTR > 0 ? '<span class="badge badge-danger">'.$count_JTR.'</span>':'';
-                                        echo '</a>
-                                    </li>
-                                    <li class="nav-item '; echo $site === "job-ticket-service" ? "active" : ""; echo '">
-                                        <a href="job-ticket-service" class="nav-link ">
-                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                            <span class="title">Service</span>
-                                            <span class="selected"></span>';
-                                            echo $count_JTS > 0 ? '<span class="badge badge-danger">'.$count_JTS.'</span>':'';
-                                        echo '</a>
-                                    </li>';
-                                        
-                                echo '</ul>
-                            </li>';
                         }
-                    ?>
-                    <?php if($switch_user_id == 1684) { ?>
-                        <!--<li class="nav-item ">-->
-                        <!--    <a href="fsvp" class="nav-link">-->
-                        <!--        <i class="icon-graph"></i>-->
-                        <!--        <span class="title">FSVP</span>-->
-                        <!--        <span class="selected"></span>-->
-                        <!--    </a>-->
-                        <!--</li>-->
-                    <?php } ?>
-                    <?php if($switch_user_id == 1479 || $_COOKIE['ID'] == 481) { ?>
-                         <li class="nav-item ">
-                            <a href="food-safety-plan" class="nav-link">
-                                <i class="icon-graph"></i>
-                                <span class="title">Food Safety Plan</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                    <?php } ?>
-                    <?php if($_COOKIE['ID'] == 481) { ?>
-                    <li class="nav-item ">
-                        <a href="rvm" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">RVM</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php } ?>
+                        
+                        $permission = array();
+                        $current_permission = 0;
+                        $current_permission_data = '';
+                        $current_permission_array_key = '';
+                        // if ($switch_user_id == 1 OR $switch_user_id == 1649) {
+                        if ($switch_user_id == 1) {
+                            $sql_emp = '';
+                            if (!isset($_COOKIE['switchAccount']) AND $current_userEmployeeID > 0) { $sql_emp = 'WHERE (o.m_type = 0 AND o.s_collab = 1) OR (o.m_type = 0 AND o.s_collab = 0 AND cnt.m_parent_id_cnt > 0) OR (o.m_type = 1 AND o.s_collab = 1) OR o.m_ID = 72 OR o.m_ID = 73 OR o.m_ID = 74'; }
+                            $selectMenu = mysqli_query( $conn,"
+                                SELECT 
+                                o.*,
+                                COALESCE(cnt.m_parent_id_cnt, 0) AS s_child_qty
+                                FROM (
+                                    WITH RECURSIVE cte (m_ID, m_name, m_description, m_url, m_icon, m_module, m_type, m_parent_id, m_ordering, m_class, sort_path) AS (
+                                        SELECT 
+                                            m1.ID, m1.name, m1.description, m1.url, m1.icon, m1.module, m1.type, m1.parent_id, m1.ordering, m1.class,
+                                            CAST(CONCAT(m1.ordering, '.', m1.parent_id) AS CHAR)
+                                        FROM tbl_menu AS m1
+                                        WHERE m1.deleted = 0 AND m1.parent_id = 0
 
-                    <?php
+                                        UNION ALL
+
+                                        SELECT 
+                                            m2.ID, m2.name, m2.description, m2.url, m2.icon, m2.module, m2.type, m2.parent_id, m2.ordering, m2.class,
+                                            CONCAT(cte.sort_path, '.', m2.ordering, '.', m2.ID)
+                                        FROM tbl_menu AS m2
+                                        JOIN cte ON cte.m_ID = m2.parent_id
+                                        WHERE m2.deleted = 0
+                                    )
+                                    SELECT
+                                        m_ID, m_name, m_description, m_url, m_icon, m_module, m_type, m_parent_id, m_ordering, m_class, sort_path,
+                                        uu.u_switch_ID, uu.u_ID, uu.e_ID, uu.e_permission,
+                                        s.ID AS s_ID, COALESCE(s.type, 0) AS s_type,
+                                    	CASE 
+                                    		WHEN jt.f_val > 0 AND JSON_EXTRACT(jt.m_data, CONCAT('$.\"', jt.e_val, '\".\"', jt.f_val, '\".\"', m_ID, '\"')) IS NOT NULL THEN 1 
+                                    		WHEN jt.f_val = 0 AND JSON_EXTRACT(jt.m_data, CONCAT('$.\"', jt.e_val, '\"[', jt.f_val, '].\"', cte.m_ID, '\"')) IS NOT NULL THEN 1 
+                                    		ELSE 0 
+                                    	END AS s_collab
+                                    FROM cte
+
+                                    LEFT JOIN (
+                                        SELECT 
+                                            u.ID AS u_ID,
+                                            u.facility_switch AS u_facility_switch,
+                                            u.employee_id AS u_employee_id,
+                                            u.first_name AS u_first_name,
+                                            u.last_name AS u_last_name,
+                                            e.ID AS e_ID,
+                                            e.permission AS e_permission,
+                                            e.user_id AS e_user_id,
+                                            CASE WHEN u.employee_id = 0 THEN u.ID ELSE e.user_id END AS u_switch_ID
+                                        FROM tbl_user AS u
+                                        LEFT JOIN (
+                                            SELECT ID, facility_switch, user_id, permission
+                                            FROM tbl_hr_employee
+                                        ) AS e ON e.ID = u.employee_id
+                                    ) AS uu ON uu.u_ID = $current_userID_switch
+
+                                    LEFT JOIN (
+                                        SELECT *
+                                        FROM tbl_menu_subscription
+                                        WHERE deleted = 0 AND display = 1
+                                    ) AS s ON s.menu_id = cte.m_ID AND s.user_id = uu.u_switch_ID
+                                    
+                                    LEFT JOIN JSON_TABLE(
+                                        CAST(uu.e_permission AS JSON),
+                                        '$[*]' COLUMNS (
+                                            e_val VARCHAR(10) PATH '$.e',
+                                            f_val VARCHAR(10) PATH '$.f',
+                                            m_data JSON PATH '$.m'
+                                        )
+                                    ) AS jt ON jt.e_val = $switch_user_id AND jt.f_val = $facility_switch_user_id
+
+                                    WHERE (m_module = 0 AND s.type IS NULL) OR (m_module = 1 AND s.type > 0)
+
+                                    GROUP BY m_ID
+
+                                    ORDER BY
+                                        FIELD(s.type, 0, 2, 1, 3),
+                                        m_module,
+                                        CAST(SUBSTRING_INDEX(sort_path, '.', 1) AS UNSIGNED),
+                                        CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(sort_path, '.', 2), '.', -1) AS UNSIGNED),
+                                        CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(sort_path, '.', 3), '.', -1) AS UNSIGNED),
+                                        CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(sort_path, '.', 4), '.', -1) AS UNSIGNED),
+                                        CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(sort_path, '.', 5), '.', -1) AS UNSIGNED),
+                                        m_description
+                                ) o
+
+                                LEFT JOIN (
+                                    SELECT
+                                    m_parent_id,
+                                    COUNT(m_parent_id) AS m_parent_id_cnt
+                                    FROM (
+                                        WITH RECURSIVE cte (m_ID, m_name, m_description, m_url, m_icon, m_module, m_type, m_parent_id, m_ordering, m_class, sort_path) AS (
+                                            SELECT 
+                                                m1.ID, m1.name, m1.description, m1.url, m1.icon, m1.module, m1.type, m1.parent_id, m1.class, m1.ordering,
+                                                CAST(CONCAT(m1.ordering, '.', m1.parent_id) AS CHAR)
+                                            FROM tbl_menu AS m1
+                                            WHERE m1.deleted = 0 AND m1.parent_id = 0
+
+                                            UNION ALL
+
+                                            SELECT 
+                                                m2.ID, m2.name, m2.description, m2.url, m2.icon, m2.module, m2.type, m2.parent_id, m2.class, m2.ordering,
+                                                CONCAT(cte.sort_path, '.', m2.ordering, '.', m2.ID)
+                                            FROM tbl_menu AS m2
+                                            JOIN cte ON cte.m_ID = m2.parent_id
+                                            WHERE m2.deleted = 0
+                                        )
+                                        SELECT m_ID, m_parent_id,
+                                    	CASE 
+                                    		WHEN jt.f_val > 0 AND JSON_EXTRACT(jt.m_data, CONCAT('$.\"', jt.e_val, '\".\"', jt.f_val, '\".\"', m_ID, '\"')) IS NOT NULL THEN 1 
+                                    		WHEN jt.f_val = 0 AND JSON_EXTRACT(jt.m_data, CONCAT('$.\"', jt.e_val, '\"[', jt.f_val, '].\"', cte.m_ID, '\"')) IS NOT NULL THEN 1 
+                                    		ELSE 0 
+                                    	END AS s_collab
+
+                                        FROM cte
+
+                                        LEFT JOIN (
+                                            SELECT 
+                                                u.ID AS u_ID,
+                                                u.employee_id AS u_employee_id,
+                                                e.ID AS e_ID,
+                                                e.permission AS e_permission,
+                                                CASE WHEN u.employee_id = 0 THEN u.ID ELSE e.user_id END AS u_switch_ID
+                                            FROM tbl_user AS u
+                                            LEFT JOIN (
+                                                SELECT ID, user_id, permission
+                                                FROM tbl_hr_employee
+                                            ) AS e ON e.ID = u.employee_id
+                                        ) AS uu ON uu.u_ID = $current_userID_switch
+
+                                        LEFT JOIN (
+                                            SELECT *
+                                            FROM tbl_menu_subscription
+                                            WHERE deleted = 0 AND display = 1
+                                        ) AS s ON s.menu_id = cte.m_ID AND s.user_id = uu.u_switch_ID
+                                    
+                                        LEFT JOIN JSON_TABLE(
+                                            CAST(uu.e_permission AS JSON),
+                                            '$[*]' COLUMNS (
+                                                e_val VARCHAR(10) PATH '$.e',
+                                                f_val VARCHAR(10) PATH '$.f',
+                                                m_data JSON PATH '$.m'
+                                            )
+                                        ) AS jt ON jt.e_val = $switch_user_id AND jt.f_val = $facility_switch_user_id
+
+                                        WHERE (m_module = 0 AND s.type IS NULL) OR (m_module = 1 AND s.type > 0)
+
+                                        GROUP BY m_ID
+                                    ) o2
+
+                                    WHERE o2.m_parent_id > 0
+                                    AND o2.s_collab = 1
+
+                                    GROUP BY o2.m_parent_id
+                                ) AS cnt
+                                ON cnt.m_parent_id = o.m_ID
+
+                                $sql_emp
+                            " );
+                            if ( mysqli_num_rows($selectMenu) > 0 ) {
+                                $menu_dropdown = 0;
+                                $menu_arr_seprate = array();
+                                while($rowMenu = mysqli_fetch_array($selectMenu)) {
+                                    $m_ID = $rowMenu['m_ID'];
+                                    $m_class = $rowMenu['m_class'];
+                                    
+                                    // Skipping
+                                    if ($rowMenu['u_switch_ID'] == $rowMenu['u_ID'] AND ($m_ID == 72 OR $m_ID == 73 OR $m_ID == 74)) {
+                                        //  Job Ticket
+                                        continue;
+                                    } else if ($m_ID == 65) {
+                                        // Facility
+                                        $queryFacility = mysqli_query( $conn,"
+                                            SELECT 
+                                            e.enterp_id AS e_id,
+                                            e.facility_switch AS e_facility_switch,
+                                            f.facility_id AS f_id,
+                                            f.facility_category AS f_category,
+                                            m.assigned_to_id AS m_assigned
+                                            FROM tblEnterpiseDetails AS e
+                                            
+                                            LEFT JOIN (
+                                            	SELECT
+                                                *
+                                                FROM tblFacilityDetails
+                                            ) AS f
+                                            ON e.users_entities = f.users_entities
+                                            
+                                            LEFT JOIN (
+                                                SELECT
+                                                    *
+                                                FROM tbl_menu
+                                            ) AS m
+                                            ON m.name = 'facility-info'
+                                            
+                                            WHERE e.users_entities = $switch_user_id
+                                            AND e.enterpriseOperation = 'YES'
+                                            ORDER BY f.facility_category
+                                        " );
+                                        if ( mysqli_num_rows($queryFacility) == 0 ) {
+                                            continue;
+                                        } else {
+                                            $current_permission = 1;
+                                        }
+                                    } else if ($m_ID == 66 OR $m_ID == 6 OR $m_ID == 4 OR $m_ID == 3 OR $m_ID == 5 OR  $m_ID == 43 OR  $m_ID == 44) {
+                                        // HR
+                                        $selectEnt = mysqli_query( $conn,"SELECT users_entities FROM tblEnterpiseDetails WHERE enterpriseEmployees = 'Yes' AND users_entities = $switch_user_id");
+                                        if ( mysqli_num_rows($selectEnt) == 0 ) {
+                                            continue;
+                                        }
+                                    } else if ($m_ID == 12) {
+                                        // Product
+                                        $selectEnt = mysqli_query( $conn,"SELECT users_entities FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id"); 
+                                        if ( mysqli_num_rows($selectEnt) == 0 ) {
+                                            continue;
+                                        }
+                                    } else if ($m_ID == 10) {
+                                        // Services
+                                        $selectEnt = mysqli_query( $conn,"SELECT users_entities FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id"); 
+                                        if ( mysqli_num_rows($selectEnt) == 0 ) {
+                                            continue;
+                                        }
+                                    }
+                                        
+                                    // Check if the user permit to this module
+                                    if ($site == $rowMenu['m_url']) {
+                                        $current_permission = 1;
+
+                                        if (!empty($rowMenu['e_permission'])) {
+                                            $current_permission_data = $rowMenu['e_permission'];
+                                            $current_permission_array = json_decode($current_permission_data, true);
+                                            
+                                            $current_permission_item = current(array_filter($current_permission_array, fn($i) => $i['e'] === $switch_user_id && $i['f'] === $facility_switch_user_id));
+                                            
+                                            $m_result = '';
+                                            if (isset($current_permission_item['m'][$switch_user_id][$facility_switch_user_id][$m_ID])) {
+                                                $permission = implode(',',$current_permission_item['m'][$switch_user_id][$facility_switch_user_id][$m_ID]) ?? '';
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Check if employee can access this module
+                                    // if (!isset($_COOKIE['switchAccount']) AND $current_userEmployeeID > 0 AND !empty($rowMenu['e_permission'])) {
+                                    //     $current_permission_data = $rowMenu['e_permission'];
+                                    //     $current_permission_array = json_decode($current_permission_data, true);
+                                    //     $current_permission_item = current(array_filter($current_permission_array, fn($i) => $i['e'] === $switch_user_id && $i['f'] === $facility_switch_user_id));
+                                    
+                                    //     // Procced if you have permission otherwise move to the next module
+                                    //     if (isset($current_permission_item['m'][$switch_user_id][$facility_switch_user_id][$m_ID])) {
+                                            
+                                    //         // 
+                                    //         if ($site == $rowMenu['m_url']) {
+                                    //             $permission = implode(',',$current_permission_item['m'][$switch_user_id][$facility_switch_user_id][$m_ID]) ?? '';
+                                    //             $current_permission = 1;
+                                    //         }
+                                    //     } else{
+                                    //         continue;
+                                    //     }
+                                    // } else {
+                                    //     $current_permission = 1;
+                                    // }
+
+                                    // Set Menu Separator
+                                    if (!in_array($rowMenu['s_type'], $menu_arr_seprate) AND $rowMenu['s_type'] > 0) {
+                                        array_push($menu_arr_seprate, $rowMenu['s_type']);
+
+                                        // End of Sub-menu
+                                        if ($menu_dropdown == 1) {
+                                            $menu_dropdown = 0;
+                                            
+                                            echo '</ul></li>';
+                                        }
+
+                                        echo '<li class="nav-item nav-item-section nav-item-section-trial active">
+                                            <a href="javascript:;" class="nav-link disabled-link" style="cursor: unset !important;">
+                                                <span class="title"><b>';
+
+                                                    if ($rowMenu['s_type'] == 1) { echo 'TRIAL v2'; }
+                                                    else if ($rowMenu['s_type'] == 2) { echo 'PAID v2'; }
+                                                    else if ($rowMenu['s_type'] == 3) { echo 'EXCLUSIVE v2'; }
+                                                    // else { echo 'DEFAULT v2'; }
+
+                                                echo '</b></span>
+                                            </a>
+                                        </li>';
+                                    }
+
+                                    // Set Single Menu
+                                    if ($rowMenu['m_parent_id'] == 0 AND !empty($rowMenu['m_name'])) {
+
+                                        // End of Sub-menu
+                                        if ($menu_dropdown == 1) {
+                                            $menu_dropdown = 0;
+                                            
+                                            echo '</ul></li>';
+                                        }
+                                        
+                                        if ($m_ID == 65) {
+                                            // Facility Menu
+                                            if ( mysqli_num_rows($queryFacility) > 0 ) {
+                                                $e_facility_switch_arr = array();
+                                                $li_facility = '';
+                                                $li_facility2 = '';
+                                                while($rowFacility = mysqli_fetch_array($queryFacility)) {
+                                                    if (!in_array($rowFacility['e_id'], $e_facility_switch_arr) AND $rowFacility['e_facility_switch'] == 1) {
+                                                        array_push($e_facility_switch_arr, $rowFacility['e_id']);
+                                                        $li_facility .= '<li class="nav-item">
+                                                            <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch(0)">
+                                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                                <span class="title">Switch to Main Account</span>
+                                                            </a>
+                                                        </li>';
+                                                    }
+                                                    
+                                                    $f_id = $rowFacility['f_id'];
+                                                    $facility_display = true;
+                                                    if (!isset($_COOKIE['switchAccount']) AND $current_userEmployeeID > 0) {
+                                                        $m_assigned = $rowFacility['m_assigned'];
+                                        
+                                                        if (!empty($m_assigned)) {
+                                                            $m_assigned_arr = json_decode($m_assigned, true);
+                                                            if (isset($m_assigned_arr[$f_id]['assigned_to_id']) && in_array($current_userEmployeeID, $m_assigned_arr[$f_id]['assigned_to_id'])) {
+                                                                $facility_display = true;
+                                                            } else {
+                                                                $facility_display = false;
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    if ($facility_display == true) {
+                                                        if ($rowFacility['e_facility_switch'] == 1) {
+                                                            $li_facility2 .= '<li class="nav-item">
+                                                                <a href="javascript:;" class="nav-link nav-toggle">
+                                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                                    <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
+                                                                    <span class="arrow"></span>
+                                                                </a>
+                                                                <ul class="sub-menu">
+                                                                    <li class="nav-item ">
+                                                                        <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch('.$f_id.')">Switch Account</a>
+                                                                    </li>
+                                                                    <li class="nav-item ">
+                                                                        <a href="facility-info?facility_id='.$f_id.'" class="nav-link ">View Details</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </li>';
+                                                        } else {
+                                                            $li_facility2 .= '<li class="nav-item">
+                                                                <a href="facility-info?facility_id='.$rowFacility['f_id'].'" class="nav-link ">
+                                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                                    <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
+                                                                </a>
+                                                            </li>';
+                                                        }
+                                                    }
+                                                }
+                                                
+                                                if (!empty($li_facility2)) {
+                                                    echo '<li class="nav-item '; echo $site === "facility-info" ? "active open start" : ""; echo '">
+                                                        <a href="javascript:;" class="nav-link nav-toggle">
+                                                            <i class="icon-layers"></i>
+                                                            <span class="title">Facility'; echo $switch_user_id == 1649 ? '/System':''; echo '</span>
+                                                            <span class="selected"></span>
+                                                            <span class="arrow '; echo $site === "facility-info" ? "open" : ""; echo '"></span>
+                                                        </a>
+                                                        <ul class="sub-menu">'.$li_facility.$li_facility2.'</ul>
+                                                    </li>';
+                                                } 
+                                            }
+                                        } else {
+                                            echo '<li class="nav-item '.$m_class.' '; echo $site == $rowMenu['m_url'] ? 'active':''; echo '">
+                                                <a href="'.$rowMenu['m_url'].'" class="nav-link">
+                                                    <i class="'.$rowMenu['m_icon'].'"></i>
+                                                    <span class="title">'.$rowMenu['m_description'].'</span>
+                                                    <span class="selected"></span>
+                                                </a>
+                                            </li>';
+                                        }
+                                    }
+
+                                    // Set Dropdown Menu - Child
+                                    if ($rowMenu['m_parent_id'] > 0 AND !empty($rowMenu['m_name'])) {
+                                        echo '<li class="nav-item '; echo $site == $rowMenu['m_url'] ? 'active':''; echo '">
+                                            <a href="'.$rowMenu['m_url'].'" class="nav-link ">
+                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                <span class="title">'.$rowMenu['m_description'].'</span>
+                                                <span class="selected"></span>';
+                                                
+                                                echo (($m_ID == 9 OR $m_ID == 74) AND $count_JTS > 0) ? '<span class="badge badge-danger">'.$count_JTS.'</span>':'';
+                                                echo ($m_ID == 73 AND $count_JTS > 0) ? '<span class="badge badge-danger">'.$count_JTR.'</span>':'';
+                                                
+                                            echo '</a>
+                                        </li>';
+                                    }
+
+                                    // Set Dropdown Menu - Parent
+                                    if ($rowMenu['m_parent_id'] == 0 AND empty($rowMenu['m_name'])) {
+
+                                        // End of Sub-menu
+                                        if ($menu_dropdown == 1) {
+                                            $menu_dropdown = 0;
+                                            
+                                            echo '</ul></li>';
+                                        }
+                                        $menu_dropdown = 1;
+
+                                        echo '<li class="nav-item '.$m_class.'">
+                                            <a href="javascript:;" class="nav-link nav-toggle">
+                                                <i class="'.$rowMenu['m_icon'].'"></i>
+                                                <span class="title">'.$rowMenu['m_description'].'</span>
+                                                <span class="selected"></span>
+                                                <span class="arrow "></span>
+                                            </a>
+                                            <ul class="sub-menu">';
+                                    }
+                                }
+                                
+                                // End of Sub-menu
+                                if ($menu_dropdown == 1) {
+                                    $menu_dropdown = 0;
+                                    
+                                    echo '</ul></li>';
+                                }
+                            }
+
+                            // Site - open to all
+                            $site_array = array(
+                                '404',
+                                'profile',
+                                'profile-setting',
+                                'settings',
+                                'sidebar',
+                                'service_log',
+                                'auto_service_log',
+                                'pto_request_for_approve',
+                                'pto',
+                                'payslip',
+                                'job-ticket',
+                                'job-ticket-request',
+                                'job-ticket-service'
+                            );
+                            if (!in_array($site, $site_array) AND $current_permission == 0) {
+                                // echo '<script>window.location.href = "404";</script>';
+                                // exit();
+                            }
+                        } else {
+                            if (!isset($_COOKIE['switchAccount'])) {
+    
+                                // For Employee ONLY
+                                if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) {
+                            
+                                    if ($current_userAdminAccess == 0) {
+                                        // Base on Current Page
+                                        $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE collab = 1 AND deleted = 0 AND name='".$site."'" );
+                                        if ( mysqli_num_rows($selectMenu) > 0 ) {
+                                            $rowMenu = mysqli_fetch_array($selectMenu);
+                                            $assigned_to_id = $rowMenu['assigned_to_id'];
+                                
+                                            // Redirect to 404 if no assigned
+                                            if (!empty($assigned_to_id)) {
+                                                $output = json_decode($assigned_to_id, true);
+                                                // $exist = 0;
+                                                
+                                                // if (isset($_GET['facility_id'])) {
+                                                // 	$f_ID = $_GET['facility_id'];
+                                                // 	foreach ($output as $key => $value) {
+                                                // 		if ($f_ID == $key) {
+                                                // 			if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                                // 				$exist++;
+                                                // 				break;
+                                                // 			}
+                                                // 		}
+                                                // 	} 
+                                                // } else {
+                                                //     foreach ($output as $key => $value) {
+                                                //         if ($current_userEmployerID == $key) {
+                                                //             if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                                //                 $exist++;
+                                                //                 break;
+                                                //             }
+                                                //         }
+                                                //     }
+                                                // }
+                                                // if ($exist == 0) {
+                                                //     echo '<script>window.location.href = "404";</script>';
+                                                // }
+                    
+                                                
+                                                
+                                                if (isset($_GET['facility_id'])) {
+                                                    if (
+                                                        (isset($output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"]) AND !in_array($current_userEmployeeID, $output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"])) OR
+                                                        (isset($output[$facility_switch_user_id]["assigned_to_id"]) AND !in_array($current_userEmployeeID, $output[$facility_switch_user_id]["assigned_to_id"]))
+                                                    ) {
+                                                        echo '<script>window.location.href = "404";</script>';
+                                                    }
+                                                } else {
+                                                    if (
+                                                        (isset($output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"]) AND !in_array($current_userEmployeeID, $output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"])) OR
+                                                        (isset($output[$switch_user_id]["assigned_to_id"]) AND !in_array($current_userEmployeeID, $output[$switch_user_id]["assigned_to_id"]))
+                                                    ) {
+                                                        echo '<script>window.location.href = "404";</script>';
+                                                    }
+                                                }
+                                            } else {
+                                                echo '<script>window.location.href = "404";</script>';
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // $selectCustomer = mysqli_query( $conn,"SELECT * from tbl_supplier WHERE page = 2 AND status = 1 AND is_deleted = 0 AND email = '".$current_userEmail."'" );
+                                // if ( mysqli_num_rows($selectCustomer) > 0 ) { $FreeAccess = false; }
+                            }
+                        }
+                    
                         // Sidebar Menu
-                        function sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID) {
+                        function sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, $menu_class) {
                             global $conn;
                             $output = '';
 
                             if (!empty($menu_url)) {
-                                $output = '<li class="nav-item '; if ($site == $menu_url) { $output .= 'active'; } if ($menu_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menu_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
+                                $output = '<li class="nav-item '.$menu_class.' '; if ($site == $menu_url) { $output .= 'active'; } if ($menu_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menu_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
                                     <a href="'.$menu_url.'" class="nav-link">
                                         <i class="'.$menu_icon.'"></i>
                                         <span class="title">'.$menu_description.'</span>
@@ -2737,41 +3382,534 @@ License: You must have a valid license purchased only from themeforest(the above
                                     }
                                 }
 
-                                $output = '<li class="nav-item '; if (in_array($site, $menuDown_array)) { $output .= 'active open start'; } $output .= '">
-                                    <a href="javascript:;" class="nav-link nav-toggle">
-                                        <i class="icon-user-female"></i>
-                                        <span class="title">'.$menu_description.'</span>
-                                        <span class="selected"></span>
-                                        <span class="arrow '; if (in_array($site, $menuDown_array)) { $output .= 'open'; } $output .= '"></span>
-                                    </a>
-                                    <ul class="sub-menu">';
-
-                                        $selectMenuDown = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE deleted = 0 AND parent_id = $menu_ID ORDER BY ordering ASC" );
-                                        if ( mysqli_num_rows($selectMenuDown) > 0 ) {
-                                            while($rowMenuDown = mysqli_fetch_array($selectMenuDown)) {
-                                                $menuDown_ID = $rowMenuDown['ID'];
-                                                $menuDown_collab = $rowMenuDown['collab'];
-                                                $menuDown_url = $rowMenuDown['url'];
-                                                $menuDown_description = htmlentities($rowMenuDown['description'] ?? '');
-
-                                                $output .= '<li class="nav-item '; if ($site == $menuDown_url) { $output .= 'active'; } if ($menuDown_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menuDown_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
-                                                    <a href="'.$menuDown_url.'" class="nav-link ">
-                                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                                        <span class="title">'.$menuDown_description.'</span>
-                                                        <span class="selected"></span>
-                                                    </a>
-                                                </li>';
-                                            }
+                                $output2 = '';
+                                $selectMenuDown = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE deleted = 0 AND parent_id = $menu_ID ORDER BY ordering ASC" );
+                                if ( mysqli_num_rows($selectMenuDown) > 0 ) {
+                                    while($rowMenuDown = mysqli_fetch_array($selectMenuDown)) {
+                                        $menuDown_ID = $rowMenuDown['ID'];
+                                        $menuDown_collab = $rowMenuDown['collab'];
+                                        $menuDown_url = $rowMenuDown['url'];
+                                        $menuDown_description = htmlentities($rowMenuDown['description'] ?? '');
+                                        
+                                        $restricted_menu = '';
+                                        if ($menuDown_collab == 1 AND $current_userEmployeeID > 0) {
+                                            $restricted_menu = menu($menuDown_url, $current_userEmployerID, $current_userEmployeeID);
                                         }
-
-                                    $output .= '</ul>
-                                </li>';
+                                        if (empty($restricted_menu)) {
+                                            $output2 .= '<li class="nav-item '; $output2 .= $site == $menuDown_url ? 'active':''; $output2 .= '">
+                                                <a href="'.$menuDown_url.'" class="nav-link ">
+                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                    <span class="title">'.$menuDown_description.'</span>
+                                                    <span class="selected"></span>
+                                                </a>
+                                            </li>';
+                                        }
+                                    }
+                                }
+                                
+                                if (!empty($output2)) {
+                                    $output = '<li class="nav-item '.$menu_class.' '; if (in_array($site, $menuDown_array)) { $output .= 'active open start'; } $output .= '">
+                                        <a href="javascript:;" class="nav-link nav-toggle">
+                                            <i class="'.$menu_icon.'"></i>
+                                            <span class="title">'.$menu_description.'</span>
+                                            <span class="selected"></span>
+                                            <span class="arrow '; if (in_array($site, $menuDown_array)) { $output .= 'open'; } $output .= '"></span>
+                                        </a>
+                                        <ul class="sub-menu">'.$output2.'</ul>
+                                    </li>';
+                                }
                             }
 
                             return $output;
                         }
                         
+                        // Hide Menu if not applicable
+                        function menu($name, $current_userEmployerID, $current_userEmployeeID) {
+                            global $conn;
+                            global $current_userAdminAccess;
+                            global $switch_user_id;
+                            global $facility_switch_user_id;
+                    
+                            if ($current_userAdminAccess == 0) {
+                                $displayMenu = "hide";
+                                
+                                // if (!isset($_COOKIE['switchAccount'])) {
+                                //     $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE name='".$name."'" );
+                                //     if ( mysqli_num_rows($selectMenu) > 0 ) {
+                                //         $rowMenu = mysqli_fetch_array($selectMenu);
+                                //         $assigned_to_id = $rowMenu['assigned_to_id'];
+                        
+                                //         if (!empty($assigned_to_id)) {
+                                //             $output = json_decode($assigned_to_id, true);
+                                //             $exist = 0;
+                                            
+                                //             if (isset($_GET['facility_id'])) {
+                                //                 $f_ID = $_GET['facility_id'];
+                                //                 foreach ($output as $key => $value) {
+                                //                     if ($f_ID == $key) {
+                                //                         if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                //                             $exist++;
+                                //                             break;
+                                //                         }
+                                //                     }
+                                //                 }
+                                //             } else {
+                                //                 foreach ($output as $key => $value) {
+                                //                     if ($current_userEmployerID == $key) {
+                                //                         if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                //                             $exist++;
+                                //                             break;
+                                //                         }
+                                //                     }
+                                //                 }
+                                //             }
+                        
+                                //             if ($exist > 0) { $displayMenu = ""; }
+                                //         }
+                                //     }
+                                // } else {
+                                //     $displayMenu = "";
+                                // }
+                                
+                                
+                                if (!isset($_COOKIE['switchAccount'])) {
+                                    $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE name='".$name."'" );
+                                    if ( mysqli_num_rows($selectMenu) > 0 ) {
+                                        $rowMenu = mysqli_fetch_array($selectMenu);
+                                        $assigned_to_id = $rowMenu['assigned_to_id'];
+                    
+                                        if (!empty($assigned_to_id)) {
+                                            $output = json_decode($assigned_to_id, true);
+                    
+                                            if (isset($_GET['facility_id'])) {
+                                                if (
+                                                    (isset($output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"]) AND in_array($current_userEmployeeID, $output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"])) OR
+                                                    (isset($output[$facility_switch_user_id]["assigned_to_id"]) AND in_array($current_userEmployeeID, $output[$facility_switch_user_id]["assigned_to_id"]))
+                                                ) {
+                                                    $displayMenu = "";
+                                                }
+                                            } else {
+                                                if (
+                                                    (isset($output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"]) AND in_array($current_userEmployeeID, $output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"])) OR
+                                                    (isset($output[$switch_user_id]["assigned_to_id"]) AND in_array($current_userEmployeeID, $output[$switch_user_id]["assigned_to_id"]))
+                                                ) {
+                                                    $displayMenu = "";
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    $displayMenu = "";
+                                }
+                    
+                                return $displayMenu;
+                            }
+                        }
+                        
                         if ($switch_user_id != 1479) {
+                            // Default Section
+                            // if ($switch_user_id == 1 OR $current_userID == 43 OR $current_userID == 1760) {
+                            // if ($switch_user_id == 1 OR $current_userID == 43) {
+                                
+                                $sql_right = '';
+                                $sql_where = '';
+                                if ($current_userInvited > 0 AND $current_userEmployeeID == 0) {
+                                    // $sql_right = " RIGHT JOIN (SELECT ID, page FROM tbl_supplier WHERE facility_switch = $facility_switch_user_id AND email = '".$current_userEmail."' ) AS s ON s.page = m.invited ";
+                                    $sql_right = "
+                                        RIGHT JOIN (
+                                            SELECT ID, page FROM tbl_supplier WHERE is_deleted = 0 AND facility_switch = 0 AND email = '".$current_userEmail."'
+                                        
+                                        	UNION ALL
+                                            
+                                            SELECT s.ID, s.page FROM tbl_supplier_contact AS c 
+                                            LEFT JOIN ( SELECT ID, page, contact FROM tbl_supplier WHERE is_deleted = 0 ) AS s ON FIND_IN_SET(c.ID, REPLACE(s.contact, ' ', '')) 
+                                            WHERE c.email = '".$current_userEmail."' 
+                                        ) AS ss ON ss.page = m.invited
+                                    ";
+                                    $sql_where = ' AND m.invited > 0 ';
+                                }
+                                $selectMenu = mysqli_query( $conn,"
+                                    SELECT
+                                    m.ID,
+                                    m.name,
+                                    m.assigned_to_id,
+                                    m.ordering,
+                                    m.collab,
+                                    m.icon,
+                                    m.url,
+                                    m.description,
+                                    m.include_enterprise,
+                                    m.include_user,
+                                    m.exclude_enterprise,
+                                    m.exclude_user,
+                                    m.class,
+                                    m.invited,
+                                    m.deleted
+                                    FROM tbl_menu AS m
+                                    $sql_right
+                                    
+                                    
+                                    WHERE m.deleted = 0
+                                    AND m.module = 0
+                                    AND m.parent_id = 0
+                                    $sql_where
+                                    
+                                    GROUP BY m.ID
+                                    ORDER BY m.ordering
+                                " );
+                                if ( mysqli_num_rows($selectMenu) > 0 ) {
+                                    //  echo '<li class="nav-item nav-item-section nav-item-section-trial active">
+                                    //     <a href="javascript:;" class="nav-link disabled-link disable-targetx" style="cursor: unset !important;">
+                                    //         <span class="title"><b>DEFAULT</b></span>
+                                    //     </a>
+                                    // </li>';
+    
+                                    while($rowMenu = mysqli_fetch_array($selectMenu)) {
+                                        $menu_ID = $rowMenu['ID'];
+                                        $menu_collab = $rowMenu['collab'];
+                                        $menu_icon = $rowMenu['icon'];
+                                        $menu_url = $rowMenu['url'];
+                                        $menu_description = $rowMenu['description'];
+                                        $menu_class = $rowMenu['class'];
+                                    
+                                        $sidebarDisplay = true;
+                                        if (!empty($rowMenu['exclude_enterprise'])) {
+                                            $exclude_enterprise = explode(', ', $rowMenu['exclude_enterprise']);
+                                            if(in_array($switch_user_id, $exclude_enterprise)) {
+                                                $sidebarDisplay = false;
+                                            }
+                                        }
+                                        
+                                        if ($sidebarDisplay == true) {
+                                            if ($menu_ID == 65) {
+                                                // Facility Menu
+                                                
+                                                $queryFacility = mysqli_query( $conn,"
+                                                    SELECT 
+                                                    e.enterp_id AS e_id,
+                                                    e.facility_switch AS e_facility_switch,
+                                                    f.facility_id AS f_id,
+                                                    f.facility_category AS f_category,
+                                                    m.assigned_to_id AS m_assigned
+                                                    FROM tblEnterpiseDetails AS e
+                                                    
+                                                    LEFT JOIN (
+                                                    	SELECT
+                                                        *
+                                                        FROM tblFacilityDetails
+                                                    ) AS f
+                                                    ON e.users_entities = f.users_entities
+                                                    
+                                                    LEFT JOIN (
+                                                        SELECT
+                                                            *
+                                                        FROM tbl_menu
+                                                    ) AS m
+                                                    ON m.name = 'facility-info'
+                                                    
+                                                    WHERE e.users_entities = $switch_user_id
+                                                    AND e.enterpriseOperation = 'YES'
+                                                    ORDER BY f.facility_category
+                                                " );
+                                                if ( mysqli_num_rows($queryFacility) > 0 ) {
+                                                    $e_facility_switch_arr = array();
+                                                    $li_facility = '';
+                                                    $li_facility2 = '';
+                                                    while($rowFacility = mysqli_fetch_array($queryFacility)) {
+                                                        if (!in_array($rowFacility['e_id'], $e_facility_switch_arr) AND $rowFacility['e_facility_switch'] == 1) {
+                                                            array_push($e_facility_switch_arr, $rowFacility['e_id']);
+                                                            $li_facility .= '<li class="nav-item">
+                                                                <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch(0)">
+                                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                                    <span class="title">Switch to Main Account</span>
+                                                                </a>
+                                                            </li>';
+                                                        }
+                                                        
+                                                        $f_id = $rowFacility['f_id'];
+                                                        $facility_display = true;
+                                                        if (!isset($_COOKIE['switchAccount']) AND $current_userEmployeeID > 0) {
+                                                            $m_assigned = $rowFacility['m_assigned'];
+                                            
+                                                            if (!empty($m_assigned)) {
+                                                                $m_assigned_arr = json_decode($m_assigned, true);
+                                                                if (isset($m_assigned_arr[$f_id]['assigned_to_id']) && in_array($current_userEmployeeID, $m_assigned_arr[$f_id]['assigned_to_id'])) {
+                                                                    $facility_display = true;
+                                                                } else {
+                                                                    $facility_display = false;
+                                                                }
+                                                            }
+                                                        }
+                                                        
+                                                        if ($facility_display == true) {
+                                                            if ($rowFacility['e_facility_switch'] == 1) {
+                                                                $li_facility2 .= '<li class="nav-item">
+                                                                    <a href="javascript:;" class="nav-link nav-toggle">
+                                                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                                        <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
+                                                                        <span class="arrow"></span>
+                                                                    </a>
+                                                                    <ul class="sub-menu">
+                                                                        <li class="nav-item ">
+                                                                            <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch('.$f_id.')">Switch Account</a>
+                                                                        </li>
+                                                                        <li class="nav-item ">
+                                                                            <a href="facility-info?facility_id='.$f_id.'" class="nav-link ">View Details</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>';
+                                                            } else {
+                                                                $li_facility2 .= '<li class="nav-item">
+                                                                    <a href="facility-info?facility_id='.$rowFacility['f_id'].'" class="nav-link ">
+                                                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                                        <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
+                                                                    </a>
+                                                                </li>';
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    if (!empty($li_facility2)) {
+                                                        echo '<li class="nav-item '; echo $site === "facility-info" ? "active open start" : ""; echo '">
+                                                            <a href="javascript:;" class="nav-link nav-toggle">
+                                                                <i class="icon-layers"></i>
+                                                                <span class="title">Facility'; echo $switch_user_id == 1649 ? '/System':''; echo '</span>
+                                                                <span class="selected"></span>
+                                                                <span class="arrow '; echo $site === "facility-info" ? "open" : ""; echo '"></span>
+                                                            </a>
+                                                            <ul class="sub-menu">'.$li_facility.$li_facility2.'</ul>
+                                                        </li>';
+                                                    } 
+                                                }
+                                            } else if ($menu_ID == 66) {
+                                                // HR Menu
+                                                
+                                                $selectEnt = mysqli_query( $conn,"SELECT users_entities FROM tblEnterpiseDetails WHERE enterpriseEmployees = 'Yes' AND users_entities = $switch_user_id");
+                                                if ( mysqli_num_rows($selectEnt) > 0 ) {
+                                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, $menu_class);
+                                                }
+                                            } else if ($menu_ID == 12) {
+                                                // Product Menu
+                                                
+                                                $selectEnt = mysqli_query( $conn,"SELECT users_entities FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id"); 
+                                                if ( mysqli_num_rows($selectEnt) > 0 ) {
+                                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, $menu_class);
+                                                }
+                                            } else if ($menu_ID == 10) {
+                                                // Services Menu 
+                                                
+                                                $selectEnt = mysqli_query( $conn,"SELECT users_entities FROM tblEnterpiseDetails WHERE enterpriseServices = 'Yes' AND users_entities = $switch_user_id"); 
+                                                if ( mysqli_num_rows($selectEnt) > 0 ) {
+                                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, $menu_class);
+                                                }
+                                            } else if ($menu_ID == 9 OR $menu_ID == 72) {
+                                                // Job Ticket Menu
+                                                
+                                                if ($menu_ID == 9 AND $current_userEmployeeID == 0) {
+                                                    $sql_custom = '';
+                                                    $count_JTS = 0;
+                                                    if ($switch_user_id != 34) { $sql_custom = ' WHERE r.switch_user_id = '.$switch_user_id; }
+                                                    $selectJTS = mysqli_query( $conn,"
+                                                        SELECT
+                                                        COUNT(*) AS count_JTS
+                                                        FROM (
+                                                            SELECT
+                                                            s_assigned_to_id
+                                                            FROM (
+                                                                SELECT 
+                                                                s.ID AS s_ID,
+                                                                s.assigned_to_id AS s_assigned_to_id,
+                                                                s.type AS s_type,
+                                                                u.ID AS u_ID,
+                                                                u.employee_id AS u_employee_id,
+                                                                e.user_id AS e_user_id,
+                                                                CASE WHEN LENGTH(e.user_id) > 0 THEN e.user_id ELSE u.ID END AS switch_user_id
+                                                        
+                                                                FROM tbl_services AS s
+                                                        
+                                                                LEFT JOIN (
+                                                                    SELECT
+                                                                    *
+                                                                    FROM tbl_user
+                                                                ) AS u
+                                                                ON s.user_id = u.ID
+                                                        
+                                                                LEFT JOIN (
+                                                                    SELECT
+                                                                    *
+                                                                    FROM tbl_hr_employee
+                                                                ) AS e
+                                                                ON u.employee_id = e.ID
+                                                        
+                                                                WHERE s.status = 0 
+                                                                AND s.type = 0
+                                                                AND s.deleted = 0
+                                                            ) r
+                                                        
+                                                            LEFT JOIN (
+                                                                SELECT
+                                                                *
+                                                                FROM tbl_hr_employee
+                                                            ) AS ee
+                                                            ON FIND_IN_SET(ee.ID, REPLACE(REPLACE(r.s_assigned_to_id, ' ', ''), '|',','  )  ) > 0
+                                                        
+                                                            $sql_custom
+                                                        
+                                                            GROUP BY s_ID
+                                                        
+                                                            ORDER BY s_ID
+                                                        ) r2
+                                                        WHERE LENGTH(r2.s_assigned_to_id) = 0 OR r2.s_assigned_to_id IS NULL
+                                                    " );
+                                                    if ( mysqli_num_rows($selectJTS) > 0 ) {
+                                                        $rowJTS = mysqli_fetch_array($selectJTS);
+                                                        $count_JTS = $rowJTS['count_JTS'];
+                                                    }
+                                                    echo '<li class="nav-item '; echo $menu_tff; echo $site === "job-ticket" ? "active " : ""; echo '">
+                                                        <a href="job-ticket" class="nav-link">
+                                                            <i class="icon-earphones-alt"></i>
+                                                            <span class="title">Job Ticket Tracker</span>
+                                                            <span class="selected"></span>';
+                                                            echo $count_JTS > 0 ? '<span class="badge badge-danger">'.$count_JTS.'</span>':'';
+                                                        echo '</a>
+                                                    </li>';
+                                                } else if ($menu_ID == 72 AND $current_userEmployeeID > 0) {
+                                                        
+                                                    $sql_custom = '';
+                                                    $count_JTS = 0;
+                                                    if ($switch_user_id != 34) { $sql_custom .= ' AND r.switch_user_id = '.$switch_user_id; }
+                                                    if ( !empty(menu('job-ticket', $current_userEmployerID, $current_userEmployeeID)) ) { $sql_custom .= " AND FIND_IN_SET($current_userEmployeeID, REPLACE(r.s_assigned_to_id, ' ', '')) "; }
+                                                    $selectJTS = mysqli_query( $conn,"
+                                                        SELECT
+                                                        COUNT(*) AS count_JTS
+                                                        FROM (
+                                                            SELECT
+                                                            s_assigned_to_id
+                                                            FROM (
+                                                                SELECT 
+                                                                s.ID AS s_ID,
+                                                                s.assigned_to_id AS s_assigned_to_id,
+                                                                s.type AS s_type,
+                                                                u.ID AS u_ID,
+                                                                u.employee_id AS u_employee_id,
+                                                                e.user_id AS e_user_id,
+                                                                CASE WHEN LENGTH(e.user_id) > 0 THEN e.user_id ELSE u.ID END AS switch_user_id
+                                                        
+                                                                FROM tbl_services AS s
+                                                        
+                                                                LEFT JOIN (
+                                                                    SELECT
+                                                                    *
+                                                                    FROM tbl_user
+                                                                ) AS u
+                                                                ON s.user_id = u.ID
+                                                        
+                                                                LEFT JOIN (
+                                                                    SELECT
+                                                                    *
+                                                                    FROM tbl_hr_employee
+                                                                ) AS e
+                                                                ON u.employee_id = e.ID
+                                                        
+                                                                WHERE s.status = 0 
+                                                                AND s.type = 0
+                                                                AND s.deleted = 0
+                                                            ) r
+                                                        
+                                                            LEFT JOIN (
+                                                                SELECT
+                                                                *
+                                                                FROM tbl_hr_employee
+                                                            ) AS ee
+                                                            ON FIND_IN_SET(ee.ID, REPLACE(REPLACE(r.s_assigned_to_id, ' ', ''), '|',','  )  ) > 0
+                                                        
+                                                            WHERE r.u_ID != $current_userID
+                                                            $sql_custom
+                                                        
+                                                            GROUP BY s_ID
+                                                        
+                                                            ORDER BY s_ID
+                                                        ) r2
+                                                        WHERE LENGTH(r2.s_assigned_to_id) = 0 OR r2.s_assigned_to_id IS NULL
+                                                    " );
+                                                    if ( mysqli_num_rows($selectJTS) > 0 ) {
+                                                        $rowJTS = mysqli_fetch_array($selectJTS);
+                                                        $count_JTS = $rowJTS['count_JTS'];
+                                                    }
+                                                    
+                                                    $count_JTR = 0;
+                                                    $selectJTR = mysqli_query( $conn,"
+                                                        SELECT 
+                                                        COUNT(s.ID) AS count_JTR
+                                                        FROM 
+                                                        tbl_services AS s
+                                                        
+                                                        LEFT JOIN (
+                                                            SELECT
+                                                            ID,
+                                                            first_name,
+                                                            last_name
+                                                            FROM tbl_hr_employee
+                                                        ) AS e
+                                                         ON FIND_IN_SET(e.ID, REPLACE(REPLACE(s.assigned_to_id, ' ', ''), '|',','  )  ) > 0
+                                                        
+                                                        WHERE s.status = 0 
+                                                        AND s.type = 0
+                                                        AND s.deleted = 0 
+                                                        AND s.user_id = $current_userID
+                                                        
+                                                        GROUP BY s.ID
+                                                        
+                                                        ORDER BY s.ID
+                                                    " );
+                                                    if ( mysqli_num_rows($selectJTR) > 0 ) {
+                                                        $rowJTR = mysqli_fetch_array($selectJTR);
+                                                        $count_JTR = $rowJTR['count_JTR'];
+                                                    }
+                                                    
+                                                    echo '<li class="nav-item '; echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; echo '">
+                                                        <a href="javascript:;" class="nav-link nav-toggle">
+                                                            <i class="icon-earphones" '; if ($count_JTR > 0 OR $count_JTS > 0 ) { echo 'style="color: #ffff00;"'; } echo '></i>
+                                                            <span class="title" '; if ($count_JTR > 0 OR $count_JTS > 0 ) { echo 'style="color: #ffff00; font-weight: bold;"'; } echo '>Job Ticket Tracker</span>
+                                                            <span class="selected"></span>
+                                                            <span class="arrow '; echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; echo '"></span>
+                                                        </a>
+                                                        <ul class="sub-menu">';
+                                                        
+                                                            echo '<li class="nav-item '; echo $site === "job-ticket-request" ? "active" : ""; echo '">
+                                                                <a href="job-ticket-request" class="nav-link ">
+                                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                                    <span class="title">Request</span>
+                                                                    <span class="selected"></span>';
+                                                                    echo $count_JTR > 0 ? '<span class="badge badge-danger">'.$count_JTR.'</span>':'';
+                                                                echo '</a>
+                                                            </li>
+                                                            <li class="nav-item '; echo $site === "job-ticket-service" ? "active" : ""; echo '">
+                                                                <a href="job-ticket-service" class="nav-link ">
+                                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                                    <span class="title">Service</span>
+                                                                    <span class="selected"></span>';
+                                                                    echo $count_JTS > 0 ? '<span class="badge badge-danger">'.$count_JTS.'</span>':'';
+                                                                echo '</a>
+                                                            </li>';
+                                                                
+                                                        echo '</ul>
+                                                    </li>';
+                                                }
+                                            } else if ($menu_ID == 8 AND ($switch_user_id == 1984 OR $switch_user_id == 1986)) {
+                                                // Supplier
+                                                
+                                                echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, 'FSVP / IOR Shipment Tracker', $current_userEmployerID, $current_userEmployeeID, $menu_class);
+                                            } else {
+                                                // Other Menu
+                                                
+                                                echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, $menu_class);
+                                            }
+                                        }
+                                    }
+                                }
+                            // }
+                            
                             // PAID Section
                             $selectMenu = mysqli_query( $conn,"
                                 SELECT 
@@ -2822,7 +3960,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     $sub_date_end = $sub_date_end->format('M d, Y');
     
     
-                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
+                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, '');
                                 }
                             }
                             
@@ -2883,7 +4021,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     $sub_date_end = $sub_date_end->format('M d, Y');
     
     
-                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
+                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, '');
                                 }
                             }
                             
@@ -2939,14 +4077,14 @@ License: You must have a valid license purchased only from themeforest(the above
                             //                 }
     
                             //                 if ($countRunning == 0) {
-                            //                     echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
+                            //                     echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, '');
                             //                 } else {
                             //                     if ($countExclusive == 0 && !in_array($switch_user_id, $countOther_arr)) {
-                            //                         echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
+                            //                         echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, '');
                             //                     }
                             //                 }
                             //             } else {
-                            //                 echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
+                            //                 echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID, '');
                             //             }
                             //         }
                             //     }
@@ -2985,22 +4123,22 @@ License: You must have a valid license purchased only from themeforest(the above
                         }
                     ?>
                     <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 OR $switch_user_id == 1563 ): ?>
-                    <li class="nav-item">
-                        <a href="glp_dashboard" class="nav-link" disabled>
-                            <i class="icon-graph"></i>
-                            <span class="title">GLP</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="glp_dashboard" class="nav-link" disabled>
+                                <i class="icon-graph"></i>
+                                <span class="title">GLP</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 ): ?>
-                    <li class="nav-item">
-                        <a href="equipment_register" class="nav-link" disabled>
-                            <i class="icon-graph"></i>
-                            <span class="title">Equipment Calibration</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="equipment_register" class="nav-link" disabled>
+                                <i class="icon-graph"></i>
+                                <span class="title">Equipment Calibration</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <li class="nav-item hide <?php echo $site === "form-owned" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('form-owned', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="form-owned" class="nav-link" disabled>
@@ -3009,8 +4147,6 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
-
-
                     <li class="nav-item hide <?php echo $site === "archive" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('archive', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="archive" class="nav-link">
                             <i class="icon-folder-alt"></i>
@@ -3021,19 +4157,19 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
                     <?php if($switch_user_id == 1362): ?>
-                    <!--<li class="nav-item">-->
-                    <!--    <a href="batchproduction" class="nav-link" disabled>-->
-                    <!--        <i class="icon-wrench"></i>-->
-                    <!--        <span class="title">Batch Production</span>-->
-                    <!--        <span class="selected"></span>-->
-                    <!--    </a>-->
-                    <!--</li>-->
+                        <!--<li class="nav-item">-->
+                        <!--    <a href="batchproduction" class="nav-link" disabled>-->
+                        <!--        <i class="icon-wrench"></i>-->
+                        <!--        <span class="title">Batch Production</span>-->
+                        <!--        <span class="selected"></span>-->
+                        <!--    </a>-->
+                        <!--</li>-->
                     <?php endif; ?>
 
                     <?php
                         // if($switch_user_id == 1362) {
                         //     $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) {
-                        //         echo '<li class="nav-item '; echo $site === "batchproduction" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); echo '">
+                        //         echo '<li class="nav-item '; echo $site === "batchproduction" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } echo '">
                         //             <a href="batchproduction" class="nav-link">
                         //                 <i class="icon-wrench"></i>
                         //                 <span class="title">Batch Production</span>
@@ -3052,31 +4188,23 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
 
-
-
-
-                    <!--247 - Scandic-->
-                    <!--324 - Tom Sonchai-->
-                    <!--34 -Consultare-->
-                    <!--19 - Quincy-->
-
                     <?php if($current_userEmployerID == 247 || $current_userEmployerID == 34 || $user_id == 34): ?>
-                    <li class="nav-item hide <?php echo $site === "meeting_minutes" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('meeting_minutes', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="meeting_minutes.php" class="nav-link">
-                            <i class="icon-clock"></i>
-                            <span class="title">Meeting Minutes</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item hide <?php echo $site === "meeting_minutes" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('meeting_minutes', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="meeting_minutes.php" class="nav-link">
+                                <i class="icon-clock"></i>
+                                <span class="title">Meeting Minutes</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php  endif;?>
                     <?php if($current_userEmployerID == 254 || $current_userEmployerID == 247 || $current_userEmployerID == 34 || $user_id == 34 || $user_id == 1 || $user_id == 185 || $user_id == 19 || $user_id == 155 || $user_id == 308 || $user_id == 189 || $user_id == 337): ?>
-                    <li class="nav-item hide <?php echo $site === "MyPro" ? "active" : ""; ?>">
-                        <a href="MyPro" class="nav-link">
-                            <i class="icon-earphones-alt"></i>
-                            <span class="title">My Pro.</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item hide <?php echo $site === "MyPro" ? "active" : ""; ?>">
+                            <a href="MyPro" class="nav-link">
+                                <i class="icon-earphones-alt"></i>
+                                <span class="title">My Pro.</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php  endif;?>
                     
                     <?php if($switch_user_id == 34 AND ($current_client == 1 || $current_userID == 42 || $current_userID == 693 || $current_userID == 88 || $current_userID == 667 || $current_userID == 748 || $current_userID == 149 || $current_userID == 943 || $current_userID == 153 || $current_userID == 41 || $current_userID == 154 || $current_userID == 43 || $current_userID == 387 || $current_userID == 54 || $current_userID == 55 || $current_userID == 35 || $current_userID == 43 || $current_userID == 1474)): ?>
@@ -3098,207 +4226,207 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                     <?php  endif;?>
                     <?php if($current_userEmployerID == 247 || $current_userEmployerID == 324 || $switch_user_id == 34 || $current_userEmployeeID == 34): ?>
-                    <li class="nav-item hide <?php echo $site === "Customer_Relationship_Management" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Customer_Relationship_Management', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="Customer_Relationship_Management" class="nav-link">
-                            <i class="icon-users"></i>
-                            <span class="title">Contacts Relationship Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item hide <?php echo $site === "Customer_Relationship_Management" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Customer_Relationship_Management', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="Customer_Relationship_Management" class="nav-link">
+                                <i class="icon-users"></i>
+                                <span class="title">Contacts Relationship Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif ?>
                     <?php if($user_id == 185 || $user_id == 34 || $user_id == 42 || $user_id == 35 || $user_id == 55 || $user_id == 54 || $user_id == 41 || $user_id == 32 || $user_id == 109): ?>
-                    <li class="nav-item hide <?php echo $site === "Internal_Audit" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { // echo menu('Internal_Audit', $current_userEmployerID, $current_userEmployeeID); 
-                            } ?>">
-                        <a href="Internal_Audit" class="nav-link">
-                            <i class="icon-layers"></i>
-                            <span class="title">Internal Audit</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item hide <?php echo $site === "Internal_Audit" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { // echo menu('Internal_Audit', $current_userEmployerID, $current_userEmployeeID); 
+                                } ?>">
+                            <a href="Internal_Audit" class="nav-link">
+                                <i class="icon-layers"></i>
+                                <span class="title">Internal Audit</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php if($current_userEmployerID == 247 || $current_userEmployerID == 34 || $user_id == 362): ?>
-                    <li class="nav-item hide <?php echo $site === "inventory-management" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('inventory-management', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="inventory-management" class="nav-link">
-                            <i class="icon-social-dropbox"></i>
-                            <span class="title">Inventory Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item hide <?php echo $site === "inventory-management" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('inventory-management', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="inventory-management" class="nav-link">
+                                <i class="icon-social-dropbox"></i>
+                                <span class="title">Inventory Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif ?>
                     <?php if($current_userEmployerID == 254 || $current_userEmployerID == 247 || $current_userEmployerID == 34 || $user_id == 1 || $user_id == 362): ?>
-                    <li class="nav-item hide <?php echo $site === "library" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('library', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="library" class="nav-link">
-                            <i class="icon-folder"></i>
-                            <span class="title">Library</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item hide <?php echo $site === "library" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('library', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="library" class="nav-link">
+                                <i class="icon-folder"></i>
+                                <span class="title">Library</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif ?>
                     <?php if($user_id <> 259 || $user_id <> 155): ?>
-                    <li class="nav-item hide <?php echo $site === "rvm" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('rvm', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="rvm" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">RVM</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item hide <?php echo $site === "rvm" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('rvm', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="rvm" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">RVM</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif ?>
                     <?php if($switch_user_id <> 249): ?>
-                    <li class="nav-item hide <?php echo $site === "pmp" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('pmp', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="pmp.php" class="nav-link">
-                            <i class="icon-layers"></i>
-                            <span class="title">Preventive Maintenance Program</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item hide <?php echo $site === "pmp" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('pmp', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="pmp.php" class="nav-link">
+                                <i class="icon-layers"></i>
+                                <span class="title">Preventive Maintenance Program</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif ?>
                     <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 464): ?>
-                    <li class="nav-item <?php echo $site === "emp_dashboard" ? "active" : ""; ?>">
-                        <a href="emp_dashboard" class="nav-link">
-                            <i class="icon-target"></i>
-                            <span class="title">EMP</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item <?php echo $site === "emp_dashboard" ? "active" : ""; ?>">
+                            <a href="emp_dashboard" class="nav-link">
+                                <i class="icon-target"></i>
+                                <span class="title">EMP</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseEmployees = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                    <?php if($switch_user_id == 34 || $switch_user_id == 19): ?>
-                    <li class="nav-item hide <?php echo $site === "Legal_Expert" || $site === "Critical_Operation" || $site === "Types_Of_Crisis" ? "active open start" : "";  ?>" id="menuCMAA">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-graph"></i>
-                            <span class="title">Crisis Management</span>
-                            <span class="selected"></span>
-                            <span class="arrow <?php echo $site === "Legal_Expert" || $site === "Critical_Operation" || $site === "Types_Of_Crisis" ? "open" : ""; ?>"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item <?php echo $site === "Legal_Expert" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Legal_Expert', $current_userEmployerID, $current_userEmployeeID); }?>">
-                                <a href="Legal_Expert" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Legal & Expert</span>
+                        <?php if($switch_user_id == 34 || $switch_user_id == 19): ?>
+                            <li class="nav-item hide <?php echo $site === "Legal_Expert" || $site === "Critical_Operation" || $site === "Types_Of_Crisis" ? "active open start" : "";  ?>" id="menuCMAA">
+                                <a href="javascript:;" class="nav-link nav-toggle">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Crisis Management</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow <?php echo $site === "Legal_Expert" || $site === "Critical_Operation" || $site === "Types_Of_Crisis" ? "open" : ""; ?>"></span>
                                 </a>
+                                <ul class="sub-menu">
+                                    <li class="nav-item <?php echo $site === "Legal_Expert" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Legal_Expert', $current_userEmployerID, $current_userEmployeeID); }?>">
+                                        <a href="Legal_Expert" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Legal & Expert</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php echo $site === "Critical_Operation" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Critical_Operation', $current_userEmployerID, $current_userEmployeeID); }?> ?>">
+                                        <a href="Critical_Operation" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Critical Operation</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php echo $site === "Types_Of_Crisis" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Types_Of_Crisis', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="Types_Of_Crisis" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Types Of Crisis</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php echo $site === "crisis_incidents" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('crisis_incidents', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="crisis_incidents" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Crisis Incidents</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php echo $site === "crisis_annual_review" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('crisis_annual_review', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="crisis_annual_review" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Annual Review</span>
+                                        </a>
+                                    </li>
+                                    <?php if($user_id == 185): ?>
+                                    <li class="nav-item <?php echo $site === "crisis_testing_verification" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('crisis_testing_verification', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                        <a href="crisis_testing_verification" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Testing And Verification</span>
+                                        </a>
+                                    </li>
+                                    <?php endif; ?>
+                                </ul>
                             </li>
-                            <li class="nav-item <?php echo $site === "Critical_Operation" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Critical_Operation', $current_userEmployerID, $current_userEmployeeID); }?> ?>">
-                                <a href="Critical_Operation" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Critical Operation</span>
-                                </a>
-                            </li>
-                            <li class="nav-item <?php echo $site === "Types_Of_Crisis" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Types_Of_Crisis', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="Types_Of_Crisis" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Types Of Crisis</span>
-                                </a>
-                            </li>
-                            <li class="nav-item <?php echo $site === "crisis_incidents" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('crisis_incidents', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="crisis_incidents" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Crisis Incidents</span>
-                                </a>
-                            </li>
-                            <li class="nav-item <?php echo $site === "crisis_annual_review" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('crisis_annual_review', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="crisis_annual_review" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Annual Review</span>
-                                </a>
-                            </li>
-                            <?php if($user_id == 185): ?>
-                            <li class="nav-item <?php echo $site === "crisis_testing_verification" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('crisis_testing_verification', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                <a href="crisis_testing_verification" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Testing And Verification</span>
-                                </a>
-                            </li>
-                            <?php endif; ?>
-                        </ul>
-                    </li>
-                    <?php endif ?>
+                        <?php endif ?>
                     <?php } ?>
 
                     <?php if($switch_user_id == 1360 OR $switch_user_id == 1365 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1477): ?>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Environmental Monitoring Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Equipment Calibration Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Food Safety Culture Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Formula / Recipe Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">HACCP / Food Safety Plan Builder Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Laboratory Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Positive Product Release Program Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Residue Testing Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Risk Assessment</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Shelf Life Program Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Stability Program Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="coming-soon" class="nav-link">
-                            <i class="icon-docs"></i>
-                            <span class="title">Storage and Distribution Report Management</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Environmental Monitoring Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Equipment Calibration Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Food Safety Culture Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Formula / Recipe Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">HACCP / Food Safety Plan Builder Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Laboratory Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Positive Product Release Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Residue Testing Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Risk Assessment</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Shelf Life Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Stability Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Storage and Distribution Report Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif ?>
 
                     <?php if($switch_user_id == 1372): ?>
@@ -3500,15 +4628,95 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                     <?php endif ?>
 
-
-
                     <li class="nav-item">
-                        <a href="//vendormatch.pro/" class="nav-link" target="_blank">
-                            <i class="icon-calendar" style="color: orange !important;"></i>
-                            <span class="title">Vendor Match</span>
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="icon-settings" style="color: orange !important;"></i>
+                            <span class="title">Other Services</span>
                             <span class="selected"></span>
+                            <span class="arrow"></span>
                         </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item">
+                                <a href="//www.foodsafetysystems.net/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">BRCGS Services</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//intelcomp.co/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Cyber Security</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//dietarysupplements.pro/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Dietary Supplements Services</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//www.foodsafetysystems.co/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">FSSC 22000 Services</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//www.fsvpservices.com/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">FSVP Services</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//itblaster.net/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">IT Services</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//www.qmsservices.pro/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">ISO 9001 Services</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//www.youtube.com/watch?v=K1B__4j15q0" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Management System</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//pcqiservices.com" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">PCQI Services</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//foodsafetysystems.pro/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">SQF Services</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//trainingace.pro/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Training Ace</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//www.youtube.com/watch?v=hLAufBaDAFI" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">US Market Entry</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="//vendormatch.pro/" class="nav-link " target="_blank">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Vendor Match</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
+                    
                     <?php
                         // $switch_user_id_array = array(1649, 1680);
                         // if ($switch_user_id == 1479) {
@@ -3614,7 +4822,6 @@ License: You must have a valid license purchased only from themeforest(the above
                         }
                     ?>
 
-
                     <li class="nav-item hide <?php echo $site === "researchandDev" ? "active" : ""; ?>">
                         <a href="researchandDev" class="nav-link">
                             <i class="icon-puzzle"></i>
@@ -3635,28 +4842,30 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif; ?>
 
                     <?php if($user_id == 34): ?>
-                    <li class="nav-item <?php echo $site === "pto_request" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('pto_requestt', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="pto_request" class="nav-link">
-                            <i class="icon-social-dropbox"></i>
-                            <span class="title">PTO Request</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item <?php echo $site === "pto_request" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('pto_requestt', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="pto_request" class="nav-link">
+                                <i class="icon-social-dropbox"></i>
+                                <span class="title">PTO Request</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php endif ?>
 
                     <?php
                         $query = mysqli_query( $conn,"SELECT * FROM tbl_GetApps left join tbl_appstore on app_id = apps_entities where appType = 'IA' and users_entities = $switch_user_id " );
                         if ( mysqli_num_rows($query) > 0 ) {                             
                             while($row = mysqli_fetch_array($query)) {
+                                
+                                echo '<li class="nav-item hide">
+                                    <a href="'.$row['app_url'].'" target="_blank" class="nav-link">
+                                        <i class="icon-layers"></i>
+                                        <span class="title">'.htmlentities($row['application_name'] ?? '').'</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>';
+                            }
+                        }
                     ?>
-                    <li class="nav-item hide">
-                        <a href="<?php echo $row['app_url']; ?>" target="_blank" class="nav-link">
-                            <i class="icon-layers"></i>
-                            <span class="title"><?php echo htmlentities($row['application_name'] ?? ''); ?></span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php }} ?>
                 </ul>
                 <!-- END SIDEBAR MENU -->
             </div>
@@ -3768,7 +4977,14 @@ License: You must have a valid license purchased only from themeforest(the above
                                 $files = '';
                                 $type = 'iframe';
                                 if (!empty($row["files"])) {
-                                    $arr_filename = explode(' | ', $row["files"]);
+                                    
+                                    $f = $row["files"];
+                                    if (($site == 'supplier' OR $site == 'customer') AND ($switch_user_id == 1684 OR $current_client == 18)) {
+                                        // $f = '733673 - Trinity Frozen Foods-InterlinkIQ-User Guide-Supplier Registration-SAP FSVP Requirements.pdf';
+                                        $f = '674972 - Trinity Frozen Foods-InterlinkIQ-User Guide-Supplier Registration-SAP FSVP Requirements-20250502.pdf';
+                                    }
+                                    
+                                    $arr_filename = explode(' | ', $f);
                                     $arr_filetype = explode(' | ', $row["filetype"]);
                                     $str_filename = '';
 
@@ -3779,7 +4995,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         $str_filetype = $val_filetype;
                                     }
 
-                                    $files = $row["files"];
+                                    $files = $f;
                                     if ($row["filetype"] == 1) {
                                         $fileExtension = fileExtension($files);
                                         $src = $fileExtension['src'];
@@ -3818,15 +5034,15 @@ License: You must have a valid license purchased only from themeforest(the above
                             <i class="fa fa-angle-right"></i>
                         </li>
                         <?php echo $breadcrumbs; ?>
-                    </ul>
-                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0)) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
+                    </ul> 
+                    <div class="page-toolbar <?php echo $menu_tff; if ($site == '404' OR $site == '505' OR ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0) OR ($current_userEmployeeID == 0 AND $current_userInvited == 1)) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
                         <!--<div class="page-toolbar <?php //if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > '0') { echo 'hide'; } ?>">-->
                         <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height <?php if ($site == 'dashboard') { echo 'hide'; } ?>">
                             Collaborator <i class="icon-settings"></i>
                         </a>
-                        <a href="javascript:;" class="btn btn-info btn-fit-height" onclick="btnExportFiles(<?php echo $switch_user_id; ?>)">
-                            Export Data <i class=" icon-cloud-download"></i>
-                        </a>
+                        <!--<a href="javascript:;" class="btn btn-info btn-fit-height" onclick="btnExportFiles(<?php echo $switch_user_id; ?>)">-->
+                        <!--    Export Data <i class=" icon-cloud-download"></i>-->
+                        <!--</a>-->
                     </div>
                 </div>
                 <!-- END PAGE HEADER-->

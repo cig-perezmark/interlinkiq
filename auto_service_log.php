@@ -53,59 +53,58 @@
                   Upload All
                 </a><i style="color:lightgray;">Upload All button function is still in progress please upload your service log by pressing the individual upload button for now..</i>
               </div>
-             <!--START CAPTURED LOGS DISPLAY-->
+                <!--START CAPTURED LOGS DISPLAY-->
                 <div class="container" style="width:100%;">
- 
-                          <div id="table" class="table-editable">
-                            <table id="pendinglogs_display"class="table">
-                              <tr>
-                                <th>Description</th>
-                                <th>Action</th>
-                                <th>Comment</th>
-                                <th>Account</th>
-                                <th>Date</th>
-                                <th>Time(min)</th>
-                                <th></th>
-                              </tr>
-       
-                    
-    
-                              <!--$query_autologs = "SELECT * tbl_service_logs_draft";-->
+                    <div id="table" class="table-responsive table-editable">
+                        <table id="pendinglogs_display"class="table">
+                          <tr>
+                            <th>Description</th>
+                            <th>Action</th>
+                            <th>Comment</th>
+                            <th>Account</th>
+                            <th>Date</th>
+                            <th>Time(min)</th>
+                            <th></th>
+                          </tr>
    
-                                                <?php
-                                        $actions = $con->query("SELECT * FROM tbl_service_logs_draft where user_id = $current_userID AND status is NULL ORDER BY task_date DESC ");
-                                        if(mysqli_num_rows($actions) > 0) {
-                                            while($row = $actions->fetch_assoc()) {
-                                            ?>
-                                               
-                                                    <tr id="<?php echo $row['task_id']."rowid"; ?>">
-                                                    <td class="task_description" rowid="<?php echo $row['task_id']; ?>" contenteditable="true"><i style='display:none !important;' id="<?php echo $row['task_id']."like"; ?>" class="fa fa-thumbs-up fa-flip-horizontal"></i>&nbsp;&nbsp;<?php echo $row['description']; ?></td>
-                                                    <td contenteditable="false"><?php echo $row['action']; ?></td>
-                                                    <td rowid="<?php echo $row['task_id']; ?>" contenteditable="true" class="task_comment"><?php echo $row['comment']; ?></td>
-                                                    <td contenteditable="false"><?php echo $row['account']; ?></td>
-                                                    <td contenteditable="false"><?php echo $row['task_date']; ?></td>
-                                                    <td rowid="<?php echo $row['task_id']; ?>" class="task_minute" contenteditable="true"><?php echo $row['minute']; ?></td>
-                                                    <td> <button class="btn-success upload_btn" id="<?php echo $row['task_id']; ?>" rowid="<?php echo $row['task_id']; ?>" indiminutes="<?php echo $row['minute']; ?>" ><i class="fa fa-upload"></i>&nbsp;Upload</button></td>
-                                                    <td> <button class="btn-danger delete_btn" delete_id="<?php echo $row['task_id']; ?>" rowid="<?php echo $row['task_id']; ?>" indiminutes="<?php echo $row['minute']; ?>" ><i class="fa fa-trash"></i>&nbsp;Delete</button></td>
-                                                   </tr>
-                                                
-                                            
+                
+
+                          <!--$query_autologs = "SELECT * tbl_service_logs_draft";-->
+
                                             <?php
-                                            }
+                                    $actions = $con->query("SELECT * FROM tbl_service_logs_draft where user_id = $current_userID AND status is NULL ORDER BY task_date DESC ");
+                                    if(mysqli_num_rows($actions) > 0) {
+                                        while($row = $actions->fetch_assoc()) {
+                                        ?>
+                                           
+                                                <tr id="<?php echo $row['task_id']."rowid"; ?>">
+                                                <td class="task_description" rowid="<?php echo $row['task_id']; ?>" contenteditable="true"><i style='display:none !important;' id="<?php echo $row['task_id']."like"; ?>" class="fa fa-thumbs-up fa-flip-horizontal"></i>&nbsp;&nbsp;<?php echo $row['description']; ?></td>
+                                                <td contenteditable="false"><?php echo $row['action']; ?></td>
+                                                <td rowid="<?php echo $row['task_id']; ?>" contenteditable="true" class="task_comment"><?php echo $row['comment']; ?></td>
+                                                <td contenteditable="false"><?php echo $row['account']; ?></td>
+                                                <td contenteditable="false"><?php echo $row['task_date']; ?></td>
+                                                <td rowid="<?php echo $row['task_id']; ?>" class="task_minute" contenteditable="true"><?php echo $row['minute']; ?></td>
+                                                <td> <button class="btn-success upload_btn" id="<?php echo $row['task_id']; ?>" rowid="<?php echo $row['task_id']; ?>" indiminutes="<?php echo $row['minute']; ?>" ><i class="fa fa-upload"></i>&nbsp;Upload</button></td>
+                                                <td> <button class="btn-danger delete_btn" delete_id="<?php echo $row['task_id']; ?>" rowid="<?php echo $row['task_id']; ?>" indiminutes="<?php echo $row['minute']; ?>" ><i class="fa fa-trash"></i>&nbsp;Delete</button></td>
+                                               </tr>
+                                            
+                                        
+                                        <?php
                                         }
-                                        else {
-                                            echo "<option><i>No items found.</i></option>";
-                                        }
-                                    ?>
-                                
-                              
-                              
-          
+                                    }
+                                    else {
+                                        echo "<option><i>No items found.</i></option>";
+                                    }
+                                ?>
                             
-                            </table>
-                        </div>
-  
-              </div>
+                          
+                          
+      
+                        
+                        </table>
+                    </div>
+                </div>
+                
                 
              <!--END CAPTURED LOG DISPLAY-->
             </div>

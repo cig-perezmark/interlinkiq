@@ -3,7 +3,7 @@ function showVASummary() {
         return;
     
     initVASummaryTable().then(data => {
-        var dt = $('#va_summary_table').dataTable({
+        var dt = $('#va_summary_table').DataTable({
             // ajax:"views/task_service_log/data.json",
             data: data.dataSrc.data,
             language: {
@@ -11,7 +11,7 @@ function showVASummary() {
                 emptyTable: "No data available",
                 info: "Showing _START_ to _END_ of _TOTAL_ records",
                 infoEmpty: "No records found",
-                infoFiltered: `<i>(filtered from _MAX_ records)</i>`,
+                infoFiltered: `<i>(filtered from _MAX_ records)</i>`, 
                 lengthMenu: "Show _MENU_",
                 search: "Search:",
                 zeroRecords: "No records to show",
@@ -208,7 +208,7 @@ function toHours(minutes) {
         return `${hours}:${min}`;
     }
 }
-
+eval
 // reconstructing data for datatable use
 async function initVASummaryTable() {
     const data = await VASummary();
@@ -223,12 +223,16 @@ async function initVASummaryTable() {
             dateColumns.push(log.task_date);
         }
         
-        // VA name do not exists yet
+        // VA name do not exists yet=
         if(lastPos === null) {
             names.push(log.name.ref());
             
             // create new
-            const va_object = { name: log.name,user_id: log.user_id };
+            const va_object = { 
+                name: log.name,
+                user_id: log.user_id,
+                type: log.type  // Add this line
+            };
             va_object[log.task_date] = toHours(log.total_minutes);
             
             va_summary.push(va_object);
@@ -242,29 +246,35 @@ async function initVASummaryTable() {
     
     // reconstruct value 
     return {
-        dataSrc: { data: va_summary },
-        columnDefs: [
-            {
-                data: 'user_id',
-                title: 'User ID#',
-                targets: 0,
-                className: 'hide'
-            },
-            {
-                data: 'name',
-                title: 'Name',
-                targets: 1,
-            },
-            ...dateColumns.map((xcol, ind) => {
-                return {
-                    data: xcol,
-                    title: xcol,
-                    targets: ind + 2,
-                    defaultContent: ""
-                };
-            })
-        ]
-    };
+    dataSrc: { data: va_summary },
+    columnDefs: [
+        {
+            data: 'name',
+            title: 'Name',
+            targets: 0,
+        },
+        {
+            data: 'user_id',
+            title: 'User ID#',
+            targets: 1,
+            className: 'hide'
+        },
+        {
+            data: 'type',
+            title: 'Type',
+            targets: 2,
+            className: 'hide'  // Hide this column since it's only for logic purposes
+        },
+        ...dateColumns.map((xcol, ind) => {
+            return {
+                data: xcol,
+                title: xcol,
+                targets: ind + 3,  // Changed from ind + 2 to ind + 3
+                defaultContent: ""
+            };
+        })
+    ]
+};
 }
 
 // asynchronous function to fetch the VA Summary data from the database
@@ -288,30 +298,101 @@ async function VASummary() {
 
 function evaluateTable() {
     const va_summaryTable = document.getElementById('va_summary_table');
-    
-    va_summaryTable.querySelectorAll(`tbody tr td:not(:first-child)`).forEach(cell => {
-      const cellValue = cell.innerText.ref().length > 0 ? parseFloat(cell.innerText.ref()) : undefined;
-      
-        if(cellValue !== undefined) {
-            
-            if(cellValue >= 6.0) {
-                cell.classList.add('font-green-jungle');
-                cell.classList.add('text-bold');
-            } else {
-            	cell.classList.add('font-red');
+    const dataTable = $('#va_summary_table').DataTable();
+
+    /* ================================
+       CELL VALUE EVALUATION (GREEN / RED)
+    ================================= */
+    va_summaryTable.querySelectorAll('tbody tr').forEach(row => {
+        const rowData = dataTable.row(row).data();
+        if (!rowData) return;
+
+        const type = parseInt(rowData.type);
+
+        row.querySelectorAll('td:nth-child(n+4)').forEach(cell => {
+            const cellText = cell.innerText.trim();
+            let cellValue;
+
+            if (cellText.length > 0) {
+                if (cellText.includes(':')) {
+                    const [hours, minutes] = cellText.split(':').map(Number);
+                    cellValue = hours + (minutes / 60);
+                } else {
+                    cellValue = parseFloat(cellText);
+                }
             }
+
+            cell.classList.remove('font-green-jungle', 'text-bold', 'font-red');
+
+            if (cellValue !== undefined && !isNaN(cellValue)) {
+                if (type === 1 && cellValue >= 8) {
+                    cell.classList.add('font-green-jungle', 'text-bold');
+                } else if (type !== 1 && cellValue >= 4) {
+                    cell.classList.add('font-green-jungle', 'text-bold');
+                } else {
+                    cell.classList.add('font-red');
+                }
+            }
+        });
+    });
+
+    /* ================================
+       WEEKEND COLUMN HIGHLIGHTING
+    ================================= */
+    va_summaryTable.querySelectorAll('thead tr th').forEach((th, index) => {
+        // Name column
+        if (index === 0) {
+            th.style.backgroundColor = '#2b3b55';
+            th.style.color = 'white';
+            return;
+        }
+
+        const dateText = th.innerText.trim();
+        const date = new Date(dateText);
+
+        // Guard against invalid dates
+        const isValidDate = !isNaN(date.getTime());
+
+        // Use UTC to avoid timezone shifting issues
+        const isWeekend =
+            isValidDate &&
+            (date.getUTCDay() === 0 || date.getUTCDay() === 6);
+
+        const columnNumber = index + 1;
+
+        console.log(
+            'Date:', dateText,
+            'Valid:', isValidDate,
+            'Weekend:', isWeekend,
+            'Column:', columnNumber
+        );
+
+        if (isWeekend) {
+            // Header styling
+            th.style.backgroundColor = '#c6613f';
+            th.style.color = 'white';
+
+            // Column cells styling
+            va_summaryTable
+                .querySelectorAll(`tbody tr td:nth-child(${columnNumber})`)
+                .forEach(cell => {
+                    cell.style.backgroundColor = '#d3d3d3';
+                });
+        } else {
+            // Reset non-weekend columns
+            th.style.backgroundColor = '#2b3b55';
+            th.style.color = 'white';
+
+            va_summaryTable
+                .querySelectorAll(`tbody tr td:nth-child(${columnNumber})`)
+                .forEach(cell => {
+                    cell.style.backgroundColor = '';
+                    cell.style.color = '';
+                });
         }
     });
-    
-    va_summaryTable.querySelectorAll(`thead tr th:not(:first-child)`).forEach(th => {
-        const day = new Date(th.innerText.ref()).getDay();
-        
-        // if(day == 5 || day == 6) {
-        //     $(va_summaryTable).find(`tbody tr td:nth-of-type(${$(th).index()})`).addClass('weekend');
-        //   $(va_summaryTable).find(`tbody tr td:nth-of-type(${$(th).index()})`).addClass(`d-${day}`);
-        // }
-    });
 }
+
 
 $('a[href="#VA_SUMMARY"]').on('click', function() {
     showVASummary();

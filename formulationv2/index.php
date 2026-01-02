@@ -1,9 +1,9 @@
 <?php 
-  $con = new mysqli('localhost', 'root', '', 'interlinkiq_db');
-  if ($con -> connect_errno) {
-    echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
-    exit();
-  }
+//   $con = new mysqli('localhost', 'root', '', 'interlinkiq_db');
+//   if ($con -> connect_errno) {
+//     echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+//     exit();
+//   }
 ?>
 
 <!DOCTYPE html>

@@ -93,13 +93,14 @@
             //     break;
             
             case 'get':
-                $last15Days = date('Y-m-d', strtotime('-15 days'));
+                $last15Days = date('Y-m-d', strtotime('-270 days'));
                 $currentDate = date('Y-m-d');
             
                 $stmt = $conn->prepare("SELECT user_id,
                                                task_id,
                                                task_date,
                                                description,
+                                               services,
                                                action,
                                                comment,
                                                account,
@@ -181,6 +182,7 @@
                 $stmt = $conn->prepare("SELECT task_id, 
                                                task_date,
                                                description,
+                                               services,
                                                action,
                                                comment,
                                                account,
@@ -199,7 +201,7 @@
                     exit;
                 }
             
-                $stmt->bind_result($task_id, $task_date, $description, $action, $comment, $account, $minute);
+                $stmt->bind_result($task_id, $task_date, $description, $services, $action, $comment, $account, $minute);
             
                 if ($stmt->fetch()) {
                     // Fix new lines for JSON encoding
@@ -209,6 +211,7 @@
                         'task_id' => $task_id,
                         'task_date' => $task_date,
                         'description' => $description,
+                        'services' => $services,
                         'action' => $action,
                         'comment' => $comment,
                         'account' => $account,
@@ -225,6 +228,7 @@
             case 'update':
                 $id = sanitizeInput($_POST['sl_taskid'], $conn);
                 $description = sanitizeInput($_POST['sl_description'], $conn);
+                $services = sanitizeInput($_POST['sl_services'], $conn);
                 $action = sanitizeInput($_POST['sl_action'], $conn);
                 $comment = sanitizeInput($_POST['sl_comment'], $conn);
                 $account = sanitizeInput($_POST['sl_account'], $conn);
@@ -251,6 +255,7 @@
             
                 $stmt = $conn->prepare("UPDATE tbl_service_logs SET 
                     description = ?, 
+                    services = ?, 
                     action = ?, 
                     comment = ?, 
                     account = ?, 
@@ -262,7 +267,7 @@
                     exit;
                 }
             
-                $stmt->bind_param('ssssssi', $description, $action, $comment, $account, $date, $minutes, $id);
+                $stmt->bind_param('sssssssi', $description, $services, $action, $comment, $account, $date, $minutes, $id);
             
                 if ($stmt->execute()) {
                     echo json_encode(["success" => true, "message" => "Service log has been updated successfully."]);

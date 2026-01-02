@@ -371,7 +371,7 @@
 
               prev_link = document.referrer;
               if (prev_link.indexOf('forum/index.php') > -1) { window.location.href = prev_link; }
-              else { window.location.href = 'profile'; }
+              else { window.location.href = obj.page; }
             } else {
               var data = '<div class="alert alert-danger">';
               data += obj.message;

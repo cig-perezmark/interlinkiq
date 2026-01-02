@@ -1,9 +1,9 @@
 <?php
-include '../database.php';
+    include '../database.php';
 
     if(isset($_COOKIE['ID'])){
         
-         $user = 'interlinkiq.com';
+        $user = 'interlinkiq.com';
        
        echo $from = 'ranel.roxas.me@gmail.com';
        echo $to = 'ranelr@consultareinc.com';

@@ -1056,7 +1056,155 @@
     
 	if( isset($_GET['btnDelete_Record']) ) {
 		$ID = $_GET['btnDelete_Record'];
+		
+		$reason = addslashes($_GET['reason']);
+		$message = array();
+		array_push($message, $portal_user);
+		array_push($message, $reason);
+		$message = implode(" | ",$message);
 
-		mysqli_query( $conn,"UPDATE tblEnterpiseDetails_Records set deleted = 1 WHERE rec_id = $ID" );
+		mysqli_query( $conn,"UPDATE tblEnterpiseDetails_Records set deleted = 1, reason = '". $message ."' WHERE rec_id = $ID" );
 	}
+	if( isset($_GET['btnDelete_SE']) ) {
+		$ID = $_GET['btnDelete_SE'];
+		$f = $_GET['f'];
+		
+		if ($f == 1) {
+		    mysqli_query( $conn,"UPDATE tblEnterpiseDetails_System_Environment SET topology_type = 0, topology_file = '' WHERE ID = $ID" );
+		} else if ($f == 2) {
+		    mysqli_query( $conn,"UPDATE tblEnterpiseDetails_System_Environment SET hardware_type = 0, hardware_file = '' WHERE ID = $ID" );
+		} else if ($f == 3) {
+		    mysqli_query( $conn,"UPDATE tblEnterpiseDetails_System_Environment SET software_type = 0, software_file = '' WHERE ID = $ID" );
+		}
+	}
+	
+	
+    if (isset($_GET['jstree_federal'])) {
+        $ID = $_GET['jstree_federal'];
+        $result = array();
+        $selectData = mysqli_query( $conn,"
+            SELECT ID, name, 0 AS parent_id, 0 AS selected FROM tblEnterpiseDetails_Federal WHERE deleted = 0
+            
+            UNION ALL
+            
+            SELECT 
+            f.ID,
+            f.name,
+            f.parent_id,
+            CASE WHEN e.enterp_id IS NOT NULL THEN 1 ELSE 0 END AS selected
+            FROM tblEnterpiseDetails_Federal_sub AS f
+            
+            LEFT JOIN (
+                SELECT 
+               	enterp_id,
+                businessname,
+                federal
+                FROM tblEnterpiseDetails
+                WHERE users_entities = $ID
+            ) AS e
+            ON FIND_IN_SET(f.ID, REPLACE(e.federal, ' ', ''))
+            
+            WHERE f.deleted = 0
+        " );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            
+            $output = array(
+                "id" => "1001",
+                "parent" => "#",
+                "text" => "Federal"
+            );
+            array_push($result, $output);
+            
+            while($rowData = mysqli_fetch_array($selectData)) {
+                
+                $data_id = $rowData["ID"];
+                $data_parent = $rowData["parent_id"].'9999';
+                if ($rowData["parent_id"] == 0) {
+                    $data_id = $rowData["ID"].'9999';
+                    $data_parent = '1001';
+                }
+                
+                $data_selected = false;
+                if ($rowData["selected"] == 1) {
+                    $data_selected = true;
+                }
+                
+                $output = array(
+                    "id" => $data_id,
+                    "parent" => $data_parent,
+                    "text" => $rowData["name"],
+                    "state" => array(
+                        "selected" => $data_selected,  // Checkbox checked
+                        "opened" => false     // Node auto-expanded
+                    )
+                );
+                array_push($result, $output);
+            }
+            echo json_encode($result);
+        }
+    }
+    if (isset($_GET['jstree_dod'])) {
+        $ID = $_GET['jstree_dod'];
+        $result = array();
+        $selectData = mysqli_query( $conn,"
+            SELECT ID, name, 0 AS parent_id, 0 AS selected FROM tblEnterpiseDetails_DOD WHERE deleted = 0
+            
+            UNION ALL
+            
+            SELECT 
+            d.ID,
+            d.name,
+            d.parent_id,
+            CASE WHEN e.enterp_id IS NOT NULL THEN 1 ELSE 0 END AS selected
+            FROM tblEnterpiseDetails_DOD_sub AS d
+            
+            LEFT JOIN (
+                SELECT 
+               	enterp_id,
+                businessname,
+                dod
+                FROM tblEnterpiseDetails
+                WHERE users_entities = $ID
+            ) AS e
+            ON FIND_IN_SET(d.ID, REPLACE(e.dod, ' ', ''))
+            
+            WHERE d.deleted = 0
+        " );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            
+            $output = array(
+                "id" => "1002",
+                "parent" => "#",
+                "text" => "Department of Defense"
+            );
+            array_push($result, $output);
+            
+            while($rowData = mysqli_fetch_array($selectData)) {
+                
+                $data_id = $rowData["ID"];
+                $data_parent = $rowData["parent_id"].'9999';
+                if ($rowData["parent_id"] == 0) {
+                    $data_id = $rowData["ID"].'9999';
+                    $data_parent = '1002';
+                }
+                
+                $data_selected = false;
+                if ($rowData["selected"] == 1) {
+                    $data_selected = true;
+                }
+                
+                $output = array(
+                    "id" => $data_id,
+                    "parent" => $data_parent,
+                    "text" => $rowData["name"],
+                    "state" => array(
+                        "selected" => $data_selected,  // Checkbox checked
+                        "opened" => false     // Node auto-expanded
+                    )
+                );
+                array_push($result, $output);
+            }
+            echo json_encode($result);
+        }
+    }
 ?>

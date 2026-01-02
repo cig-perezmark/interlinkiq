@@ -71,6 +71,166 @@ function getLayout($type, $title, $data) {
     }
 
     
+    
+    // switch($type) {
+    //     case 'evaluation_form': {
+    //         $dataR = '<h3 style="text-align:center;">'.$title.'</h3>
+    //         <table>
+    //             <tr>
+    //                 <td colspan="4" style="width: 50%;"><strong>IMPORTER NAME:</strong> '.txt($data['importer_name']).'</td>
+    //                 <td colspan="5" style="width: 50%;"><strong>DATE:</strong> '.txt($data['evaluation_date']).'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td colspan="4" style="width: 50%;"><strong>ADDRESS:</strong> '.txt($data['importer_address']).'</td>
+    //                 <td colspan="5" style="width: 50%;"><strong>QUALIFIED INDIVIDUAL (QI) APPROVAL:</strong> </td>
+    //             </tr>
+    //             <tr>
+    //                 <td colspan="2" style="width: 22%; font-weight:bold;">Foreign Supplier Name</td>
+    //                 <td colspan="3" style="width: 28%;">'.txt($data['supplier_name']).'</td>
+    //                 <td colspan="2" style="width: 25%; font-weight:bold;">Foreign Supplier Address (location) </td>
+    //                 <td colspan="2" style="width: 25%;">'.txt($data['supplier_address']).'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td colspan="2" style="width: 22%; font-weight:bold;">Food Product(s) Imported</td>
+    //                 <td colspan="3" style="width: 28%;">'.txt($data['products']).'</td>
+    //                 <td colspan="2" style="width: 25%; font-weight:bold;">Food Product(s) Description(s), including Important Food Safety Characteristics</td>
+    //                 <td colspan="2" style="width: 25%;">'.txt($data['description']).'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td colspan="9" style="text-align:center; font-weight:bold;">Evaluation Considerations and Results</td>
+    //             </tr>
+    //             <tr style="text-align:center; font-weight:bold;">
+    //                 <td style="width:12%;">Supplier\'s Procedures, Practices, and Processes</td>
+    //                 <td style="width:10%;">Import Alerts</td>
+    //                 <td>Recalls</td>
+    //                 <td>Warning Letters</td>
+    //                 <td>Other Significant Compliance Action</td>
+    //                 <td>Supplier\'s Corrective Actions</td>
+    //                 <td>Information related to the Safety of the food</td>
+    //                 <td>Rejection Date <br> (if applicable)</td>
+    //                 <td>Approval Date <br> (if applicable)</td>
+    //             </tr>
+    //             <tr>
+    //                 <td>'.txt($data['sppp']).'</td>
+    //                 <td>'.txt($data['import_alerts']).'</td>
+    //                 <td>'.txt($data['recalls']).'</td>
+    //                 <td>'.txt($data['warning_letters']).'</td>
+    //                 <td>'.txt($data['other_significant_ca']).'</td>
+    //                 <td>'.txt($data['suppliers_corrective_actions']).'</td>
+    //                 <td>'.txt($data['info_related'] ?? '').'</td>
+    //                 <td>'.txt($data['rejection_date'] ?? '').'</td>
+    //                 <td>'.txt($data['approval_date'] ?? '').'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td colspan="4" style="width: 50%; font-weight:bold;">Assessment of Results of Foreign Supplier Evaluation<span style="color:gray; display:none;">[Note: If the evaluation was performed by another entity (other than the foreign supplier) include Entity’s name, address, email, and date of evaluation.]</span></td>
+    //                 <td colspan="5" style="width: 50%;">'.txt($data['assessment']).'</td>
+    //             </tr>
+    //             <tr style="display:none;">
+    //                 <td colspan="9" style="font-style: italic; color:gray;">*All supporting documentation should be appended to this form.
+    //                     <br>**Includes previous and recent experience with the supplier (e.g., rejected shipments, lab results, audit results, or other food safety information you may have outside of the government oversight context).
+    //                     <br>***If another entity (other than the foreign supplier) performs the foreign supplier evaluation, you may meet your evaluation requirements by having your QI review and assess the entity’s evaluation. Your review/assessment of the evaluation must include documentation that the evaluation was conducted by a QI.
+    //                 </td>
+    //             </tr>
+    //         </table>
+    //         <br>
+    //         <br><table>
+    //             <tr>
+    //                 <td>Importer Approval:<br />
+    //                     <img src="'.$data['approved_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
+    //                     <div style="text-align:center;">'.txt($data['approved_by']).'</div>
+    //                 </td>
+    //                  <td>Date:
+    //                     <p style="text-align:center;">'.txt($data['approve_date']).'</p>
+    //                 </td>
+    //             </tr>
+    //             <tr>
+    //               <td>Reviewed By:<br />
+    //                     <img src="'.$data['reviewed_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
+    //                     <div style="text-align:center;">'.txt($data['reviewed_by']).'</div>
+    //                 </td>
+    //                 <td>Date:
+    //                     <p style="text-align:center;">'.txt($data['review_date']).'</p>
+    //                 </td>
+    //             </tr>
+    //         </table>
+    //         <span style="color:gray; display:none;">Note:  Review and return this form to the Quality Personnel within 24 hours. If the document is not approved, state the reason in the comment section below.</span>
+    //         <br>Comments:
+    //         <br /><table>
+    //             <tr>
+    //                 <td>'.txt($data['comments']).'</td>
+    //             </tr>
+    //         </table>';
+            
+    //         return $dataR;
+    //         break;
+    //     }
+    //     case 'importer_information': {
+    //         $dataR = '<h3 style="text-align:center;">'.$title.'</h3>
+    //         <table>
+    //             <tr>
+    //                 <td style="width: 20%; font-weight:bold;">FSVP Importer:</td>
+    //                 <td style="width: 80%;">'.txt($data['importer_name']).'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td style="font-weight:bold;">DUNS No.:</td>
+    //                 <td>'.txt($data['duns_no']).'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td style="font-weight:bold;">Food Registration No.</td>
+    //                 <td>'.(txt($data['fda_registration'])).'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td style="font-weight:bold;">Supplier:</td>
+    //                 <td>'. txt($data['supplier_name']) .'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td style="font-weight:bold;">Product(s):</td>
+    //                 <td>'.txt($data['products']).'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td style="font-weight:bold;">Qualifying Individual:</td>
+    //                 <td>'. txt($data['fsvpqi_name']) .'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td style="font-weight:bold;">Name:</td>
+    //                 <td></td>
+    //             </tr>
+    //             <tr>
+    //                 <td style="font-weight:bold;">Email:</td>
+    //                 <td>'.txt($data['email']).'</td>
+    //             </tr>
+    //             <tr>
+    //                 <td style="font-weight:bold;">Address:</td>
+    //                 <td>'.txt($data['importer_address']).'</td>
+    //             </tr>
+    //         </table>
+    //         <br>
+    //         <br><strong>Importer Name and Signature:</strong>
+    //         <br><table>
+    //             <tr>
+    //                 <td>Name and Signature:<br />
+    //                     <img src="'.$data['signature'].'" style="text-align:center;" border="0" height="70" align="middle" />
+    //                     <div style="text-align:center;">'.txt($data['importer_name']).'</div>
+    //                 </td>
+    //                 <td>Date:
+    //                     <p style="text-align:center;">'.txt($data['date_signed']).'</p>
+    //                 </td>
+    //             </tr>
+    //         </table>
+    //         <br>
+    //         <br>Comments:
+    //         <br><table>
+    //             <tr>
+    //                 <td>'.txt($data['comments']).'</td>
+    //             </tr>
+    //         </table>';
+            
+    //         return $dataR;
+    //         break;
+    //     }
+    //     default: '';
+    // }
+    
     return match ($type) {
         'evaluation_form'       => '
             <h3 style="text-align:center;">'.$title.'</h3>
@@ -86,7 +246,7 @@ function getLayout($type, $title, $data) {
                 <tr>
                     <td colspan="2" style="width: 22%; font-weight:bold;">Foreign Supplier Name</td>
                     <td colspan="3" style="width: 28%;">'.txt($data['supplier_name']).'</td>
-                    <td colspan="2" style="width: 25%; font-weight:bold;">Foreign Supplier Address (location) </td>
+                    <td colspan="2" style="width: 25%; font-weight:bold;">Foreign Supplier Address (Location):</td>
                     <td colspan="2" style="width: 25%;">'.txt($data['supplier_address']).'</td>
                 </tr>
                 <tr>
@@ -143,7 +303,7 @@ function getLayout($type, $title, $data) {
                     </td>
                 </tr>
                 <tr>
-                   <td>Reviewed By:<br />
+                  <td>Reviewed By:<br />
                         <img src="'.$data['reviewed_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
                         <div style="text-align:center;">'.txt($data['reviewed_by']).'</div>
                     </td>
@@ -259,6 +419,15 @@ function getLayout($type, $title, $data) {
                     </td>
                 </tr>
                 <tr>
+                    <td colspan="3" style="width: 50%;"><strong>Prepared By:</strong><br />
+                        <img src="'.$data['prepared_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
+                        <div style="text-align:center;">'.txt($data['prepared_by']).'</div>
+                    </td>
+                    <td style="width: 50%;">Date:
+                        <p style="text-align:center;">'.txt($data['review_date']).'</p>
+                    </td>
+                </tr>
+                <tr>
                     <td colspan="3" style="width: 50%;"><strong>Reviewed By:</strong><br />
                         <img src="'.$data['reviewed_by_sign'].'" style="text-align:center;" border="0" height="70" align="middle" />
                         <div style="text-align:center;">'.txt($data['reviewed_by']).'</div>
@@ -321,7 +490,7 @@ function getLayout($type, $title, $data) {
                     <td style="width:75%">'.txt($data['supplier_name']).'</td>
                 </tr>
                 <tr>
-                    <td style="font-weight:bold;">Foreign Supplier Address:</td>
+                    <td style="font-weight:bold;">Foreign Supplier Address (Location):</td>
                     <td>'.txt($data['supplier_address']).'</td>
                 </tr>
                 <tr>
@@ -377,45 +546,46 @@ function getLayout($type, $title, $data) {
             </table>
         ',
         
-        'report'                => '',
+        'report'                => '<div>Test</di>',
 
         default                 => '',
     };
 }
 
-function createPageBreak($pdf, $content) {
-    $pdf->AddPage('P');
-    $pdf->writeHTML($content);
+function createPageBreak($mpdf, $content) {
+    $mpdf->AddPage('P');
+    $mpdf->WriteHTML($content);
 }
 
-function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
+function createFSVPReport($conn, $mpdf, $supplierHashId, $css) {
     global $user_id;
 
     // fetching basic fsvp supplier info
-    $supplierInfo = $conn->execute("SELECT sup.name, sup.address, fsup.id
-        FROM tbl_fsvp_suppliers fsup
-        LEFT JOIN tbl_supplier sup ON fsup.supplier_id = sup.ID
-        WHERE MD5(fsup.id) = ?
-    ", $supplierHashId)->fetchAssoc(function ($d) {
+    $supplierInfo = mysqli_query($conn, "SELECT sup.name, sup.address, fsup.id FROM tbl_fsvp_suppliers fsup LEFT JOIN tbl_supplier sup ON fsup.supplier_id = sup.ID WHERE MD5(fsup.id) = '".$supplierHashId."'");
+
+    if (mysqli_num_rows($supplierInfo) > 0) {
+        $d = mysqli_fetch_array($supplierInfo);
         $d['address'] = formatSupplierAddress($d['address']);
-        return $d;
-    });
-    
- 
-    $title = (($supplierInfo['name'] . ' - ') ?? '') . "FSVP Report";
+        $supplierInfo = $d; // storing the result to the supplierInfo
+    }
+
+    // Check if the keys exist before using them
+    $supplier_name = isset($supplierInfo['name']) ? $supplierInfo['name'] : 'Unknown Supplier';
+    $supplier_address = isset($supplierInfo['address']) ? $supplierInfo['address'] : 'No Address';
+
+    // Set the title
+    $title = $supplier_name . ' - FSVP Report';
     $basicSupplierInfo = [
-        'supplier_name' => $supplierInfo['name'],
-        'supplier_address' => $supplierInfo['address'],
+        'supplier_name' => $supplier_name,
+        'supplier_address' => $supplier_address,
     ];
 
-    $pdf->SetTitle($title);
-    createPageBreak($pdf, '
-        <h1 style="text-align:center; font-size:42px;">
-            <br><br><br>'.$supplierInfo['name'].'<br><br>FSVP Report</h1>
-    ');
+    $mpdf->SetTitle($title);
+    createPageBreak($mpdf, '<h1 style="text-align:center; font-size:42px;"><br><br><br>'.$supplier_name.'<br><br>FSVP Report</h1>');
 
-    // fetching all importers connected to the supplier
-    $importersInfo = $conn->execute("SELECT
+    // Fetching all importers connected to the supplier
+    $importersInfo = $conn->execute("
+        SELECT
             i.id,
             i.duns_no, 
             i.fda_registration, 
@@ -443,20 +613,19 @@ function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
         WHERE i.supplier_id = ? AND i.deleted_at IS NULL
     ", $supplierInfo['id'])->fetchAll(function ($d) {
         $d['importer_address'] = formatSupplierAddress($d['importer_address']);
-
         return $d;
     });
 
-    foreach($importersInfo as $imp) {
-        $pdf->AddPage();
-        $pdf->writeHTML($css . getLayout('importer_information', 'Foreign Supplier Importer Information Form', array_merge($imp, $basicSupplierInfo)));
+    foreach ($importersInfo as $imp) {
+        $mpdf->AddPage();
+        $mpdf->WriteHTML($css . getLayout('importer_information', 'Foreign Supplier Importer Information Form', array_merge($imp, $basicSupplierInfo)));
 
         $basicInfo = array_merge($basicSupplierInfo, [
-            'importer_name' => $imp['importer_name'],
-            'importer_address' => $imp['importer_address'],
+            'importer_name' => isset($imp['importer_name']) ? $imp['importer_name'] : 'Unknown Importer',
+            'importer_address' => isset($imp['importer_address']) ? $imp['importer_address'] : 'No Address',
         ]);
-        
-        // evaluation data
+
+        // Evaluation data
         $imp['evaluation'] = $conn->execute("SELECT 
                 REC.*,
                 IF(REC.import_alerts = 1, 'Yes', 'No') AS import_alerts,
@@ -485,21 +654,21 @@ function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
                 GROUP BY evaluation_id
             ) AS latest_rec ON latest_rec.latest_record_id = REC.id
             WHERE EVAL.importer_id = ? AND EVAL.supplier_id = ? AND EVAL.deleted_at IS NULL
-        ", $imp['id'], $supplierInfo['id'])->fetchAll(function ($d) use ($pdf, $basicInfo, $css) {
-            $pdf->AddPage();
-            $pdf->writeHTML($css . getLayout('evaluation_form', '(FSVP) Foreign Supplier Evaluation Form', array_merge($d, $basicInfo)));
+        ", $imp['id'], $supplierInfo['id'])->fetchAll(function ($d) use ($mpdf, $basicInfo, $css) {
+            $mpdf->AddPage();
+            $mpdf->WriteHTML($css . getLayout('evaluation_form', '(FSVP) Foreign Supplier Evaluation Form', array_merge($d, $basicInfo)));
         });
 
-        // cbp
+        // CBP
         $imp['cbp'] = $conn->execute("SELECT *
                 FROM tbl_fsvp_cbp_records
                 WHERE importer_id = ? AND deleted_at IS NULL
-        ", $imp['id'])->fetchAssoc(function ($d) use ($pdf, $basicInfo, $css)  {
-            $pdf->AddPage();
-            $pdf->writeHTML($css . getLayout('cbp', 'FSVP CBP Filing Form', array_merge($d, $basicInfo)));
+        ", $imp['id'])->fetchAssoc(function ($d) use ($mpdf, $basicInfo, $css)  {
+            $mpdf->AddPage();
+            $mpdf->WriteHTML($css . getLayout('cbp', 'FSVP CBP Filing Form', array_merge($d, $basicInfo)));
         });
 
-        // worksheets
+        // Worksheets
         $imp['worksheets'] = $conn->execute("SELECT 
                 aw.*,
                 CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS qi_approval
@@ -509,9 +678,9 @@ function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
             WHERE aw.importer_id = ? 
                 AND aw.supplier_id = ?
                 AND aw.deleted_at IS NULL
-        ", $imp['id'], $supplierInfo['id'])->fetchAll(function ($d) use ($pdf, $basicInfo, $css, $imp) {
-            $pdf->AddPage();
-            $pdf->writeHTML($css . getLayout('activities-worksheet', 'FOREIGN SUPPLIER VERIFICATION ACTIVITY(IES) WORKSHEET', array_merge($d, $basicInfo, ['products' => $imp['products'] ?? ''])));
+        ", $imp['id'], $supplierInfo['id'])->fetchAll(function ($d) use ($mpdf, $basicInfo, $css, $imp) {
+            $mpdf->AddPage();
+            $mpdf->WriteHTML($css . getLayout('activities-worksheet', 'FOREIGN SUPPLIER VERIFICATION ACTIVITY(IES) WORKSHEET', array_merge($d, $basicInfo, ['products' => $imp['products'] ?? ''])));
         });
     }
 
@@ -531,16 +700,60 @@ function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
     ", $supplierInfo['id'])->fetchAll();
 
     $title = 'FSVP Ingredient Product Register';
-    // $data = array_merge($d, $basicInfo);
     
-    $pdf->AddPage();
-    $pdf->writeHTML($css . getLayout('ipr-1', $title, $productRegistry));
-    $pdf->writeHTML(getLayout('ipr-2', $title, $productRegistry));
-    $pdf->writeHTML($css . getLayout('ipr-3', $title, $productRegistry));
+    $mpdf->AddPage();
+    $mpdf->WriteHTML($css . getLayout('ipr-1', $title, $productRegistry));
+    $mpdf->WriteHTML(getLayout('ipr-2', $title, $productRegistry));
+    $mpdf->WriteHTML($css . getLayout('ipr-3', $title, $productRegistry));
 
     debugOutput([
-        'supplier info', $supplierInfo,
-        'importers', $importersInfo,
-        'ipr', $productRegistry
+        'supplier info' => $supplierInfo,
+        'importers' => $importersInfo,
+        'ipr' => $productRegistry
     ], !true);
 }
+
+// if(isset($_GET['pdf'])) {
+//     try {
+//         $pdfView = $_GET['pdf'];
+//         $recordId = $_GET['r'] ?? null;
+        
+//         if(empty($recordId)) {
+//             die('Incorrect parameter(s).');
+//         }
+
+//         $title = 'DOCUMENT TITLE';
+//         $css = '
+//             <style>
+//                 table { width: 100%; padding: 5px; }
+//                 td, th { border: 1px solid black;}
+//             </style>
+//         ';
+
+//         // Start output buffering to avoid "Data already sent to output" error
+//         ob_start();
+
+//         $mpdf = new \Mpdf\Mpdf();
+//         $mpdf->SetDisplayMode('fullpage');
+
+//         $title = 'FSVP';
+//         switch($pdfView) {
+//             case 'report': {
+//                 createFSVPReport($conn, $mpdf, $recordId, $css);
+//                 break;
+//             }
+//             default:
+//                 exit('FSVP PDF Default Page.');
+//         }
+
+//         // Output the PDF
+//         $mpdf->Output($title.'.pdf', 'I');
+
+//         // End output buffering
+//         ob_end_flush();
+
+//     } catch(Exception $e) {
+//         exit('Error: '. $e->getMessage());
+//     }
+// }
+

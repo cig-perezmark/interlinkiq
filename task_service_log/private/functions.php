@@ -57,7 +57,7 @@ function getVASummary() {
     $today = date("Y-m-d");
     $last_month = date('Y-m-d', strtotime('-30 days'));
 
-    $showAllClause = "AND user_id = $portal_user";
+    $showAllClause = "AND u.ID = $portal_user";
     if(
         // $portal_user == 1105 || 
         $portal_user == 55 || // chris
@@ -67,7 +67,8 @@ function getVASummary() {
         $portal_user == 43 || // greeg
         $portal_user == 54 || // ms tin
         $portal_user == 387 || // ms girl
-        $portal_user == 34 // hr
+        $portal_user == 34 // || //hr
+        // $portal_user == 1424 
     ) {
         $showAllClause = "";
     }
@@ -90,38 +91,166 @@ function getVASummary() {
     // ");
     
     
-    $results = $con->query("SELECT 
-        *,
-        user_id,
-        CONCAT(first_name,' ',last_name) AS name, 
-        SUM(minute) AS total_minutes 
-        FROM tbl_service_logs AS s
+    // $results = $con->query("
+    //     SELECT 
+    //     *,
+    //     user_id,
+    //     CONCAT(first_name,' ',last_name) AS name, 
+    //     SUM(minute) AS total_minutes 
+    //     FROM tbl_service_logs AS s
         
-        LEFT JOIN (
-        	SELECT
-            *
-            FROM tbl_user
-            WHERE deleted = 0
-        ) AS u
-        ON u.ID = s.user_id
+    //     RIGHT JOIN (
+    //     	SELECT
+    //         *
+    //         FROM tbl_user
+    //         WHERE deleted = 0
+    //     ) AS u
+    //     ON u.ID = s.user_id
         
+    //     WHERE s.task_date >= '$last_month' 
+    //     AND s.task_date <= '$today' 
+    //     AND u.is_active = 1 
+    //     AND s.not_approved = 0 
+    //     $showAllClause
+    //     AND s.deleted = 0
+    //     GROUP BY s.task_date, s.user_id 
+    //     ORDER BY s.task_date DESC
+    // ");
+    
+    // $results = $con->query("
+    //     SELECT 
+    //     *,
+    //     user_id,
+    //     CONCAT(u.first_name,' ',u.last_name) AS name, 
+    //     SUM(minute) AS total_minutes 
+    //     FROM tbl_service_logs AS s
         
-        WHERE s.task_date >= '$last_month' 
-        AND s.task_date <= '$today' 
-        AND u.is_active = 1 
-        AND s.not_approved = 0 
-        $showAllClause
-        AND s.deleted = 0
-        GROUP BY s.task_date, s.user_id 
-        ORDER BY s.task_date DESC
+    //     RIGHT JOIN (
+    //     	SELECT
+    //     	uu.ID AS ID,
+    //         uu.first_name AS first_name,
+    //         uu.last_name AS last_name,
+    //         uu.is_active AS is_active
+            
+    //         RIGHT JOIN (
+    //             SELECT
+    //             ID,
+    //             user_id
+    //             FROM tbl_hr_employee
+    //             WHERE deleted = 0
+    //             AND suspended = 0
+    //             AND status = 1
+    //             AND user_id = 34
+    //         ) AS e
+    //         ON e.ID = uu.employee_id
+            
+    //         WHERE uu.deleted = 0
+    //     ) AS u
+    //     ON u.ID = s.user_id
+        
+    //     WHERE u.is_active = 1 
+    //     AND s.not_approved = 0 
+    //     $showAllClause
+    //     AND s.deleted = 0
+    //     GROUP BY s.task_date, s.user_id 
+    //     ORDER BY s.task_date DESC
+    // ");
+    
+    // $results = $con->query("
+    //     SELECT
+    //     *
+    //     FROM (
+    //         SELECT
+    //         u.ID AS user_id,
+    //         CONCAT_WS(' ', e.first_name, e.last_name) AS name,
+    //         COALESCE(SUM(s.minute), 0) AS total_minutes ,
+    //         COALESCE(s.task_date, 0) AS task_date
+    //         FROM tbl_hr_employee AS e
+            
+    //         LEFT JOIN (
+    //             SELECT
+    //             ID,
+    //             employee_id
+    //             FROM tbl_user
+    //         ) AS u
+    //         ON u.employee_id = e.ID
+            
+    //         LEFT JOIN (
+    //         	SELECT
+    //             user_id,
+    //             minute,
+    //             task_date
+    //             FROM tbl_service_logs
+    //             WHERE deleted = 0
+    //         ) AS s
+    //         ON s.user_id = u.ID
+            
+    //         WHERE e.deleted = 0
+    //         AND e.suspended = 0
+    //         AND e.status = 1
+    //         AND e.user_id = 34
+    //         AND e.facility_switch = 0
+    //         AND s.task_date IS NOT NULL
+    //         $showAllClause
+            
+    //         GROUP BY e.ID, s.task_date, s.user_id
+            
+    //         ORDER BY s.task_date DESC, e.first_name
+    //     ) o
+    //     -- WHERE o.task_date BETWEEN '$last_month' AND '$today'
+    // ");
+    $results = $con->query("
+        SELECT
+        *
+        FROM (
+            SELECT
+            e.ID AS e_ID,
+            u.ID AS user_id,
+            CONCAT_WS(', ', e.last_name, e.first_name) AS name,
+            COALESCE(SUM(s.minute), 0) AS total_minutes ,
+            COALESCE(s.task_date, 0) AS task_date,
+            type_id AS type
+            FROM tbl_hr_employee AS e
+            
+            LEFT JOIN (
+                SELECT
+                ID,
+                employee_id
+                FROM tbl_user
+            ) AS u
+            ON u.employee_id = e.ID
+            
+            LEFT JOIN (
+                SELECT
+                user_id,
+                minute,
+                task_date
+                FROM tbl_service_logs
+                WHERE deleted = 0
+                AND not_approved = 0 
+                -- AND task_date BETWEEN '2025-07-17' AND '2025-09-17'
+            ) AS s
+            ON s.user_id = u.ID
+            
+            WHERE e.deleted = 0
+            AND e.suspended = 0
+            AND e.status = 1
+            AND e.user_id = 34
+            AND e.facility_switch = 0
+            $showAllClause
+            
+            GROUP BY e.ID, s.task_date
+            
+            ORDER BY s.task_date DESC, e.first_name
+        ) o
     ");
     $data = array();
 
     if(mysqli_num_rows($results) > 0) {
         while($row = $results->fetch_assoc()){
-           if(!empty($row['user_id'])){
+          if(!empty($row['user_id'])){
                 $data[] = $row;
-           }
+          }
         }
             
     }

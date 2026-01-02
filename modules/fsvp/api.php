@@ -342,15 +342,17 @@ if(isset($_POST['search-employee'])) {
 
         $roster = [];
         foreach($result as $row) {
-            $row['avatar'] = $employeeInfo[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
+            $row['avatar'] = $employeeInfo[$row['id']] ?? '//placehold.co/100x100/EFEFEF/AAAAAA?text=no+image';
             $avatar = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['avatar'] ?? null : null;
             $phone = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['mobile'] ?? null : null;
+            $phone2 = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['mobile2'] ?? null : null;
             $roster[] = [
                 'id' => $row['id'],
-                'avatar'=> $avatar ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image',
+                'avatar'=> $avatar ?? '//placehold.co/100x100/EFEFEF/AAAAAA?text=no+image',
                 'name' => $row['name'],
                 'email'=> $row['email'],
                 'phone'=> $phone ?? '',
+                'phone2'=> $phone2 ?? '',
                 'position'=> $jds[$row['jd']] ?? '',
             ];
         }
@@ -431,16 +433,18 @@ if(isset($_GET['getFSVPRoster'])) {
             $jds = $info['job_descriptions'];
     
             foreach($members as $row) {
-                $row['avatar'] = $employeeInfo[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
-                $avatar = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['avatar'] ?? null : null;
-                $phone = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['mobile'] ?? null : null;
+                $row['avatar'] = $employeeInfo[$row['employee_id']] ?? '//placehold.co/100x100/EFEFEF/AAAAAA?text=no+image';
+                $avatar = !empty($employeeInfo[$row['employee_id']]) ? $employeeInfo[$row['employee_id']]['avatar'] ?? null : null;
+                $phone = !empty($employeeInfo[$row['employee_id']]) ? $employeeInfo[$row['employee_id']]['mobile'] ?? null : null;
+                $phone2 = !empty($employeeInfo[$row['employee_id']]) ? $employeeInfo[$row['employee_id']]['mobile2'] ?? null : null;
                 $roster[] = [
                     'id' => $row['id'],
-                    'avatar'=> $avatar ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image',
+                    'avatar'=> $avatar ?? '//placehold.co/100x100/EFEFEF/AAAAAA?text=no+image',
                     'name' => $row['name'],
                     'email'=> $row['email'],
                     'type'=> $row['type'],
                     'phone'=> $phone ?? '',
+                    'phone2'=> $phone2 ?? '',
                     'position'=> $jds[$row['jd']] ?? '',
                 ];
             }
@@ -512,7 +516,7 @@ if(isset($_GET['getFSVPQIsForRegistration'])) {
     $a = $conn->execute("SELECT DISTINCT employee_id FROM tbl_fsvp_qi WHERE user_id = ? AND deleted_at IS NULL", $user_id)->fetchAll();
     $fsvpqiIdsInRecord = implode(',', array_map(function($d) { return $d['employee_id']; }, $a));
 
-    if(!empty($fsvpId)) {
+    // if(!empty($fsvpId)) {
         $cond = "user_id = $user_id AND status = 1";
 
         if(!empty($fsvpqiIdsInRecord)) {
@@ -522,12 +526,12 @@ if(isset($_GET['getFSVPQIsForRegistration'])) {
         $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", $cond)->fetchAll(function ($data) use($fsvpId) {
             $jds = array_map(function($d) { return intval($d); }, explode(', ', $data['job_description_id']));
     
-            if(in_array($fsvpId, $jds)){
-                unset($data['job_description_id']);
-                return $data;
-            }
+            // if(in_array($fsvpId, $jds)){
+            //     unset($data['job_description_id']);
+            //     return $data;
+            // }
     
-            return null;
+            return $data;
         });
     
         $resultData['result'] = [];
@@ -540,12 +544,12 @@ if(isset($_GET['getFSVPQIsForRegistration'])) {
         if(count($resultData['result']) == 0) {
             $resultData['message'] = 'All FSVPQIs have already been added.';
         }
-    } else {
-        $resultData = [
-            'result' => [],
-            'message' => 'No data available.'
-        ];
-    }
+    // } else {
+    //     $resultData = [
+    //         'result' => [],
+    //         'message' => 'No data available.'
+    //     ];
+    // }
         
     send_response($resultData);
 }
@@ -627,6 +631,17 @@ if(isset($_GET['newFSVPQI'])) {
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
             $filesData['gfsi-certificate'] = $d;
+        }
+        
+        if(isset($_POST['c_fsvpqi_certificate']) && $_POST['c_fsvpqi_certificate'] == 'true') {
+            $d = saveFSVPQICertificate($_POST, 'c_fsvpqi_certificate');
+            $conn->insert('tbl_fsvp_files', array_merge([
+                'record_id' => $id,
+                'record_type' => "$type:fsvpqi-certificate",
+            ], $d));
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['fsvpqi-certificate'] = $d;
         }
 
         $name = $conn->select('tbl_hr_employee', "CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name", "ID = $fsvpqi")->fetchAssoc()['name'];
@@ -832,6 +847,9 @@ if(isset($_GET['fetchImportersForTable'])) {
             cbp.reviewed_by,
             cbp.reviewed_by_sign,
             cbp.review_date,
+            cbp.prepared_by,
+            cbp.prepared_by_sign,
+            cbp.prepare_date,
             cbp.comments
         FROM 
             tbl_fsvp_importers i 
@@ -868,6 +886,11 @@ if(isset($_GET['fetchImportersForTable'])) {
                 'cbp_entry_filer' => $data['cbp_entry_filer'],
                 'comments' => $data['comments'],
                 'date' => date('Y-m-d', strtotime($data['cbp_date'])),
+                'preparer' => [
+                    'name' => $data['prepared_by'],
+                    'sign' => $data['prepared_by_sign'],
+                    'date' => $data['prepare_date'],
+                ],
                 'reviewer' => [
                     'name' => $data['reviewed_by'],
                     'sign' => $data['reviewed_by_sign'],
@@ -1029,6 +1052,9 @@ if(isset($_GET['newCBPRecord'])) {
             'reviewed_by'           => emptyIsNull($_POST['reviewed_by']),
             'reviewed_by_sign'      => emptyIsNull($_POST['reviewer_sign']),
             'review_date'           => emptyIsNull($_POST['review_date']),
+            'prepared_by'           => emptyIsNull($_POST['prepared_by']),
+            'prepared_by_sign'      => emptyIsNull($_POST['prepared_sign']),
+            'prepar_date'           => emptyIsNull($_POST['prepar_date']),
             'comments'              => emptyIsNull($_POST['comments']),
         ];
 
@@ -1048,6 +1074,11 @@ if(isset($_GET['newCBPRecord'])) {
                 'designated_importer' => $values['designated_importer'],
                 'cbp_entry_filer' => $values['cbp_entry_filer'],
                 'comments' => $values['comments'],
+                'preparer' => [
+                    'name' => $values['prepared_by'],
+                    'sign' => $values['prepared_by_sign'],
+                    'date' => $values['prepare_date'],
+                ],
                 'reviewer' => [
                     'name' => $values['reviewed_by'],
                     'sign' => $values['reviewed_by_sign'],
@@ -1091,6 +1122,8 @@ if(isset($_GET['updateCBPRecord'])) {
             $_POST['approve_date'],
             $_POST['reviewed_by'],
             $_POST['review_date'],
+            $_POST['prepared_by'],
+            $_POST['prepare_date'],
             $_POST['comments'],
         ];
 
@@ -1105,6 +1138,8 @@ if(isset($_GET['updateCBPRecord'])) {
             'approve_date = ?',
             'reviewed_by = ?',
             'review_date = ?',
+            'prepared_by = ?',
+            'prepare_date = ?',
             'comments = ?'
         ];
 
@@ -1118,6 +1153,12 @@ if(isset($_GET['updateCBPRecord'])) {
         if(!empty($_POST['reviewer_sign']) && $_POST['reviewer_sign'] != 'null') {
             $values[] = $_POST['reviewer_sign'];
             $setQuery[] = 'reviewed_by_sign = ?';
+        }
+
+        // update preparer sign if acquired
+        if(!empty($_POST['preparer_sign']) && $_POST['preparer_sign'] != 'null') {
+            $values[] = $_POST['preparer_sign'];
+            $setQuery[] = 'prepared_by_sign = ?';
         }
 
         // apppend the ids
@@ -1138,6 +1179,11 @@ if(isset($_GET['updateCBPRecord'])) {
                 'designated_importer' => $d['designated_importer'],
                 'cbp_entry_filer' => $d['cbp_entry_filer'],
                 'comments' => $d['comments'],
+                'preparer' => [
+                    'name' => $d['prepared_by'],
+                    'sign' => $d['prepared_by_sign'],
+                    'date' => $d['prepare_date'],
+                ],
                 'reviewer' => [
                     'name' => $d['reviewed_by'],
                     'sign' => $d['reviewed_by_sign'],
@@ -1267,6 +1313,12 @@ if(isset($_GET['ingredientProductRegister'])) {
             if(!empty($_POST['reviewer_sign']) && $_POST['reviewer_sign'] != 'null') {
                 $values[] = $_POST['reviewer_sign'];
                 $setQuery[] = 'reviewed_by_sign = ?';
+            }
+
+            // update reviewer sign if acquired
+            if(!empty($_POST['preparer_sign']) && $_POST['preparer_sign'] != 'null') {
+                $values[] = $_POST['preparer_sign'];
+                $setQuery[] = 'prepared_by_sign = ?';
             }
 
             // apppend the ids
@@ -1443,8 +1495,17 @@ if(isset($_GET['newActivityWorksheet'])) {
                     assessment_results,
                     corrective_actions,
                     reevaluation_date,
-                    comments
-                ) VALUE (" . (implode(',', array_fill(0, 19, '?'))) . ")
+                    comments,
+                    approved_by,
+                    approved_by_sign,
+                    approve_date,
+                    reviewed_by,
+                    reviewed_by_sign,
+                    review_date,
+                    prepared_by,
+                    prepared_by_sign,
+                    prepare_date
+                ) VALUE (" . (implode(',', array_fill(0, 28, '?'))) . ")
             ";
             $values = [
                 $user_id,
@@ -1466,6 +1527,15 @@ if(isset($_GET['newActivityWorksheet'])) {
                 emptyIsNull($_POST['corrective_actions']),
                 emptyIsNull($_POST['reevaluation_date']),
                 emptyIsNull($_POST['comments']),
+                emptyIsNull($_POST['approved_by']),
+                emptyIsNull($_POST['approver_sign']),
+                emptyIsNull($_POST['approve_date']),
+                emptyIsNull($_POST['reviewed_by']),
+                emptyIsNull($_POST['reviewer_sign']),
+                emptyIsNull($_POST['review_date']),
+                emptyIsNull($_POST['prepared_by']),
+                emptyIsNull($_POST['preparer_sign']),
+                emptyIsNull($_POST['prepare_date']),
             ];
     
             $conn->execute($sql, $values);
@@ -1555,6 +1625,20 @@ if(isset($_GET['fetchImporterBySupplier'])) {
         send_response([
             'error' => $e->getMessage(), 
         ], 500);
+    }
+}
+if(isset($_GET['btnEvalRecap'])) {
+    $evalRecap = $_GET['btnEvalRecap'];
+    
+    $selecData = mysqli_query($conn,"SELECT id, evaluation_date FROM tbl_fsvp_evaluation_records WHERE evaluation_id = $evalRecap");
+    if ( mysqli_num_rows($selecData) > 0 ) {
+        echo '<ul>';
+            while($rowData = mysqli_fetch_array($selecData)) {
+                $evalRecord = $rowData["id"];
+                $evalRecordDate = $rowData["evaluation_date"];
+                echo '<li><a href="javascript:void(0)" class="btn btn-link btn-smx p-0" data-eval="'.$evalRecap.'" onclick="evallist('.$evalRecap.', '.$evalRecord.')">'.$evalRecordDate.'</a></li>';
+            }
+        echo '</ul>';
     }
 }
 

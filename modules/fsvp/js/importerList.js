@@ -98,7 +98,7 @@ $(function() {
 
         const form = e.target;
 
-        if(form.importerdd.value == '') {
+        if(form.importerdd.value === '') {
             alert.isShowing() && alert.hide();
             alert.setContent(`<strong>Error!</strong> Importer field is required.`).show();
             return;
@@ -183,7 +183,7 @@ $(function() {
         $('#modalViewCBP [data-viewcbp=designated_importer]').text(data.cbp.designated_importer);
         $('#modalViewCBP [data-viewcbp=cbp_entry_filer]').text(data.cbp.cbp_entry_filer);
         
-        $('#modalViewCBP').modal('show')
+        $('#modalViewCBP').modal('show');
     });
 
     // cbp modal hide event
@@ -200,7 +200,7 @@ $(function() {
         const form = e.target;
         let url = baseUrl + (UpdateCBPId ? ('updateCBPRecord=' + UpdateCBPId) : 'newCBPRecord');
 
-        if(!UpdateCBPId && form.importer.value == '') {
+        if(!UpdateCBPId && form.importer.value === '') {
             CBPFormAlert.setContent('<strong>Error!</strong> Importer not found.').show();
             return;
         }
@@ -208,6 +208,7 @@ $(function() {
         const data = new FormData(form);
 
         // signatures
+        data.append('preparer_sign', $('#preparer_signature').eSign("getData"));
         data.append('reviewer_sign', $('#reviewer_signature').eSign("getData"));
         data.append('approver_sign', $('#approver_signature').eSign("getData"));
 
@@ -373,6 +374,11 @@ function showCBPModal(data, mode = 'create') {
 
         // set comment
         $('#cbpComment').val(cbp.comments);
+        
+        // set preparer info
+        $('#preName').val(cbp.preparer.name);
+        $('#preDate').val(cbp.preparer.date);
+        $('#preparer_signature').eSign("set", cbp.preparer.sign);
         
         // set reviewer info
         $('#revName').val(cbp.reviewer.name);

@@ -1,6 +1,6 @@
 <?php 
     $title = "Risk & Liabilities";
-    $site = "insurance_info";
+    $site = "risk_and_liabilities";
     $breadcrumbs = '';
     $sub_breadcrumbs = 'Organization';
 

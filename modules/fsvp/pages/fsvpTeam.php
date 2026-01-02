@@ -93,7 +93,8 @@
         <tr>
             <th>Name</th>
             <th>Title / Position</th>
-            <th>Phone </th>
+            <th>Phone</th>
+            <th>Phone 2</th>
             <th>Email</th>
             <th class="text-center" style="width: 75px;">Primary</th>
             <th class="text-center" style="width: 75px;">Alternate</th>
@@ -150,7 +151,7 @@
                     </div>
                     <h5 class="col-md-12 margin-bottom-20"><strong>Employee Details:</strong></h5>
                     <div class="col-md-3">
-                        <img src="https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image" alt="User" data-avatar>
+                        <img src="//placehold.co/100x100/EFEFEF/AAAAAA?text=no+image" alt="User" data-avatar>
                     </div>
                     <div class="col-md-9">
                         <div class="form-group row">
@@ -175,6 +176,12 @@
                             <label class="col-form-label col-md-4">Phone</label>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" data-phone readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-4">Phone 2</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" data-phone2 readonly>
                             </div>
                         </div>
                         <div class="form-group row margin-top-30">

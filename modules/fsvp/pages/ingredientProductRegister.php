@@ -1,4 +1,4 @@
-<div class="d-flex margin-bottom-20" style="justify-content: end;">
+<div class="d-flex margin-bottom-20" style="display: none !important; justify-content: end;">
     <a href="#modalIngProdReg" id="iprAddProductBtn" data-toggle="modal" class="btn green">
         <i class="fa fa-plus"></i>
         Add product

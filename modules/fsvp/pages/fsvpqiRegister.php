@@ -51,8 +51,9 @@ function yesNoRadio() {
             <th>Food Quality Auditing</th>
             <th>HACCP Training</th>
             <th>Food Safety Training Certificate</th>
-            <th>GFSI Certificate</th>
-            <!-- <th data-nosort="true">Actions</th> -->
+            <th>GFSI Standard Certificate</th>
+            <th>FSVPQI</th>
+            <!--<th data-nosort="true">Actions</th> -->
         </tr>
     </thead>
     <tbody></tbody>
@@ -220,7 +221,7 @@ function yesNoRadio() {
 
                     <div class="col-md-12 frfUplDoc">
                         <label class="mt-checkbox mt-checkbox-outline">
-                            <input type="checkbox" value="true" name="c_gfsi_certificate"> GFSI Certificate
+                            <input type="checkbox" value="true" name="c_gfsi_certificate"> GFSI Standard Certificate
                             <span></span>
                         </label>
                         <div class="row">
@@ -246,6 +247,39 @@ function yesNoRadio() {
                                 <div class="form-group">
                                     <label>Comment</label>
                                     <input type="text" name="c_gfsi_certificate-note" class="form-control" placeholder="(Optional)" data-note>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 frfUplDoc">
+                        <label class="mt-checkbox mt-checkbox-outline">
+                            <input type="checkbox" value="true" name="c_fsvpqi_certificate"> FSVPQI
+                            <span></span>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Upload document</label>
+                                    <input type="file" class="form-control" name="c_fsvpqi_certificate-file">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Document date</label>
+                                    <input type="date" name="c_fsvpqi_certificate-document_date" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Expiration date</label>
+                                    <input type="date" name="c_fsvpqi_certificate-expiration_date" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Comment</label>
+                                    <input type="text" name="c_fsvpqi_certificate-note" class="form-control" placeholder="(Optional)" data-note>
                                 </div>
                             </div>
                         </div>

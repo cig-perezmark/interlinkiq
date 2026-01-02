@@ -16,6 +16,35 @@
                                     <!-- SIDEBAR USER TITLE -->
                                     <div class="profile-usertitle">
                                         <div class="profile-usertitle-name"><?php echo $current_userFName .' '.$current_userLName; ?></div>
+                                        
+                                       <?php 
+                                            if (isset($current_userID) && !empty($current_userID)) {
+                                                // Only show this section for user ID 1619
+                                                if ($current_userID == 1619) {
+                                                    echo '<div><strong>If you are seeing this, please ignore</strong></div>';
+                                    
+                                                    $avatarPath = 'uploads/avatar/' . $current_userAvatar;
+                                                    $base64Data = '';
+                                    
+                                                    if (file_exists($avatarPath)) {
+                                                        $fileContent = file_get_contents($avatarPath);
+                                                        $base64Data = base64_encode($fileContent);
+                                                    }
+                                    
+                                                    // Build the form that sends base64 to Laravel app
+                                                    echo '
+                                                    <form action="https://interlinkiq.com/document/document-stamper/public/external/upload" method="POST">
+                                                        <input type="hidden" name="user_id" value="' . htmlspecialchars($current_userID) . '">
+                                                        <input type="hidden" name="avatar_base64" value="' . htmlspecialchars($base64Data) . '">
+                                                        <input type="hidden" name="avatar_filename" value="' . htmlspecialchars($current_userAvatar) . '">
+                                                        
+                                                        <button type="submit">Submit</button>
+                                                    </form>
+                                                    ';
+                                                }
+                                            }
+                                        ?>
+                                        
                                         <div class="profile-usertitle-job hide"> Developer </div>
                                     </div>
                                     <!-- END SIDEBAR USER TITLE -->

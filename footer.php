@@ -1,4 +1,4 @@
-<!-- MODAL SERVICE -->
+                    <!-- MODAL SERVICE -->
                     <div class="modal fade" id="modalService" tabindex="-1" role="basic" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -58,6 +58,7 @@
                                             <label class="col-md-3 control-label">Attach Reference File</label>
                                             <div class="col-md-8">
                                                 <input class="form-control" type="file" name="file[]" multiple />
+												<p class="help-block">Supports multiple file selection.</p>
                                             </div>
                                         </div>
                                         <div class="form-group" id="serviceDesiredDueDate">
@@ -66,6 +67,24 @@
                                                 <input class="form-control" type="date" name="due_date" min="<?php echo date("Y-m-d"); ?>" />
                                             </div>
                                         </div>
+										<div class="form-group <?php echo $switch_user_id == 34 ? '':'hide'; ?>" id="serviceDesiredDueDate">
+											<label class="col-md-3 control-label">Budget Hour(s)</label>
+											<div class="col-md-8">
+												<div class="input-icon right">
+                                                    <i class="fa fa-clock-o"></i>
+                                                    <input class="form-control valid" type="number" min="0" name="budget_hours" />
+												</div>
+											</div>
+										</div>
+										<div class="form-group <?php echo $switch_user_id == 34 ? '':'hide'; ?>" id="serviceDesiredDueDate">
+											<label class="col-md-3 control-label">Budget Amount</label>
+											<div class="col-md-8">
+												<div class="input-icon right">
+                                                    <i class="fa fa-dollar"></i>
+                                                    <input class="form-control valid" type="number" min="0" name="budget_amount" />
+												</div>
+											</div>
+										</div>
                                     </div>
 
                                     <div class="modal-footer">
@@ -93,54 +112,106 @@
                                             <div class="col-md-8">
                                                 <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">
                                                     <?php
-                                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id=$switch_user_id" );
-                                                        if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                            while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                                                                $rowEmployeeID = $rowEmployee["ID"];
-                                                                $rowEmployeeFName = htmlentities($rowEmployee["first_name"] ?? '');
-                                                                $rowEmployeeLName = htmlentities($rowEmployee["last_name"] ?? '');
-                                                                $rowEmployeeSelected = "";
-
-                                                                // Base on Current Page
-                                                                $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE name='".$site."'" );
-                                                                if ( mysqli_num_rows($selectMenu) > 0 ) {
-                                                                    $rowMenu = mysqli_fetch_array($selectMenu);
-                                                                    $assigned_to_id = $rowMenu['assigned_to_id'];
-
-                                                                    if (!empty($assigned_to_id)) {
-                                                                        $output = json_decode($assigned_to_id, true);
-                                                                        $exist = 0;
+                                                        // $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id=$switch_user_id AND facility_switch=$facility_switch_user_id" );
+                                                        // if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                                        //     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                                        //         $rowEmployeeID = $rowEmployee["ID"];
+                                                        //         $rowEmployeeFName = htmlentities($rowEmployee["first_name"] ?? '');
+                                                        //         $rowEmployeeLName = htmlentities($rowEmployee["last_name"] ?? '');
+                                                        //         $rowEmployeeSelected = "";
+                                                        
+                                                        //         // Base on Current Page
+                                                        //         $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE name='".$site."'" );
+                                                        //         if ( mysqli_num_rows($selectMenu) > 0 ) {
+                                                        //             $rowMenu = mysqli_fetch_array($selectMenu);
+                                                        //             $assigned_to_id = $rowMenu['assigned_to_id'];
+                                                        
+                                                        //             if (!empty($assigned_to_id)) {
+                                                        //                 $output = json_decode($assigned_to_id, true);
+                                                        //                 $exist = 0;
                                                                         
-																		if (isset($_GET['facility_id'])) {
-																			$f_ID = $_GET['facility_id'];
-																			foreach ($output as $key => $value) {
-																				if ($f_ID == $key) {
-																					if (in_array($rowEmployeeID, $value['assigned_to_id'])) {
-																						$exist++;
-																						break;
-																					}
-																				}
-																			}
-																		} else {
-                                                                            foreach ($output as $key => $value) {
-                                                                                if ($switch_user_id == $key) {
-                                                                                    if (in_array($rowEmployeeID, $value['assigned_to_id'])) {
-                                                                                        $exist++;
-                                                                                        break;
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
+                                                        // 				if (isset($_GET['facility_id'])) {
+                                                        // 					$f_ID = $_GET['facility_id'];
+                                                        // 					foreach ($output as $key => $value) {
+                                                        // 						if ($f_ID == $key) {
+                                                        // 							if (in_array($rowEmployeeID, $value['assigned_to_id'])) {
+                                                        // 								$exist++;
+                                                        // 								break;
+                                                        // 							}
+                                                        // 						}
+                                                        // 					}
+                                                        // 				} else {
+                                                        //                     foreach ($output as $key => $value) {
+                                                        //                         if ($switch_user_id == $key) {
+                                                        //                             if (in_array($rowEmployeeID, $value['assigned_to_id'])) {
+                                                        //                                 $exist++;
+                                                        //                                 break;
+                                                        //                             }
+                                                        //                         }
+                                                        //                     }
+                                                        //                 }
+                                                        
+                                                        //                 if ($exist > 0) { $rowEmployeeSelected = "SELECTED"; }
+                                                        //             }
+                                                        //         }
+                                                        
+                                                        //         echo '<option value="'. $rowEmployeeID .'" '. $rowEmployeeSelected .'>'. $rowEmployeeFName .' '. $rowEmployeeLName .'</option>';
+                                                        //     }
+                                                        // } else {
+                                                        //     echo '<option disabled>No Available</option>';
+                                                        // }
+                                                        
+                                                        $selectCollab = mysqli_query( $conn,"
+															SELECT 
+															e.ID, e.first_name, e.last_name,
+															m.assigned_to_id
+															FROM tbl_hr_employee AS e
 
-                                                                        if ($exist > 0) { $rowEmployeeSelected = "SELECTED"; }
-                                                                    }
-                                                                }
+															LEFT JOIN (
+																SELECT
+															    *
+															    FROM tbl_menu
+															) AS m
+															ON name = '".$site."'
 
-                                                                echo '<option value="'. $rowEmployeeID .'" '. $rowEmployeeSelected .'>'. $rowEmployeeFName .' '. $rowEmployeeLName .'</option>';
-                                                            }
-                                                        } else {
-                                                            echo '<option disabled>No Available</option>';
-                                                        }
+															WHERE e.status = 1
+															AND e.user_id = $switch_user_id
+															AND e.facility_switch = $facility_switch_user_id
+
+															ORDER BY e.first_name
+														" );
+														if ( mysqli_num_rows($selectCollab) > 0 ) {
+															while($rowCollab = mysqli_fetch_array($selectCollab)) {
+																$collab_id = $rowCollab["ID"];
+																$collab_name = htmlentities($rowCollab["first_name"] ?? '') .' '. htmlentities($rowCollab["last_name"] ?? '');
+																$collab_assigned = $rowCollab['assigned_to_id'];
+																$collab_selected = "";
+
+																if (!empty($collab_assigned)) {
+																	$output = json_decode($collab_assigned, true);
+
+																	if (isset($_GET['facility_id'])) {
+																		if (
+													                        (isset($output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"]) AND in_array($collab_id, $output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"])) OR
+													                        (isset($output[$facility_switch_user_id]["assigned_to_id"]) AND in_array($collab_id, $output[$facility_switch_user_id]["assigned_to_id"]))
+													                    ) {
+													                        $collab_selected = "SELECTED";
+													                    }
+																	} else {
+																		if (
+													                        (isset($output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"]) AND in_array($collab_id, $output[$switch_user_id][$facility_switch_user_id]["assigned_to_id"])) OR
+													                        (isset($output[$switch_user_id]["assigned_to_id"]) AND in_array($collab_id, $output[$switch_user_id]["assigned_to_id"]))
+													                    ) {
+													                        $collab_selected = "SELECTED";
+													                    }
+												                    }
+																}
+
+																echo '<option value="'.$collab_id.'" '.$collab_selected.'>'.$collab_name.'</option>';
+															}
+														} else {
+															echo '<option disabled>No Available</option>';
+														}
                                                     ?>
                                                 </select>
                                             </div>
@@ -202,7 +273,7 @@
                                                 
                                                 // List all customer
 												if ($current_client = 1) {
-													$selectSupplier = mysqli_query( $conn,"SELECT * from tbl_supplier WHERE page = 2 AND is_deleted = 0 AND status = 1 AND user_id = $current_userEmployerID ORDER BY name" );
+													// $selectSupplier = mysqli_query( $conn,"SELECT * from tbl_supplier WHERE page = 2 AND is_deleted = 0 AND status = 1 AND user_id = $current_userEmployerID ORDER BY name" ); 
 													$selectSupplier = mysqli_query( $conn,"SELECT
                                                         s.name AS s_name,
                                                         s.email AS s_email,
@@ -325,9 +396,27 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
+                                                <label for="task_services" class="col-md-3 control-label">Services</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control mt-multiselect" name="services" id="task_services" required>
+                                                        <option value="0">Select</option>
+                                                        <?php
+                                                            $selectServices = $conn->query("SELECT name FROM tbl_service_logs_tag WHERE deleted = 0 ORDER BY name");
+                                                            if(mysqli_num_rows($selectServices) > 0) {
+                                                                while($rowServices = $selectServices->fetch_assoc()) {
+                                                                    echo "<option value='{$rowServices['name']}'>{$rowServices['name']}</option>";
+                                                                }
+                                                            }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
                                                 <label for="task_action" class="col-md-3 control-label">Action</label>
                                                 <div class="col-md-8">
-                                                    <select class="form-control mt-multiselect" name="action" id="task_action">
+                                                    <select class="form-control mt-multiselect" name="action" id="task_action" required>
+                                                        <option value="0">Select</option>
                                                         <?php
                                                             $actions = $conn->query("SELECT name FROM tbl_service_logs_actions WHERE deleted = 0 ORDER BY name");
                                                             if(mysqli_num_rows($actions) > 0) {
@@ -350,7 +439,8 @@
                                             <div class="form-group">
                                                 <label for="task_account" class="col-md-3 control-label">Account</label>
                                                 <div class="col-md-8">
-                                                    <select class="form-control mt-multiselect" name="account" id="task_account">
+                                                    <select class="form-control mt-multiselect" name="account" id="task_account" required>
+                                                        <option value="0">Select</option>
                                                         <?php 
                                                             $accounts = $conn->query("SELECT * FROM tbl_service_logs_accounts WHERE deleted = 0 AND owner_pk = $switch_user_id order by name ASC");
                                                             if(mysqli_num_rows($accounts) > 0) {
@@ -373,7 +463,7 @@
                                             <div class="form-group">
                                                 <label for="task_minute" class="col-md-3 control-label">Minute</label>
                                                 <div class="col-md-8">
-                                                    <input class="form-control" name="minute" id="task_minute" type="number" min="0.1" step="0.1">
+                                                    <input class="form-control" name="minute" id="task_minute" type="number" min="0.1" step="0.1" value="0">
                                                 </div>
                                             </div>
                                             <button type="submit" id="task_submit_btn" style="display: none;"></button>
@@ -450,10 +540,15 @@
                     </div>
 
 
-                    <a href="#modalService" class="icon-btn btn btn-lg green noprint" data-toggle="modal" style="position: fixed; bottom: 10px; right: 10px; border-radius: 50% !important; width: 60px; height: 60px; min-width: auto; padding-top: 8px;">
-                        <i class="icon-earphones-alt"></i>
-                        <div class="font-white" style="margin: 0;">Request<br>Service</div>
-                    </a>
+                    <?php
+                        if ($switch_user_id != 1649 AND $switch_user_id != 1795) {
+                            echo '<a href="#modalService" class="icon-btn btn btn-lg green noprint" data-toggle="modal" style="position: fixed; bottom: 10px; right: 10px; border-radius: 50% !important; width: 60px; height: 60px; min-width: auto; padding-top: 8px;">
+                                <i class="icon-earphones-alt"></i>
+                                <div class="font-white" style="margin: 0;">Request<br>Service</div>
+                            </a>';
+                        }
+                    ?>
+                    
                     <?php //include "Chat_Bot/chatbox.php"; ?>
                     <!--chatbot start-->
                     <link rel="stylesheet" href="Chat_Bot/assets/style.css">
@@ -1401,6 +1496,7 @@
 
 
                     <script type="text/javascript">
+                        var current_permission_array_key = '<?php echo $current_permission_array_key; ?>';
                         $(document).ready(function() {
                             $(".modalForm").validate();
                             $(".modalService").validate();
@@ -1885,12 +1981,15 @@
                         }
                         function changeType(e) {
                             $(e).parent().find('input').hide();
+                            $(e).parent().find('.fileLang').hide();
                             $(e).parent().find('input').prop('required',false);
                             if($(e).val() == 1) {
                                 $(e).parent().find('.fileUpload').show();
+                                $(e).parent().find('.fileLang').show();
                                 $(e).parent().find('.fileUpload').prop('required',true);
                             } else if($(e).val() == 2 || $(e).val() == 3 || $(e).val() == 4) {
                                 $(e).parent().find('.fileURL').show();
+                                $(e).parent().find('.fileLang').show();
                                 $(e).parent().find('.fileURL').prop('required',true);
                             }
                         }
@@ -2189,8 +2288,9 @@
             				var sui = '<?php echo $switch_user_id; ?>';
 			                var cc = '<?php echo $_COOKIE["client"]; ?>';
             
-            				lo = 600;
-            				if (sui == 1486 || cc == 11) { lo = 1800; }
+            				// lo = 600; 
+            				// if (sui == 1486 || cc == 11 || sui == 464 || sui == 34) { lo = 1800; }
+            				lo = 3800;
             				
                             $('.60Left').on('click', function(e) {
                                 e.preventDefault();
@@ -2216,7 +2316,7 @@
                                     $('.jAlert').closeAlert();
                                     $.jTimeout().resetExpiration();
                                 },
-                                'timeoutAfter': 600,
+                                'timeoutAfter': lo,
                                 'extendOnMouseMove': true,
                                 'mouseDebounce': 5,
                                 'logoutUrl': 'function.php?logout=' + id,

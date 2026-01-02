@@ -35,6 +35,30 @@ if( isset($_POST['post_id']) ) {
                                 echo $rowTaker['first_name'].' '.$rowTaker['last_name'].'<br><br>';
                             }
                         }
+                        
+                
+                echo '<b>AGENDA:</b>';
+                    if (!empty($row['agendas'])) {
+                        echo '<ul style="margin-bottom: 0;">';
+                        
+                            $agendas = $row["agendas"];
+                            $agendas_arr = explode(", ", $agendas);
+                            foreach ($agendas_arr as $value) {
+                                $selectAgenda = mysqli_query( $conn,"SELECT name FROM tbl_meeting_minutes_agenda WHERE ID = $value" );
+                                if ( mysqli_num_rows($selectAgenda) > 0 ) {
+                                    $rowAgenda = mysqli_fetch_array($selectAgenda);
+                                    
+                                    echo '<li>'.$rowAgenda['name'].'</li>';
+                                }
+                            }
+                        echo '</ul>';
+                    }
+                    if (!empty($row['agenda'])) {
+                        echo '<ul>
+                            <li>'.htmlentities($row["agenda"] ?? '').'</li>
+                        </ul>';
+                    }
+                
                 echo '<b>ATTENDEES:</b><br>';
                         
                         $array_data = explode(", ", $row["attendees"]);

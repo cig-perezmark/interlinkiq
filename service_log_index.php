@@ -74,14 +74,46 @@
         min-width: 150px;
         max-width: 150px;
         left: 0px;
-        z-index: 2;
-    }
+        z-index: 2; 
+    } 
     table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
         cursor: pointer;
          position: relative; 
     }
+    /*.fixedColumns: {*/
+    /*  leftColumns: 1,*/
+    /*  rightColumns: 1*/
+    /*}*/
+    
+    #va_summary_table th:nth-child(2),
+    #va_summary_table td:nth-child(2) {
+      position: sticky;
+      left: 0;
+      background: #fff;
+      z-index: 999; /* so it stays above scrolling content */
+    }
+    
+    /* Style for Name column cells (first column in tbody) */
+    #va_summary_table tbody tr td:first-child {
+        background-color: #2b3b55 !important;
+        color: white !important;
+    }
+    
+    /* Style for date header cells (all headers except the first one) */
+    #va_summary_table thead tr th:not(:first-child) {
+        background-color: #2b3b55 !important;
+        color: white !important;
+    }
+    
+    /* Optional: Style the Name header cell to match */
+    #va_summary_table thead tr th:first-child {
+        background-color: #2b3b55 !important;
+        color: white !important;
+    }
 </style>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/fixedcolumns/5.0.4/css/fixedColumns.dataTables.css" rel="stylesheet">
 <!-- END PAGE HEADER-->
 <div class="row">
     <div class="col-md-12">
@@ -145,8 +177,15 @@
                                     <a href="#tab_log_approval" data-toggle="tab">For Approval Logs</a>
                                 </li>
                                 <li>
-                                    <a href="#tab_disapprove" data-toggle="tab">Disapproved Logs (1)</a>
+                                    <a href="#tab_disapprove" data-toggle="tab">Disapproved Logs</a>
                                 </li>
+                                <?php
+                                    if ($current_userID == 43 OR $current_userID == 153 OR $current_userID == 54 OR $current_userID == 55 OR $current_userID == 189 OR $current_userID == 35) {
+                                        echo '<li>
+                                            <a href="#tab_generate" data-toggle="tab">Generate Logs</a>
+                                        </li>';
+                                    }
+                                ?>
                             </ul>
                             <div class="tab-content margin-top-20">
                                 <div class="tab-pane active" id="tab_service_log">
@@ -171,21 +210,21 @@
                                         </a>
                                     </div>
                                     <div class="portlet-body">
-                                        <table class="table table-bordered" id="tblServiceLog">
-                                            <thead>
-                                                <tr>
-                                                    <th>Task ID</th>
+                                        <!--<table class="table table-bordered" id="tblServiceLog">-->
+                                        <!--    <thead>-->
+                                        <!--        <tr>-->
+                                        <!--            <th>Task ID</th>-->
                                                     <!--<th>Name</th>-->
-                                                    <th>Task Date</th>
-                                                    <th>Description</th>
-                                                    <th>Action</th>
-                                                    <th>Comment</th>
-                                                    <th>Account</th>
-                                                    <th>Minutes</th>
-                                                    <th class="text-center">Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                        <!--            <th>Task Date</th>-->
+                                        <!--            <th>Description</th>-->
+                                        <!--            <th>Action</th>-->
+                                        <!--            <th>Comment</th>-->
+                                        <!--            <th>Account</th>-->
+                                        <!--            <th>Minutes</th>-->
+                                        <!--            <th class="text-center">Actions</th>-->
+                                        <!--        </tr>-->
+                                        <!--    </thead>-->
+                                        <!--    <tbody>-->
                                                
                                                 <!--    $last_month1 = date('Y-m-d', strtotime('-30 days'));-->
                                                 <!--    $overtime_query1 = mysqli_query($conn, "-->
@@ -269,7 +308,24 @@
                                                 <!--            <td>'.$ot_row['minute'].'</td>-->
                                                 <!--        </tr>';-->
                                                 <!--    }--> 
-                                            </tbody>
+                                        <!--    </tbody>-->
+                                        <!--</table>-->
+                                        <table class="table table-bordered" id="tblServiceLog2">
+                                            <thead>
+                                                <tr>
+                                                    <th>Task ID</th>
+                                                    <!--<th>Name</th>-->
+                                                    <th>Task Date</th>
+                                                    <th>Description</th>
+                                                    <th>Services</th>
+                                                    <th>Action</th>
+                                                    <th>Comment</th>
+                                                    <th>Account</th>
+                                                    <th>Minutes</th>
+                                                    <th class="text-center">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
                                         </table>
                                     </div>
                                 </div>
@@ -422,9 +478,111 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="tab-pane" id="tab_generate">
+                                    <?php
+                                        echo '<form method="post" enctype="multipart/form-data" class="modalForm formGenerate">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="col-md-6 control-label">Display All Record?</label>
+                                                        <div class="col-md-6">
+                                                            <select class="form-control" onchange="selRecord(this)">
+                                                                <option value="0" SELECTED>No</option>
+                                                                <option value="1">Yes</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <select class="form-control mt-multiselect btn btn-default" name="user_id" id="genUserID">
+                                                        <option value="">Select VA</option>';
+                
+                                                        $selectUser = mysqli_query( $conn,"
+                                                            SELECT 
+                                                            e.ID, e.first_name, e.last_name,
+                                                            u.ID AS user_id
+                                                            
+                                                            FROM tbl_hr_employee AS e
+                                                            
+                                                            RIGHT JOIN (
+                                                            	SELECT
+                                                                ID,
+                                                                employee_id
+                                                                FROM tbl_user
+                                                            ) AS u
+                                                            ON e.ID = u.employee_ID
+                                                            
+                                                            WHERE e.user_id = 34
+                                                            AND e.deleted = 0 
+                                                            AND e.suspended = 0
+                                                            AND e.status = 1
+                                                            
+                                                            ORDER BY e.first_name
+                                                        " );
+                                                        if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                            while($rowUser = mysqli_fetch_array($selectUser)) {
+                                                                echo '<option value="'.$rowUser['user_id'].'">'.htmlentities($rowUser['first_name'] ?? '').' '.htmlentities($rowUser['last_name'] ?? '').'</option>';
+                                                            }
+                                                        }
+                                                    echo '</select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <select class="form-control mt-multiselect btn btn-default" name="account" id="genAccount">
+                                                        <option value="">Select Account</option>';
+                
+                                                        $selectAccount = mysqli_query( $conn,"SELECT name FROM tbl_service_logs_accounts WHERE owner_pk = 34 AND deleted = 0 ORDER BY name" );
+                                                        if ( mysqli_num_rows($selectAccount) > 0 ) {
+                                                            while($rowAccount = mysqli_fetch_array($selectAccount)) {
+                                                                echo '<option value="'.$rowAccount['name'].'">'.$rowAccount['name'].'</option>';
+                                                            }
+                                                        }
+                                                    echo '</select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control daterange" name="daterange" />
+                                                        <span class="input-group-btn">
+                                                            <button class="btn default date-range-toggle" type="button" onclick="widget_date_clears(this)">
+                                                                <i class="fa fa-close"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <button type="submit" class="btn green ladda-button" name="btnGenerate" id="btnGenerate" data-style="zoom-out"><span class="ladda-label">Generate</span></button>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <strong>Total: <span id="totalHRS">0 hr(s)</span></strong>
+                                                </div>
+                                            </div>
+                                        </form><br><br><br><br><br>
+                
+                
+                                        <table class="table table-bordered table-sm table-condensed" id="tblGenerate">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Account</th>
+                                                    <th>Action</th>
+                                                    <th>Services</th>
+                                                    <th>Description</th>
+                                                    <th>Comment</th>
+                                                    <th>Task Date</th>
+                                                    <th>Minutes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="7" style="text-align:right">Total:</th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>';
+                                    ?>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="tab-pane" id="MASS_UPLOAD">
                         <div class="">
@@ -435,7 +593,7 @@
                             </p>
                         </div>
                         <div class="alert alert-danger">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">Ã—</button>
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                             <strong>Note:</strong>
                             <p> Not using the template will cause problem on your service
                                 time </p>
@@ -632,7 +790,7 @@
                             </div>
                             <div class="col-md-9">
                                 <div class="alert alert-info">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">Ã—</button>
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                     <strong>Reminder!</strong>
                                     <p>
                                         Don't forget to log your tasks! It is important for your compensation and company's
@@ -847,7 +1005,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> 
 </div>
 <div class="modal fade" id="modal_update_status" tabindex="-1" role="basic" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -983,21 +1141,37 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="task_services" class="col-md-3 control-label">Services</label>
+                            <div class="col-md-8">
+                                <select class="form-control mt-multiselect" name="services" id="task_services" required>
+                                    <option value="0">Select</option>
+                                    <?php
+                                        $selectServices = $con->query("SELECT name FROM tbl_service_logs_tag WHERE deleted = 0 ORDER BY name ASC");
+                                        if ($selectServices && $selectServices->num_rows > 0) {
+                                            while ($rowServices = $selectServices->fetch_assoc()) {
+                                                echo "<option value='{$rowServices['name']}'>{$rowServices['name']}</option>";
+                                            }
+                                        }
+                                    ?> 
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="task_action" class="col-md-3 control-label">Action</label>
                             <div class="col-md-8">
-                                <input list="actions" name="action" class="form-control" id="task_action">
-                                <datalist id="actions">
+                                <select class="form-control mt-multiselect" name="action" id="task_action" required>
+                                    <option value="0">Select</option>
                                     <?php
-                                        $actions = $con->query("SELECT name FROM tbl_service_logs_actions WHERE deleted = 0 ORDER BY name");
+                                        $actions = $con->query("SELECT name FROM tbl_service_logs_actions WHERE deleted = 0 ORDER BY name ASC");
                                         if ($actions && $actions->num_rows > 0) {
                                             while ($row = $actions->fetch_assoc()) {
                                                 echo "<option value='{$row['name']}'>{$row['name']}</option>";
                                             }
                                         } else {
-                                            echo "<option value=''>No items found</option>";
+                                            echo "<option value=''>No action items found</option>";
                                         } 
                                     ?> 
-                                </datalist>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -1009,7 +1183,8 @@
                         <div class="form-group">
                             <label for="task_account" class="col-md-3 control-label">Account</label>
                             <div class="col-md-8">
-                                <select class="form-control mt-multiselect" name="account" id="task_account">
+                                <select class="form-control mt-multiselect" name="account" id="task_account" required>
+                                    <option value="0">Select</option>
                                     <?php 
                                         $accounts = $con->query("SELECT * FROM tbl_service_logs_accounts WHERE deleted = 0 AND owner_pk = $switch_user_id order by name ASC");
                                         if(mysqli_num_rows($accounts) > 0) {
@@ -1032,7 +1207,7 @@
                         <div class="form-group">
                             <label for="task_minute" class="col-md-3 control-label">Minute</label>
                             <div class="col-md-8">
-                                <input class="form-control" name="minute" id="task_minute" type="number" min="0.1" step="0.1">
+                                <input class="form-control" name="minute" id="task_minute" type="number" min="0.1" step="0.1" value="0">
                             </div>
                         </div>
                         <button type="submit" id="task_submit_btn" style="display: none;"></button>
@@ -1071,21 +1246,48 @@
                             </div>
                         </div>
                         <div class="form-group"> 
+                            <label for="task_services" class="col-md-3 control-label">Services</label>
+                            <div class="col-md-8">
+                                <select class="form-control mt-multiselect" name="sl_services" id="sl_services" required>
+                                    <?php
+                                        $selectServices = $conn->query("SELECT name FROM tbl_service_logs_tag WHERE deleted = 0 ORDER BY name");
+                                        if(mysqli_num_rows($selectServices) > 0) {
+                                            while($rowServices = $selectServices->fetch_assoc()) {
+                                                echo "<option value='{$rowServices['name']}'>{$rowServices['name']}</option>";
+                                            }
+                                        }
+                                    ?> 
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group"> 
                             <label for="task_action" class="col-md-3 control-label">Action</label>
                             <div class="col-md-8">
-                                <input list="actions" name="sl_action" class="form-control" id="sl_action" required>
-                                <datalist id="logActions">
+                                <select class="form-control mt-multiselect" name="sl_action" id="sl_action" required>
                                     <?php
-                                        $actions = $con->query("SELECT name FROM tbl_service_logs_actions WHERE deleted = 0 ORDER BY name");
+                                        $actions = $con->query("SELECT name FROM tbl_service_logs_actions WHERE deleted = 0 ORDER BY name ASC");
                                         if ($actions && $actions->num_rows > 0) {
                                             while ($row = $actions->fetch_assoc()) {
                                                 echo "<option value='{$row['name']}'>{$row['name']}</option>";
                                             }
                                         } else {
-                                            echo "<option value=''>No items found</option>";
+                                            echo "<option value=''>No action items found</option>";
                                         } 
                                     ?> 
-                                </datalist>
+                                </select>
+                                <!--<input list="actions" name="sl_action" class="form-control" id="sl_action" required>-->
+                                <!--<datalist id="logActions">-->
+                                    <?php
+                                        // $actions = $con->query("SELECT name FROM tbl_service_logs_actions WHERE deleted = 0 ORDER BY name");
+                                        // if ($actions && $actions->num_rows > 0) {
+                                        //     while ($row = $actions->fetch_assoc()) {
+                                        //         echo "<option value='{$row['name']}'>{$row['name']}</option>";
+                                        //     }
+                                        // } else {
+                                        //     echo "<option value=''>No items found</option>";
+                                        // } 
+                                    ?> 
+                                <!--</datalist>-->
                             </div>
                         </div>
                         <div class="form-group">
@@ -1275,6 +1477,7 @@
 <?php include_once ('footer.php'); ?>
 <script src='assets/global/plugins/jquery-validation/js/jquery.validate.min.js' type='text/javascript'></script>
 <script src='assets/global/plugins/jquery-validation/js/additional-methods.min.js' type='text/javascript'></script>
+<script src="assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
 
 <!-- TOASTR SCRIPT PLUGINS -->
 <script src='assets/global/plugins/bootstrap-toastr/toastr.min.js'></script>
@@ -1282,6 +1485,10 @@
 
 <!-- SWEETALERT SCRIPT -->
 <script src='assets/global/plugins/bootstrap-sweetalert/sweetalert.min.js' type='text/javascript'></script>
+<!--<script src='https://code.jquery.com/jquery-3.7.1.js'></script>-->
+<!--<script src='//cdn.datatables.net/2.3.2/js/dataTables.js'></script>-->
+<!--<script src='//cdn.datatables.net/fixedcolumns/5.0.4/js/dataTables.fixedColumns.js'></script>--> 
+<!--<script src='https://cdn.datatables.net/fixedcolumns/5.0.4/js/fixedColumns.dataTables.js'></script>-->
 <!--<script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>-->
 <!-- ADVANCE SEARCH FIELD TYPEAHEAD -->
 <script src='assets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js' type='text/javascript'></script>
@@ -1293,6 +1500,8 @@
 <script>
     $(document).ready(function() {
         appendTimeinRecords(1);
+        widget_daterange(); 
+        selectMulti();
     })
     
     getEmploymentTitle()
@@ -1432,7 +1641,7 @@
                 const data = JSON.parse(response);
                 
                 if (data.success) {
-                    const tableBody = $('#tblServiceLog tbody');
+                    const tableBody = $('#tblServiceLog2 tbody');
                     tableBody.empty();
                     
                     // Loop through each record and append it to the table
@@ -1442,6 +1651,7 @@
                                 <td>${record.task_id}</td>
                                 <td>${record.task_date}</td>
                                 <td>${record.description}</td>
+                                <td>${record.services ?? ''}</td>
                                 <td>${record.action}</td>
                                 <td>${record.comment}</td>
                                 <td>${record.account}</td>
@@ -1457,40 +1667,73 @@
                         tableBody.append(row);
                     });
                     
-                    if (!$.fn.dataTable.isDataTable('#tblServiceLog')) {
-                        $('#tblServiceLog').DataTable({
-                            dom: 'lBfrtip',
-                            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-                            order: [[0, 'desc']],
-                            buttons: [
-                                {
-                                    extend: 'print',
-                                    exportOptions: {
-                                        columns: ':visible'
-                                    }
-                                },
-                                {
-                                    extend: 'pdf',
-                                    exportOptions: {
-                                        columns: ':visible'
-                                    }
-                                },
-                                {
-                                    extend: 'csv',
-                                    exportOptions: {
-                                        columns: ':visible'
-                                    }
-                                },
-                                {
-                                    extend: 'excel',
-                                    exportOptions: {
-                                        columns: ':visible'
-                                    }
-                                },
-                                'colvis'
-                            ]
-                        });
-                    }
+                    $('#tblServiceLog2').DataTable().destroy();
+    				$('#tblServiceLog2').DataTable({
+    			        dom: 'lBfrtip',
+    			        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+    			        buttons: [
+    			            {
+    			                extend: 'print',
+    			                exportOptions: {
+    			                    columns: ':visible'
+    			                }
+    			            },
+    			            {
+    			                extend: 'pdf',
+    			                exportOptions: {
+    			                    columns: ':visible'
+    			                }
+    			            },
+    			            {
+    			                extend: 'csv',
+    			                exportOptions: {
+    			                    columns: ':visible'
+    			                }
+    			            },
+    			            {
+    			                extend: 'excel',
+    			                exportOptions: {
+    			                    columns: ':visible'
+    			                }
+    			            },
+    			            'colvis'
+    			        ]
+    			    });
+                    
+                    // if (!$.fn.dataTable.isDataTable('#tblServiceLog')) {
+                    //     $('#tblServiceLog').DataTable({
+                    //         dom: 'lBfrtip',
+                    //         lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                    //         order: [[0, 'desc']],
+                    //         buttons: [
+                    //             {
+                    //                 extend: 'print',
+                    //                 exportOptions: {
+                    //                     columns: ':visible'
+                    //                 }
+                    //             },
+                    //             {
+                    //                 extend: 'pdf',
+                    //                 exportOptions: {
+                    //                     columns: ':visible'
+                    //                 }
+                    //             },
+                    //             {
+                    //                 extend: 'csv',
+                    //                 exportOptions: {
+                    //                     columns: ':visible'
+                    //                 }
+                    //             },
+                    //             {
+                    //                 extend: 'excel',
+                    //                 exportOptions: {
+                    //                     columns: ':visible'
+                    //                 }
+                    //             },
+                    //             'colvis'
+                    //         ]
+                    //     });
+                    // } 
                 } else {
                     $('#tblServiceLog tbody').html('<tr><td colspan="8">No records found.</td></tr>');
                 }
@@ -1537,7 +1780,7 @@
             });
         });
         
-        $('#tblServiceLog').on('click', '.deleteTask', function(e) {
+        $('#tblServiceLog2').on('click', '.deleteTask', function(e) {
             e.preventDefault();
             const taskid = $(this).attr('id')
             const row = $(this).closest('tr');
@@ -1596,7 +1839,7 @@
             });
         }
         
-        $('#tblServiceLog').on('click', '.editTask', function (e) {
+        $('#tblServiceLog2').on('click', '.editTask', function (e) {
             e.preventDefault();
             const taskid = $(this).attr('id');
         
@@ -1607,34 +1850,266 @@
                     const actionInput = $('#sl_action');
                     const selectedAction = data.data.action;
                     console.log(selectedAction);
+                    console.log(data.data.services);
         
                     actionInput.val(selectedAction);
-        
+                    
                     const actionExists = $(`#actions option[value="${selectedAction}"]`).length > 0;
         
                     if (!actionExists) {
                         $('#actions').append(`<option value="${selectedAction}">${selectedAction}</option>`);
                     }
                     
-                    const accountSelect = $('#sl_account');
-                    const selectedAccount = data.data.account;
-                    accountSelect.prepend(`<option value="${selectedAccount}" selected>${selectedAccount}</option>`);
-                        
+                    // const accountSelect = $('#sl_account');
+                    // const selectedAccount = data.data.account; 
+                    // accountSelect.prepend(`<option value="${selectedAccount}" selected>${selectedAccount}</option>`);
+                    
                     $('#sl_description').val(data.data.description);
                     $('#sl_comment').val(data.data.comment);
+                    
+                    // $('#sl_services option:selected').removeAttr('selected');
+                    if (data.data.services !== null) {
+                        $('#sl_services option[value="'+data.data.services+'"]').attr('selected', 'selected');
+                    } 
+                    
+                    $('#sl_action option[value="'+data.data.action+'"]').attr('selected', 'selected');
+                    $('#sl_account option[value="'+data.data.account+'"]').attr('selected', 'selected');
+                    
                     $('#sl_taskid').val(data.data.task_id); 
                     $('#sl_account').val(data.data.account);
                     $('#sl_date').val(data.data.task_date); 
                     $('#sl_minutes').val(data.data.minute); 
-        
+                    $(".mt-multiselect").multiselect('destroy');
+                    selectMulti();
+                    
                     $('#editTask').modal('show');
                 } else {
                     console.error(data.message);
                 }
             });
         });
+        
+        $('#tblGenerate').DataTable({
+            dom: 'lBfrtip',
+            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+            buttons: [
+                {
+                    extend: 'print',
+                    exportOptions: { columns: ':visible' },
+                    messageBottom: function () {
+                        // Use the table variable here
+                        let total = table.column(7).data().reduce((a, b) => {
+                            let val = parseInt(b);
+                            return a + (isNaN(val) ? 0 : val);
+                        }, 0);
+                        return 'Total Minutes: ' + total;
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: { columns: ':visible' },
+                    customize: function (doc) {
+                        let total = table.column(7).data().reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                        doc.content.push({ text: 'Total Minutes: ' + total, margin: [0, 20, 0, 0] });
+                    }
+                },
+                {
+                    extend: 'csvHtml5',
+                    exportOptions: { columns: ':visible' },
+                    customize: function (csv) {
+                        let total = table.column(7).data().reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                        return csv + '\nTotal Minutes,' + total;
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: { columns: ':visible' },
+                    customize: function (xlsx) {
+                        let sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        let total = table.column(7).data().reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                    
+                        // Find the last row
+                        let lastRow = $('row', sheet).last();
+                        let nextRow = parseInt(lastRow.attr('r')) + 1;
+                    
+                        // Build a new row as XML
+                        let totalRowXml =
+                            '<row r="' + nextRow + '">' +
+                            '<c t="inlineStr" r="A' + nextRow + '"><is><t>Total Minutes</t></is></c>' +
+                            '<c t="n" r="B' + nextRow + '"><v>' + total + '</v></c>' +
+                            '</row>';
+                    
+                        // Convert string to XML node
+                        let parser = new DOMParser();
+                        let xmlDoc = parser.parseFromString('<root>' + totalRowXml + '</root>', 'application/xml');
+                        let newRow = xmlDoc.getElementsByTagName('row')[0];
+                    
+                        // Append properly
+                        sheet.getElementsByTagName('sheetData')[0].appendChild(newRow);
+                    }
+                },
+                'colvis'
+            ],
+            footerCallback: function (row, data, start, end, display) {
+                let api = this.api();
+                let intVal = i => typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : (typeof i === 'number' ? i : 0);
+                let total = api.column(7).data().reduce((a, b) => intVal(a) + intVal(b), 0);
+                let pageTotal = api.column(7, { page: 'current' }).data().reduce((a, b) => intVal(a) + intVal(b), 0);
+                api.column(7).footer().innerHTML = total;
+            }
+        });
     })
+    
+    $(".formGenerate").on('submit',(function(e) {
+        e.preventDefault();
+
+        formObj = $(this);
+        if (!formObj.validate().form()) return false;
+
+        var formData = new FormData(this);
+        formData.append('btnGenerate',true);
+
+        var l = Ladda.create(document.querySelector('#btnGenerate'));
+        l.start();
+
+        $.ajax({
+            url: "task_service_log/generate.php",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData:false,
+            cache: false,
+            success: function(response) {
+                if ($.trim(response)) {
+                    msg = "Successfully!"
+					var obj = jQuery.parseJSON(response);
+                    $('#tblGenerate').DataTable().destroy();
+					$('#tblGenerate tbody').html(obj.data);
+            		let table = $('#tblGenerate').DataTable({
+            	        dom: 'lBfrtip',
+            	        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                        buttons: [
+                            {
+                                extend: 'print',
+                                exportOptions: { columns: ':visible', footer: true }
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                exportOptions: { columns: ':visible' },
+                                customize: function (doc) {
+                                    let total = table.column(7).data().reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                                    doc.content.push({ text: 'Total Minutes: ' + total, margin: [0, 20, 0, 0] });
+                                }
+                            },
+                            {
+                                extend: 'csvHtml5',
+                                exportOptions: { columns: ':visible' },
+                                customize: function (csv) {
+                                    let total = table.column(7).data().reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                                    return csv + '\nTotal Minutes,' + total;
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                exportOptions: { columns: ':visible' },
+                                customize: function (xlsx) {
+                                    let sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                    let total = table.column(7).data().reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                                
+                                    // Find the last row
+                                    let lastRow = $('row', sheet).last();
+                                    let nextRow = parseInt(lastRow.attr('r')) + 1;
+                                
+                                    // Build a new row as XML
+                                    let totalRowXml =
+                                        '<row r="' + nextRow + '">' +
+                                        '<c t="inlineStr" r="A' + nextRow + '"><is><t>Total Minutes</t></is></c>' +
+                                        '<c t="n" r="B' + nextRow + '"><v>' + total + '</v></c>' +
+                                        '</row>';
+                                
+                                    // Convert string to XML node
+                                    let parser = new DOMParser();
+                                    let xmlDoc = parser.parseFromString('<root>' + totalRowXml + '</root>', 'application/xml');
+                                    let newRow = xmlDoc.getElementsByTagName('row')[0];
+                                
+                                    // Append properly
+                                    sheet.getElementsByTagName('sheetData')[0].appendChild(newRow);
+                                }
+                            },
+                            'colvis'
+                        ],
+                        footerCallback: function (row, data, start, end, display) {
+                            let api = this.api();
+                            let intVal = i => typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : (typeof i === 'number' ? i : 0);
+                            let total = api.column(7).data().reduce((a, b) => intVal(a) + intVal(b), 0);
+                            let pageTotal = api.column(7, { page: 'current' }).data().reduce((a, b) => intVal(a) + intVal(b), 0);
+                            api.column(7).footer().innerHTML = total;
+                            
+                            let hours = Math.floor(total / 60);
+                            let minutes = total % 60;
+                            
+                            // Round minutes to nearest whole number
+                            minutes = Math.round(minutes);
+                        
+                            // If rounding pushes minutes to 60, bump the hour
+                            if (minutes === 60) {
+                                hours += 1;
+                                minutes = 0;
+                            }
+                            
+                            $('#totalHRS').html(hours + 'h ' + minutes + 'm');
+                        }
+            	    });
+                } else {
+                    msg = "No Record!"
+                }
+                l.stop();
+
+                bootstrapGrowl(msg);
+            }        
+        });
+    }));
+    function widget_daterange() {
+        $('.daterange').daterangepicker({
+    		ranges: {
+                'Today': [moment(), moment()],
+                'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
+    		},
+    		"autoApply": true,
+    		"showDropdowns": true,
+    		"linkedCalendars": false,
+    		"alwaysShowCalendars": true,
+    		"drops": "auto",
+    		"opens": "left"
+    	}, function(start, end, label) {
+    		console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+    	});
+    }
+	function widget_date_clears(e) {
+		$(e).parent().prev('.daterange').val('');
+	}
+	function selRecord(e) {
+	   // alert(e.value); 
+        $.ajax({
+            type: "GET",
+            url: "task_service_log/generate.php?s="+e.value,
+            dataType: "html",
+            success: function(response){
+                if ($.trim(response)) {
+                    $(".mt-multiselect").multiselect('destroy');
+
+					var obj = jQuery.parseJSON(response);
+                    $('#genUserID').html(obj.dataUser);
+                    $('#genAccount').html(obj.dataAccount);
+                    selectMulti();
+                }
+            } 
+        });
+	}
 </script>
+
+
 <script>
     function checkAll() {
         // Get the checkbox that represents "Check All"
@@ -2593,6 +3068,7 @@
     });
 </script>
 <script src='task_service_log/script.js'></script>
+<!--<script src='//cdn.datatables.net/fixedcolumns/5.0.4/js/dataTables.fixedColumns.js'></script>-->
 <script src='task_service_log/va_summ_script.js'></script>
 
 </body>

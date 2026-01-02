@@ -121,7 +121,7 @@
                 }
             }
 
-            if ( count($file_names) > 0 ) {
+            if ( count($file_names) > 0 ) { 
                 zipFilesAndDownload($file_names, $file_zip_name, $file_path);
             } else {
                 echo '<script>window.history.back();</script>';
@@ -1232,6 +1232,38 @@
             FROM tbl_eforms 
 
             WHERE user_id = $user_id
+            AND filetype = 1
+            AND files IS NOT NULL
+            AND files != ''
+        " );
+        if ( mysqli_num_rows($selectFiles) > 0 ) {
+            while($rowFile = mysqli_fetch_array($selectFiles)) {
+                $f_files = $rowFile["files"];
+                array_push($file_names, $f_files);
+            }
+
+            if ( count($file_names) > 0 ) {
+                zipFilesAndDownload($file_names, $file_zip_name, $file_path);
+            } else {
+                echo '<script>window.history.back();</script>';
+            }
+        } else {
+            echo '<script>window.history.back();</script>';
+        }
+    }
+    if( isset($_GET['modalDLP']) ) {
+        $user_id = $_GET['modalDLP'];
+        $file_zip_name = date('Y-m-d') .'_backup_products.zip';
+        $file_path = '../uploads/products/';
+        $file_names = array();
+
+        $selectFiles = mysqli_query( $conn,"
+            SELECT 
+            files 
+            FROM tbl_archiving
+
+            WHERE deleted = 0
+            AND user_id = $user_id
             AND filetype = 1
             AND files IS NOT NULL
             AND files != ''

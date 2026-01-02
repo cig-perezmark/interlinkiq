@@ -658,64 +658,87 @@ if( isset($_POST['btnSave_AddChildItem']) ) {
 if( isset($_GET['modalAddHistory_1b']) ) {
 	$ID = $_GET['modalAddHistory_1b'];
 	$today = date('Y-m-d');
-    
-	echo '<input class="form-control" type="hidden" name="ID" id="parent_id" value="'. $ID .'" />
-	    
-        	';
-                $queryType_h = "SELECT * FROM tbl_MyProject_Services_History left join tbl_MyProject_Services on MyPro_id = MyPro_PK where History_id =$ID";
-                $resultType_h = mysqli_query($conn, $queryType_h);
-                while($rowType_h = mysqli_fetch_array($resultType_h))
-                { 
-                       echo '<input type="hidden" class="form-control" name="Parent_MyPro_PK" value="'.$rowType_h['MyPro_id'].'" >'; 
-                       echo '<input type="hidden" class="form-control" name="rand_id_pk" value="'.$rowType_h['rand_id'].'" >';
-                    
-                 echo '
-                 <div class="form-group">
-                    <div class="col-md-12">
-                        <label>Task Name</label>
-                    </div>
-                    <div class="col-md-12">
-                        <input class="form-control" type="text" name="CAI_filename" required />
-                    </div>
-                </div>
-        	<div class="form-group">
-        	    <div class="col-md-12">
-                    <label>Supporting File</label>
-                </div>
-                <div class="col-md-12">
-                    <input class="form-control" type="file" name="CAI_files">
-                </div>
+	
+    $queryType_h = "SELECT * FROM tbl_MyProject_Services_History left join tbl_MyProject_Services on MyPro_id = MyPro_PK where History_id =$ID";
+    $resultType_h = mysqli_query($conn, $queryType_h);
+    while($rowType_h = mysqli_fetch_array($resultType_h)) { 
+        echo '<input class="form-control" type="hidden" name="ID" id="parent_id" value="'. $ID .'" />';
+        echo '<input type="hidden" class="form-control" name="Parent_MyPro_PK" value="'.$rowType_h['MyPro_id'].'" >'; 
+        echo '<input type="hidden" class="form-control" name="rand_id_pk" value="'.$rowType_h['rand_id'].'" >';
+        echo '<div class="form-group">
+            <div class="col-md-12">
+                <label>Task Name</label>
             </div>
-                
+            <div class="col-md-12">
+                <input class="form-control" type="text" name="CAI_filename" required />
+            </div>
+        </div>
+    	<div class="form-group">
+    	    <div class="col-md-12">
+                <label>Supporting File</label>
+            </div>
+            <div class="col-md-12">
+                <input class="form-control" type="file" name="CAI_files">
+            </div>
+        </div>
+		<div class="form-group">
+			<div class="col-md-12">
+				<label>Services</label>
+			</div>
+			<div class="col-md-12">
+				<select class="form-control mt-multiselect btn btn-default" name="services" required>';
+				
+					$selectTag = mysqli_query($conn, "SELECT * FROM tbl_service_logs_tag WHERE deleted = 0 ORDER BY name");
+					while($rowTag = mysqli_fetch_array($selectTag)) { 
+					   echo '<option value="'.$rowTag['name'].'" >'.$rowTag['name'].'</option>'; 
+					}
+				
+				echo '</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-12">
+				<label>Scope</label>
+			</div>
+			<div class="col-md-12">
+				<select class="form-control mt-multiselect btn btn-default" name="scope">
+				    <option value="0">Select</option>';
+				
+					$selectScope = mysqli_query($conn, "SELECT * FROM tbl_service_logs_scope WHERE deleted = 0 ORDER BY name");
+					while($rowScope = mysqli_fetch_array($selectScope)) { 
+					   echo '<option value="'.$rowScope['ID'].'" >'.$rowScope['name'].'</option>'; 
+					}
+				
+				echo '</select>
+			</div>
+		</div>
         <div class="form-group">
             <div class="col-md-6">
                 <label>Action Types</label>
                 <select class="form-control mt-multiselect btn btn-default" type="text" name="CAI_Action_taken" required>
-                    <option value="">---Select---</option>
-                    ';
+                    <option value="">---Select---</option>';
+                    
                     $queryType = "SELECT * FROM tbl_MyProject_Services_Action_Items  order by Action_Items_name ASC";
                     $resultType = mysqli_query($conn, $queryType);
-                    while($rowType = mysqli_fetch_array($resultType))
-                    { 
+                    while($rowType = mysqli_fetch_array($resultType)) { 
                         echo '<option value="'.$rowType['Action_Items_id'].'" >'.$rowType['Action_Items_name'].'</option>'; 
-                    } 
-                     echo '
-                     <option value="0">Others</option> 
+                    }
+                    
+                    echo '<option value="0">Others</option> 
                 </select>
             </div>
             <div class="col-md-6">
                 <label>Account</label>
                 <select class="form-control mt-multiselect btn btn-default" type="text" name="CAI_Accounts" required>
-                    <option value="">---Select---</option>
-                    ';
+                    <option value="">---Select---</option>';
+                    
                         $query_accounts = "SELECT * FROM tbl_service_logs_accounts where owner_pk = '$user_id' and  is_status = 0 order by name ASC";
                         $result_accounts = mysqli_query($conn, $query_accounts);
-                        while($row_accounts = mysqli_fetch_array($result_accounts))
-                        { 
+                        while($row_accounts = mysqli_fetch_array($result_accounts)) { 
                             echo '<option value="'.$row_accounts['name'].'" '; echo $rowType_h['Accounts_PK'] == $row_accounts['name'] ? 'selected':''; echo'>'.$row_accounts['name'].'</option>'; 
-                        } 
-                     echo '
-                     <option value="0">Others</option>
+                        }
+                        
+                    echo '<option value="0">Others</option>
                 </select>
             </div>
         </div>
@@ -726,8 +749,9 @@ if( isset($_GET['modalAddHistory_1b']) ) {
             <div class="col-md-12">
                 <textarea class="form-control" name="CAI_description" required></textarea>
             </div>
-        </div>
-        '; if($user_id == 34):  echo'
+        </div>'; 
+        
+        if($user_id == 34):  echo'
             <div class="form-group">
                 <div class="col-md-12">
                     <label>(<i style="color:red;font-size:12px;"><b style="color:black;">"Yes"</b> it will automatically be reflected in your Service logs. If <b style="color:black;"> "NO"</b> to Auto logs for your review.</i>) </label><br>
@@ -795,8 +819,9 @@ if( isset($_POST['btnSave_AddChildItemb']) ) {
 	$filename = mysqli_real_escape_string($conn,$_POST['CAI_filename']);
 	$description = mysqli_real_escape_string($conn,$_POST['CAI_description']);
 	$CAI_Estimated_Time = $_POST['CAI_Estimated_Time'];
+	$services = $_POST['services'];
+	$scope = $_POST['scope'];
 	$Action_taken = $_POST['CAI_Action_taken'];
-	$Action_date = $_POST['CAI_Action_date'];
 	$CAI_Assign_to = $_POST['CAI_Assign_to'];
 	$CAI_Accounts = $_POST['CAI_Accounts'];
 	$CAI_Action_due_date = $_POST['CAI_Action_due_date'];
@@ -814,8 +839,8 @@ if( isset($_POST['btnSave_AddChildItemb']) ) {
 		move_uploaded_file($tmp,$path);
 	}
 
-	$sql = "INSERT INTO tbl_MyProject_Services_Childs_action_Items (CAI_User_PK,Services_History_PK,Parent_MyPro_PK,CAI_files, CAI_filename, CAI_description,CAI_Estimated_Time,CAI_Action_taken,CAI_Action_date,CAI_Assign_to,CAI_Status,CIA_progress,CIA_Indent_Id,CAI_Rendered_Minutes,rand_id_pk,CAI_Accounts,CAI_Action_due_date)
-	VALUES ('$user_id','$ID','$Parent_MyPro_PK', '$to_Db_files', '$filename', '$description','$CAI_Estimated_Time','$Action_taken','$today','$CAI_Assign_to',1,'$CIA_progress','$ID','0','$rand_id_pk','$CAI_Accounts','$CAI_Action_due_date')";
+	$sql = "INSERT INTO tbl_MyProject_Services_Childs_action_Items (CAI_User_PK,Services_History_PK,Parent_MyPro_PK,CAI_files, CAI_filename, CAI_description, services, scope, CAI_Estimated_Time,CAI_Action_taken,CAI_Action_date,CAI_Assign_to,CAI_Status,CIA_progress,CIA_Indent_Id,CAI_Rendered_Minutes,rand_id_pk,CAI_Accounts,CAI_Action_due_date)
+	VALUES ('$user_id','$ID','$Parent_MyPro_PK', '$to_Db_files', '$filename', '$description', '$services', '$scope','$CAI_Estimated_Time','$Action_taken','$today','$CAI_Assign_to',1,'$CIA_progress','$ID','0','$rand_id_pk','$CAI_Accounts','$CAI_Action_due_date')";
 	
 	if (mysqli_query($conn, $sql)) {
 	    
@@ -823,8 +848,7 @@ if( isset($_POST['btnSave_AddChildItemb']) ) {
 		$selectData = mysqli_query( $conn,'SELECT * FROM tbl_MyProject_Services_Childs_action_Items
 		left join tbl_MyProject_Services_Action_Items on Action_Items_id = CAI_Action_taken
          left join tbl_hr_employee on CAI_Assign_to = ID WHERE CAI_id="'. $last_id .'" ORDER BY CAI_id LIMIT 1' );
-		if ( mysqli_num_rows($selectData) > 0 )
-		{
+		if ( mysqli_num_rows($selectData) > 0 ) {
 			$rowData = mysqli_fetch_array($selectData);
 			$data_ID = $rowData['CAI_id'];
 			$data_filename = $rowData['CAI_filename'];
@@ -1003,15 +1027,15 @@ if( isset($_POST['btnSave_AddChildItemb']) ) {
              
             if($overall > 480){
                 $user_cookie  = $_COOKIE['ID'];
-                $sql_over= "INSERT INTO tbl_service_logs (user_id,description,action,comment,account,task_date,minute,not_approved,my_pro_id) 
-                VALUES ('$user_cookie','$filename','$Action_taken2','$description','$CAI_Accounts','$CAI_Action_due_date','$CAI_Estimated_Time','$not_approved','$last_id')";
+                $sql_over= "INSERT INTO tbl_service_logs (user_id,description, services, action,comment,account,task_date,minute,not_approved,my_pro_id) 
+                VALUES ('$user_cookie','$filename','$Action_taken2','$description','".$services."','$CAI_Accounts','$CAI_Action_due_date','$CAI_Estimated_Time','$not_approved','$last_id')";
                 if(mysqli_query($conn, $sql_over)){$last_id_log = mysqli_insert_id($conn);}
                 exit;
             }
             else{
                 $user_cookie  = $_COOKIE['ID'];
-                $sql_auto= "INSERT INTO tbl_service_logs (user_id,description,action,comment,account,task_date,minute,my_pro_id) 
-                VALUES ('$user_cookie','$filename','$Action_taken2','$description','$CAI_Accounts','$CAI_Action_due_date','$CAI_Estimated_Time','$last_id')";
+                $sql_auto= "INSERT INTO tbl_service_logs (user_id,description, services, action,comment,account,task_date,minute,my_pro_id) 
+                VALUES ('$user_cookie','$filename','$Action_taken2','$description','".$services."','$CAI_Accounts','$CAI_Action_due_date','$CAI_Estimated_Time','$last_id')";
                 if(mysqli_query($conn, $sql_auto)){$last_id_log = mysqli_insert_id($conn);}
             }
         endif;
@@ -1019,14 +1043,13 @@ if( isset($_POST['btnSave_AddChildItemb']) ) {
         if($_POST['CIA_progress'] != 0 &&  $_POST['checked_choice'] == 'no'):
             	//autologs review
             	$user_cookie  = $_COOKIE['ID'];
-                $sql2= "INSERT INTO tbl_service_logs_draft (user_id,description,action,comment,account,task_date,minute) 
-                VALUES ('$user_cookie','$filename','$Action_taken2','$description','$CAI_Accounts','$CAI_Action_due_date','$CAI_Estimated_Time')";
+                $sql2= "INSERT INTO tbl_service_logs_draft (user_id,description, services, action,comment,account,task_date,minute) 
+                VALUES ('$user_cookie','$filename','$Action_taken2','$description','".$services."','$CAI_Accounts','$CAI_Action_due_date','$CAI_Estimated_Time')";
                 if(mysqli_query($conn, $sql2)){$last_id_log = mysqli_insert_id($conn);}
         endif;
 	}
 	else{
-	    $message = "Error: " . $sql . "<br>" . mysqli_error($conn);
-	    $message;
+	    echo $message = "Error: " . $sql . "<br>" . mysqli_error($conn);
 	}
 	mysqli_close($conn);
 }
@@ -1331,14 +1354,13 @@ if( isset($_POST['btnSubmit_2']) ) {
      	}
 }
 if( isset($_GET['getId_2b']) ) {
-$ID = $_GET['getId_2b'];
-$today = date('Y-m-d');
+    $ID = $_GET['getId_2b'];
+    $today = date('Y-m-d');
 
-echo '<input class="form-control" type="hidden" name="ID" value="'. $ID .'" />';
     $queryChildTask = "SELECT * FROM tbl_MyProject_Services_Childs_action_Items where CAI_id = $ID";
     $resultChildTask = mysqli_query($conn, $queryChildTask);
-    while($rowChildTask = mysqli_fetch_array($resultChildTask))
-     { 
+    while($rowChildTask = mysqli_fetch_array($resultChildTask)) { 
+        echo '<input class="form-control" type="hidden" name="ID" value="'. $ID .'" />';
         echo'
             <div class="form-group">
                 <div class="col-md-12">
@@ -1365,6 +1387,37 @@ echo '<input class="form-control" type="hidden" name="ID" value="'. $ID .'" />';
                     <input class="form-control" type="hidden" name="CAI_files2" value="'.$rowChildTask['CAI_files'].'">
                 </div>
             </div>
+			<div class="form-group">
+				<div class="col-md-12">
+					<label>Services</label>
+				</div>
+				<div class="col-md-12">
+					<select class="form-control mt-multiselect btn btn-default" name="services" required>';
+					
+						$selectTag = mysqli_query($conn, "SELECT * FROM tbl_service_logs_tag WHERE deleted = 0 ORDER BY name");
+						while($rowTag = mysqli_fetch_array($selectTag)) { 
+						   echo '<option value="'.$rowTag['name'].'" '; echo $rowTag['name'] == $rowChildTask['services'] ? 'SELECTED':''; echo '>'.$rowTag['name'].'</option>'; 
+						}
+					
+					echo '</select>
+				</div>
+			</div>
+    		<div class="form-group">
+    			<div class="col-md-12">
+    				<label>Scope</label>
+    			</div>
+    			<div class="col-md-12">
+    				<select class="form-control mt-multiselect btn btn-default" name="scope">
+    				    <option value="0">Select</option>';
+    				
+    					$selectScope = mysqli_query($conn, "SELECT * FROM tbl_service_logs_scope WHERE deleted = 0 ORDER BY name");
+    					while($rowScope = mysqli_fetch_array($selectScope)) { 
+    					   echo '<option value="'.$rowScope['ID'].'" '; echo $rowScope['ID'] == $rowChildTask['scope'] ? 'SELECTED':''; echo '>'.$rowScope['name'].'</option>'; 
+    					}
+    				
+    				echo '</select>
+    			</div>
+    		</div>
             <div class="form-group">
                 <div class="col-md-6">
                     <label>Accounts</label>
@@ -1469,206 +1522,197 @@ echo '<input class="form-control" type="hidden" name="ID" value="'. $ID .'" />';
 } 
 
 if( isset($_POST['btnSubmit_2b']) ) {
-//$user_id = $_COOKIE['ID'];
+    //$user_id = $_COOKIE['ID'];
     
-        $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
-        $date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
-        $today = $date_default_tx->format('Y-m-d');
-        
-        $ID = $_POST['ID'];
-        $CIA_progress = $_POST['CIA_progress'];
-        $CAI_filename = mysqli_real_escape_string($conn,$_POST['CAI_filename']);
-        $CAI_description = mysqli_real_escape_string($conn,$_POST['CAI_description']);
-        $CAI_Accounts = mysqli_real_escape_string($conn,$_POST['CAI_Accounts']);
-        $CAI_Action_date = mysqli_real_escape_string($conn,$_POST['CAI_Action_date']);
-        $CAI_Action_due_date = mysqli_real_escape_string($conn,$_POST['CAI_Action_due_date']);
-        $date_updated = mysqli_real_escape_string($conn,$_POST['date_updated']);
-        $CAI_Action_taken = mysqli_real_escape_string($conn,$_POST['CAI_Action_taken']);
-        
-        if(!empty($_POST['CAI_Rendered_Minutes']))
-        {
-            $CAI_Rendered_Minutes = $_POST['CAI_Rendered_Minutes'];
-        }
-        else
-        {
-            $CAI_Rendered_Minutes = 0;
-        }
-        
-        if($_POST['CIA_progress'] == 2)
-        { $CAI_Completed = '2'; }else{ $CAI_Completed = '1'; }
-        
-        $CAI_Assign_to = $_POST['CAI_Assign_to'];
-        
-        $files = $_FILES['CAI_files']['name'];
-        if (!empty($files)) {
-        	$path = '../MyPro_Folder_Files/';
-        	$tmp = $_FILES['CAI_files']['tmp_name'];
-        	$files = rand(1000,1000000) . ' - ' . $files;
-        	$to_Db_files = mysqli_real_escape_string($conn,$files);
-        	$path = $path.$files;
-        	move_uploaded_file($tmp,$path);
-        }else{
-            $to_Db_files =$_POST['CAI_files2'];
-        }
-    	$sql = "UPDATE tbl_MyProject_Services_Childs_action_Items  SET CAI_Assign_to = '$CAI_Assign_to',CAI_filename = '$CAI_filename',CAI_files ='$to_Db_files',CIA_progress = '$CIA_progress',CAI_description ='$CAI_description',CAI_Completed = '$CAI_Completed',CAI_Rendered_Minutes='$CAI_Rendered_Minutes',CAI_Accounts = '$CAI_Accounts',CAI_Action_date = '$CAI_Action_date',CAI_Action_due_date = '$CAI_Action_due_date',Date_Completed = '$date_updated',CAI_Action_taken='$CAI_Action_taken' where CAI_id = $ID";
-     	if (mysqli_query($conn, $sql)) 
-     	{
-     	    $ID = $_POST['ID'];
-     		 //   $last_id = mysqli_insert_id($conn);
-    			$selectData = mysqli_query( $conn,'SELECT * FROM tbl_MyProject_Services_Childs_action_Items
-    			left join tbl_MyProject_Services_Action_Items on Action_Items_id = CAI_Action_taken
-                 left join tbl_hr_employee on CAI_Assign_to = ID WHERE CAI_id="'. $ID .'" ORDER BY CAI_id LIMIT 1' );
-    			if ( mysqli_num_rows($selectData) > 0 )
-    			{
-    				$rowData = mysqli_fetch_array($selectData);
-    				$data_ID = $rowData['CAI_id'];
-    				$data_filename = $rowData['CAI_filename'];
-    				$data_description = $rowData['CAI_description'];
-    				$to_name = $rowData['first_name'];
-    				$Action_Items_name = $rowData['Action_Items_name'];
-    				
-    				$data_files = $rowData['CAI_files'];
-        			if (!empty($data_files))
-        			{
-        	            $fileExtension = fileExtension($data_files);
-        				$src = $fileExtension['src'];
-        				$embed = $fileExtension['embed'];
-        				$type = $fileExtension['type'];
-        				$file_extension = $fileExtension['file_extension'];
-        	            $url = $base_url.'../MyPro_Folder_Files/';
-        	            $files = '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($data_files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
-        	                <i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+    $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
+    $date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
+    $today = $date_default_tx->format('Y-m-d');
+    
+    $ID = $_POST['ID'];
+    $CIA_progress = $_POST['CIA_progress'];
+    $services = $_POST['services'];
+    $scope = $_POST['scope'];
+    $CAI_filename = mysqli_real_escape_string($conn,$_POST['CAI_filename']);
+    $CAI_description = mysqli_real_escape_string($conn,$_POST['CAI_description']);
+    $CAI_Accounts = mysqli_real_escape_string($conn,$_POST['CAI_Accounts']);
+    $CAI_Action_date = mysqli_real_escape_string($conn,$_POST['CAI_Action_date']);
+    $CAI_Action_due_date = mysqli_real_escape_string($conn,$_POST['CAI_Action_due_date']);
+    $date_updated = mysqli_real_escape_string($conn,$_POST['date_updated']);
+    $CAI_Action_taken = mysqli_real_escape_string($conn,$_POST['CAI_Action_taken']);
+    
+    if(!empty($_POST['CAI_Rendered_Minutes']))
+    {
+        $CAI_Rendered_Minutes = $_POST['CAI_Rendered_Minutes'];
+    }
+    else
+    {
+        $CAI_Rendered_Minutes = 0;
+    }
+    
+    if($_POST['CIA_progress'] == 2)
+    { $CAI_Completed = '2'; }else{ $CAI_Completed = '1'; }
+    
+    $CAI_Assign_to = $_POST['CAI_Assign_to'];
+    
+    $files = $_FILES['CAI_files']['name'];
+    if (!empty($files)) {
+    	$path = '../MyPro_Folder_Files/';
+    	$tmp = $_FILES['CAI_files']['tmp_name'];
+    	$files = rand(1000,1000000) . ' - ' . $files;
+    	$to_Db_files = mysqli_real_escape_string($conn,$files);
+    	$path = $path.$files;
+    	move_uploaded_file($tmp,$path);
+    }else{
+        $to_Db_files =$_POST['CAI_files2'];
+    }
+	$sql = "UPDATE tbl_MyProject_Services_Childs_action_Items  SET CAI_Assign_to = '$CAI_Assign_to',CAI_filename = '$CAI_filename',CAI_files ='$to_Db_files',CIA_progress = '$CIA_progress',CAI_description ='$CAI_description',services ='".$services."',scope ='".$scope."',CAI_Completed = '$CAI_Completed',CAI_Rendered_Minutes='$CAI_Rendered_Minutes',CAI_Accounts = '$CAI_Accounts',CAI_Action_date = '$CAI_Action_date',CAI_Action_due_date = '$CAI_Action_due_date',Date_Completed = '$date_updated',CAI_Action_taken='$CAI_Action_taken' where CAI_id = $ID";
+ 	if (mysqli_query($conn, $sql)) {
+ 	    $ID = $_POST['ID'];
+        // $last_id = mysqli_insert_id($conn);
+		$selectData = mysqli_query( $conn,'SELECT * FROM tbl_MyProject_Services_Childs_action_Items left join tbl_MyProject_Services_Action_Items on Action_Items_id = CAI_Action_taken left join tbl_hr_employee on CAI_Assign_to = ID WHERE CAI_id="'. $ID .'" ORDER BY CAI_id LIMIT 1' );
+		if ( mysqli_num_rows($selectData) > 0 ) {
+			$rowData = mysqli_fetch_array($selectData);
+			$data_ID = $rowData['CAI_id'];
+			$data_filename = $rowData['CAI_filename'];
+			$data_description = $rowData['CAI_description'];
+			$to_name = $rowData['first_name'];
+			$Action_Items_name = $rowData['Action_Items_name'];
+			
+			$data_files = $rowData['CAI_files'];
+			if (!empty($data_files)) {
+	            $fileExtension = fileExtension($data_files);
+				$src = $fileExtension['src'];
+				$embed = $fileExtension['embed'];
+				$type = $fileExtension['type'];
+				$file_extension = $fileExtension['file_extension'];
+	            $url = $base_url.'../MyPro_Folder_Files/';
+	            $files = '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($data_files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+	                <i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
                     <span class="badge" style="background-color:blue;margin-left:-7px;margin-top:-25;position:;z-index:;"> <b style="font-size:14px;">1</b> </span>
-        	            </a>';
-        			}
-        			else
-        			{
-        			    $files = '<a style="color:#fff;font-size:18px;" data-src="'.$src.$url.rawurlencode($data_files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
-        	                <i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
-                        <span class="badge" style="background-color:red;margin-left:-7px;margin-top:-25;position:;z-index:;"> <b style="font-size:14px;">0</b> </span>
-            	            </a>';
-        			}
-        			
-        			$owner  = $rowData['CAI_User_PK'];
-                    $query = "SELECT * FROM tbl_user where ID = $owner";
-                    $result = mysqli_query($conn, $query);
-                    while($row = mysqli_fetch_array($result)){ 
-                        $owner_name = $row['first_name'];
-                    }
-                    
-                    if($rowData['CIA_progress']== 1){ $sts = 'Inprogress'; }
-    	            else if($rowData['CIA_progress']== 2){ $sts = 'Completed';}
-    	            else{ $sts = 'Not Started';}
-    	            
-    	           
-            	   $render = $rowData['CAI_Rendered_Minutes'].' minute(s)';
-                    if($rowData['CIA_progress']==2){
-                	        $completed = '100%';
-                	 }
-                	 else{
-                	     $completed = '';
-                	 }
-    				$Start = date("Y-m-d", strtotime($rowData['CAI_Action_date']));
-			        $Due = date("Y-m-d", strtotime($rowData['CAI_Action_due_date']));
-			        
-			        $query_comment = "SELECT COUNT(*) as count FROM tbl_MyProject_Services_Comment where Task_ids = '$data_ID'";
-                    $result_comment = mysqli_query($conn, $query_comment);
-                    while($row_comment = mysqli_fetch_array($result_comment)){
-                        if($row_comment['count'] == 0){ $color_code= '#DC3535';}else{$color_code = 'blue';}
-				        $comments = '<a href="#modalGet_Comments" data-toggle="modal" onclick="btn_Comments('.$rowData['CAI_id'].')">
-                        <i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
-                        <span class="badge" style="background-color:'.$color_code.';margin-left:-7px;margin-top:-10px;position:absolute;z-index:1;"> <b>'.$row_comment['count'].'</b> </span>
-                        </a>';
-                    }
-                    $acc = $rowData['CAI_Accounts'];
-                    $add_btn = '<a style="font-weight:800;color:#fff;" href="#modalGetHistory_Child2b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child2('.$rowData['CAI_id'].')">Add</a>';
-                    $edit_btn = '<a style="font-weight:800;color:#fff;" href="#modalGet_child2b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_2('.$rowData['CAI_id'].')">Edit</a>';
-                    
-    				$output = array(
-    					"CAI_id" => $data_ID,
-    					"CAI_User_PK" => $owner_name,
-    					"CAI_filename" => $data_filename,
-    					"CAI_description" => $data_description,
-    					"CAI_files" => $files,
-    					"CAI_Accounts" => $acc,
-    					"Action_Items_name" => $Action_Items_name,
-    					"CAI_Assign_to" => $to_name,
-    					"CIA_progress" => $sts,
-    					"CAI_Rendered_Minutes" => $render.' '.$completed,
-    					"CAI_Action_date" => $Start,
-    					"CAI_Action_due_date" => $Due,
-    					"comment" => $comments,
-    					"action_btn" => $add_btn.$edit_btn
-    				);
-    				echo json_encode($output);
-    			}
-    			else {
-                    $message = "Error: " . $sql . "<br>" . mysqli_error($conn);
-                    
-                }
-    	    // autologs
-    	    $user_cookie =$_COOKIE['ID'];
-    	    $user_cookie_emp =$_COOKIE['employee_id'];
-    	    $CAI_Rendered_Minutes = $_POST['CAI_Rendered_Minutes'];
-    	    
-            $queryType = "SELECT * FROM tbl_MyProject_Services_Action_Items where Action_Items_id  = '$CAI_Action_taken'";
-            $resultType = mysqli_query($conn, $queryType);
-             while($rowType = mysqli_fetch_array($resultType))
-            { 
-                $Action_taken2 = $rowType['Action_Items_name'];
-            } 
-            
-            $double_entry = mysqli_query($conn, "select * from tbl_service_logs where my_pro_id  = '$ID'");
-            foreach($double_entry as $row_double){
-                $double = $row_double['my_pro_id'];
+	            </a>';
+			} else {
+			    $files = '<a style="color:#fff;font-size:18px;" data-src="'.$src.$url.rawurlencode($data_files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+	                <i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+                    <span class="badge" style="background-color:red;margin-left:-7px;margin-top:-25;position:;z-index:;"> <b style="font-size:14px;">0</b> </span>
+    	       </a>';
+			}
+			
+			$owner  = $rowData['CAI_User_PK'];
+            $query = "SELECT * FROM tbl_user where ID = $owner";
+            $result = mysqli_query($conn, $query);
+            while($row = mysqli_fetch_array($result)){ 
+                $owner_name = $row['first_name'];
             }
             
-             //for overtime logs
-                if($_POST['CIA_progress'] != 0 &&  $_POST['checked_choice'] == 'yes' && $double != $ID):
-                	$total_minute =0;
-                    $total = 0;
-                    $not_approved = 3;
-                    $ot_query = mysqli_query($conn, "select * from tbl_service_logs where user_id = '$user_id' and not_approved = 0");
-                    foreach($ot_query as $ot_row){
-                        $double_entry = $ot_row['my_pro_id'];
-                        $input_date = date('Y-m-d',strtotime($date_updated));
-                        $find_date = date('Y-m-d',strtotime($ot_row['task_date']));
-                        
-                        if($input_date == $find_date){
-                            $total_minute += $ot_row['minute'];
-                        }
-                    }
-                    $total_minute;
-                    $overall = $total_minute + $CAI_Rendered_Minutes;
-                    if($double_entry != $ID):
-                    if($overall > 480){
-                        $user_cookie  = $_COOKIE['ID'];
-                        $sql_over= "INSERT INTO tbl_service_logs (user_id,description,action,comment,account,task_date,minute,not_approved,my_pro_id) 
-                        VALUES ('$user_cookie','$CAI_filename','$Action_taken2','$CAI_description','$CAI_Accounts','$date_updated','$CAI_Rendered_Minutes','$not_approved','$ID')";
-                        if(mysqli_query($conn, $sql_over)){$last_id_log = mysqli_insert_id($conn);}
-                        exit;
-                    }
-                    else{
-                        $user_cookie  = $_COOKIE['ID'];
-                        $sql_auto= "INSERT INTO tbl_service_logs (user_id,description,action,comment,account,task_date,minute,my_pro_id) 
-                        VALUES ('$user_cookie','$CAI_filename','$Action_taken2','$CAI_description','$CAI_Accounts','$date_updated','$CAI_Rendered_Minutes','$ID')";
-                        if(mysqli_query($conn, $sql_auto)){$last_id_log = mysqli_insert_id($conn);}
-                    }
-                    endif;
-                endif;
+            if($rowData['CIA_progress']== 1){ $sts = 'Inprogress'; }
+            else if($rowData['CIA_progress']== 2){ $sts = 'Completed';}
+            else{ $sts = 'Not Started';}
             
-            if($_POST['CIA_progress'] != 0 &&  $_POST['checked_choice'] == 'no'):
-        	    if($CAI_Assign_to == $user_cookie_emp){
-        	        $sql2= "INSERT INTO tbl_service_logs_draft (user_id,description,action,comment,account,task_date,minute) 
-                    VALUES ('$user_cookie','$CAI_filename','$Action_taken2','$CAI_description','$CAI_Accounts','$date_updated','$CAI_Rendered_Minutes')";
-                    if(mysqli_query($conn, $sql2)){$last_id_log = mysqli_insert_id($conn);}
-        	    }else{
-                    $sql2= "INSERT INTO tbl_service_logs_draft (user_id,description,action,comment,account,task_date,minute) 
-                    VALUES ('$user_cookie','$CAI_filename','Update','$CAI_description','$CAI_Accounts','$today',2)";
-                    if(mysqli_query($conn, $sql2)){$last_id_log = mysqli_insert_id($conn);}
-        	    }
-    	    endif;
-     	}
+           
+    	    $render = $rowData['CAI_Rendered_Minutes'].' minute(s)';
+            if($rowData['CIA_progress']==2){
+        	    $completed = '100%';
+        	} else{
+        	    $completed = '';
+        	}
+			$Start = date("Y-m-d", strtotime($rowData['CAI_Action_date']));
+	        $Due = date("Y-m-d", strtotime($rowData['CAI_Action_due_date']));
+	        
+	        $query_comment = "SELECT COUNT(*) as count FROM tbl_MyProject_Services_Comment where Task_ids = '$data_ID'";
+            $result_comment = mysqli_query($conn, $query_comment);
+            while($row_comment = mysqli_fetch_array($result_comment)){
+                if($row_comment['count'] == 0){ $color_code= '#DC3535';}else{$color_code = 'blue';}
+		        $comments = '<a href="#modalGet_Comments" data-toggle="modal" onclick="btn_Comments('.$rowData['CAI_id'].')">
+                    <i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+                    <span class="badge" style="background-color:'.$color_code.';margin-left:-7px;margin-top:-10px;position:absolute;z-index:1;"> <b>'.$row_comment['count'].'</b> </span>
+                </a>';
+            }
+            $acc = $rowData['CAI_Accounts'];
+            $add_btn = '<a style="font-weight:800;color:#fff;" href="#modalGetHistory_Child2b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child2('.$rowData['CAI_id'].')">Add</a>';
+            $edit_btn = '<a style="font-weight:800;color:#fff;" href="#modalGet_child2b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_2('.$rowData['CAI_id'].')">Edit</a>';
+            
+			$output = array(
+				"CAI_id" => $data_ID,
+				"CAI_User_PK" => $owner_name,
+				"CAI_filename" => $data_filename,
+				"CAI_description" => $data_description,
+				"CAI_files" => $files,
+				"CAI_Accounts" => $acc,
+				"Action_Items_name" => $Action_Items_name,
+				"CAI_Assign_to" => $to_name,
+				"CIA_progress" => $sts,
+				"CAI_Rendered_Minutes" => $render.' '.$completed,
+				"CAI_Action_date" => $Start,
+				"CAI_Action_due_date" => $Due,
+				"comment" => $comments,
+				"action_btn" => $add_btn.$edit_btn
+			);
+			echo json_encode($output);
+		} else {
+            $message = "Error: " . $sql . "<br>" . mysqli_error($conn);
+        }
+	    // autologs
+	    $user_cookie =$_COOKIE['ID'];
+	    $user_cookie_emp =$_COOKIE['employee_id'];
+	    $CAI_Rendered_Minutes = $_POST['CAI_Rendered_Minutes'];
+	    
+        $queryType = "SELECT * FROM tbl_MyProject_Services_Action_Items where Action_Items_id  = '$CAI_Action_taken'";
+        $resultType = mysqli_query($conn, $queryType);
+        while($rowType = mysqli_fetch_array($resultType)) { 
+            $Action_taken2 = $rowType['Action_Items_name'];
+        } 
+        
+        $double_entry = mysqli_query($conn, "select * from tbl_service_logs where my_pro_id  = '$ID'");
+        foreach($double_entry as $row_double){
+            $double = $row_double['my_pro_id'];
+        }
+        
+        //for overtime logs
+        if($_POST['CIA_progress'] != 0 &&  $_POST['checked_choice'] == 'yes' && $double != $ID):
+        	$total_minute =0;
+            $total = 0;
+            $not_approved = 3;
+            $ot_query = mysqli_query($conn, "select * from tbl_service_logs where user_id = '$user_id' and not_approved = 0");
+            foreach($ot_query as $ot_row){
+                $double_entry = $ot_row['my_pro_id'];
+                $input_date = date('Y-m-d',strtotime($date_updated));
+                $find_date = date('Y-m-d',strtotime($ot_row['task_date']));
+                
+                if($input_date == $find_date){
+                    $total_minute += $ot_row['minute'];
+                }
+            }
+            $total_minute;
+            $overall = $total_minute + $CAI_Rendered_Minutes;
+            if($double_entry != $ID):
+            if($overall > 480){
+                $user_cookie  = $_COOKIE['ID'];
+                $sql_over= "INSERT INTO tbl_service_logs (user_id,description, services, action,comment,account,task_date,minute,not_approved,my_pro_id) 
+                VALUES ('$user_cookie','$CAI_filename','".$services."','$Action_taken2','$CAI_description','$CAI_Accounts','$date_updated','$CAI_Rendered_Minutes','$not_approved','$ID')";
+                if(mysqli_query($conn, $sql_over)){$last_id_log = mysqli_insert_id($conn);}
+                exit;
+            }
+            else{
+                $user_cookie  = $_COOKIE['ID'];
+                $sql_auto= "INSERT INTO tbl_service_logs (user_id,description, services, action,comment,account,task_date,minute,my_pro_id) 
+                VALUES ('$user_cookie','$CAI_filename','".$services."','$Action_taken2','$CAI_description','$CAI_Accounts','$date_updated','$CAI_Rendered_Minutes','$ID')";
+                if(mysqli_query($conn, $sql_auto)){$last_id_log = mysqli_insert_id($conn);}
+            }
+            endif;
+        endif;
+        
+        if($_POST['CIA_progress'] != 0 &&  $_POST['checked_choice'] == 'no'):
+    	    if($CAI_Assign_to == $user_cookie_emp){
+    	        $sql2= "INSERT INTO tbl_service_logs_draft (user_id,description,services,action,comment,account,task_date,minute) 
+                VALUES ('$user_cookie','$CAI_filename','".$services."','$Action_taken2','$CAI_description','$CAI_Accounts','$date_updated','$CAI_Rendered_Minutes')";
+                if(mysqli_query($conn, $sql2)){$last_id_log = mysqli_insert_id($conn);}
+    	    }else{
+                $sql2= "INSERT INTO tbl_service_logs_draft (user_id,description,services,action,comment,account,task_date,minute) 
+                VALUES ('$user_cookie','$CAI_filename','".$services."','Update','$CAI_description','$CAI_Accounts','$today',2)";
+                if(mysqli_query($conn, $sql2)){$last_id_log = mysqli_insert_id($conn);}
+    	    }
+	    endif;
+ 	}
 }
 
 // modal update child 2 Item
@@ -4732,33 +4776,58 @@ echo '<input class="form-control" type="hidden" name="ID" id="parent_ids" value=
                 </div>
             </div>
             <div class="form-group">
+                <div class="col-md-12">
+                    <label>Services</label>
+                </div>
+                <div class="col-md-12">
+                    <select class="form-control mt-multiselect btn btn-default" name="services" required>';
+					
+						$selectTag = mysqli_query($conn, "SELECT * FROM tbl_service_logs_tag WHERE deleted = 0 ORDER BY name");
+						while($rowTag = mysqli_fetch_array($selectTag)) { 
+						    echo '<option value="'.$rowTag['name'].'" '; echo $rowTag['name'] == $row['services'] ? 'SELECTED':''; echo '>'.$rowTag['name'].'</option>'; 
+						}
+					
+					echo '</select>
+                </div>
+            </div>
+    		<div class="form-group">
+    			<div class="col-md-12">
+    				<label>Scope</label>
+    			</div>
+    			<div class="col-md-12">
+    				<select class="form-control mt-multiselect btn btn-default" name="scope">
+    				    <option value="0">Select</option>';
+    				
+    					$selectScope = mysqli_query($conn, "SELECT * FROM tbl_service_logs_scope WHERE deleted = 0 ORDER BY name");
+    					while($rowScope = mysqli_fetch_array($selectScope)) { 
+    					   echo '<option value="'.$rowScope['ID'].'" '; echo $rowScope['ID'] == $row['scope'] ? 'SELECTED':''; echo '>'.$rowScope['name'].'</option>'; 
+    					}
+    				
+    				echo '</select>
+    			</div>
+    		</div>
+            <div class="form-group">
                 <div class="col-md-6">
                     <label>Action</label>
-                    <select class="form-control" name="Action_taken">
-                    ';
-                        $query_a = "SELECT * FROM tbl_MyProject_Services_Action_Items order by Action_Items_name ASC";
-                        $result_a = mysqli_query($conn, $query_a);
-                        while($row_a = mysqli_fetch_array($result_a))
-                             { ?>
-                               <option value="<?php echo $row_a['Action_Items_id']; ?>" <?php if($row_a['Action_Items_id'] == $row['Action_taken'] ){echo 'selected';}else{echo '';} ?>><?php echo $row_a['Action_Items_name']; ?></option>
-                           <?php } 
+                    <select class="form-control" name="Action_taken">';
                     
-                    echo'
-                    </select>
+                        $result_a = mysqli_query($conn, "SELECT * FROM tbl_MyProject_Services_Action_Items order by Action_Items_name ASC");
+                        while($row_a = mysqli_fetch_array($result_a)) {
+						    echo '<option value="'.$row_a['Action_Items_id'].'" '; echo $row_a['Action_Items_id'] == $row['Action_taken'] ? 'SELECTED':''; echo '>'.$row_a['Action_Items_name'].'</option>';  
+                        }
+                    
+                    echo'</select>
                 </div>
                 <div class="col-md-6">
                     <label>Account</label>
-                    <select class="form-control" name="h_accounts">
-                    ';
-                        $query_ac = "SELECT * FROM tbl_service_logs_accounts where owner_pk = '$user_id' and  is_status = 0 order by name ASC";
-                        $result_ac = mysqli_query($conn, $query_ac);
-                        while($row_ac = mysqli_fetch_array($result_ac))
-                        { ?>
-                            <option value="<?php echo $row_ac['name']; ?>" <?php if($row_ac['name'] == $row['h_accounts'] ){echo 'selected';}else{echo '';} ?>><?php echo $row_ac['name']; ?></option>
-                        <?php } 
+                    <select class="form-control" name="h_accounts">';
+                    
+                        $result_ac = mysqli_query($conn, "SELECT * FROM tbl_service_logs_accounts where owner_pk = $user_id and  is_status = 0 order by name ASC");
+                        while($row_ac = mysqli_fetch_array($result_ac)) {
+						    echo '<option value="'.$row_ac['name'].'" '; echo $row_ac['name'] == $row['h_accounts'] ? 'SELECTED':''; echo '>'.$row_ac['name'].'</option>';
+                        } 
                         
-                    echo'
-                    </select>
+                    echo'</select>
                 </div>
             </div>
             <div class="form-group">
@@ -4837,6 +4906,8 @@ if( isset($_POST['btnSubmit_parent']) ) {
         $filename = mysqli_real_escape_string($conn,$_POST['filename']);
         $H_progress = addslashes($_POST['H_progress']);
         $description = mysqli_real_escape_string($conn,$_POST['description']);
+        $services = $_POST['services'];
+        $scope = $_POST['scope'];
         $Assign_to_history = $_POST['Assign_to_history'];
         $Action_taken = $_POST['Action_taken'];
         $Estimated_Time = $_POST['Estimated_Time'];
@@ -4852,16 +4923,17 @@ if( isset($_POST['btnSubmit_parent']) ) {
         	$to_Db_files = mysqli_real_escape_string($conn,$files);
         	$path = $path.$files;
         	move_uploaded_file($tmp,$path);
-        }else{ $to_Db_files = $_POST['files2'];}
-    	$sql = "UPDATE tbl_MyProject_Services_History  SET  Action_date='$Action_date', h_accounts ='$h_accounts',Assign_to_history = '$Assign_to_history',filename = '$filename',files ='$to_Db_files',H_progress = '$H_progress',description ='$description',Action_taken = '$Action_taken',Estimated_Time='$Estimated_Time' where History_id = $ID";
-     	if (mysqli_query($conn, $sql)) 
-     	{
+        } else { 
+            $to_Db_files = $_POST['files2'];
+        }
+        
+    	$sql = "UPDATE tbl_MyProject_Services_History  SET  Action_date='$Action_date', h_accounts ='$h_accounts',Assign_to_history = '$Assign_to_history',filename = '$filename',files ='$to_Db_files',H_progress = '$H_progress',description ='$description',services ='".$services."',scope ='".$scope."',Action_taken = '$Action_taken',Estimated_Time='$Estimated_Time' where History_id = $ID";
+     	if (mysqli_query($conn, $sql)) {
  	        $ID = $_POST['ID'];
 			$selectData = mysqli_query( $conn,'SELECT * FROM tbl_MyProject_Services_History
 			left join tbl_MyProject_Services_Action_Items on Action_Items_id = Action_taken
              left join tbl_hr_employee on Assign_to_history = ID WHERE History_id="'. $ID .'" ORDER BY History_id LIMIT 1' );
-			if ( mysqli_num_rows($selectData) > 0 )
-			{
+			if ( mysqli_num_rows($selectData) > 0 ) {
 				$rowData = mysqli_fetch_array($selectData);
 				
 				$data_files = $rowData['files'];
@@ -4942,15 +5014,15 @@ if( isset($_POST['btnSubmit_parent']) ) {
             	</table>
                                        
                 ';
-			}
-			else {
+			} else {
                 $message = "Error: " . $sql . "<br>" . mysqli_error($conn);
                 
             }
         // autologs
         $user_cookie= $_COOKIE['ID'];
-        $sql2= "INSERT INTO tbl_service_logs_draft (user_id,description,action,comment,account,task_date,minute) 
-        VALUES ('$user_cookie','$filename','Updated','$description','$h_accounts','$today',2)";
+        // $sql2= "INSERT INTO tbl_service_logs_draft (user_id,description,action,comment,account,task_date,minute) 
+        $sql2= "INSERT INTO tbl_service_logs (user_id,description,services,action,comment,account,task_date,minute) 
+        VALUES ('$user_cookie','$filename','Updated','$description','".$services."','$h_accounts','$today',2)";
         if(mysqli_query($conn, $sql2)){$last_id_log = mysqli_insert_id($conn);}
 	
  	}
@@ -6738,39 +6810,66 @@ if( isset($_GET['modalAddHistory_Child2b']) ) {
 	$last_sudId3 = '';
     $query_c = "SELECT * FROM  tbl_MyProject_Services_Childs_action_Items  where CIA_Indent_Id =$ID order by CAI_id DESC LIMIT 1";
     $result_c = mysqli_query($conn, $query_c);
-    while($row_c = mysqli_fetch_array($result_c))
-     {
-         $last_sudId3 = $row_c['CAI_id'];
-     }
-     echo '<input type="hidden" class="form-control" id="last_sudId3"  value="'.$last_sudId3.'" >';
-	echo '<input class="form-control" type="hidden" name="ID" id="layer_2"  value="'. $ID .'" />
-        	';
-                    $queryType = "SELECT * FROM  tbl_MyProject_Services_Childs_action_Items left join tbl_MyProject_Services_History on History_id = Services_History_PK where CAI_id =$ID";
-                    $resultType = mysqli_query($conn, $queryType);
-                    while($rowType = mysqli_fetch_array($resultType))
-                     { 
-                           echo '<input type="hidden" class="form-control" name="Parent_MyPro_PK"  value="'.$rowType['Parent_MyPro_PK'].'" >';
-                           echo '<input type="hidden" class="form-control" name="Services_History_PK"  value="'.$rowType['Services_History_PK'].'" >'; 
-                           echo '<input type="hidden" class="form-control" name="CIA_Indent_Id"  value="'.$rowType['CIA_Indent_Id'].'" >';
+    while($row_c = mysqli_fetch_array($result_c)) {
+        $last_sudId3 = $row_c['CAI_id'];
+    }
+        echo '<input type="hidden" class="form-control" id="last_sudId3"  value="'.$last_sudId3.'" >';
+        echo '<input class="form-control" type="hidden" name="ID" id="layer_2"  value="'. $ID .'" />';
+        $queryType = "SELECT * FROM  tbl_MyProject_Services_Childs_action_Items left join tbl_MyProject_Services_History on History_id = Services_History_PK where CAI_id =$ID";
+        $resultType = mysqli_query($conn, $queryType);
+        while($rowType = mysqli_fetch_array($resultType)) { 
+            echo '<input type="hidden" class="form-control" name="Parent_MyPro_PK"  value="'.$rowType['Parent_MyPro_PK'].'" >';
+            echo '<input type="hidden" class="form-control" name="Services_History_PK"  value="'.$rowType['Services_History_PK'].'" >'; 
+            echo '<input type="hidden" class="form-control" name="CIA_Indent_Id"  value="'.$rowType['CIA_Indent_Id'].'" >';
                            
-                     echo '
-                     <div class="form-group">
-                        <div class="col-md-12">
-                            <label>Task Name</label>
-                        </div>
-                        <div class="col-md-12">
-                            <input class="form-control" type="text" name="CAI_filename" required />
-                        </div>
-                    </div>
-            	<div class="form-group">
-            	    <div class="col-md-12">
-                        <label>Supporting File</label>
-                    </div>
-                    <div class="col-md-12">
-                        <input class="form-control" type="file" name="CAI_files">
-                    </div>
-                </div>
+        echo '<div class="form-group">
+            <div class="col-md-12">
+                <label>Task Name</label>
+            </div>
+            <div class="col-md-12">
+                <input class="form-control" type="text" name="CAI_filename" required />
+            </div>
+        </div>
+    	<div class="form-group">
+    	    <div class="col-md-12">
+                <label>Supporting File</label>
+            </div>
+            <div class="col-md-12">
+                <input class="form-control" type="file" name="CAI_files">
+            </div>
+        </div>
                 
+		<div class="form-group">
+			<div class="col-md-12">
+				<label>Services</label>
+			</div>
+			<div class="col-md-12">
+				<select class="form-control mt-multiselect btn btn-default" name="services" required>';
+				
+					$selectTag = mysqli_query($conn, "SELECT * FROM tbl_service_logs_tag WHERE deleted = 0 ORDER BY name");
+					while($rowTag = mysqli_fetch_array($selectTag)) { 
+					   echo '<option value="'.$rowTag['name'].'" >'.$rowTag['name'].'</option>'; 
+					}
+				
+				echo '</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-12">
+				<label>Scope</label>
+			</div>
+			<div class="col-md-12">
+				<select class="form-control mt-multiselect btn btn-default" name="scope">
+				    <option value="0">Select</option>';
+				
+					$selectScope = mysqli_query($conn, "SELECT * FROM tbl_service_logs_scope WHERE deleted = 0 ORDER BY name");
+					while($rowScope = mysqli_fetch_array($selectScope)) { 
+					   echo '<option value="'.$rowScope['ID'].'" >'.$rowScope['name'].'</option>'; 
+					}
+				
+				echo '</select>
+			</div>
+		</div>
         <div class="form-group">
             <div class="col-md-6">
                 <label>Action Types</label>
@@ -6879,6 +6978,8 @@ if( isset($_POST['btnSave_AddChildItem_layer2b']) ) {
 	$filename = mysqli_real_escape_string($conn,$_POST['CAI_filename']);
 	$description = mysqli_real_escape_string($conn,$_POST['CAI_description']);
 	$CAI_Estimated_Time = $_POST['CAI_Estimated_Time'];
+	$services = $_POST['services'];
+	$scope = $_POST['scope'];
 	$Action_taken = $_POST['CAI_Action_taken'];
 	$Action_date = $_POST['CAI_Action_date'];
 	$CAI_Assign_to = $_POST['CAI_Assign_to'];
@@ -6895,8 +6996,8 @@ if( isset($_POST['btnSave_AddChildItem_layer2b']) ) {
 	$path = $path.$files;
 	move_uploaded_file($tmp,$path);
 
-	$sql = "INSERT INTO tbl_MyProject_Services_Childs_action_Items (CAI_User_PK,Services_History_PK,CIA_Indent_Id,CAI_files, CAI_filename, CAI_description,CAI_Estimated_Time,CAI_Action_taken,CAI_Action_due_date,CAI_Assign_to,CAI_Status,CIA_progress,Parent_MyPro_PK,CAI_Rendered_Minutes,CAI_Action_date,CAI_Accounts)
-	VALUES ('$user_id','$Services_History_PK','$CIA_Indent_Id', '$to_Db_files', '$filename', '$description','$CAI_Estimated_Time','$Action_taken','$Action_date','$CAI_Assign_to',1,'$CIA_progress','$Parent_MyPro_PK',0,'$today','$CAI_Accounts')";
+	$sql = "INSERT INTO tbl_MyProject_Services_Childs_action_Items (CAI_User_PK,Services_History_PK,CIA_Indent_Id,CAI_files, CAI_filename, CAI_description,CAI_Estimated_Time,services,scope,CAI_Action_taken,CAI_Action_due_date,CAI_Assign_to,CAI_Status,CIA_progress,Parent_MyPro_PK,CAI_Rendered_Minutes,CAI_Action_date,CAI_Accounts)
+	VALUES ('$user_id','$Services_History_PK','$CIA_Indent_Id', '$to_Db_files', '$filename', '$description','$CAI_Estimated_Time','$services','$scope','$Action_taken','$Action_date','$CAI_Assign_to',1,'$CIA_progress','$Parent_MyPro_PK',0,'$today','$CAI_Accounts')";
 	
 	if (mysqli_query($conn, $sql)) {
 	    

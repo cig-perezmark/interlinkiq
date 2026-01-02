@@ -122,212 +122,121 @@
 
                 <!-- List of apps in tbl_app_store table -->
                 <div class="portlet-body">
-                    <!--Emjay starts here-->
-
                     <div id="forms" class="tab-pane active">
                         <table class="table table-bordered">
                             <thead class="bg-primary">
                                 <tr>
+                                    <td class="text-center">No</td>
                                     <td>Form Name</td>
-                                    <?php
-                                            if($_COOKIE['ID'] == 481):
-                                        ?>
-                                    <td>KPI(%)</td>
+                                    <?php if ($_COOKIE['ID'] == 481): ?>
+                                        <td>KPI(%)</td>
                                     <?php endif; ?>
                                     <td>Action</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                    $original_switch_identifier_id = $switch_user_id;
-                                    $select_user_role = "SELECT * FROM tbl_user WHERE ID = {$_COOKIE['ID']}";
-                                    $user_role = mysqli_query($conn,$select_user_role);
-                                    $user_role_array = mysqli_fetch_assoc($user_role);
-                                    $user_roles = $user_role_array['form_role'];
-                                    if($current_client != 1) {
-                                        if($user_roles != 1){
-                                            if($current_userEmployeeID == 0){
-                                                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND user_id = '" . $_COOKIE['ID'] . "' AND enterprise_id = '" . $_COOKIE['ID'] . "'"); 
-                                            } else{
-                                                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = '$switch_user_id' AND user_id = {$_COOKIE['ID']}"); 
-                                            }
-                                        }
-                                        else{
-                                            $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = '$switch_user_id'"); 
-                                        }
-                                        if(isset($_COOKIE['facilityswitchAccount'])){
-                                            $switch_user_id = $switch_user_id.'999'.$facility_switch_user_id;
-                                        }
-                                        $num_rows = mysqli_num_rows($check_form_owned);
-                                        if($num_rows > 0 ){
-                                            $check_result = mysqli_fetch_array($check_form_owned);
-                                            $array_counter = explode(",", $check_result["form_owned"]); 
-                                            foreach($array_counter as $value):
-                                                $query = "SELECT * FROM tbl_afia_forms_list WHERE PK_id = '$value'";
-                                                $result = mysqli_query($e_connection, $query);
-                                                while($row = mysqli_fetch_array($result))
-                                                {?> 
-                                                    <?php
-                                                        $color = '';
-                                                        if($row['is_new'] == 1){
-                                                            $color = '#FFF9C4';
-                                                        }
-                                                        if($row['is_new'] == 2){
-                                                            $color = '#CE93D8';
-                                                        }
-                                                        if($row['is_new'] == 3){
-                                                            $color = '#A5D6A7';
-                                                        }
-                                                    ?>
-                                                    <tr style='background-color:<?= $color ?>'>
-                                                        <td>
-                                                            <?= $row['afl_form_name']; ?>
-                                                        </td>
-                                                        <?php
-                                                            if($_COOKIE['ID'] == 481):
-                                                               $select_kpi_reviewer = "SELECT * FROM kpi_reviewer INNER JOIN kpi_frequency ON kpi_frequency.PK_id =  kpi_reviewer.id WHERE kpi_reviewer.employee_id = {$_COOKIE['employee_id']} AND kpi_reviewer.form_id = {$row['PK_id']}";
-                                                                $kpi_reviewer_result = mysqli_query($e_connection,$select_kpi_reviewer);
-                                                                if($kpi_reviewer_result){
-                                                                    $kpi_assoc = mysqli_fetch_assoc($kpi_reviewer_result);
-                                                                    $btn_color = 'green';
-                                                                    if($kpi_assoc['reviewer'] == 1){
-                                                                        $manilaTimezone = new DateTimeZone('Asia/Manila');
-                                                                    
-                                                                        $to = DateTime::createFromFormat('H:i', $kpi_assoc['time_to'], $manilaTimezone);
-                                                                        $currentTime = new DateTime(null, $manilaTimezone);
-                                                                    
-                                                                        if ($currentTime >= $to) {
-                                                                            $btn_color = "red"; 
-                                                                        } 
-                                                                    }
-                                                                }
-                                                        ?>
-                                <td>100%</td> 
-                                <?php endif; ?>
-                                <td>
-                                    <?php
-                                      if($row['form_free'] != 1):
-                                     ?>
-                                    <a onclick="myfunction('<?= $switch_user_id ?>', '<?= $enterp_logo ?>')" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/add_records/<?= $row['PK_id'] ?>" target="_blank" class="btn <?= $btn_color ?> btn-outline">Add Records</a>
-                                    <?php if($row['pending_records'] != 0 OR $row['pending_records'] == NULL): ?>
-                                    <!--<a onclick="myfunction(<?= $current_userEmployerID; ?>)" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/pending/<?= $row['PK_id'] ?>" target="_blank" class="btn blue btn-outline">Pending Records</a>-->
-                                    <?php endif; ?>
-                                    <?php if($row['view_records'] == 0 OR $row['view_records'] == NULL): ?>
-                                    <a onclick="myfunction('<?= $switch_user_id ?>', '<?= $enterp_logo ?>')" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/view_records/<?= $row['PK_id'] ?>" target="_blank" class="btn blue btn-outline">View Records</a>
-                                    <?php endif; ?>
-                                    <?php if($_COOKIE['ID'] == 481 AND $row['afl_form_code'] == 'fscs'): ?>
-                                    <a data-toggle="modal" data-target="#modal_nav_records" class="btn blue btn-outline">Review</a>
-                                    <?php endif ?>
-                                    <?php else: ?>
-                                    <a onclick="myfunction('<?= $switch_user_id ?>', '<?= $enterp_logo ?>')" href="https://interlinkiq.com/e-forms/Welcome/index/1/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/add_records/<?= $row['PK_id'] ?>" target="_blank" class="btn <?= $btn_color ?> btn-outline">Add Records</a>
-                                    <?php if($row['pending_records'] != 0 OR $row['pending_records'] == NULL): ?>
-                                    <!--<a onclick="myfunction('<?= $current_userEmployerID ?>', '<?= $enterp_logo ?>')" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/pending/<?= $row['PK_id'] ?>" target="_blank" class="btn blue btn-outline">Pending Records</a>-->
-                                    <?php endif; ?>
-                                    <?php if($row['view_records'] == 0 OR $row['view_records'] == NULL): ?>
-                                    <a onclick="myfunction('<?= $switch_user_id ?>', '<?= $enterp_logo ?>')" href="https://interlinkiq.com/e-forms/Welcome/index/1/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/view_records/<?= $row['PK_id'] ?>" target="_blank" class="btn blue btn-outline">View Records</a>
-                                    <?php endif; ?>
-                                    <?php endif; ?>
-                                    <?php if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163 OR $current_userEmployeeID == 78): ?>
-                                    <a onclick="form_code(<?= $row['PK_id'] ?>)" class="btn blue btn-outline" data-toggle="modal" data-target="#e_forms_modal_video">Attach Video</a>
-                                    <?php endif; ?>
-                                    <?php
-                                                                $form_id = $row['PK_id'];
-                                                                $query_videos = "SELECT * FROM tbl_form_videos WHERE form_id = '$form_id'";
-                                                                $result_videos = mysqli_query($conn, $query_videos);
-                                                                foreach($result_videos as $video_row):
-                                                            ?>
-                                    ( <a class="view_videos" data-src="<?= $video_row['video_link'] ?>" data-fancybox> <?= $video_row['video_name'] ?></a>)
-                                    <?php endforeach; ?>
-                                    <?php
-                                                                // if($current_userEmployerID == '34'){
-                                                                //     $check_form_owned1 = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE enterprise_id = '308' AND user_id = '308'"); 
-                                                                //     $check_result1 = mysqli_fetch_array($check_form_owned1);
-                                                                //     $array_counter1 = explode(",", $check_result1["form_owned"]);
-                                                                //     foreach($array_counter1 as $value1){
-                                                                //         if($value1 == $row['PK_id']){
-                                                                //             echo "Activated";
-                                                                //         }
-                                                                //     }
-                                                                // }
-                                                            ?>
-                                </td>
-                            </tr>
-                            <?php }
-                                            endforeach;
-                                        }
-                                    } else{
-                                        $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '$switch_user_id' AND enterprise_id = '$switch_user_id'"); 
-                                        $num_rows = mysqli_num_rows($check_form_owned);
-                                        foreach($check_form_owned as $form_own_row){
-                                            if($num_rows > 0 ){
-                                                $check_result = mysqli_fetch_array($check_form_owned);
-                                                $array_counter = explode(",",  $form_own_row['form_owned']); 
-                                                foreach($array_counter as $value):
-                                                    $query = "SELECT * FROM tbl_afia_forms_list WHERE PK_id = '$value'";
-                                                    $result = mysqli_query($e_connection, $query);
-                                                    while($row = mysqli_fetch_array($result))
-                                                    {?>
-                                            <tr>
-                                                <td>
-                                                    <?= $row['afl_form_name']; ?>
-                                                </td>
-            
-                                                <td>
-                                                    <?php
-                                                        if($row['form_free'] != 1):
-                                                    ?>
-                                                    <a onclick="myfunction(<?= $switch_user_id; ?>)" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/add_records/<?= $row['PK_id'] ?>" target="_blank" class="btn green btn-outline">Add Records</a>
-                                                    <?php if($row['pending_records'] != 0 OR $row['pending_records'] == NULL): ?>
-                                                    <!--<a onclick="myfunction(<?= $current_userEmployerID; ?>)" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/pending/<?= $row['PK_id'] ?>" target="_blank" class="btn blue btn-outline">Pending Records</a>-->
-                                                    <?php endif; ?>
-                                                    <?php if($row['view_records'] == 0 OR $row['view_records'] == NULL): ?>
-                                                    <a onclick="myfunction(<?= $switch_user_id; ?>)" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/view_records/<?= $row['PK_id'] ?>" target="_blank" class="btn blue btn-outline">View Records</a>
-                                                    <?php endif; ?>
-                                                    <?php else: ?>
-                                                    <a onclick="myfunction(<?= $switch_user_id; ?>)" href="https://interlinkiq.com/e-forms/Welcome/index/1/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/add_records/<?= $row['PK_id'] ?>" target="_blank" class="btn green btn-outline">Add Records</a>
-                                                    <?php if($row['pending_records'] != 0 OR $row['pending_records'] == NULL): ?>
-                                                    <!--<a onclick="myfunction(<?= $switch_user_id; ?>)" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/pending/<?= $row['PK_id'] ?>" target="_blank" class="btn blue btn-outline">Pending Records</a>-->
-                                                    <?php endif; ?>
-                                                    <?php if($row['view_records'] == 0 OR $row['view_records'] == NULL): ?>
-                                                    <a onclick="myfunction(<?= $switch_user_id; ?>)" href="https://interlinkiq.com/e-forms/Welcome/index/1/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/view_records/<?= $row['PK_id'] ?>" target="_blank" class="btn blue btn-outline">View Records</a>
-                                                    <?php endif; ?>
-                                                    <?php endif; ?>
-                                                    <?php if($switch_user_id == 185 OR $switch_user_id == 1  OR $switch_user_id == 163 OR $switch_user_id == 78): ?>
-                                                    <a onclick="form_code(<?= $row['PK_id'] ?>)" class="btn blue btn-outline" data-toggle="modal" data-target="#e_forms_modal_video">Attach Video</a>
-                                                    <?php endif; ?>
-                                                    <?php
-                                                        $form_id = $row['PK_id'];
-                                                        $query_videos = "SELECT * FROM tbl_form_videos WHERE form_id = '$form_id'";
-                                                        $result_videos = mysqli_query($conn, $query_videos);
-                                                        foreach($result_videos as $video_row):
-                                                    ?>
-                                                    ( <a class="view_videos" data-src="<?= $video_row['video_link'] ?>" data-fancybox> <?= $video_row['video_name'] ?></a>)
-                                                    <?php endforeach; ?>
-                                                    <?php
-                                                        if($current_userEmployerID == '34'){
-                                                            $check_form_owned1 = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE enterprise_id = '308' AND user_id = '308'"); 
-                                                            $check_result1 = mysqli_fetch_array($check_form_owned1);
-                                                            $array_counter1 = explode(",", $check_result1["form_owned"]);
-                                                            foreach($array_counter1 as $value1){
-                                                                if($value1 == $row['PK_id']){
-                                                                    echo "Activated";
-                                                                }
-                                                            }
-                                                        }
-                                                    ?>
-                                                </td>
-                                            </tr>
-                                            <?php }
-                                                endforeach;
-                                            }
+                                $original_switch_identifier_id = $switch_user_id;
+                                
+                                $switch_identifier = $_COOKIE['switchAccount'] ??  $_COOKIE['user_company_id'];
+                
+                                // Get user role
+                                $select_user_role = "SELECT * FROM tbl_user WHERE ID = {$_COOKIE['ID']}";
+                                $user_role = mysqli_query($conn, $select_user_role);
+                                $user_role_array = mysqli_fetch_assoc($user_role);
+                                $user_roles = $user_role_array['form_role'];
+                                $index = 1;
+                
+                                if ($current_client != 1) {
+                                    // if ($user_roles != 1) {
+                                    //     $check_form_owned_query = ($current_userEmployeeID == 0)
+                                    //         // ! employee
+                                    //         ? "SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = $switch_user_id"
+                                    //         // employee
+                                    //         : "SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = $switch_user_id AND user_id = {$_COOKIE['ID']}";
+                                    // } else {
+                                    //     // Display all eforms
+                                    //     $check_form_owned_query = "SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = $switch_user_id";
+                                    // } 
+                                    
+                                    
+                                    if ($user_roles == 1) {
+                                        $check_form_owned_query = "SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = $switch_user_id";
+                                    } else {
+                                        if (isset($_COOKIE['switchAccount'])) {
+                                            $check_form_owned_query = "SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = $switch_user_id AND user_id = $switch_user_id";
+                                        } else {
+                                            $check_form_owned_query = "SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND enterprise_id = $switch_user_id AND user_id = $current_userID";
                                         }
                                     }
+                
+                                    $check_form_owned = mysqli_query($conn, $check_form_owned_query);
+                
+                                    $switch_user_id_new = $switch_user_id;
+                                    if (isset($_COOKIE['facilityswitchAccount'])) {
+                                        $switch_user_id_new = $switch_user_id . '999' . $facility_switch_user_id;
+                                    }
+                
+                                    if (mysqli_num_rows($check_form_owned) > 0) {
+                                        $check_result = mysqli_fetch_array($check_form_owned);
+                                        $form_ids = explode(",", $check_result["form_owned"]);
+                                        $form_ids = array_map('intval', $form_ids);
+                                        $id_list = implode(',', $form_ids);
+                
+                                        // Optimized single query 
+                                        $query = "SELECT * FROM tbl_afia_forms_list WHERE PK_id IN ($id_list) ORDER BY afl_form_name ASC";
+                                        $result = mysqli_query($e_connection, $query);
+                
+                                        while ($row = mysqli_fetch_array($result)) {
+                                            $color = match ($row['is_new']) {
+                                                1 => '#FFF9C4',
+                                                2 => '#CE93D8',
+                                                3 => '#A5D6A7',
+                                                default => ''
+                                            };
+                                            ?>
+                                            <tr style='background-color:<?= $color ?>'>
+                                                <td class="text-center"><?= $index++ ?></td>
+                                                <td><?= $row['afl_form_name']; ?></td>
+                
+                                                <?php if ($_COOKIE['ID'] == 481): ?> 
+                                                    <td>100%</td>
+                                                <?php endif; ?>
+                
+                                                <td>
+                                                    <?php if ($row['form_free'] != 1): ?>
+                                                        <a onclick="myfunction('<?= $original_switch_identifier_id ?>', '<?= $enterp_logo ?>')" 
+                                                           href="https://interlinkiq.com/e-forms/Welcome/index/<?= $original_switch_identifier_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/add_records/<?= $row['PK_id'] ?>" 
+                                                           target="_blank" class="btn green btn-outline">Add Records</a>
+                
+                                                        <?php if ($row['view_records'] == 0 || $row['view_records'] == NULL): ?>
+                                                            <a onclick="myfunction('<?= $original_switch_identifier_id ?>', '<?= $enterp_logo ?>')" 
+                                                               href="https://interlinkiq.com/e-forms/Welcome/index/<?= $original_switch_identifier_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/view_records/<?= $row['PK_id'] ?>" 
+                                                               target="_blank" class="btn blue btn-outline">View Records</a>
+                                                        <?php endif; ?>
+                
+                                                        <?php if ($row['has_version'] == 1 && ($current_userID == 1486 || $current_userAdminAccess == 1)): ?>
+                                                            <a onclick="myfunction('<?= $original_switch_identifier_id ?>', '<?= $enterp_logo ?>')" 
+                                                               href="https://interlinkiq.com/e-forms/Welcome/index/<?= $original_switch_identifier_id ?>/<?= $_COOKIE['ID'] ?>/<?= $row['afl_form_code'] ?>/template/<?= $row['PK_id'] ?>" 
+                                                               target="_blank" class="btn blue btn-outline">Template</a>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                
+                                                    <?php if (in_array($current_userEmployerID, [185, 1, 163, 78])): ?>
+                                                        <a onclick="form_code(<?= $row['PK_id'] ?>)" class="btn blue btn-outline" data-toggle="modal" data-target="#e_forms_modal_video">Attach Video</a>
+                                                    <?php endif; ?>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                        } // end while
+                                    } // end if rows > 0
+                                } // end if current_client != 1
                                 ?>
                             </tbody>
                         </table>
                     </div>
-                    <!--Emjay code ends here-->
                 </div>
+
             </div>
         </div>
     </div>
@@ -884,7 +793,7 @@
     function assignForm() {
         var eform_id = $('#form_id').find(":selected").val();
         var form_owner = $('#form_owner').val();
-        var enterprise_id = <?= $switch_user_id ?>;
+        var enterprise_id = <?= $switch_user_id_new ?>;
         
         console.log(eform_id);
         console.log(form_owner);
@@ -905,7 +814,7 @@
         });
     }
 
-var initiallySelected = [];
+    var initiallySelected = [];
     function get_employee_list(id) {
         var id = $(event.target).val();
         $.ajax({
@@ -971,18 +880,18 @@ var initiallySelected = [];
     
     $(document).ready(function() {
         var tbody = $('tbody');
-    
         var rows = tbody.find('tr').get();
+        
         rows.sort(function(a, b) {
-            var keyA = $(a).find('td:first').text().toUpperCase();
-            var keyB = $(b).find('td:first').text().toUpperCase();
-    
+            var keyA = $(a).find('td').eq(1).text().toUpperCase();
+            var keyB = $(b).find('td').eq(1).text().toUpperCase();
             return keyA.localeCompare(keyB);
         });
-    
+        
         $.each(rows, function(index, row) {
             tbody.append(row);
         });
+        
         // Emjay script starts here
         fancyBoxes();
         $('#save_video').click(function() {
@@ -1052,7 +961,7 @@ var initiallySelected = [];
     
                 var form_id = $('#form_id').val();
                 var form_owner = id;
-                var enterprise_id = <?= $switch_user_id ?>;
+                var enterprise_id = <?= $switch_user_id_new ?>;
                 if (confirm('Are you sure you want to unassign this form to this personnel?')) {
                   // Save it!
                     $.ajax({
@@ -1074,163 +983,163 @@ var initiallySelected = [];
     }
 </script>
 <script>
-am5.ready(function() {
+    // am5.ready(function() {
 
-    // Create root element
-    // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-    var root = am5.Root.new("chartdiv1");
-
-
-    // Set themes
-    // https://www.amcharts.com/docs/v5/concepts/themes/
-    root.setThemes([
-        am5themes_Animated.new(root)
-    ]);
+    // // Create root element
+    // // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+    // var root = am5.Root.new("chartdiv1");
 
 
-    // Create chart
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
-    var chart = root.container.children.push(am5percent.PieChart.new(root, {
-        layout: root.verticalLayout
-    }));
+    // // Set themes
+    // // https://www.amcharts.com/docs/v5/concepts/themes/
+    // root.setThemes([
+    //     am5themes_Animated.new(root)
+    // ]);
 
 
-    // Create series
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
-    var series = chart.series.push(am5percent.PieSeries.new(root, {
-        valueField: "value",
-        categoryField: "category"
-    }));
+    // // Create chart
+    // // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+    // var chart = root.container.children.push(am5percent.PieChart.new(root, {
+    //     layout: root.verticalLayout
+    // }));
 
 
-    // Set data
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
-    series.data.setAll([{
-            value: <?= $review_count ?>,
-            category: "Reviewed"
-        },
-        {
-            value: <?= $not_review_count ?>,
-            category: "For Reviewed"
-        },
-    ]);
+    // // Create series
+    // // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+    // var series = chart.series.push(am5percent.PieSeries.new(root, {
+    //     valueField: "value",
+    //     categoryField: "category"
+    // }));
 
 
-    legend.data.setAll(series.dataItems);
+    // // Set data
+    // // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+    // series.data.setAll([{
+    //         value: <?= $review_count ?>,
+    //         category: "Reviewed"
+    //     },
+    //     {
+    //         value: <?= $not_review_count ?>,
+    //         category: "For Reviewed"
+    //     },
+    // ]);
 
 
-    // Play initial series animation
-    // https://www.amcharts.com/docs/v5/concepts/animations/#Animation_of_series
-    series.appear(1000, 100);
+    // legend.data.setAll(series.dataItems);
 
-}); // end am5.ready()
+
+    // // Play initial series animation
+    // // https://www.amcharts.com/docs/v5/concepts/animations/#Animation_of_series
+    // series.appear(1000, 100);
+
+    // }); // end am5.ready()
 </script>
 
 
 <script>
-am5.ready(function() {
+    // am5.ready(function() {
 
-    // Create root element
-    // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-    var root = am5.Root.new("chartdiv3");
-
-
-    // Set themes
-    // https://www.amcharts.com/docs/v5/concepts/themes/
-    root.setThemes([
-        am5themes_Animated.new(root)
-    ]);
+    // // Create root element
+    // // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+    // var root = am5.Root.new("chartdiv3");
 
 
-    // Create chart
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
-    var chart = root.container.children.push(am5percent.PieChart.new(root, {
-        layout: root.verticalLayout
-    }));
+    // // Set themes
+    // // https://www.amcharts.com/docs/v5/concepts/themes/
+    // root.setThemes([
+    //     am5themes_Animated.new(root)
+    // ]);
 
 
-    // Create series
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
-    var series = chart.series.push(am5percent.PieSeries.new(root, {
-        valueField: "value",
-        categoryField: "category"
-    }));
+    // // Create chart
+    // // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+    // var chart = root.container.children.push(am5percent.PieChart.new(root, {
+    //     layout: root.verticalLayout
+    // }));
 
 
-    // Set data
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
-    series.data.setAll([{
-            value: 3,
-            category: "Performed"
-        },
-        {
-            value: 0,
-            category: "Not Perform"
-        },
-    ]);
+    // // Create series
+    // // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+    // var series = chart.series.push(am5percent.PieSeries.new(root, {
+    //     valueField: "value",
+    //     categoryField: "category"
+    // }));
 
 
-    legend.data.setAll(series.dataItems);
+    // // Set data
+    // // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+    // series.data.setAll([{
+    //         value: 3,
+    //         category: "Performed"
+    //     },
+    //     {
+    //         value: 0,
+    //         category: "Not Perform"
+    //     },
+    // ]);
 
 
-    // Play initial series animation
-    // https://www.amcharts.com/docs/v5/concepts/animations/#Animation_of_series
-    series.appear(1000, 100);
+    // legend.data.setAll(series.dataItems);
 
-}); // end am5.ready()
+
+    // // Play initial series animation
+    // // https://www.amcharts.com/docs/v5/concepts/animations/#Animation_of_series
+    // series.appear(1000, 100);
+
+    // }); // end am5.ready()
 </script>
 
 <script>
-am5.ready(function() {
+    // am5.ready(function() {
 
-    // Create root element
-    // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-    var root = am5.Root.new("chartdiv2");
-
-
-    // Set themes
-    // https://www.amcharts.com/docs/v5/concepts/themes/
-    root.setThemes([
-        am5themes_Animated.new(root)
-    ]);
+    // // Create root element
+    // // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+    // var root = am5.Root.new("chartdiv2");
 
 
-    // Create chart
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
-    var chart = root.container.children.push(am5percent.PieChart.new(root, {
-        layout: root.verticalLayout
-    }));
+    // // Set themes
+    // // https://www.amcharts.com/docs/v5/concepts/themes/
+    // root.setThemes([
+    //     am5themes_Animated.new(root)
+    // ]);
 
 
-    // Create series
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
-    var series = chart.series.push(am5percent.PieSeries.new(root, {
-        valueField: "value",
-        categoryField: "category"
-    }));
+    // // Create chart
+    // // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+    // var chart = root.container.children.push(am5percent.PieChart.new(root, {
+    //     layout: root.verticalLayout
+    // }));
 
 
-    // Set data
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
-    series.data.setAll([{
-            value: 3,
-            category: "Reviewed"
-        },
-        {
-            value: 0,
-            category: "For Reviewed"
-        },
-    ]);
+    // // Create series
+    // // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+    // var series = chart.series.push(am5percent.PieSeries.new(root, {
+    //     valueField: "value",
+    //     categoryField: "category"
+    // }));
 
 
-    legend.data.setAll(series.dataItems);
+    // // Set data
+    // // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+    // series.data.setAll([{
+    //         value: 3,
+    //         category: "Reviewed"
+    //     },
+    //     {
+    //         value: 0,
+    //         category: "For Reviewed"
+    //     },
+    // ]);
 
 
-    // Play initial series animation
-    // https://www.amcharts.com/docs/v5/concepts/animations/#Animation_of_series
-    series.appear(1000, 100);
+    // legend.data.setAll(series.dataItems);
 
-}); // end am5.ready()
+
+    // // Play initial series animation
+    // // https://www.amcharts.com/docs/v5/concepts/animations/#Animation_of_series
+    // series.appear(1000, 100);
+
+    // }); // end am5.ready()
 </script>
 
 <script>
@@ -1611,7 +1520,7 @@ am5.ready(function() {
     transition: 0.3s;
     font-size: 14px;
 }
-
+ 
 /* Change background color of buttons on hover */
 .tab button:hover {
     background-color: #ddd;
@@ -1642,4 +1551,4 @@ am5.ready(function() {
 </style>
 </body>
 
-</html>
+</html>                                                                                                                                                       

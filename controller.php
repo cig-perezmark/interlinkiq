@@ -128,7 +128,7 @@
             $switch_user_id = mysqli_real_escape_string($conn, $switch_user_id);
             $form_id = mysqli_real_escape_string($conn, $form_id);
         
-            $get_users = "SELECT * FROM tbl_hr_employee WHERE user_id = $switch_user_id AND status != 0"; 
+            $get_users = "SELECT * FROM tbl_hr_employee WHERE user_id = $switch_user_id AND facility_switch = $facility_switch_user_id AND status != 0"; 
             $user_result = mysqli_query($conn, $get_users);
             $selected = '';
             $options = '';
@@ -141,7 +141,7 @@
                     $user_form_result = mysqli_query($conn, $get_users_form);
         
                     if ($user_form_result && mysqli_num_rows($user_form_result) > 0) {
-                        while ($user_list = mysqli_fetch_assoc($user_form_result)) {
+                        while ($user_list = mysqli_fetch_assoc($user_form_result)) { 
                             $select_form_owned = "SELECT * FROM tbl_forms_owned WHERE facility_switch = $facility_switch_user_id AND user_id = '" . $user_list['ID'] . "' AND enterprise_id = '$switch_user_id'";
                             $form_owned_result = mysqli_query($conn, $select_form_owned);
         
@@ -2311,6 +2311,21 @@
                     }
                 }
             }
+            
+            $portal_user = $_POST['ID'];
+            $gcash_name = $_POST['gcash_name'];
+            $gcash_number = $_POST['gcash_number'];
+            if (!empty($gcash_name) OR !empty($gcash_number)) {
+                $gcashData = mysqli_query($conn, "SELECT * FROM tbl_user_gcash WHERE user_id = $portal_user");
+                if (mysqli_num_rows($gcashData) > 0) {
+                    $gcashData_sql = "UPDATE tbl_user_gcash SET name = '$gcash_name', number = '$gcash_number' WHERE user_id = $portal_user";
+                } else {
+                    $gcashData_sql = "INSERT INTO tbl_user_gcash (user_id, name, number) VALUES ('$portal_user', '$gcash_name', '$gcash_number')";
+                }
+                mysqli_query($conn, $gcashData_sql);
+            }
+            
+            
              header('Location: ' . $_SERVER["HTTP_REFERER"] );
             // Close the database connection
             mysqli_close($conn);

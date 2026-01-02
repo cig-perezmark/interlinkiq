@@ -27,14 +27,77 @@ function employerID($ID) {
 
     return $current_userEmployerID;
 }
-// add New
 
+//FILE UPLOAD VALIDATION
+function fileValidation($type, $file, $path) {
+    // Type
+    // 0 - General / Exclude invalid file type
+    // 1 - Accept Image Only
+
+    $path = 'uploads/'.$path;
+    $files = addslashes($_FILES[$file]['name']);
+    $size = $_FILES[$file]['size'];
+    $tmp = addslashes($_FILES[$file]['tmp_name']);
+
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    if (!$finfo) {
+        return false; // If finfo_open fails, consider the file invalid
+    }
+    $mime = finfo_file($finfo, $tmp);
+    finfo_close($finfo);
+
+    // $mime = mime_content_type($tmp);
+    $mime_array = array(
+        'text/x-php',
+        'text/plain', 
+        'text/css', 
+        'text/html', 
+        'text/xml', 
+        'text/javascript', 
+        'font/ttf', 
+        'font/woff', 
+        'font/woff2', 
+        'application/json', 
+        'application/x-httpd-php', 
+        'application/rtf', 
+        'application/x-sh', 
+        'application/xhtml+xml', 
+        'application/xml', 
+        'application/atom+xml', 
+        'application/vnd.mozilla.xul+xml', 
+        'application/x-msdownload'
+    );
+    if ($type == 1) { $mime_array = array('image/png', 'image/jpeg', 'image/jpg'); }
+
+    $ext_array = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+    $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+    
+    $files = rand(1000,1000000) . ' - ' . $files;
+    $path = $path.$files;
+
+    $output = array(
+        "valid" => false,
+        "files" => $files,
+        "size" => $size,
+        "mime" => $mime
+    );
+    if ( ($type == 0 AND !in_array($mime, $mime_array)) OR ($type == 1 AND in_array($mime, $mime_array)) ) {
+        if(move_uploaded_file(stripcslashes($tmp),stripcslashes($path))) {
+            $output['valid'] = true;
+        }
+    }
+    
+    return $output;
+}
+
+// add New
 if (isset($_POST['submitEmp_Details'])) { 
     // $userID = $_COOKIE['ID'];
     if (isset($_COOKIE['switchAccount'])) { $userID = $_COOKIE['switchAccount']; }
     else { $userID = $_COOKIE['ID']; }
     
     $businessname = mysqli_real_escape_string($conn,$_POST['LegalNameUpdate']);
+    $cage = mysqli_real_escape_string($conn,$_POST['cage']);
     $country = mysqli_real_escape_string($conn,$_POST['country']);
     $Bldg = mysqli_real_escape_string($conn,$_POST['Bldg']);
     $city = mysqli_real_escape_string($conn,$_POST['city']);
@@ -46,8 +109,94 @@ if (isset($_POST['submitEmp_Details'])) {
     $businesswebsite = mysqli_real_escape_string($conn,$_POST['businesswebsite']);
     $businessemailAddress = str_replace(' ', '', $mailer);
     
-    mysqli_query($conn,"update tblEnterpiseDetails set businessname ='$businessname', country='$country', Bldg='$Bldg', city='$city', States='$States', ZipCode='$ZipCode', businesstelephone='$businesstelephone', businessfax='$businessfax', businessemailAddress='$businessemailAddress', businesswebsite='$businesswebsite' where users_entities='$user_id'");  
+    mysqli_query($conn,"update tblEnterpiseDetails set businessname ='$businessname', cage='$cage', country='$country', Bldg='$Bldg', city='$city', States='$States', ZipCode='$ZipCode', businesstelephone='$businesstelephone', businessfax='$businessfax', businessemailAddress='$businessemailAddress', businesswebsite='$businesswebsite' where users_entities='$user_id'");  
      echo '<script> window.location.href = "enterprise-info";</script>';
+}
+if (isset($_POST['submitSE_Details'])) {
+    
+    $topology_type = $_POST['topology_type'];
+    if ($topology_type > 0) {
+        if ($topology_type == 1) {
+            $topology_file = $_FILES['topology_file']['name'];
+            if (!empty($topology_file)) {
+                $fileValidation = fileValidation(0, 'topology_file', 'enterprise/');
+                $topology_file = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
+            }
+        } else {
+            $topology_file = $_POST['topology_url'];
+        }
+    } else {
+        $topology_type = $_POST['topology_type_temp'];
+        $topology_file = $_POST['topology_file_temp'];
+    }
+    
+    $hardware_type = $_POST['hardware_type'];
+    if ($topology_type > 0) {
+        if ($hardware_type == 1) {
+            $hardware_file = $_FILES['hardware_file']['name'];
+            if (!empty($hardware_file)) {
+                $fileValidation = fileValidation(0, 'hardware_file', 'enterprise/');
+                $hardware_file = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
+            }
+        } else {
+            $hardware_file = $_POST['hardware_url'];
+        }
+    } else {
+        $hardware_type = $_POST['hardware_type_temp'];
+        $hardware_file = $_POST['hardware_file_temp'];
+    }
+    
+    $software_type = $_POST['software_type'];
+    if ($software_type > 0) {
+        if ($software_type == 1) {
+            $software_file = $_FILES['software_file']['name'];
+            if (!empty($software_file)) {
+                $fileValidation = fileValidation(0, 'software_file', 'enterprise/');
+                $software_file = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
+            }
+        } else {
+            $software_file = $_POST['software_url'];
+        }
+    } else {
+        $software_type = $_POST['software_type_temp'];
+        $software_file = $_POST['software_file_temp'];
+    }
+    
+    $maintenance_type = $_POST['maintenance_type'];
+    $maintenance_explaination = $_POST['maintenance_explaination'];
+    
+    $selectData = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails_System_Environment WHERE user_id = $user_id" );
+    if ( mysqli_num_rows($selectData) > 0 ) {
+        $sql_SE = "UPDATE tblEnterpiseDetails_System_Environment SET topology_type = $topology_type, topology_file = '".$topology_file."', hardware_type = $hardware_type, hardware_file = '".$hardware_file."', software_type = $software_type, software_file = '".$software_file."', maintenance_type = $maintenance_type, maintenance_explaination = '".$maintenance_explaination."' WHERE user_id = $user_id";  
+        mysqli_query($conn, $sql_SE);
+        
+        // if (mysqli_query($conn, $sql_SE)) {
+        //     $message = 'Welcome to InterlinkIQ Community! Please log in to your account.';
+        // } else {
+        //     $message = "Error: " . $sql_SE . "<br>" . mysqli_error($conn);
+        // }
+        
+        // echo $message;
+    } else {
+        $sql_SE = "INSERT INTO tblEnterpiseDetails_System_Environment (user_id, portal_user, topology_type, topology_file, hardware_type, hardware_file, software_type, software_file, maintenance_type, maintenance_explaination) 
+        VALUES ('$user_id', '$portal_user', '$topology_type', '$topology_file', '$hardware_type', '$hardware_file', '$software_type', '$software_file', '$maintenance_type', '$maintenance_explaination')";
+        mysqli_query($conn, $sql_SE);
+        
+        // if (mysqli_query($conn, $sql_SE)) {
+        //     $message = 'Welcome to InterlinkIQ Community! Please log in to your account.';
+        // } else {
+        //     $message = "Error: " . $sql_SE . "<br>" . mysqli_error($conn);
+        // }
+    
+        // echo $message;
+    }
+    echo '<script> window.location.href = "enterprise-info#SE";</script>'; 
 }
 
 
@@ -62,9 +211,11 @@ if (isset($_POST['btnContactMoreUpdate'])) {
     $contactpersonphone = mysqli_real_escape_string($conn,$_POST['contactpersonphone']);
     $contactpersonfax = mysqli_real_escape_string($conn,$_POST['contactpersonfax']);
     $contactpersonemailAddress = mysqli_real_escape_string($conn,$_POST['contactpersonemailAddress']);
+    $contactpersonOfficeAddress = mysqli_real_escape_string($conn,$_POST['contactpersonOfficeAddress']);
+    $contactpersonType = mysqli_real_escape_string($conn,$_POST['contactpersonType']);
     
-    mysqli_query($conn,"update tblEnterpiseDetails_Contact set contactpersonname='$contactpersonname', contactpersonlastname='$contactpersonlastname', titles='$titles', contactpersoncellno='$contactpersoncellno', contactpersonphone='$contactpersonphone', contactpersonfax='$contactpersonfax', contactpersonemailAddress='$contactpersonemailAddress' where con_id='$userID'");  
-     echo '<script> window.location.href = "enterprise-info";</script>';
+    mysqli_query($conn,"update tblEnterpiseDetails_Contact set contactpersonname='$contactpersonname', contactpersonlastname='$contactpersonlastname', titles='$titles', contactpersoncellno='$contactpersoncellno', contactpersonphone='$contactpersonphone', contactpersonfax='$contactpersonfax', contactpersonemailAddress='$contactpersonemailAddress', contactpersonOfficeAddress='$contactpersonOfficeAddress', contactpersonType='$contactpersonType' where con_id='$userID'");  
+    echo '<script> window.location.href = "enterprise-info";</script>';
 }
 // for add facility
 if(isset($_POST['btnFacilityMore'])){
@@ -219,8 +370,10 @@ if (isset($_POST['btnContactMore'])) {
     $contactpersonphone = mysqli_real_escape_string($conn,$_POST['contactpersonphone']);
     $contactpersonfax = mysqli_real_escape_string($conn,$_POST['contactpersonfax']);
     $contactpersonemailAddress = mysqli_real_escape_string($conn,$_POST['contactpersonemailAddress']);
+    $contactpersonOfficeAddress = mysqli_real_escape_string($conn,$_POST['contactpersonOfficeAddress']);
+    $contactpersonType = mysqli_real_escape_string($conn,$_POST['contactpersonType']);
     
-    $sql = "INSERT INTO tblEnterpiseDetails_Contact (contactpersonname,contactpersonlastname,titles,contactpersoncellno,contactpersonphone,contactpersonfax,contactpersonemailAddress,user_cookies) VALUES ('$contactpersonname','$contactpersonlastname','$titles','$contactpersoncellno','$contactpersonphone','$contactpersonfax','$contactpersonemailAddress','$user_id')";
+    $sql = "INSERT INTO tblEnterpiseDetails_Contact (contactpersonname,contactpersonlastname,titles,contactpersoncellno,contactpersonphone,contactpersonfax,contactpersonemailAddress,contactpersonOfficeAddress,contactpersonType,user_cookies) VALUES ('$contactpersonname','$contactpersonlastname','$titles','$contactpersoncellno','$contactpersonphone','$contactpersonfax','$contactpersonemailAddress','$contactpersonOfficeAddress','$contactpersonType','$user_id')";
     if(mysqli_query($conn, $sql)){
         echo '<script> window.location.href = "enterprise-info";</script>';
     }
@@ -363,13 +516,14 @@ if(isset($_POST["submitERFS"])) {
     
     $DocumentTitle = mysqli_real_escape_string($conn,$_POST['DocumentTitle']);
     $DocumentDesciption = mysqli_real_escape_string($conn,$_POST['DocumentDesciption']);
+    $non_expiry = isset($_POST['non_expiry']) ? 1 : 0;
     $DocumentDueDate = mysqli_real_escape_string($conn,$_POST['DocumentDueDate']);
     $file = $_FILES['EnterpriseRecordsFile']['name'];
     $filename = pathinfo($file, PATHINFO_FILENAME);
     $extension = end(explode(".", $_FILES['EnterpriseRecordsFile']['name']));
     $EnterpriseRecordsFile =  rand(10,1000000)." - ".$filename.".".$extension;
     move_uploaded_file($_FILES['EnterpriseRecordsFile']['tmp_name'],'companyDetailsFolder/'.$EnterpriseRecordsFile);
-    $sql = "INSERT INTO tblEnterpiseDetails_Records (EnterpriseRecordsFile,DocumentTitle,DocumentDesciption,DocumentDueDate,user_cookies) VALUES ('$EnterpriseRecordsFile','$DocumentTitle','$DocumentDesciption','$DocumentDueDate','$user_id')";
+    $sql = "INSERT INTO tblEnterpiseDetails_Records (EnterpriseRecordsFile,DocumentTitle,DocumentDesciption,non_expiry,DocumentDueDate,user_cookies) VALUES ('$EnterpriseRecordsFile','$DocumentTitle','$DocumentDesciption',$non_expiry,'$DocumentDueDate',$user_id)";
     if(mysqli_query($conn, $sql)){
         echo '<script> window.location.href = "enterprise-info#Rec";</script>';
     }else{
@@ -378,24 +532,22 @@ if(isset($_POST["submitERFS"])) {
 }
 // Update Enterprise Record
 if(isset($_POST["submitERFUpdate"])) {
-    if(empty($file = $_FILES['EnterpriseRecordsFile']['name'])){
-        $ID = $_POST['ID'];
-        $DocumentTitle = mysqli_real_escape_string($conn,$_POST['DocumentTitle']);
-        $DocumentDesciption = mysqli_real_escape_string($conn,$_POST['DocumentDesciption']);
-        $DocumentDueDate = mysqli_real_escape_string($conn,$_POST['DocumentDueDate']);
-        mysqli_query($conn,"update tblEnterpiseDetails_Records set DocumentTitle ='$DocumentTitle', DocumentDesciption ='$DocumentDesciption', DocumentDueDate ='$DocumentDueDate' where rec_id='$ID'");  
+    $ID = $_POST['ID'];
+    $DocumentTitle = mysqli_real_escape_string($conn,$_POST['DocumentTitle']);
+    $DocumentDesciption = mysqli_real_escape_string($conn,$_POST['DocumentDesciption']);
+    $non_expiry = isset($_POST['non_expiry']) ? 1 : 0;
+    $DocumentDueDate = mysqli_real_escape_string($conn,$_POST['DocumentDueDate']);
+    $file = $_FILES['EnterpriseRecordsFile']['name'];
+    
+    if(empty($file)){
+        mysqli_query($conn,"update tblEnterpiseDetails_Records set DocumentTitle ='$DocumentTitle', DocumentDesciption ='$DocumentDesciption', non_expiry =$non_expiry, DocumentDueDate ='$DocumentDueDate' where rec_id='$ID'");  
         echo '<script> window.location.href = "enterprise-info#Rec";</script>';
-    }else{  
-        $ID = $_POST['ID'];
-        $DocumentTitle = mysqli_real_escape_string($conn,$_POST['DocumentTitle']);
-        $DocumentDesciption = mysqli_real_escape_string($conn,$_POST['DocumentDesciption']);
-        $DocumentDueDate = mysqli_real_escape_string($conn,$_POST['DocumentDueDate']);
-        $file = $_FILES['EnterpriseRecordsFile']['name'];
+    }else{
         $filename = pathinfo($file, PATHINFO_FILENAME);
         $extension = end(explode(".", $_FILES['EnterpriseRecordsFile']['name']));
         $EnterpriseRecordsFile =  rand(10,1000000)." - ".$filename.".".$extension;
         move_uploaded_file($_FILES['EnterpriseRecordsFile']['tmp_name'],'companyDetailsFolder/'.$EnterpriseRecordsFile);
-        mysqli_query($conn,"update tblEnterpiseDetails_Records set EnterpriseRecordsFile ='$EnterpriseRecordsFile', DocumentTitle ='$DocumentTitle', DocumentDesciption ='$DocumentDesciption', DocumentDueDate ='$DocumentDueDate' where rec_id='$ID'");  
+        mysqli_query($conn,"update tblEnterpiseDetails_Records set EnterpriseRecordsFile ='$EnterpriseRecordsFile', DocumentTitle ='$DocumentTitle', DocumentDesciption ='$DocumentDesciption', non_expiry =$non_expiry, DocumentDueDate ='$DocumentDueDate' where rec_id='$ID'");  
         echo '<script> window.location.href = "enterprise-info#Rec";</script>';
     }
 }
@@ -839,7 +991,59 @@ if (isset($_GET['id']) && isset($_GET['Tradename'])) {
       $ein =$_GET['ein'];   
       mysqli_query($conn,"update tblEnterpiseDetails set ein ='$ein' where enterp_id='$id'");  
       echo '<script> window.location.href = "enterprise-info#PC";</script>';
- }
+}
+
+
+if (isset($_GET['id']) && isset($_GET['sub_name'])) {  
+      $id=$_GET['id'];
+      $val =$_GET['sub_name'];   
+      mysqli_query($conn,"update tblEnterpiseDetails set sub_name ='$val' where enterp_id='$id'");  
+      echo '<script> window.location.href = "enterprise-info#PC";</script>';
+}
+if (isset($_GET['id']) && isset($_GET['sub_address'])) {  
+      $id=$_GET['id'];
+      $val =$_GET['sub_address'];   
+      mysqli_query($conn,"update tblEnterpiseDetails set sub_address ='$val' where enterp_id='$id'");  
+      echo '<script> window.location.href = "enterprise-info#PC";</script>';
+}
+if (isset($_GET['id']) && isset($_GET['sub_city'])) {  
+      $id=$_GET['id'];
+      $val =$_GET['sub_city'];   
+      mysqli_query($conn,"update tblEnterpiseDetails set sub_city ='$val' where enterp_id='$id'");  
+      echo '<script> window.location.href = "enterprise-info#PC";</script>';
+}
+if (isset($_GET['id']) && isset($_GET['sub_state'])) {  
+      $id=$_GET['id'];
+      $val =$_GET['sub_state'];   
+      mysqli_query($conn,"update tblEnterpiseDetails set sub_state ='$val' where enterp_id='$id'");  
+      echo '<script> window.location.href = "enterprise-info#PC";</script>';
+}
+if (isset($_GET['id']) && isset($_GET['sub_zip'])) {  
+      $id=$_GET['id'];
+      $val =$_GET['sub_zip'];   
+      mysqli_query($conn,"update tblEnterpiseDetails set sub_zip ='$val' where enterp_id='$id'");  
+      echo '<script> window.location.href = "enterprise-info#PC";</script>';
+}
+if (isset($_GET['id']) && isset($_GET['sub_year'])) {  
+      $id=$_GET['id'];
+      $val =$_GET['sub_year'];   
+      mysqli_query($conn,"update tblEnterpiseDetails set sub_year ='$val' where enterp_id='$id'");  
+      echo '<script> window.location.href = "enterprise-info#PC";</script>';
+}
+if (isset($_GET['id']) && isset($_GET['sub_duns'])) {  
+      $id=$_GET['id'];
+      $val =$_GET['sub_duns'];   
+      mysqli_query($conn,"update tblEnterpiseDetails set sub_duns ='$val' where enterp_id='$id'");  
+      echo '<script> window.location.href = "enterprise-info#PC";</script>';
+}
+if (isset($_GET['id']) && isset($_GET['sub_cage'])) {  
+      $id=$_GET['id'];
+      $val =$_GET['sub_cage'];   
+      mysqli_query($conn,"update tblEnterpiseDetails set sub_cage ='$val' where enterp_id='$id'");  
+      echo '<script> window.location.href = "enterprise-info#PC";</script>';
+}
+
+
 if( isset($_GET['btnDelete_EI_Contact']) ) {
     $id = $_GET['btnDelete_EI_Contact'];
     $sql = mysqli_query( $conn,"UPDATE tblEnterpiseDetails_Contact set deleted = 1 WHERE con_id = $id" );
@@ -2029,7 +2233,17 @@ if(isset($_POST["submitPROCESS"])) {
     }
     $bPROCESS = substr($bPROCESS, 0, -2);
     $cCategories = substr($cCategories, 0, -2);
-    mysqli_query($conn,"update tblEnterpiseDetails set BusinessPROCESS ='$bPROCESS',Categories ='$cCategories', Categories_other ='$Categories_other', EnterpriseProcessSpecify = '$EnterpriseProcessSpecify', BusinessPurpose= '$BusinessPurpose',enterpriseOperation='$enterpriseOperation', facility_switch='$facility_switch', enterpriseEmployees='$enterpriseEmployees',NumberofEmployees='$NumberofEmployees',enterpriseImporter='$enterpriseImporter',Country_importer='$Country_importer',enterpriseexporter='$enterpriseexporter',Country_exporter='$Country_exporter',enterpriseProducts='$enterpriseProducts',ProductDesc='$ProductDesc',enterpriseServices='$enterpriseServices' where enterp_id='$id'");  
+    
+    $federal = $_POST["jstree_federal_id"];
+    $dod = $_POST["jstree_dod_id"];
+    
+    // $federal = "";
+    // if (!empty($_POST["federal"])) { $federal = implode(", ", $_POST["federal"]); }
+
+    // $dod = "";
+    // if (!empty($_POST["dod"])) { $dod = implode(", ", $_POST["dod"]); }
+    
+    mysqli_query($conn,"update tblEnterpiseDetails set BusinessPROCESS ='$bPROCESS',Categories ='$cCategories', Categories_other ='$Categories_other', EnterpriseProcessSpecify = '$EnterpriseProcessSpecify', BusinessPurpose= '$BusinessPurpose',enterpriseOperation='$enterpriseOperation', facility_switch='$facility_switch', enterpriseEmployees='$enterpriseEmployees',NumberofEmployees='$NumberofEmployees',enterpriseImporter='$enterpriseImporter',Country_importer='$Country_importer',enterpriseexporter='$enterpriseexporter',Country_exporter='$Country_exporter',enterpriseProducts='$enterpriseProducts',ProductDesc='$ProductDesc',enterpriseServices='$enterpriseServices',federal='$federal',dod='$dod' where enterp_id='$id'");  
     echo '<script> window.location.href = "enterprise-info#ED";</script>';
 }
 

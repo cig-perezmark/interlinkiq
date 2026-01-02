@@ -88,17 +88,31 @@
         $data = [];
         $sql_custom = '';
         
-        if ($switch_user_id == 1211) {
-            $sql_custom = ' UNION ALL
+        if ($switch_user_id != 1486) {
+            $sql_custom = " UNION ALL
 
+            SELECT
+            p_ID,
+            p_source,
+            p_image,
+            p_name,
+            p_description,
+            p_category,
+            p_last_modified,
+            h_product_id,
+            GROUP_CONCAT(s.name SEPARATOR ', ') AS x_supplier_name
+            FROM (
                 SELECT 
                 m.ID AS p_ID,
                 1 AS p_source,
-                "" AS p_image,
+                '' AS p_image,
                 m.material_name AS p_name,
                 m.description AS p_description,
                 c.name AS p_category,
-                "" AS p_last_modified
+                CASE WHEN p.date_updated IS NOT NULL THEN p.date_updated ELSE '' END AS p_last_modified,
+                COALESCE(h.product_id, 0) AS h_product_id,
+                COALESCE(x.multiple, 0) AS x_multiple,
+                CASE WHEN x.multiple = 1 THEN x.supplier_id ELSE s.ID END AS x_supplier_id
 
                 FROM tbl_supplier_material AS m
 
@@ -111,46 +125,124 @@
 
                 INNER JOIN (
                     SELECT
-                    *
+                    ID,
+                    name,
+                    material
                     FROM tbl_supplier
                     WHERE is_deleted = 0
                 ) AS s
-                ON FIND_IN_SET(m.ID, REPLACE(s.material, " ", ""))
+                ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', ''))
 
-                WHERE m.user_id = '.$switch_user_id;
+                LEFT JOIN (
+                    SELECT
+                    *
+                    FROM tbl_products_hybrid
+                ) AS h
+                ON h.supplier_material_id = m.ID
+
+                LEFT JOIN (
+                    SELECT
+                    ID,
+                    date_updated
+                    FROM tbl_products
+                ) AS p
+                ON p.ID = h.product_id
+
+                LEFT JOIN (
+                    SELECT
+                    *
+                    FROM tbl_products_multi
+                ) AS x
+                ON x.product_id = h.product_id
+
+                WHERE m.user_id = $switch_user_id
+                AND m.facility_switch = $facility_switch_user_id2
+            ) r
+
+            LEFT JOIN (
+                SELECT
+                ID,
+                name
+                FROM tbl_supplier
+            ) AS s
+            ON FIND_IN_SET(s.ID, REPLACE(r.x_supplier_id, ' ', '')) > 0
+
+            GROUP BY r.p_ID";
         }
         
         $result = mysqli_query( $conn,"
             SELECT
             *
             FROM (
-                SELECT 
-                p.ID AS p_ID,
-                0 AS p_source,
-                p.image AS p_image, 
-                p.name AS p_name, 
-                p.description AS p_description, 
-                CASE WHEN c.name = 'Other' THEN p.category_other ELSE c.name END AS p_category,
-                p.last_modified AS p_last_modified
-                FROM tbl_products AS p
+                SELECT
+                p_ID,
+                p_source,
+                p_image,
+                p_name,
+                p_description,
+                p_category,
+                p_last_modified,
+                h_product_id,
+                GROUP_CONCAT(s.name SEPARATOR ', ') AS x_supplier_name
+                FROM (
+                    SELECT 
+                    p.ID AS p_ID,
+                    0 AS p_source,
+                    p.image AS p_image, 
+                    p.name AS p_name, 
+                    p.description AS p_description, 
+                    CASE WHEN c.name = 'Other' THEN p.category_other ELSE c.name END AS p_category,
+                    p.last_modified AS p_last_modified,
+                    0 AS h_product_id,
+                    COALESCE(x.multiple, 0) AS x_multiple,
+                    CASE WHEN x.multiple = 1 THEN x.supplier_id ELSE p.vendor_s_ID END AS x_supplier_id
+
+                    FROM tbl_products AS p
+
+                    LEFT JOIN (
+                        SELECT
+                        *
+                        FROM tbl_products_category
+                    ) AS c
+                    ON p.category = c.ID
+
+                    RIGHT JOIN (
+                        SELECT
+                        *
+                        FROM tbl_products_hybrid
+                    ) AS h
+                    ON h.product_id != p.ID
+
+                    LEFT JOIN (
+                        SELECT
+                        *
+                        FROM tbl_products_multi
+                    ) AS x
+                    ON x.product_id = p.ID
+
+                    WHERE p.deleted = 0 
+                    AND p.user_id = $switch_user_id
+                    AND p.facility_switch = $facility_switch_user_id2
+                ) r
 
                 LEFT JOIN (
                     SELECT
-                    *
-                    FROM tbl_products_category
-                ) AS c
-                ON p.category = c.ID
-                
-                WHERE p.deleted = 0 
-                AND p.user_id = $switch_user_id
-                AND facility_switch = $facility_switch_user_id2
+                    ID,
+                    name
+                    FROM tbl_supplier
+                ) AS s
+                ON FIND_IN_SET(s.ID, REPLACE(r.x_supplier_id, ' ', '')) > 0
+
+                GROUP BY r.p_ID
 
                 $sql_custom
              ) r
             ORDER BY r.p_name
         " );
         
-        if ( $result && mysqli_num_rows($result) > 0 ) {
+        
+        if ( mysqli_num_rows($result) > 0 ) {
+            $dataTable = '';
             while($row = mysqli_fetch_array($result)) {
                 $files = '';
                 if (!empty($row['p_image'])) {
@@ -162,17 +254,54 @@
                     }
                 }
                 
+            
                 
-                $data[] = [
-                    'id' => $row['p_ID'],
-                    'source' => $row['p_source'],
-                    'image' => $files,
-                    'description' => htmlentities($row["p_description"] ?? ''),
-                    'name' => htmlentities($row["p_name"] ?? ''),
-                    'category' => htmlentities($row["p_category"] ?? ''),
-                    'last_update' => $row["p_last_modified"]
-                ];
-
+                // $data[] = [
+                //     'id' => $row['p_ID'],
+                //     'source' => $row['p_source'],
+                //     'h_product_id' => $row['h_product_id'],
+                //     'x_supplier_name' => htmlentities($row["x_supplier_name"] ?? ''),
+                //     'image' => $files,
+                //     'description' => htmlentities($row["p_description"] ?? ''),
+                //     'name' => htmlentities($row["p_name"] ?? ''),
+                //     'category' => htmlentities($row["p_category"] ?? ''),
+                //     'last_update' => $row["p_last_modified"]
+                // ];
+            
+                $dataTable .= '<tr>
+                    <td>
+                        <div style="display: flex; gap:1rem;">
+                            <img src="'.$files.'" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" />
+                            <div>
+                                <span style="font-weight: 600;">'.htmlentities($row["p_name"] ?? '').'</span>
+                                <p class="text-muted" style="padding:0; margin:0;">'.htmlentities($row["p_description"] ?? '').'</p>
+                            </di
+                    </td>
+                    <td>'.htmlentities($row["x_supplier_name"] ?? '').'</td>
+                    <td><span class="label label-sm label-success btn-circle">'.htmlentities($row["p_category"] ?? '').'</span></td>
+                    <td><span class="text-muted">'.$row["p_last_modified"].'</span></td>
+                    <td>';
+                    
+                        if ($row['p_source'] == 1 && $row['h_product_id'] > 0) {
+                            $dataTable .= '<a href="#modalView" data-toggle="modal" data-id="'.$row['p_ID'].'" class="btn btn-outline dark btn-sm btnView" onclick="btnView('.$row['p_ID'].', '.$row['p_source'].')">View</a>
+                            <a href="pdf/products?i='.$row['h_product_id'].'" class="btn green btn-sm" target="_blank">PDF</a>
+                            <a href="javascript:;" class="btn btn-outlinex red btn-sm btnRemove_Material" onclick="btnRemove_Material('.$row['p_ID'].', this)">Delete</a>';
+                        } else if ($row['p_source'] == 1) {
+                            $dataTable .= '<a href="#modalView" data-toggle="modal" data-id="'.$row['p_ID'].'" class="btn btn-outline dark btn-sm btnView" onclick="btnView('.$row['p_ID'].', '.$row['p_source'].')">View</a>
+                            <a href="javascript:;" class="btn btn-outlinex red btn-sm btnRemove_Material" onclick="btnRemove_Material('.$row['p_ID'].', this)">Delete</a>';
+                        } else {
+                            $dataTable .= '<div class="btn-group btn-group-circle" style="position: unset;">
+                                <a href="#modalView" data-toggle="modal" data-id="'.$row['p_ID'].'" class="btn btn-outline dark btn-sm btnView" onclick="btnView('.$row['p_ID'].', '.$row['p_source'].')">View</a>
+                                <a href="pdf/products?i='.$row['h_product_id'].'" class="btn green btn-sm" target="_blank">PDF</a>
+                                <a href="#modalChart" class="btn btn-info btn-sm btnChart" data-toggle="modal" data-id="'.$row['p_ID'].'"><i class="fas fa-chart-line"></i></a>
+                                <a href="javascript:;" class="btn btn-outlinex red btn-sm btnRemove_Material" onclick="btnRemove_Material('.$row['p_ID'].', this)">Delete</a>
+                            </div>';
+                        }
+                        
+                    $dataTable .= '</td>
+                </td>';
+                
+                
                 // echo '<div class="mt-action" id="mt_action_'.$row["p_ID"].'_'.$row["p_source"].'">
                 //     <div class="mt-action-img"><img src="'.$files.'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" /></div>
                 //     <div class="mt-action-body">
@@ -201,7 +330,10 @@
             }
         }
         
-        exit(json_encode($data)) ;
+        
+        // print_r($data);
+        echo $dataTable;
+        exit();
     }
 
     if ($sub_breadcrumbs) {
@@ -438,10 +570,11 @@
                                             <table class="table table-bordered table-hover" id="productsTable">
                                                 <thead>
                                                     <tr>
-                                                        <th>Product Name</th>
+                                                        <th style="width: 250px;">Product Name</th>
+                                                        <th>Supplier</th>
                                                         <th style="width: 150px;">Category</th>
                                                         <th class="text-center" style="width: 135px;">Last Update</th>
-                                                        <th class="text-center" style="width: 90px;">Actions</th>
+                                                        <th class="text-center" style="width: 170px;">Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -482,10 +615,10 @@
                                                 <div class="tabbable tabbable-tabdrop">
                                                     <input class="form-control" type="hidden" name="ID" value="<?php echo $switch_user_id; ?>" />
                                                     <ul class="nav nav-tabs">
-                                                        <li class="<?php echo $switch_user_id == 1684 ? 'hide':'active'; ?>">
+                                                        <li class="<?php echo ($switch_user_id == 1684 OR $switch_user_id == 1486) ? 'hide':'active'; ?>">
                                                             <a href="#tabVendor" data-toggle="tab">Vendor Details</a>
                                                         </li>
-                                                        <li class="<?php echo $switch_user_id == 1684 ? 'active':''; ?>">
+                                                        <li class="<?php echo ($switch_user_id == 1684 OR $switch_user_id == 1486) ? 'active':''; ?>">
                                                             <a href="#tabBasic" data-toggle="tab">Product Overview</a>
                                                         </li>
                                                         <li>
@@ -502,107 +635,138 @@
                                                         </li>
                                                     </ul>
                                                     <div class="tab-content margin-top-20">
-                                                        <div class="tab-pane <?php echo $switch_user_id == 1684 ? 'hide':'active'; ?>" id="tabVendor">
+                                                        <div class="tab-pane <?php echo ($switch_user_id == 1684 OR $switch_user_id == 1486) ? 'hide':'active'; ?>" id="tabVendor">
                                                             <input class="form-control" type="hidden" name="vendor_s_ID" id="vendor_s_ID" />
                                                             <input class="form-control" type="hidden" name="vendor_c_ID" id="vendor_c_ID" />
                                                             <div class="row">
                                                                 <div class="col-md-3">
                                                                     <div class="form-group">
-                                                                        <label class="control-label">Vendor ID</label>
-                                                                        <input class="form-control" type="text" name="vendor_id" id="vendor_id" />
+                                                                        <label class="control-label">Multiple Supplier?</label>
+                                                                        <select class="form-control" name="vendor_multi" id="vendor_multi" onchange="changeMulti(this)">
+                                                                            <option value="0">No</option>
+                                                                            <option value="1">Yes</option>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6">
+                                                                <div class="col-md-9 vendor_select hide">
                                                                     <div class="form-group">
-                                                                        <label class="control-label">Vendor Name</label>
-                                                                        <input class="form-control" type="text" name="vendor_name" id="vendor_name" autocomplete="off" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Vendor/Item Code</label>
-                                                                        <input class="form-control" type="text" name="vendor_code" id="vendor_code" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-9">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Address</label>
-                                                                        <input class="form-control" type="text" name="vendor_address" id="vendor_address" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Contact Name</label>
-                                                                        <input class="form-control" type="text" name="vendor_contact_name"  id="vendor_contact_name" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Phone</label>
-                                                                        <input class="form-control" type="text" name="vendor_phone" id="vendor_phone" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Fax</label>
-                                                                        <input class="form-control" type="text" name="vendor_fax" id="vendor_fax" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Email Address</label>
-                                                                        <input class="form-control" type="text" name="vendor_email" id="vendor_email" />
+                                                                        <label class="control-label">Select Supplier</label>
+                                                                        <select class="form-control mt-multiselect btn btn-default" name="vendor_select[]" multiple="multiple">
+                                                                            <option value="0">Select</option>
+
+                                                                            <?php
+                                                                                $selectSupplier = mysqli_query( $conn,"SELECT ID, name FROM tbl_supplier WHERE user_id = $switch_user_id AND facility_switch = $facility_switch_user_id AND page = 1 AND is_deleted = 0 AND name IS NOT NULL AND name != '' ORDER BY name" );
+                                                                                if ( mysqli_num_rows($selectSupplier) > 0 ) {
+                                                                                    while($rowSupplier = mysqli_fetch_array($selectSupplier)) {
+                                                                                        echo ' <option value="'.$rowSupplier["ID"].'">'.htmlentities($rowSupplier["name"] ?? '').'</option>';
+                                                                                    }
+                                                                                }
+                                                                            ?>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             
-                                                            <h4><strong>Company Background</strong></h4>
-                                                            <div class="row">
-                                                                <div class="col-md-7">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Company Primary Business Description</label>
-                                                                        <input class="form-control" type="text" name="vendor_business" id="vendor_business" />
+                                                            <div class="vendor_multi_container">
+                                                                <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Vendor ID</label>
+                                                                            <input class="form-control" type="text" name="vendor_id" id="vendor_id" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Vendor Name</label>
+                                                                            <input class="form-control" type="text" name="vendor_name" id="vendor_name" autocomplete="off" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Vendor/Item Code</label>
+                                                                            <input class="form-control" type="text" name="vendor_code" id="vendor_code" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-9">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Address</label>
+                                                                            <input class="form-control" type="text" name="vendor_address" id="vendor_address" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Contact Name</label>
+                                                                            <input class="form-control" type="text" name="vendor_contact_name"  id="vendor_contact_name" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Phone</label>
+                                                                            <input class="form-control" type="text" name="vendor_phone" id="vendor_phone" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Fax</label>
+                                                                            <input class="form-control" type="text" name="vendor_fax" id="vendor_fax" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Email Address</label>
+                                                                            <input class="form-control" type="text" name="vendor_email" id="vendor_email" />
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-5">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Company Size</label>
-                                                                        <input class="form-control" type="text" name="vendor_size" id="vendor_size" />
+                                                                
+                                                                <h4><strong>Company Background</strong></h4>
+                                                                <div class="row">
+                                                                    <div class="col-md-7">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Company Primary Business Description</label>
+                                                                            <input class="form-control" type="text" name="vendor_business" id="vendor_business" />
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="col-md-7">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Locations</label>
-                                                                        <input class="form-control" type="text" name="vendor_location" id="vendor_location" />
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Company Size</label>
+                                                                            <input class="form-control" type="text" name="vendor_size" id="vendor_size" />
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="col-md-5">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Geographic Distribution Points</label>
-                                                                        <input class="form-control" type="text" name="vendor_geographic" id="vendor_geographic" />
+                                                                    <div class="col-md-7">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Locations</label>
+                                                                            <input class="form-control" type="text" name="vendor_location" id="vendor_location" />
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="col-md-12">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Retail Accounts Listing</label>
-                                                                        <input class="form-control" type="text" name="vendor_retail" id="vendor_retail" />
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Geographic Distribution Points</label>
+                                                                            <input class="form-control" type="text" name="vendor_geographic" id="vendor_geographic" />
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="col-md-7">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Corporate Diversity Program Statement</label>
-                                                                        <input class="form-control" type="text" name="vendor_diversity" id="vendor_diversity" />
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Retail Accounts Listing</label>
+                                                                            <input class="form-control" type="text" name="vendor_retail" id="vendor_retail" />
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="col-md-5">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label">Corporate Responsibility Program Statement</label>
-                                                                        <input class="form-control" type="text" name="vendor_responsibility" id="vendor_responsibility" />
+                                                                    <div class="col-md-7">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Corporate Diversity Program Statement</label>
+                                                                            <input class="form-control" type="text" name="vendor_diversity" id="vendor_diversity" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Corporate Responsibility Program Statement</label>
+                                                                            <input class="form-control" type="text" name="vendor_responsibility" id="vendor_responsibility" />
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="tab-pane <?php echo $switch_user_id == 1684 ? 'active':''; ?>" id="tabBasic">
+                                                        <div class="tab-pane <?php echo ($switch_user_id == 1684 OR $switch_user_id == 1486) ? 'active':''; ?>" id="tabBasic">
                                                             <div class="row margin-bottom-20">
                                                                 <div class="<?php echo $switch_user_id == 1684 ? 'col-md-12':'col-md-6'; ?> productMain">
                                                                     <p><strong>Main Product View</strong></p>
@@ -935,7 +1099,7 @@
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group">
-                                                                        <label class="control-label">Intended Use</label>
+                                                                        <label class="control-label">Intended Consumers</label>
                                                                         <select class="form-control" name="intended">
                                                                             <option value="0">Select</option>
                                                                             <?php
@@ -954,7 +1118,7 @@
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group">
-                                                                        <label class="control-label">Intended Consumers</label>
+                                                                        <label class="control-label">Intended Use</label>
                                                                         <input class="form-control" type="text" name="intended_consumers" />
                                                                     </div>
                                                                 </div>
@@ -1248,7 +1412,7 @@
                                                             <?php if ($switch_user_id == 1684) { ?>
                                                                 <h4><strong>Secondary Packaging</strong></h4>
                                                                 <div class="row">
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-3">
                                                                         <strong>Case</strong>
                                                                         <div class="form-group">
                                                                             <div class="fileinput fileinput-new" data-provides="fileinput">
@@ -1266,6 +1430,8 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
                                                                         <div class="form-group">
                                                                             <label class="control-label">Material</label>
                                                                             <select class="form-control" name="packaging_2a_material">
@@ -1280,17 +1446,21 @@
                                                                                 ?>
                                                                             </select>
                                                                         </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
                                                                         <div class="form-group">
                                                                             <label class="control-label">Weight (lbs)</label>
                                                                             <input class="form-control" type="text" name="packaging_2a_weight" />
                                                                         </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
                                                                         <div class="form-group">
                                                                             <label class="control-label">Dimension</label>
                                                                             <input class="form-control" type="text" name="packaging_2a_dimension" />
                                                                             <small class="help-block">H x L x W (in)</small>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-6 hide">
                                                                         <strong>Case OD</strong>
                                                                         <div class="form-group">
                                                                             <div class="fileinput fileinput-new" data-provides="fileinput">
@@ -1332,7 +1502,7 @@
                                                                             <small class="help-block">H x L x W (in)</small>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-6 hide">
                                                                         <strong>Case ID</strong>
                                                                         <div class="form-group">
                                                                             <div class="fileinput fileinput-new" data-provides="fileinput">
@@ -2716,7 +2886,7 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="control-label">Intended Use</label>
+                                                            <label class="control-label">Intended Consumers</label>
                                                             <select class="form-control" name="intended">
                                                                 <option value="0">Select</option>
                                                                 <?php
@@ -2735,7 +2905,7 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="control-label">Intended Consumers</label>
+                                                            <label class="control-label">Intended Use</label>
                                                             <input class="form-control" type="text" name="intended_consumers" />
                                                         </div>
                                                     </div>
@@ -3794,6 +3964,23 @@
                             </div>
                         <?php } ?>
                         
+                        <div class="modal fade" id="modalEditMaterial" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <form method="post" enctype="multipart/form-data" class="modalForm modalUpdate_Material">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">Material Details</h4>
+                                        </div>
+                                        <div class="modal-body"></div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                            <button type="submit" class="btn btn-success ladda-button" name="btnUpdate_Supplier_Material" id="btnUpdate_Supplier_Material" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                         <div class="modal fade bs-modal-lg" id="modalView" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
@@ -4120,6 +4307,10 @@
         <script src="AnalyticsIQ/products.js"></script>
 
         <script type="text/javascript">
+        
+            function btnExportFiles(id) {
+                window.location.href = 'export/function.php?modalDLP='+id;
+            }
             // Product Modal Analytics
             $(document).on('click', '.btnChart', function() {
                 var productId = $(this).data('id');
@@ -4364,11 +4555,11 @@
                         },
                         {
                             className: "text-center",
-                            targets: [1]
+                            targets: [2]
                         }
                     ],
                 });
-                
+                 
                 fetchProducts();
             });
             
@@ -4430,6 +4621,11 @@
                 $('#'+view+' form table tbody').html('');
                 $('#'+view+' form #image_preview').html('');
             }
+            function changeMulti(e) {
+                $('.vendor_select').toggleClass('hide')
+                $('.vendor_multi_container').toggleClass('hide')
+            }
+
 
             function inputInvalid(modal) {
                 var error = 0;
@@ -4472,6 +4668,163 @@
                     swal("Done!", "This item has been deleted.", "success");
                 });
             }
+
+            function widget_formRepeater_material(i) {
+                var FormRepeater=function(){
+                    return{
+                        init:function(){
+                            $(".mt-repeater").each(function(){
+                                $(this).repeater({
+                                    show:function(){
+                                        $(this).slideDown();
+                                        // widget_dates_material(i);
+
+                                        $(this).find('.daterange').daterangepicker({
+                                            ranges: {
+                                                'Today': [moment(), moment()],
+                                                'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                                                'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
+                                            },
+                                            "autoApply": true,
+                                            "showDropdowns": true,
+                                            "linkedCalendars": false,
+                                            "alwaysShowCalendars": true,
+                                            "drops": "auto",
+                                            "opens": "left"
+                                        }, function(start, end, label) {
+                                            console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+                                        });
+                                        $(this).find('.daterange_empty').val('');
+                                    },
+                                    hide:function(e){
+                                        let text = "Are you sure you want to delete this row?";
+                                        if (confirm(text) == true) {
+                                            $(this).slideUp(e);
+                                            setTimeout(function() { 
+                                            }, 500);
+                                        }
+                                    },
+                                    ready:function(e){}
+                                })
+                            })
+                        }
+                    }
+                }();
+                jQuery(document).ready(function(){FormRepeater.init()});
+            }
+            function widget_dates_material(e) {
+                $('#modal'+e+'Material .daterange').daterangepicker({
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
+                    },
+                    "autoApply": true,
+                    "showDropdowns": true,
+                    "linkedCalendars": false,
+                    "alwaysShowCalendars": true,
+                    "drops": "auto",
+                    "opens": "left"
+                }, function(start, end, label) {
+                    console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+                });
+                $('#modal'+e+'Material .daterange_empty').val('');
+            }
+            function btnEdit_Material(id, modal) {
+                $.ajax({    
+                    type: "GET",
+                    url: "function.php?modalView_Supplier_Material="+id+"&m="+modal,
+                    dataType: "html",                  
+                    success: function(data){       
+                        $("#modalEditMaterial .modal-body").html(data);
+                        widget_formRepeater_material('Edit');
+                        widget_dates_material('Edit');
+
+                        selectMulti();
+                    }
+                });
+            }
+            function btnRemove_Material(id, e) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be remove!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnRemove_Material="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $(e).parent().parent().parent().remove();
+                            swal("Done!", "This item has been removed. Make sure to click SAVE to save the changes.", "success");
+                        }
+                    });
+                });
+            }
+            $(".modalUpdate_Material").on('submit',(function(e) {
+                e.preventDefault();
+
+                formObj = $(this);
+                if (!formObj.validate().form()) return false;
+                    
+                var formData = new FormData(this);
+                formData.append('btnUpdate_Supplier_Material',true);
+
+                var l = Ladda.create(document.querySelector('#btnUpdate_Supplier_Material'));
+                l.start();
+
+                $.ajax({
+                    url: "function.php",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData:false,
+                    cache: false,
+                    success: function(response) {
+                        if ($.trim(response)) {
+                            msg = "Sucessfully Save!";
+                            // var obj = jQuery.parseJSON(response);
+                            // var data = '<div class="mt-action-img"><img src="//placehold.co/40x40/EFEFEF/AAAAAA?text=no+image" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" /></div>';
+                            // data += '<div class="mt-action-body">';
+                            //     data += '<div class="mt-action-row">';
+                            //         data += '<div class="mt-action-info ">';
+                            //             data += '<div class="mt-action-details ">';
+                            //                 data += '<span class="mt-action-author">'+obj.material_name+'</span>';
+                            //                 data += '<p class="mt-action-desc">'+obj.material_description+'</p>';
+                            //             data += '</div>';
+                            //         data += '</div>';
+                            //         data += '<div class="mt-action-datetime" style="width: 150px;">';
+                            //             data += '<span class="label label-sm label-success btn-circle"></span>';
+                            //         data += '</div>';
+                            //         data += '<div class="mt-action-datetime">';
+                            //             data += '<span class="mt-action-date"></span>';
+                            //         data += '</div>';
+                            //         data += '<div class="mt-action-buttons ">';
+                            //             data += '<div class="btn-group btn-group-circle">';
+                            //                 data += '<a href="#modalEditMaterial" data-toggle="modal" class="btn btn-outline dark btn-sm btnEdit_Material" onclick="btnEdit_Material('+obj.ID+', 2)">View</a>';
+                            //                 data += '<a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Material('+obj.ID+', 1)">Delete</a>';
+                            //             data += '</div>';
+                            //         data += '</div>';
+                            //     data += '</div>';
+                            // data += '</div>';
+
+                            // $('#mt_action_'+obj.ID+'_1').html(data);
+                            
+                            fetchProducts();
+                            $('#modalEditMaterial').modal('hide');
+                        } else {
+                            msg = "Error!"
+                        }
+                        l.stop();
+
+                        bootstrapGrowl(msg);
+                    }
+                });
+            }));
 
             function btnView(id, source) {
                 $.ajax({
@@ -4663,71 +5016,131 @@
                     return;
                 }
                 
-                isFetching = true;
                 
-                $.ajax({    
+                isFetching = true;
+                console.log(isFetching);
+                $.ajax({
                     type: "GET",
                     url: "?fetchProducts",
-                    dataType: "json",                  
-                    success: function(data){       
-                        if(Array.isArray(data) && data.length) {
-                            productDT.clear().draw();
-                            data.forEach((d) => {
-                                productDT.row.add([
-                                    `
-                                        <div style="display: flex; gap:1rem;">
-                                            <img src="${d.image}" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" />
-                                            <div>
-                                                <span style="font-weight: 600;">${d.name}</span>
-                                                <p class="text-muted" style="padding:0; margin:0;">${d.description}</p>
-                                            </div>    
-                                        </div>
-                                    `,
-                                    `<span class="label label-sm label-success btn-circle">${d.category}</span>`,
-                                    `<span class="text-muted">${d.last_update}</span>`,
-                                    `
-                                        <div class="btn-group btn-group-circle" style="position: unset;">
-                                            <a href="#modalView" data-toggle="modal" data-id="${d.id}" class="btn btn-outline dark btn-sm btnView" onclick="btnView(${d.id}, ${d.source})">View</a>
-                                            <a href="pdf/products?i=${d.id}" class="btn green btn-sm" target="_blank">PDF</a>
-                                            
-                                            <!-- Button to Show Chart -->
-                                            <a href="#modalChart" class="btn btn-info btn-sm btnChart" data-toggle="modal" data-id="${d.id}">
-                                            <i class="fas fa-chart-line"></i></a>
-
-                                            <a href="javascript:;" class="btn btn-outlinex red btn-sm btnDelete" data-id="${d.id}" onclick="btnDelete(${d.id})">Delete</a>
-                                        </div>
-                                    `,
-                                ]).draw();
+                    dataType: "html",
+                    success: function(data){
+                        console.log(data);
+                        if ($.trim(data)) {
+                            $('#productsTable').DataTable().clear().destroy();
+                            $('#productsTable tbody').html(data);
+                            $('#productsTable').DataTable({
+                                // Optional: Add your configuration here
+                                paging: true,
+                                searching: true,
+                                ordering: true
+                            });
+                        }
+                        
+                        // if(Array.isArray(data) && data.length) {
+                        //     productDT.clear().draw();
+                        //     data.forEach((d) => {
+                        //         if (d.source == 1 && d.h_product_id > 0) {
+                        //             productDT.row.add([
+                        //                 `
+                        //                     <div style="display: flex; gap:1rem;">
+                        //                         <img src="${d.image}" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" />
+                        //                         <div>
+                        //                             <span style="font-weight: 600;">${d.name}</span>
+                        //                             <p class="text-muted" style="padding:0; margin:0;">${d.description}</p>
+                        //                         </div>    
+                        //                     </div>
+                        //                 `,
+                        //                 `${d.x_supplier_name}`,
+                        //                 `<span class="label label-sm label-success btn-circle">${d.category}</span>`,
+                        //                 `<span class="text-muted">${d.last_update}</span>`,
+                        //                 `
+                        //                     <div class="btn-group btn-group-circle" style="position: unset;">
+                        //                         <a href="#modalView" data-toggle="modal" data-id="${d.id}" class="btn btn-outline dark btn-sm btnView" onclick="btnView(${d.id}, ${d.source})">View</a>
+                        //                         <a href="pdf/products?i=${d.h_product_id}" class="btn green btn-sm" target="_blank">PDF</a>
+                        //                         <a href="javascript:;" class="btn btn-outlinex red btn-sm btnRemove_Material" onclick="btnRemove_Material(${d.id}, this)">Delete</a>
+                        //                     </div>
+                        //                 `,
+                        //             ]).draw();
+                        //         } else if (d.source == 1) {
+                        //             productDT.row.add([
+                        //                 `
+                        //                     <div style="display: flex; gap:1rem;">
+                        //                         <img src="${d.image}" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" />
+                        //                         <div>
+                        //                             <span style="font-weight: 600;">${d.name}</span>
+                        //                             <p class="text-muted" style="padding:0; margin:0;">${d.description}</p>
+                        //                         </div>    
+                        //                     </div>
+                        //                 `,
+                        //                 `${d.x_supplier_name}`,
+                        //                 `<span class="label label-sm label-success btn-circle">${d.category}</span>`,
+                        //                 `<span class="text-muted">${d.last_update}</span>`,
+                        //                 `
+                        //                     <div class="btn-group btn-group-circle" style="position: unset;">
+                        //                         <a href="#modalView" data-toggle="modal" data-id="${d.id}" class="btn btn-outline dark btn-sm btnView" onclick="btnView(${d.id}, ${d.source})">View</a> 
+                        //                         <a href="javascript:;" class="btn btn-outlinex red btn-sm btnRemove_Material" onclick="btnRemove_Material(${d.id}, this)">Delete</a>
+                        //                     </div>
+                        //                 `,
+                        //             ]).draw();
+                        //         } else {
+                        //             productDT.row.add([
+                        //                 `
+                        //                     <div style="display: flex; gap:1rem;">
+                        //                         <img src="${d.image}" onerror="this.onerror=null;this.src=\'https://placehold.co/40x40/EFEFEF/AAAAAA?text=no+image\';" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" />
+                        //                         <div>
+                        //                             <span style="font-weight: 600;">${d.name}</span>
+                        //                             <p class="text-muted" style="padding:0; margin:0;">${d.description}</p>
+                        //                         </div>    
+                        //                     </div>
+                        //                 `,
+                        //                 `${d.x_supplier_name}`,
+                        //                 `<span class="label label-sm label-success btn-circle">${d.category}</span>`,
+                        //                 `<span class="text-muted">${d.last_update}</span>`,
+                        //                 `
+                        //                     <div class="btn-group btn-group-circle" style="position: unset;">
+                        //                         <a href="#modalView" data-toggle="modal" data-id="${d.id}" class="btn btn-outline dark btn-sm btnView" onclick="btnView(${d.id}, ${d.source})">View</a>
+                        //                         <a href="pdf/products?i=${d.id}" class="btn green btn-sm" target="_blank">PDF</a>
+                                                
+                        //                         <!-- Button to Show Chart -->
+                        //                         <a href="#modalChart" class="btn btn-info btn-sm btnChart" data-toggle="modal" data-id="${d.id}">
+                        //                         <i class="fas fa-chart-line"></i></a>
+    
+                        //                         <a href="javascript:;" class="btn btn-outlinex red btn-sm btnDelete" data-id="${d.id}" onclick="btnDelete(${d.id})">Delete</a>
+                        //                     </div>
+                        //                 `,
+                        //             ]).draw();
+                        //         }
+                                
                                 
                                  
                                 
-                                // echo '<div class="mt-action" id="mt_action_'.$row["p_ID"].'_'.$row["p_source"].'">
-                                //     <div class="mt-action-img"><img src="'.$files.'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" /></div>
-                                //     <div class="mt-action-body">
-                                //         <div class="mt-action-row">
-                                //             <div class="mt-action-info ">
-                                //                 <div class="mt-action-details">
-                                //                     <span class="mt-action-author">'.htmlentities($row["p_name"] ?? '').'</span>
-                                //                     <p class="mt-action-desc">'.htmlentities($row["p_description"] ?? '').'</p>
-                                //                 </div>
-                                //             </div>
-                                //             <div class="mt-action-datetime" style="width: 150px;">
-                                //                 <span class="label label-sm label-success btn-circle">'. htmlentities($row["p_category"] ?? '') .'</span>
-                                //             </div>
-                                //             <div class="mt-action-datetime">
-                                //                 <span class="mt-action-date">'. $row["p_last_modified"] .'</span>
-                                //             </div>
-                                //             <div class="mt-action-buttons">
-                                //                 <div class="btn-group btn-group-circle">
-                                //                     <a href="#modalView" data-toggle="modal" data-id="'. $row["p_ID"] .'" class="btn btn-outline dark btn-sm btnView" onclick="btnView('.$row["p_ID"].', '.$row["p_source"].')">View</a>
-                                //                     <a href="javascript:;" class="btn btn-outlinex red btn-sm btnDelete" data-id="'. $row["p_ID"] .'" onclick="btnDelete('.$row["p_ID"].', '.$row["p_source"].')">Delete</a>
-                                //                 </div>
-                                //             </div>
-                                //         </div>
-                                //     </div>
-                                // </div>';
-                            });
-                        }
+                        //         // echo '<div class="mt-action" id="mt_action_'.$row["p_ID"].'_'.$row["p_source"].'">
+                        //         //     <div class="mt-action-img"><img src="'.$files.'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/40x40/EFEFEF/AAAAAA.png?text=no+image\';" style="width: 40px; height: 40px; object-fit: cover; object-position: center;" /></div>
+                        //         //     <div class="mt-action-body">
+                        //         //         <div class="mt-action-row">
+                        //         //             <div class="mt-action-info ">
+                        //         //                 <div class="mt-action-details">
+                        //         //                     <span class="mt-action-author">'.htmlentities($row["p_name"] ?? '').'</span>
+                        //         //                     <p class="mt-action-desc">'.htmlentities($row["p_description"] ?? '').'</p>
+                        //         //                 </div>
+                        //         //             </div>
+                        //         //             <div class="mt-action-datetime" style="width: 150px;">
+                        //         //                 <span class="label label-sm label-success btn-circle">'. htmlentities($row["p_category"] ?? '') .'</span>
+                        //         //             </div>
+                        //         //             <div class="mt-action-datetime">
+                        //         //                 <span class="mt-action-date">'. $row["p_last_modified"] .'</span>
+                        //         //             </div>
+                        //         //             <div class="mt-action-buttons">
+                        //         //                 <div class="btn-group btn-group-circle">
+                        //         //                     <a href="#modalView" data-toggle="modal" data-id="'. $row["p_ID"] .'" class="btn btn-outline dark btn-sm btnView" onclick="btnView('.$row["p_ID"].', '.$row["p_source"].')">View</a>
+                        //         //                     <a href="javascript:;" class="btn btn-outlinex red btn-sm btnDelete" data-id="'. $row["p_ID"] .'" onclick="btnDelete('.$row["p_ID"].', '.$row["p_source"].')">Delete</a>
+                        //         //                 </div>
+                        //         //             </div>
+                        //         //         </div>
+                        //         //     </div>
+                        //         // </div>';
+                        //     });
+                        // }
                     },
                     complete: function() {
                         isFetching = false;

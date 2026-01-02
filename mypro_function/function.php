@@ -153,8 +153,7 @@
 		$user_id = employerID($portal_user);
         $userEmployeeID = employeeID($portal_user);
 	}
-
-
+    
 	// Update Projects
 	if (isset($_POST['update_Project'])) { 
 		$today = date('Y-m-d');
@@ -225,9 +224,24 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<div class="col-md-12">
+					<label>Services</label>
+				</div>
+				<div class="col-md-12">
+					<select class="form-control mt-multiselect btn btn-default" name="services" required>';
+					
+						$selectTag = mysqli_query($conn, "SELECT * FROM tbl_service_logs_tag WHERE deleted = 0 ORDER BY name");
+						while($rowTag = mysqli_fetch_array($selectTag)) { 
+						   echo '<option value="'.$rowTag['name'].'" >'.$rowTag['name'].'</option>'; 
+						}
+					
+					echo '</select>
+				</div>
+			</div>
+			<div class="form-group">
 				<div class="col-md-6">
 					<label>Action Items</label>
-					 <select class="form-control mt-multiselect btn btn-default" type="text" name="Action_taken" required>
+					<select class="form-control mt-multiselect btn btn-default" type="text" name="Action_taken" required>
 						<option value="">---Select---</option>';
 						$queryType = "SELECT * FROM tbl_MyProject_Services_Action_Items order by Action_Items_name ASC";
 						$resultType = mysqli_query($conn, $queryType);
@@ -300,6 +314,7 @@
 		$h_accounts = mysqli_real_escape_string($conn,$_POST['h_accounts']);
 		$Estimated_Time = $_POST['Estimated_Time'];
 		$Assign_to_history = $_POST['Assign_to_history'];
+		$services = $_POST['services'];
 		$Action_taken = $_POST['Action_taken'];
 		$Action_date = $_POST['Action_date'];
 		$rand_id = rand(10,1000000);
@@ -317,12 +332,12 @@
 			move_uploaded_file($tmp,$path);
 		}
 		
-		$sql2 = "INSERT INTO tbl_service_logs (user_id, description, comment, action, account, task_date, minute)
-		VALUES ('$user_cookie', '$filename', '$description', '$action', '$h_accounts', '$task_date', 2)"; 
+		$sql2 = "INSERT INTO tbl_service_logs (user_id, description, comment, services, action, account, task_date, minute)
+		VALUES ('$user_cookie', '$filename', '$description', '$services', '$action', '$h_accounts', '$task_date', 2)"; 
 		$logs = mysqli_query($conn, $sql2);
 			
-		$sql = "INSERT INTO tbl_MyProject_Services_History (user_id,MyPro_PK,files, filename, description,Estimated_Time,Action_taken,Action_date,Assign_to_history,Services_History_Status,rand_id,h_accounts)
-		VALUES ('$user_cookie','$ID', '$to_Db_files', '$filename', '$description','$Estimated_Time','$Action_taken','$Action_date','$Assign_to_history',1,'$rand_id','$h_accounts')";
+		$sql = "INSERT INTO tbl_MyProject_Services_History (user_id,MyPro_PK,files, filename, description, services, Estimated_Time,Action_taken,Action_date,Assign_to_history,Services_History_Status,rand_id,h_accounts)
+		VALUES ('$user_cookie','$ID', '$to_Db_files', '$filename', '$description', '$services', '$Estimated_Time','$Action_taken','$Action_date','$Assign_to_history',1,'$rand_id','$h_accounts')";
 		
 		if (mysqli_query($conn, $sql)) {
 			$last_id = mysqli_insert_id($conn);

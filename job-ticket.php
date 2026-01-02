@@ -36,6 +36,35 @@
     .table thead tr th {
         vertical-align: middle;
     }
+
+    .custom-file-upload {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+
+    .upload-icon {
+        background-color: #f1f1f1;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 18px;
+        color: #333;
+        transition: background-color 0.3s;
+    }
+
+    .upload-icon:hover {
+        background-color: #e0e0e0;
+    }
+
+    .hidden-input {
+        display: none !important;
+    }
+
+    .file-count-label {
+        font-weight: 500;
+        color: #555;
+    }
 </style>
 
                     <div class="row">
@@ -251,6 +280,7 @@
                                                             <th style="width: 135px;" class="text-center">Desire Due Date</th>
                                                             <th style="width: 135px;" class="text-center">Assigned</th>
                                                             <th style="width: 135px;" class="text-center">Completed</th>
+                                                            <th style="width: 80px;"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -393,6 +423,9 @@
                                                                         <td class="text-center">'.$row["s_due_date"].'</td>
                                                                         <td class="text-center">'.$row["ee_assigned_to"].'</td>
                                                                         <td class="text-center">'.$row["s_last_modified"].'</td>
+                                                                        <td class="text-center">
+                                                                            <a href="#modalView2" class="btn btn-circle btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView2('.$row["s_ID"].')">View</a>
+                                                                        </td>
                                                                     </tr>';
                                                                 }
                                                             } else {
@@ -419,6 +452,22 @@
                                         <div class="modal-footer">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                             <button type="submit" class="btn green ladda-button" name="btnUpdate_Service" id="btnUpdate_Service" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade bs-modal-lg" id="modalView2" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="post" class="form-horizontal modalForm modalUpdate">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">Service Details</h4>
+                                        </div>
+                                        <div class="modal-body"></div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         </div>
                                     </form>
                                 </div>
@@ -513,6 +562,11 @@
                 });
             }
 
+            function comment_file(e){
+                const count = e.files.length;
+                const label = count > 0 ? count + ' file(s) selected':'No files selected';
+                $('.file-count-label').html(label);
+            }
             function btnView(id) {
                 $.ajax({
                     type: "GET",
@@ -520,6 +574,18 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalView .modal-body").html(data);
+
+                        selectMulti();
+                    }
+                });
+            }
+            function btnView2(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalView_Services2="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalView2 .modal-body").html(data);
 
                         selectMulti();
                     }

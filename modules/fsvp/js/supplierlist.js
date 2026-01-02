@@ -92,6 +92,30 @@ jQuery(function() {
             $('#modalEvaluationForm').modal('hide');
         }, prevEvalId);
     })
+    $('[data-eval-list-id]').on('click', function() {
+        // fetchEvaluationData(this.dataset.eval || '', () => {
+        //     $('#modalEvaluationRecap').modal('hide');
+        // }, this.dataset.evalListId);
+        
+        let id = this.dataset.eval;
+        let recordId = this.dataset.evalListId;
+        
+        $.ajax({
+            url: baseUrl + "viewEvaluationData=" + id + (recordId ? ('&r=' + recordId) : ''),
+            type: "GET",
+            contentType: false,
+            processData: false,
+            success: function({data}) {
+                // cachedEvalFormData = data;
+                // callback && callback();
+                viewEvaluationDetails(data);
+                $('#modalEvaluationRecap').modal('hide');
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON?.error || 'Error fetching data!', 'danger');
+            },
+        });
+    })
 
     $('#tableSupplierList').on('click', '[data-opensafile]', function() {
         viewFile(suppliersData, this.dataset.opensafile, 'supplier_agreement');
@@ -166,6 +190,7 @@ jQuery(function() {
 
     $('#modalEvaluationDetails').on('click', '[data-file]', function() {
         const data = cachedEvalFormData?.files[this.dataset.file];
+        console.log(data);
 
         if(!data) {
             bootstrapGrowl('Unable to preview file', 'error');
@@ -290,6 +315,8 @@ jQuery(function() {
 
         // submit to api
         const formData = new FormData(form);
+        
+        console.log(form)
         const btn = form.querySelector('[type=submit]');
 
         // prepare files
@@ -461,6 +488,7 @@ jQuery(function() {
         const data = new FormData(form);
 
         // signatures
+        data.append('preparer_sign', $('#preparer_signature').eSign("getData"));
         data.append('reviewer_sign', $('#reviewer_signature').eSign("getData"));
         data.append('approver_sign', $('#approver_signature').eSign("getData"));
 
@@ -679,8 +707,9 @@ jQuery(function() {
                     evalBtn = `
                         <div class="d-flex center">
                             <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
-                                <button type="button" class="btn blue btn-outline btn-circle btn-sm" data-view-eval="${d.id}" title="View data">View</button>
-                                <a href="${(Init.URL || 'fsvp') + '?pdf=evaluation_form&r=' + d.rhash}" target="_blank" class="btn dark btn-circle btn-sm" title="PDF Document">PDF</a>
+                                <button type="button" class="btn btn-outline btn-sm blue" data-view-eval="${d.id}" title="View data">View</button>
+                                <button type="button" class="btn btn-outline btn-sm green" data-toggle="modal" href="#modalEvaluationRecap" onclick="btnEvalRecap(${d.id})">List</button>
+                                <a href="${(Init.URL || 'fsvp') + '?pdf=evaluation_form&r=' + d.rhash}" target="_blank" class="btn btn-sm dark" title="PDF Document">PDF</a>
                             </div>
                         </div>
                     `;
@@ -970,6 +999,16 @@ function repopulateImporterSelect(supplierId) {
         },
     });
 }
+function btnEvalRecap(id) {
+	$.ajax({
+		type: "GET",
+        url: Init.baseUrl + "btnEvalRecap=" + (id || 0) ,
+		dataType: "html",
+		success: function(data){
+		    $('#modalEvaluationRecap .modal-body').html(data);
+		}
+	});
+}
 
 // opening the evaluation form
 function openEvaluationForm(data) {
@@ -1004,6 +1043,7 @@ function resetEvaluationForm() {
     form.get(0).reset();
 }
 
+// Generating Evaluation Details Content
 function viewEvaluationDetails(data) {
     const modal = $('#modalEvaluationDetails');
     const viewFileBtn = (file) => {
@@ -1030,7 +1070,13 @@ function viewEvaluationDetails(data) {
     modal.find('[data-ed=approve_date]').text(data.approve_date || '(None)');
     modal.find('[data-ed=reviewed_by]').text(data.reviewed_by || '(None)');
     modal.find('[data-ed=review_date]').text(data.review_date || '(None)');
+    modal.find('[data-ed=prepared_by]').text(data.prepared_by || '(None)');
+    modal.find('[data-ed=prepare_date]').text(data.prepare_date || '(None)');
     modal.find('[data-ed=comments]').text(data.comments || '(None)');
+    
+    if(data.prepared_by_sign) {
+        $('#preparer_signature_display').prop('src', data.prepared_by_sign).css('display', 'inline-block');
+    }
     
     if(data.reviewed_by_sign) {
         $('#reviewer_signature_display').prop('src', data.reviewed_by_sign).css('display', 'inline-block');
@@ -1054,8 +1100,9 @@ function viewEvaluationDetails(data) {
     modal.find('[data-ed=import_alerts]').html(data.import_alerts == 1 ? viewFileBtn('import_alerts') : no);
     modal.find('[data-ed=recalls]').html(data.recalls == 1 ? viewFileBtn('recalls') : no);
     modal.find('[data-ed=warning_letters]').html(data.warning_letters == 1 ? viewFileBtn('warning_letters') : no);
-    modal.find('[data-ed=osca]').html(data.other_significant_ca == 1 ? viewFileBtn('other_significant_ca') : no);
-    modal.find('[data-ed=suppliers_ca]').html(data.suppliers_corrective_actions == 1 ? viewFileBtn('suppliers_corrective_actions') : no);
+    modal.find('[data-ed=osca]').html(data.other_significant_ca == 1 ? viewFileBtn('other_sca') : no);
+    console.log(data)
+    modal.find('[data-ed=suppliers_ca]').html(data.suppliers_corrective_actions == 1 ? viewFileBtn('supplier_corrective_actions') : no);
 
     modal.find('[data-ed=info_related]').html(data.info_related || none);
     modal.find('[data-ed=rejection_date]').html(data.rejection_date || none);
@@ -1077,4 +1124,48 @@ function convertStringToTitleCase(str) {
 function switchEvalModalFn(mode = 'eval') {
     $(`#modalEvaluationForm [data-efm]:not([data-efm=${mode}])`).hide();
     $(`#modalEvaluationForm [data-efm=${mode}]`).show();
+}
+function btnOpenReEval(){
+    const data = suppliersData[this.dataset.eval];
+
+    if(!data) {
+        bootstrapGrowl('Unable to fetch data.', 'error');
+        return;
+    }
+    
+    switchEvalModalFn('reeval');
+    $('#viewPreviousEvalBtn').attr('data-evalid', data.evaluation.id || '')
+    $('#evaluationForm [name="eval"]').val(data.id);
+    prevEvalId = this.dataset.record || '';
+    editDetailsTRIndex = this.closest('tr');
+
+    $('#effsname').val(data.supplier_name || '');
+    $('#effsaddress').val(data.supplier_address || '');
+    $('#reefimporter').val(data.importer_name || '');
+    $('#efImporterAddress').val(data.importer_address || '');
+    $('#evaluationForm input[name="supplier"]').val(data.supplier_id || '');
+    $('#evaluationForm input[name="importer"]').val(data.importer_id || '');
+    
+    $('#modalEvaluationForm').modal('show');
+}
+function evallist(id, recordId) {
+    
+    // let id = this.dataset.eval;
+    // let recordId = this.dataset.evalListId;
+    
+    $.ajax({
+        url: baseUrl + "viewEvaluationData=" + id + (recordId ? ('&r=' + recordId) : ''),
+        type: "GET",
+        contentType: false,
+        processData: false,
+        success: function({data}) {
+            // cachedEvalFormData = data;
+            // callback && callback();
+            viewEvaluationDetails(data);
+            // $('#modalEvaluationRecap').modal('hide');
+        },
+        error: function({responseJSON}) {
+            bootstrapGrowl(responseJSON?.error || 'Error fetching data!', 'danger');
+        },
+    });
 }

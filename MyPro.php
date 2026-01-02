@@ -35,6 +35,12 @@
                     <li>
                         <a href="#tab_Collaborator_Task" data-toggle="tab">Collaborator Task </a>
                     </li>
+                    
+                    <?php if($_COOKIE['user_company_id'] == 34):  ?>
+                        <li>
+                            <a href="#tabArchives" data-toggle="tab">Archives </a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
             <div class="portlet-body">
@@ -56,7 +62,7 @@
                                 <th>Task Description</th>
                                 <th>Request Date</th>
                                 <th>Desired Due Date</th>
-                                <th></th>
+                                <th class="text-center">Actions</th>
                             </tr>
                             </thead>
                             <tbody id="project_data">
@@ -71,18 +77,22 @@
                                     while($row = mysqli_fetch_array($result))
                                     {?>
                                     <tr id="row_proj_<?= $row['MyPro_id']; ?>">
-                                        <td><?php echo 'No.: '; echo $row['MyPro_id']; ?></td>
+                                        <td><?php echo 'No.: '; echo $row['MyPro_id']; ?></td> 
                                         <td><?php echo $row['Project_Name']; ?></td>
                                         <td><?php echo $row['Project_Description']; ?></td>
                                         <td><?php echo date("Y-m-d", strtotime($row['Start_Date'])); ?></td>
                                         <td><?php echo date("Y-m-d", strtotime($row['Desired_Deliver_Date'])); ?></td>
-                                        <td>
-                                             <?php if($_COOKIE['ID'] == 38): ?>
-                                            <a class="btn blue btn-outline btnViewMyPro_update" data-toggle="modal" href="#modalGetMyPro_update" data-id="<?php echo $row['MyPro_id']; ?>">Edit</a>
+                                        <td class="text-center">
+                                            <?php if($_COOKIE['ID'] == 38): ?>
+                                            <a class="btn btn-primary btnViewMyPro_update" data-toggle="modal" href="#modalGetMyPro_update" data-id="<?php echo $row['MyPro_id']; ?>">Edit</a>
                                             <?php endif; ?>
-                                            <a href="mypro_task.php?view_id=<?php echo $row['MyPro_id'];  ?>" class="btn green btn-outline" >
+                                            <a href="mypro_task.php?view_id=<?php echo $row['MyPro_id'];  ?>" class="btn btn-primary" >
                                                 View
                                             </a>
+                                            <?php if($_COOKIE['user_company_id'] == 34): ?> 
+                                            <a class="btn btn-info view-logs" data-id="<?php echo $row['MyPro_id']; ?>">Logs</a>
+                                            <a class="btn btn-danger remove-mypro" data-key="<?php echo $row['MyPro_id']; ?>" data-id="<?php echo $row['MyPro_id']; ?>" data-table="tbl_MyProject_Services">Remove</a>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php }?>
@@ -301,6 +311,50 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="tab-pane" id="tabArchives">
+                        <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="sample_5">
+                        <thead>
+                            <tr>
+                                <th>Tickets#</th>
+                                 <th>Project Name</th>
+                                <th>Task Description</th>
+                                <th>Request Date</th>
+                                <th>Desired Due Date</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="project_data">
+                                <?php
+                                    $childcolor1 ='';
+                                    $i_user = $_COOKIE['ID'];
+                                    if (isset($_COOKIE['switchAccount'])) { $i_user = $_COOKIE['switchAccount']; }
+                                    
+                                    $query = "SELECT * FROM tbl_MyProject_Services left join tbl_MyProject_Services_Assigned on MyPro_PK = MyPro_id where tbl_MyProject_Services.user_cookies = $i_user and Project_status != 2 and is_deleted = 1";
+                                    $result = mysqli_query($conn, $query);
+                                                                
+                                    while($row = mysqli_fetch_array($result))
+                                    {?>
+                                    <tr id="row_proj_<?= $row['MyPro_id']; ?>"> 
+                                        <td><?php echo 'No.: '; echo $row['MyPro_id']; ?></td> 
+                                        <td><?php echo $row['Project_Name']; ?></td>
+                                        <td><?php echo $row['Project_Description']; ?></td>
+                                        <td><?php echo date("Y-m-d", strtotime($row['Start_Date'])); ?></td>
+                                        <td><?php echo date("Y-m-d", strtotime($row['Desired_Deliver_Date'])); ?></td>
+                                        <td class="text-center">
+                                            <?php if($_COOKIE['ID'] == 38): ?>
+                                            <a class="btn btn-primary btnViewMyPro_update" data-toggle="modal" href="#modalGetMyPro_update" data-id="<?php echo $row['MyPro_id']; ?>">Edit</a>
+                                            <?php endif; ?>
+                                         
+                                            <?php if($_COOKIE['user_company_id'] == 34): ?>
+                                            <a class="btn btn-info view-logs" data-id="<?php echo $row['MyPro_id']; ?>">Logs</a>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php }?>
+                                
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -330,6 +384,8 @@
 <!-- END PAGE LEVEL SCRIPTS -->
 <script src="assets/global/plugins/bootstrap-tabdrop/js/bootstrap-tabdrop.js" type="text/javascript"></script>
 <script src="assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
+ <!-- Remove Mypro and log history script -->
+<script src="mypro_function/script.js" type="text/javascript"></script>
 <!--<script src="//cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>-->
 <script type="text/javascript">
 $(document).ready(function(){
@@ -339,17 +395,14 @@ $(document).ready(function(){
         height: 100
     });
     $('.dropdown-toggle').dropdown();
-});
-$(document).ready(function(){
+
     //summer notes
      $("#your_summernotes2").summernote({
         placeholder:'',
         height: 100
     });
     $('.dropdown-toggle').dropdown();
-});
- // for My Task 
-$(document).ready(function(){
+
     // calendar
     var calendar = $('#calendar_data').fullCalendar({
         editable:true,

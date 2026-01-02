@@ -38,47 +38,6 @@
 		}
 
 		return $msg;
-		
-
-// 		try {
-// 		  //  $mail->isMail();
-// 		  //  $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-// 		  //  $mail->isSMTP();
-// 		  //  $mail->Host       = 'interlinkiq.com';
-// 		  //  $mail->SMTPAuth   = true;
-// 		  //  $mail->Username   = 'admin@interlinkiq.com';
-// 		  //  $mail->Password   = 'L1873@2019new';
-// 		  //  $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-// 		  //  $mail->Port       = 465;
-// 		  //  $mail->setFrom('services@interlinkiq.com', 'Interlink IQ');
-// 		  //  $mail->addAddress('greeggimongala@gmail.com', 'Joe User');     //Add a recipient
-		  
-// 		    //Server settings
-//             // $mail->isSMTP();                                            //Send using SMTP
-//             // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-//             // $mail->Host       = 'email-smtp.us-east-1.amazonaws.com';                     //Set the SMTP server to send through
-//             // $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-//             // $mail->SMTPSecure = 'TLS';            //Enable implicit TLS encryption
-//             // $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-//             // $mail->Username   = 'AKIAROKUUVANUHT3CDM5';                     //SMTP username
-//             // $mail->Password   = 'BCtHVM5jTXvdcjOc5Q3qxb0MGNJcXZOKg1Ngcw4BXSki';                               //SMTP password
-            
-            
-//     //         $mail->setFrom('services@interlinkiq.com', 'Interlink IQ');
-// 		  //  $mail->addAddress($to, $user);
-            
-
-// 		    $mail->isHTML(true);
-// 		    $mail->Subject = $subject;
-// 		    $mail->Body    = $body;
-
-// 		    $mail->send();
-// 		    $msg = 'Message has been sent';
-// 		} catch (Exception $e) {
-// 		    $msg = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-// 		}
-
-// 		return $msg;
 	}
 
 
@@ -5253,7 +5212,7 @@
 			// 	$success = false;
 			// }
 		}
-
+ 
 		if ($success == true) {
 
 			// Update function only else treat as new file

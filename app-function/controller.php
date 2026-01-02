@@ -148,46 +148,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       
         if ($_POST['action'] == "add_form") {
             $eform_id = $_POST['eform_id'];
-            $form_owner = $_POST['form_owner'];  // This should be an array
+            $form_owner = $_POST['form_owner'];
             $enterprise_id = $_POST['enterprise_id'];
         
-            // Make sure $form_owner is an array
-            if (is_array($form_owner)) {
-                foreach ($form_owner as $row) {
-                    echo $i++; // Debugging: Check which iteration we're on
-                    $check_form_owned = mysqli_query($conn, "SELECT * FROM tbl_forms_owned WHERE user_id = '$row' AND enterprise_id = '$enterprise_id'");
-                    $check_result = mysqli_fetch_array($check_form_owned);
-                    
-                    if (mysqli_num_rows($check_form_owned) > 0) {
-                        // User already has form(s) assigned, so we append the new form
-                        $array_counter = explode(",", $check_result["form_owned"]);
-                        if (!in_array($eform_id, $array_counter)) {
-                            array_push($array_counter, $eform_id);
-                            $new_form_id = implode(',', $array_counter);
-        
-                            // Update the existing record with the new form ID
-                            echo $update_query = "UPDATE tbl_forms_owned SET form_owned = '$new_form_id' WHERE user_id = '$row' AND enterprise_id = '$enterprise_id'";
-                            if (mysqli_query($conn, $update_query)) {
-                                // Successfully updated
-                            } else {
-                                echo "Error updating record: " . mysqli_error($conn);
-                            }
-                        }
-                    } else {
-                        // User does not have any forms assigned, so insert a new record
-                        echo $insert_query = "INSERT INTO tbl_forms_owned (user_id, enterprise_id, form_owned) VALUES ('$row', '$enterprise_id', '$eform_id')";
-                        if (mysqli_query($conn, $insert_query)) {
-                            // Successfully inserted
-                        } else {
-                            echo "Error inserting record: " . mysqli_error($conn);
-                        }
-                    }
-                }
-            } else {
+            if (!is_array($form_owner)) {
                 echo "form_owner is not an array";
+                exit;
+            }
+        
+            foreach ($form_owner as $row) {
+                // Use a prepared statement to prevent SQL injection
+                $stmt = mysqli_prepare($conn, "SELECT form_owned FROM tbl_forms_owned WHERE user_id = ? AND enterprise_id = ?");
+                mysqli_stmt_bind_param($stmt, "ii", $row, $enterprise_id);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $check_result = mysqli_fetch_assoc($result);
+                mysqli_stmt_close($stmt);
+        
+                if ($check_result) {
+                    // User already has assigned forms
+                    $form_ids = explode(",", $check_result["form_owned"]);
+        
+                    if (!in_array($eform_id, $form_ids)) {
+                        $form_ids[] = $eform_id;
+                        $new_form_id = implode(',', $form_ids);
+        
+                        $stmt = mysqli_prepare($conn, "UPDATE tbl_forms_owned SET form_owned = ? WHERE user_id = ? AND enterprise_id = ?");
+                        mysqli_stmt_bind_param($stmt, "sii", $new_form_id, $row, $enterprise_id);
+                        mysqli_stmt_execute($stmt);
+                        mysqli_stmt_close($stmt);
+                    }
+                } else {
+                    // Insert a new record if no forms are assigned
+                    $stmt = mysqli_prepare($conn, "INSERT INTO tbl_forms_owned (user_id, enterprise_id, form_owned) VALUES (?, ?, ?)");
+                    mysqli_stmt_bind_param($stmt, "iis", $row, $enterprise_id, $eform_id);
+                    mysqli_stmt_execute($stmt);
+                    mysqli_stmt_close($stmt);
+                }
             }
         }
-
     }
 }
 

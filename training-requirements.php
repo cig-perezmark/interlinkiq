@@ -74,6 +74,10 @@
         background-color: #D91E18;
     }
 
+    .training.not-started {
+        background-color: #d94b18;
+    }
+
     .training.not-applicable {
         background-color: #E1E5EC;
     }
@@ -233,7 +237,7 @@
                                                     <strong>Color Legend:</strong>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-2">
                                                         <h5 class="legend">
                                                             <div class="training completed"></div>
                                                             Training Completed
@@ -245,10 +249,16 @@
                                                             Training Incomplete
                                                         </h5>
                                                     </div>
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-2">
                                                         <h5 class="legend">
                                                             <div class="training expired"></div>
                                                             Training Record Expired
+                                                        </h5>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <h5 class="legend">
+                                                            <div class="training not-started"></div>
+                                                            Not Yet Started
                                                         </h5>
                                                     </div>
                                                     <div class="col-sm-3">
@@ -299,8 +309,8 @@
                                                             t.quiz_id AS t_quiz_id,
                                                             q.quiz_id AS q_quiz_id,
                                                             q.max_ID AS q_max_ID,
-                                                            q.result AS q_result,
-                                                            q.last_modified AS q_last_modified
+                                                            q2.result AS q_result,
+                                                            q2.last_modified AS q_last_modified
 
                                                             FROM (
                                                                 SELECT
@@ -356,15 +366,20 @@
                                                                 AND deleted = 0 
                                                             ) AS t
                                                             ON t.user_id = r.e_user_id
-
+                            
                                                             LEFT JOIN (
-                                                                SELECT MAX(ID) AS max_ID, user_id, quiz_id, result, start_time, end_time, signature, last_modified
+                                                                SELECT MAX(ID) AS max_ID, user_id, quiz_id
                                                                 FROM tbl_hr_quiz_result
-                                                                WHERE result = 100
                                                                 GROUP BY quiz_id, user_id
                                                             ) AS q
                                                             ON r.u_ID = q.user_id
                                                             AND t.quiz_id = q.quiz_id
+                            
+                                                            LEFT JOIN (
+                                                                SELECT ID, result, last_modified
+                                                                FROM tbl_hr_quiz_result
+                                                            ) AS q2
+                                                            ON q2.ID = q.max_ID
 
                                                             -- WHERE r.u_ID = 43
 
@@ -388,41 +403,45 @@
                                                                         <td>'.$j_title.'</td>';
                                                                 }
 
-                                                                        if (!empty($rowData['q_quiz_id']) AND !empty($rowData['e_job_description_id']) AND !empty($rowData['t_job_description_id'])) {
-
-                                                                            $e_job_description_id = $rowData['e_job_description_id'];
-                                                                            $t_job_description_id = $rowData['t_job_description_id'];
-                                                                            $arr_jd_id_emp = explode(", ", $e_job_description_id);
-                                                                            $arr_jd_id_training = explode(", ", $t_job_description_id);
-                                                                            if (array_intersect($arr_jd_id_emp, $arr_jd_id_training)) {
-                                                                                    
-                                                                                $trainingResult = $rowData['q_result'];
-                                                                                $completed_date = $rowData['q_last_modified'];
-                                                                                $completed_date = new DateTime($completed_date);
-                                                                                $completed_date_o = $completed_date->format('Y/m/d');
-                                                                                $completed_date = $completed_date->format('M d, Y');
-    
-                                                                                $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                                                $due_date = new DateTime($due_date);
-                                                                                $due_date_o = $due_date->format('Y/m/d');
-                                                                                $due_date = $due_date->format('M d, Y');
-    
-                                                                                $current_date = date('M d, Y');
-                                                                                $current_date = new DateTime($current_date);
-                                                                                $current_date_o = $current_date->format('Y/m/d');
-                                                                                $current_date = $current_date->format('M d, Y');
-    
-                                                                                if ($trainingResult == 100) {
-                                                                                    if ($current_date_o >= $due_date_o) {
-                                                                                        echo '<td class="training expired"><a href="#modalView" type="button" class="btn btn-outline btn-transparent btn-sm sbold default" data-toggle="modal" onclick="btnView('.$rowData['u_ID'].', '.$rowData['t_ID'].')">'.$completed_date.'</a></td>';
+                                                                        // if (!empty($rowData['q_quiz_id']) AND !empty($rowData['e_job_description_id']) AND !empty($rowData['t_job_description_id'])) {
+                                                                        if (!empty($rowData['e_job_description_id']) AND !empty($rowData['t_job_description_id'])) {
+                                                                            if (!empty($rowData['q_quiz_id'])) {
+                                                                                $e_job_description_id = $rowData['e_job_description_id'];
+                                                                                $t_job_description_id = $rowData['t_job_description_id'];
+                                                                                $arr_jd_id_emp = explode(", ", $e_job_description_id);
+                                                                                $arr_jd_id_training = explode(", ", $t_job_description_id);
+                                                                                if (array_intersect($arr_jd_id_emp, $arr_jd_id_training)) {
+                                                                                        
+                                                                                    $trainingResult = $rowData['q_result'];
+                                                                                    $completed_date = $rowData['q_last_modified'];
+                                                                                    $completed_date = new DateTime($completed_date);
+                                                                                    $completed_date_o = $completed_date->format('Y/m/d');
+                                                                                    $completed_date = $completed_date->format('M d, Y');
+        
+                                                                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
+                                                                                    $due_date = new DateTime($due_date);
+                                                                                    $due_date_o = $due_date->format('Y/m/d');
+                                                                                    $due_date = $due_date->format('M d, Y');
+        
+                                                                                    $current_date = date('M d, Y');
+                                                                                    $current_date = new DateTime($current_date);
+                                                                                    $current_date_o = $current_date->format('Y/m/d');
+                                                                                    $current_date = $current_date->format('M d, Y');
+        
+                                                                                    if ($trainingResult == 100) {
+                                                                                        if ($current_date_o >= $due_date_o) {
+                                                                                            echo '<td class="training expired"><a href="#modalView" type="button" class="btn btn-outline btn-transparent btn-sm sbold default" data-toggle="modal" onclick="btnView('.$rowData['u_ID'].', '.$rowData['t_ID'].')">'.$completed_date.'</a></td>';
+                                                                                        } else {
+                                                                                            echo '<td class="training completed"><a href="#modalView" type="button" class="btn btn-outline btn-transparent btn-sm sbold default" data-toggle="modal" onclick="btnView('.$rowData['u_ID'].', '.$rowData['t_ID'].')">'.$completed_date.'</a></td>';
+                                                                                        }
                                                                                     } else {
-                                                                                        echo '<td class="training completed"><a href="#modalView" type="button" class="btn btn-outline btn-transparent btn-sm sbold default" data-toggle="modal" onclick="btnView('.$rowData['u_ID'].', '.$rowData['t_ID'].')">'.$completed_date.'</a></td>';
+                                                                                        echo '<td class="training added"><a href="#modalView" type="button" class="btn btn-outline btn-transparent btn-sm sbold default" data-toggle="modal" onclick="btnView('.$rowData['u_ID'].', '.$rowData['t_ID'].')">'.$completed_date.'</a></td>';
                                                                                     }
                                                                                 } else {
-                                                                                    echo '<td class="training added"></td>';
+                                                                                    echo '<td></td>';
                                                                                 }
                                                                             } else {
-                                                                                echo '<td></td>';
+                                                                                echo '<td class="training not-started"></td>';
                                                                             }
                                                                         } else {
                                                                             echo '<td></td>';
@@ -456,7 +475,6 @@
                                         <div class="modal-body"></div>
                                         <div class="modal-footer">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_HR_Trainings" id="btnUpdate_HR_Trainings" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
                                         </div>
                                     </form>
                                 </div>

@@ -463,7 +463,7 @@
 
               prev_link = document.referrer;
               if (prev_link.indexOf('forum/index.php') > -1) { window.location.href = prev_link; }
-              else { window.location.href = 'profile'; }
+              else { window.location.href = obj.page; }
             } else {
               var data = '<div class="alert alert-danger">';
               data += obj.message;
@@ -500,7 +500,10 @@
               $('#container').removeClass('right-panel-active');
               $('.formSignIn .alert_msg').html(data);
               btnBack();
-            //   $('#modalThankYou').modal('show');
+              
+              if (obj.active == 0) { 
+                  $('#modalThankYou').modal('show');
+              }
             } else {
               var data = '<div class="alert alert-danger">';
               data += obj.message;

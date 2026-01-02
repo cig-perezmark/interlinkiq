@@ -53,22 +53,29 @@
                                         ?>
                                     </div>
                                     <div class="actions">
-                                        <div class="btn-group">
-                                            <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
-                                                <i class="fa fa-angle-down"></i>
-                                            </a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li>
-                                                    <a data-toggle="modal" href="#modalNew" > Add New Service</a>
-                                                </li>
-                                                <li class="divider"> </li>
-                                                <?php if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163): ?>
-                                                    <li>
-                                                        <a data-toggle="modal" data-target="#modalInstruction" onclick="btnInstruction()">Add New Instruction</a>
-                                                    </li>
-                                                <?php endif; ?>
-                                            </ul>
-                                        </div>
+                                        <?php
+                                            if (empty($current_permission_array_key) OR in_array(2, $permission)) {
+                                                echo '<div class="btn-group">
+                                                    <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu pull-right">
+                                                        <li>
+                                                            <a data-toggle="modal" href="#modalNew" > Add New Service</a>
+                                                        </li>
+                                                        <li class="divider"></li>';
+                                                        
+                                                        if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163){
+                                                            echo '<li>
+                                                                <a data-toggle="modal" data-target="#modalInstruction" onclick="btnInstruction()">Add New Instruction</a>
+                                                            </li>';
+                                                        }
+                                                        
+                                                    echo '</ul>
+                                                </div>';
+                                            }
+                                        ?>
+                                        
                                     </div>
                                 </div>
                                 <div class="portlet-body">
@@ -124,12 +131,16 @@
                                                                     <td>'. $category .'</td>
                                                                     <td>'. $area .'</td>
                                                                     <td>'. $description .'</td>
-                                                                    <td class="text-center">
-                                                                        <div class="btn-group btn-group-circle">
-                                                                            <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">View</a>
-                                                                            <a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $ID .')">Delete</a>
-                                                                        </div>
-                                                                    </td>
+                                                                    <td class="text-center">';
+                                                                    
+                                                                        if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                            echo '<a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">View</a>';
+                                                                        }
+                                                                        if (empty($current_permission_array_key) OR in_array(6, $permission)) {
+                                                                            echo '<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $ID .')">Delete</a>';
+                                                                        }
+                                                                        
+                                                                    echo '</td>
                                                                 </tr>';
                                                             }
                                                         }
@@ -187,7 +198,7 @@
                                                     <input class="form-control" type="text" name="location" placeholder="Remote, On-site, US Only, etc." required />
                                                 </div>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group <?php echo (empty($current_permission_array_key) OR in_array(3, $permission)) ? '':'hide'; ?>">
                                                 <label class="col-md-3 control-label">Service Offering <p class="text-muted" style="margin: 0;"><small>(Brochure,Resume,Sample of Work, etc.)</small></p></label>
                                                 <div class="col-md-8">
                                                     <div class="mt-repeater mt-repeater-file">
@@ -400,7 +411,7 @@
             function btnEdit(id) {
                 $.ajax({
                     type: "GET",
-                    url: "function.php?modalView_Servicess="+id,
+                    url: "function.php?modalView_Servicess="+id+"&p="+current_permission_array_key,
                     dataType: "html",
                     success: function(data){
                         $("#modalView .modal-body").html(data);
@@ -460,10 +471,14 @@
                                 result += '<td>'+obj.area+'</td>';
                                 result += '<td>'+obj.description+'</td>';
                                 result += '<td class="text-center">';
-                                    result += '<div class="btn-group btn-group-circle">';
+                                
+                                    if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("5")) {
                                         result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('+obj.ID+')">View</a>';
+                                    }
+                                    if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("6")) {
                                         result += '<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('+obj.ID+')">Delete</a>';
-                                    result += '</div>';
+                                    }
+                                    
                                 result += '</td>';
                             result += '</tr>';
 
@@ -505,10 +520,14 @@
                             result += '<td>'+obj.area+'</td>';
                             result += '<td>'+obj.description+'</td>';
                             result += '<td class="text-center">';
-                                result += '<div class="btn-group btn-group-circle">';
+                            
+                                if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("5")) {
                                     result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('+obj.ID+')">View</a>';
+                                }
+                                if (current_permission_array_key == '' || current_permission_array_key.split(',').includes("6")) {
                                     result += '<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('+obj.ID+')">Delete</a>';
-                                result += '</div>';
+                                }
+                                
                             result += '</td>';
 
                             $("#tableData tbody #tr_"+obj.ID).html(result);

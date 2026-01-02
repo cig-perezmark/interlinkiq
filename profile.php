@@ -1519,7 +1519,7 @@
                                                                                         <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
                                                                                         <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
                                                                                         <td>'.$trainingStatus.'</td>
-                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-success">View</a>':''; echo '</td>
+                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf/training?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-success">View</a>':''; echo '</td>
                                                                                         <td class="text-center"><a href="#modalView" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnView('.$training_ID.')">View</a></td>
                                                                                     </tr>';
                                                                                 }

@@ -242,10 +242,10 @@
     					$html .='</td>';
     					
         				if (!empty($data_image_array[7])) { $html .= '<td colspan="2" rowspan="3" class="image_angle" style="background-image: url(\''. $base_url .'uploads/products/'. $data_image_array[7] .'\');"></td>'; }
-                        else { $html .= '<td colspan="2" rowspan="3" class="image_angle" style="background-image: url(\''. $image_angle .'\');"></td>'; }
+                        else { $html .= '<td colspan="2" class="image_angle" style="background-image: url(\''. $image_angle .'\');"></td>'; }
     
         				if (!empty($data_image_array[8])) { $html .= '<td colspan="2" rowspan="3" class="image_angle" style="background-image: url(\''. $base_url .'uploads/products/'. $data_image_array[8] .'\');"></td>'; }
-                        else { $html .= '<td colspan="2" rowspan="3" class="image_angle" style="background-image: url(\''. $image_angle .'\');"></td>'; }
+                        else { $html .= '<td colspan="2" class="image_angle" style="background-image: url(\''. $image_angle .'\');"></td>'; }
     
     				$html .= '</tr>';
     			} else {
@@ -322,8 +322,8 @@
 					<td colspan="6">Product Characteristics</td>
 				</tr>
 				<tr>
-					<td colspan="6">'.nl2br($description).'</td>
-					<td colspan="6">'.nl2br($feature).'</td>
+					<td colspan="6">'.$description.'</td>
+					<td colspan="6">'.$feature.'</td>
 				</tr>
 				<tr>
 					<td colspan="12">Ingredients List</td>
@@ -576,69 +576,6 @@
                         <td colspan="4">Dimension - H x L x W (in)</td>
                         <td colspan="6">'.$rowData['packaging_2a_dimension'].'</td>
                     </tr>
-
-                    <tr>';
-
-                        if (!empty($rowData['packaging_2b_image'])) { $html2 .= '<td colspan="2" rowspan="4" class="image_angle" style="background-image: url(\''. $base_url .'uploads/products/'.$rowData['packaging_2b_image'].'\');"></td>'; }
-                        else { $html2 .= '<td colspan="2" rowspan="4" class="image_angle" style="background-image: url(\''. $image_angle .'\');"></td>'; }
-
-                        $html2 .= '<td colspan="10"><b>Case OD</b></td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Material</td>
-                        <td colspan="6">';
-
-                            if (!empty($rowData['packaging_2b_material'])) {
-                                $packaging_2b_material = $rowData['packaging_2b_material'];
-                                $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 AND ID = $packaging_2b_material" );
-                                if ( mysqli_num_rows($selectMaterial) > 0 ) {
-                                    $rowMaterial = mysqli_fetch_array($selectMaterial);
-                                    $html2 .= $rowMaterial['name'];
-                                }
-                            }
-
-                        $html2 .='</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Weight (lbs)</td>
-                        <td colspan="6">'.$rowData['packaging_2b_weight'].'</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Dimension - H x L x W (in)</td>
-                        <td colspan="6">'.$rowData['packaging_2b_dimension'].'</td>
-                    </tr>
-
-                    <tr>';
-
-                        if (!empty($rowData['packaging_2c_image'])) { $html2 .= '<td colspan="2" rowspan="4" class="image_angle" style="background-image: url(\''. $base_url .'uploads/products/'.$rowData['packaging_2c_image'].'\');"></td>'; }
-                        else { $html2 .= '<td colspan="2" rowspan="4" class="image_angle" style="background-image: url(\''. $image_angle .'\');"></td>'; }
-
-                        $html2 .= '<td colspan="10"><b>Case ID</b></td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Material</td>
-                        <td colspan="6">';
-                        
-                            if (!empty($rowData['packaging_2c_material'])) {
-                                $packaging_2c_material = $rowData['packaging_2c_material'];
-                                $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_products_material WHERE deleted = 0 AND ID = $packaging_2c_material" );
-                                if ( mysqli_num_rows($selectMaterial) > 0 ) {
-                                    $rowMaterial = mysqli_fetch_array($selectMaterial);
-                                    $html2 .= $rowMaterial['name'];
-                                }
-                            }
-
-                        $html2 .='</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Weight (lbs)</td>
-                        <td colspan="6">'.$rowData['packaging_2c_weight'].'</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Dimension - H x L x W (in)</td>
-                        <td colspan="6">'.$rowData['packaging_2c_dimension'].'</td>
-                    </tr>
-                    
                     
                     <tr>
                         <td colspan="3"></td>
@@ -991,7 +928,7 @@
                                     3 => 'Year',
                                 );
     
-                                $html2 .='<tr>
+                                $html .='<tr>
     								<td colspan="4">'.htmlentities($rowProductData['name']).'</td>
     								<td colspan="3">'.htmlentities($rowProductData['lead_time']).' '.$dat_type[$lead_time_type].'</td>
     								<td colspan="3">$'.htmlentities($rowProductData['formula']).' %</td>
@@ -1000,16 +937,64 @@
                             }
                         }
                     }
-    			$html2 .= '</table>';
+    			$html .= '</table>';
             }
             
-    	$html2 .= '</body>
+    	$html .= '</body>
     </html>';
 
     // echo $html;
+
+    $title = htmlentities($name ?? '').' - '.htmlentities($code ?? '').' - '.$feature.' - '.date('mdy');
+    $mpdf->SetDisplayMode('fullpage');
+    
+    if ($user_id == 1684) {
+        $title = 'PS 3.6.2 - '.$title;
+        // $arr = array (
+        //     'L' => array (
+        //       'content' => 'PS 3.6.2 - '.$name.' - '.$code.' - '.$feature.' - '.date('mdy'),
+        //       'font-size' => 10,
+        //       'font-style' => 'B',
+        //       'font-family' => 'serif',
+        //       'color'=>'#000000'
+        //     ),
+        //     'C' => array (
+        //       'content' => '',
+        //       'font-size' => 10,
+        //       'font-style' => 'B',
+        //       'font-family' => 'serif',
+        //       'color'=>'#000000'
+        //     ),
+        //     'R' => array (
+        //       'content' => '{PAGENO}',
+        //       'font-size' => 10,
+        //       'font-style' => 'B',
+        //       'font-family' => 'serif',
+        //       'color'=>'#000000'
+        //     ),
+        //     'line' => 1,
+        // );
+        
+        // if ($user_id == 1684) { $mpdf->SetFooter($arr, 'O');}
+    	
+        $footer = '<table cellpadding="7" cellspacing="0" width="100%" border="1">
+            <tr>
+                <td style="width: 50%;">PS 3.6.2 - '.str_replace('|', '&#124;', $name).' - '.$code.' - '.$feature.'</td>
+                <td style="text-align: right;">Copyright Trinity Frozen Foods, LLC</td>
+            </tr>
+            <tr>
+                <td style="width: 50%;">Date Generated: '.date('m.d.y').'</td>
+                <td style="text-align: right;">Page {PAGENO} of {nb}</td>
+            </tr>
+        </table>';
+        
+        $mpdf->AddPageByArray([
+            'margin-bottom' => '50px'
+        ]);
+        $mpdf->SetFooter($footer, 'O');
+    }
     
 	$mpdf->WriteHTML($html);
 	$mpdf->WriteHTML($html2);
-	$mpdf->Output();
-
+    $mpdf->Output($title.'.pdf', 'I');
 ?>

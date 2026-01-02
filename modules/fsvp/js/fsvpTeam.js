@@ -4,7 +4,7 @@ jQuery(function() {
         paging: false,
         buttons: [],
     });
-    const actionColumnDT = fsvpTeamTable.dt.column(6);
+    const actionColumnDT = fsvpTeamTable.dt.column(7);
     let newMemberModalErrorTimeout = null;
     let changeData = {};
     
@@ -21,7 +21,8 @@ jQuery(function() {
         newMemberForm.find('[data-title]').val('');
         newMemberForm.find('[data-email]').val('');
         newMemberForm.find('[data-phone]').val('');
-        newMemberForm.find('[data-avatar]').attr('src', 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image');
+        newMemberForm.find('[data-phone2]').val('');
+        newMemberForm.find('[data-avatar]').attr('src', '//placehold.co/100x100/EFEFEF/AAAAAA?text=no+image');
     });
 
     // add new employee
@@ -58,6 +59,7 @@ jQuery(function() {
                         name: newMemberForm.find('[data-name]').val(),
                         position: newMemberForm.find('[data-title]').val(),
                         phone: newMemberForm.find('[data-phone]').val(),
+                        phone2: newMemberForm.find('[data-phone2]').val(),
                         email: newMemberForm.find('[data-email]').val(),
                         id,
                         type: e.target.member_type.value
@@ -203,6 +205,7 @@ function renderDTRow(dt, d) {
         d.name,
         d.position,
         d.phone,
+        d.phone2,
         d.email,
         `   <div class="fsvp-trmt">
                 <input type="radio" name="fsvptrmt-${d.id}" value="primary" ${d.type == 'primary' ? 'checked' : ''} data-id="${d.id}" />
@@ -246,6 +249,7 @@ function initMemberSearch(form) {
         form.find('[data-title]').val(data.position);
         form.find('[data-email]').val(data.email);
         form.find('[data-phone]').val(data.phone);
+        form.find('[data-phone2]').val(data.phone2);
         form.find('[data-avatar]').attr('src', data.avatar);
         return data.name || data.text;
     }

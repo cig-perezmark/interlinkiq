@@ -1,5 +1,6 @@
 <?php
-    $title = "Employee";
+    $title = 'Employee';
+    // if ($_COOKIE['user_company_id'] == 34) { $title = 'Virtual Assistant'; }
     $site = "employee";
     $breadcrumbs = '';
     $sub_breadcrumbs = 'HR';
@@ -78,10 +79,10 @@
         }
     }
 
-    #modalView .table-scrollable {
-        overflow: unset;
-        border: 0;
-    }
+    /*#modalView .table-scrollable {*/
+    /*    overflow: unset;*/
+    /*    border: 0;*/
+    /*}*/
 
     /* DataTable*/
     .dt-buttons {
@@ -95,7 +96,7 @@
         margin-top: -10px;
         right: 1em;
         display: inline-block;
-        content: "✓";
+        content: "./";
         color: inherit;
     }
     .table {
@@ -134,13 +135,13 @@
     }
 </style>
 
-                    <div class="row">
+                    <div class="row <?php echo $switch_user_id == 1649 ? 'hide' : ''; ?>">
                         <div class="col-md-3">
                             <div class="dashboard-stat2 counterup_1">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
                                         <h3 class="font-green-sharp"><span>0</span></h3>
-                                        <small>Total Active Employee</small>
+                                        <small>Total Active <?php echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; ?></small>
                                     </div>
                                     <div class="icon" style="position: absolute; right: 0;"><i class="icon-user-following"></i></div>
                                 </div>
@@ -159,7 +160,7 @@
                                 <div class="display" style="position: relative;">
                                     <div class="number">
                                         <h3 class="font-red-haze"><span>0</span></h3>
-                                        <small>Total Inactive Employee</small>
+                                        <small>Total Inactive <?php echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; ?></small>
                                     </div>
                                     <div class="icon" style="position: absolute; right: 0;"><i class="icon-user-unfollow"></i></div>
                                 </div>
@@ -178,7 +179,7 @@
                                 <div class="display" style="position: relative;">
                                     <div class="number">
                                         <h3 class="font-blue-sharp"><span>0</span></h3>
-                                        <small><?php echo $_COOKIE['client'] == 1 ? 'Total Suspended Employee':'Current Inactive Employee'; ?></small>
+                                        <small>Current Inactive <?php echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; ?></small>
                                     </div>
                                     <div class="icon" style="position: absolute; right: 0;"><i class="icon-calendar"></i></div>
                                 </div>
@@ -197,7 +198,7 @@
                                 <div class="display" style="position: relative;">
                                     <div class="number">
                                         <h3 class="font-purple-soft"><span>0</span></h3>
-                                        <small>TOTAL EMPLOYEE</small>
+                                        <small>Total <?php echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; ?></small>
                                     </div>
                                     <div class="icon" style="position: absolute; right: 0;"><i class="icon-users"></i></div>
                                 </div>
@@ -220,7 +221,7 @@
                                 <div class="portlet-title tabbable-line">
                                     <div class="caption">
                                         <span class="icon-earphones-alt font-dark"></span>
-                                        <span class="caption-subject font-dark bold uppercase">List of Employees</span>
+                                        <span class="caption-subject font-dark bold uppercase">List of <?php echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; ?></span>
                                         <?php
                                             if($current_client == 0) {
                                                 // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
@@ -256,29 +257,35 @@
                                                     echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
                                                 }
                                             }
+                                            
+                                            if (empty($current_permission_array_key) OR in_array(2, $permission)) {
+                                                echo '<a href="#modalNew" class="btn btn-circle btn-success btn-xs" data-toggle="modal" onclick="btnNew('.$switch_user_id.', '.$current_client.', \'modalNew\')">Add New '; echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; echo '</a>';
+                                            }
+                                            
+                                            if($_COOKIE['ID'] == 456) {
+                                                echo '<a href="#surverFormModal" class="btn btn-circle btn-success btn-xs" data-toggle="modal" onclick="btnReset(\'surverFormModal\')">Food Safety Culture Survey</a>';
+                                            }
                                         ?>
-                                        
-                                        <a href="#modalNew" class="btn btn-circle btn-success btn-xs" data-toggle="modal" onclick="btnNew(<?php echo $switch_user_id; ?>, <?php echo $current_client; ?>, 'modalNew')">Add New Employee</a>
-                                        <?php if($_COOKIE['ID'] == 456):?>
-                                        <a href="#surverFormModal" class="btn btn-circle btn-success btn-xs" data-toggle="modal" onclick="btnReset('surverFormModal')">Food Safety Culture Survey</a>
-                                        <?php endif;?>
                                     </div>
                                     <ul class="nav nav-tabs">
                                         <li class="active">
                                             <a onclick="selectFilter(1)" href="#tab_actions_active" data-toggle="tab">Active</a>
                                         </li>
-                                        <li>
-                                            <a onclick="selectFilter(1)" href="#tab_actions_inactive" data-toggle="tab">Inactive</a>
-                                        </li>
-                                        <li>
-                                            <a onclick="selectFilter(1)" href="#tab_actions_suspended" data-toggle="tab">Suspended</a>
-                                        </li>
-                                        <li>
-                                            <a onclick="selectFilter(0)" href="#tab_actions_report" data-toggle="tab">Report</a>
-                                        </li>
-                                        <li class="<?php echo $switch_user_id == 1 OR $switch_user_id == 5 ? '':'hide'; ?>">
-                                            <a onclick="selectFilter(0)" href="#tab_actions_chart" data-toggle="tab">Organizational Chart</a>
-                                        </li>
+                                        <?php if ($switch_user_id != 1649): ?>
+                                            <li>
+                                                <a onclick="selectFilter(1)" href="#tab_actions_inactive" data-toggle="tab">Inactive</a>
+                                            </li>
+                                            <li>
+                                                <a onclick="selectFilter(1)" href="#tab_actions_suspended" data-toggle="tab">Suspended</a>
+                                            </li>
+                                            <li>
+                                                <a onclick="selectFilter(0)" href="#tab_actions_report" data-toggle="tab">Report</a>
+                                            </li>
+                                            <li>
+                                                <a onclick="selectFilter(0)" href="#tab_actions_chart" data-toggle="tab">Organizational Chart</a>
+                                            </li>
+                                        <?php endif;?>
+                                        
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
@@ -306,10 +313,16 @@
                                             <optgroup>
                                                 <option value='all'>All</option>
                                             </optgroup>
-                                        </select>
+                                        </select> 
                                         <div class="tab-pane active" id="tab_actions_active">
-                                            <div class="table-scrollable">
-                                                <table class="table table-bordered table-hover" id="tableData">
+                                            <?php
+                                                if ($switch_user_id == 1) {
+                                                    echo $current_permission;
+                                                    echo $permission;
+                                                }
+                                            ?>
+                                            <div class="table-scrollablex">
+                                                <table class="table table-bordered table-hover tableData" id="tableData">
                                                     <thead>
                                                         <tr>
                                                             <th>Nos.</th>
@@ -414,22 +427,24 @@
                                                                         }
 
                                                                         echo '<td class="text-center">';
-                                                                            $selectUser = mysqli_query( $conn,"SELECT ID FROM tbl_user WHERE email ='".$email."'" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT ID FROM tbl_user WHERE deleted = 0 AND email ='".$email."'" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                 echo '<span class="label label-sm label-success">Yes</span>';
                                                                             } else {
                                                                                 echo '<span class="label label-sm label-danger">No</span>';
                                                                             }
-                                                                        echo '</td>';
-                                                                        
-                                                                        echo '<td class="text-center">
-                                                                            <a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', \'modalView\', '.$table_counter++.')">View</a>';
-                                                                        if($switch_user_id == 34){
-                                                                            echo '
-                                                                             <a href="#set_details" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="set_id('. $row["ID"].')">Set</a>
-                                                                            ';
-                                                                        }
-                                                                    echo  '</td>
+                                                                        echo '</td>
+                                                                        <td class="text-center">';
+
+                                                                            if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                echo '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', \'modalView\', '.$table_counter++.')">View</a>';
+                                                                                
+                                                                                if($switch_user_id == 34){
+                                                                                    echo '<a href="#set_details" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="set_id('. $row["ID"].')">Set</a>';
+                                                                                }
+                                                                            }
+
+                                                                        echo '</td>
                                                                     </tr>';
                                                                 }
                                                             } else {
@@ -441,8 +456,8 @@
                                             </div>
                                         </div>
                                         <div class="tab-pane" id="tab_actions_inactive">
-                                            <div class="table-scrollable">
-                                                <table class="table table-bordered table-hover" id="tableDataInactive">
+                                            <div class="table-scrollablex">
+                                                <table class="table table-bordered table-hover tableData" id="tableDataInactive">
                                                     <thead>
                                                         <tr>
                                                             <th>Nos.</th>
@@ -548,11 +563,14 @@
                                                                             } else {
                                                                                 echo '<span class="label label-sm label-danger">No</span>';
                                                                             }
-                                                                        echo '</td>';
-                                                                        
-                                                                        echo '<td class="text-center">
-                                                                            <a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', \'modalView\', '.$table_counter++.')">View</a>
-                                                                        </td>
+                                                                        echo '</td>
+                                                                        <td class="text-center">';
+
+                                                                            if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                echo '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', \'modalView\', '.$table_counter++.')">View</a>';
+                                                                            }
+
+                                                                        echo '</td>
                                                                     </tr>';
                                                                 }
                                                             } else {
@@ -565,7 +583,7 @@
                                         </div>
                                         <div class="tab-pane" id="tab_actions_suspended">
                                             <div class="table-scrollable">
-                                                <table class="table table-bordered table-hover" id="tableDataSuspended">
+                                                <table class="table table-bordered table-hover tableData" id="tableDataSuspended">
                                                     <thead>
                                                         <tr>
                                                             <th>Nos.</th>
@@ -672,11 +690,14 @@
                                                                             } else {
                                                                                 echo '<span class="label label-sm label-danger">No</span>';
                                                                             }
-                                                                        echo '</td>';
-                                                                        
-                                                                        echo '<td class="text-center">
-                                                                            <a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', \'modalView\', '.$table_counter++.')">View</a>
-                                                                        </td>
+                                                                        echo '</td>
+                                                                        <td class="text-center">';
+
+                                                                            if (empty($current_permission_array_key) OR in_array(5, $permission)) {
+                                                                                echo '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $row["ID"].', \'modalView\', '.$table_counter++.')">View</a>';
+                                                                            }
+
+                                                                        echo '</td>
                                                                     </tr>';
                                                                 }
                                                             } else {
@@ -949,7 +970,7 @@
                                                 </table>
                                             </div>
                                         </div>
-                                        <div class="tab-pane <?php echo $switch_user_id == 1 OR $switch_user_id == 5 ? '':'hide'; ?>" id="tab_actions_chart">
+                                        <div class="tab-pane" id="tab_actions_chart">
                                             <span>* Responsible for Food Safety</span>
                                             <div id="container_chart" style="overflow: auto;"></div>
                                         </div>
@@ -1002,7 +1023,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="submitSurveyForm" id="submitSurveyForm" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                            <button type="submit" class="btn green ladda-button" name="submitSurveyForm" id="submitSurveyForm" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -1015,12 +1036,12 @@
                                     <form method="post" class="form-horizontal modalForm modalNew">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">New Employee Form</h4>
+                                            <h4 class="modal-title">New <?php echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; ?> Form</h4>
                                         </div>
                                         <div class="modal-body"></div>
                                         <div class="modal-footer modal-footer--sticky bg-white">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="btnSave_HR_Employee" id="btnSave_HR_Employee" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                            <button type="submit" class="btn green ladda-button" name="btnSave_HR_Employee" id="btnSave_HR_Employee" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -1032,11 +1053,12 @@
                                     <form method="post" class="form-horizontal modalForm modalView">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Employee Details</h4>
+                                            <h4 class="modal-title"><?php echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; ?> Details</h4>
                                         </div>
                                         <div class="modal-body"></div>
                                         <div class="modal-footer modal-footer--sticky bg-white">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_HR_Employee" id="btnUpdate_HR_Employee" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -1054,7 +1076,7 @@
                                         <div class="modal-body"></div>
                                         <div class="modal-footer modal-footer--sticky bg-white">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="btnSave_HR_File" id="btnSave_HR_File" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                            <button type="submit" class="btn green ladda-button" name="btnSave_HR_File" id="btnSave_HR_File" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -1071,7 +1093,7 @@
                                         <div class="modal-body"></div>
                                         <div class="modal-footer modal-footer--sticky bg-white">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_HR_File" id="btnUpdate_HR_File" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_HR_File" id="btnUpdate_HR_File" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -1085,11 +1107,11 @@
                                     <form method="post" class="form-horizontal modalForm modalUpdateSet">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Other Employee Details</h4>
+                                            <h4 class="modal-title">Other <?php echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; ?> Details</h4>
                                         </div>
                                         <div class="modal-body">
                                             <input type="hidden" id="user_id" name="user_id">
-                                            <H5>Employee to Approve</H5>
+                                            <H5><?php echo $switch_user_id == 34 ? 'Virtual Assistant':'Employee'; ?> to Approve</H5>
                                             <div class="row" id="checklist"></div>
                                         </div>
                                         <div class="modal-footer modal-footer--sticky bg-white">
@@ -1177,11 +1199,13 @@
         <script type="text/javascript">
             var current_client = '<?php echo $_COOKIE['client']; ?>';
             var site = '<?php echo $site; ?>';
+            let dupCounter = 0;
             var switch_user_id = '<?php echo $switch_user_id; ?>';
             
             $(document).ready(function(){
                 // Emjay script starts here
                 fancyBoxes();
+                widget_chart(switch_user_id);
                 $('#save_video').click(function(){
                     $('#save_video').attr('disabled','disabled');
                     $('#save_video_text').text("Uploading...");
@@ -1261,12 +1285,46 @@
                         $('.counterup').counterUp();
                     }
                 });
-                    
-                widget_chart(switch_user_id);
+
+                // $('#tableData, #tableDataInactive').DataTable({
+                //     dom: 'lBfrtip',
+                //     lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ]
+                //     // lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                //     // buttons: [
+                //     //     {
+                //     //         extend: 'print',
+                //     //         exportOptions: {
+                //     //             columns: ':visible'
+                //     //         }
+                //     //     },
+                //     //     {
+                //     //         extend: 'pdf',
+                //     //         exportOptions: {
+                //     //             columns: ':visible'
+                //     //         }
+                //     //     },
+                //     //     {
+                //     //         extend: 'csv',
+                //     //         exportOptions: {
+                //     //             columns: ':visible'
+                //     //         }
+                //     //     },
+                //     //     {
+                //     //         extend: 'excel',
+                //     //         exportOptions: {
+                //     //             columns: ':visible'
+                //     //         }
+                //     //     },
+                //     //     'colvis'
+                //     // ]
+                // });
 
                 if(window.location.href.indexOf('#new') != -1) {
                     $('#modalNew').modal('show');
                 }
+                
+                
+                // $('#tableData, #tableDataInactive').DataTable();
             });
 
             function btnExportFiles(id) {
@@ -1360,11 +1418,21 @@
                 btnClose(view);
                 $.ajax({
                     type: "GET",
-                    url: "function.php?modalView_HR_Employee="+id+"&num="+num,
+                    url: "function.php?modalView_HR_Employee="+id+"&num="+num+"&p="+current_permission_array_key,
                     dataType: "html",
                     success: function(data){
                         $("#modalView .modal-body").html(data);
                         $(".make-switch").bootstrapSwitch();
+
+                        // set data-value as selected option
+                        $('#permTable select').each(function() {
+                            var $sel = $(this);
+                            var raw = $sel.attr('data-value') || $sel.attr('value') || ''; // fallback if you didn't change HTML
+                            var values = raw.split(',').map(function(v){ return v.trim(); }).filter(Boolean);
+                            $sel.val(values);
+                            $sel.trigger('change');
+                        });
+                        
                         selectMulti();
                         repeaterForm();
                         $(function(){
@@ -1381,36 +1449,57 @@
                             });
                             fancyBoxes();
                         });
-
+                        
+                        // $('#modalView table').DataTable();
                         $('#modalView table').DataTable({
                             dom: 'lBfrtip',
                             lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
                             buttons: [
                                 {
                                     extend: 'print',
+                                    text: '<i class="fa fa-fw fa-print"></i>',
+                                    titleAttr: 'Print',
+                                    className: 'btn btn-sm blue-soft',
                                     exportOptions: {
                                         columns: ':visible'
                                     }
                                 },
                                 {
                                     extend: 'pdf',
+                                    text: '<i class="fa fa-fw fa-file-pdf-o""></i>',
+                                    titleAttr: 'PDF',
+                                    className: 'btn btn-sm red',
                                     exportOptions: {
                                         columns: ':visible'
                                     }
                                 },
                                 {
                                     extend: 'csv',
+                                    text: '<i class="fa fa-fw fa-file-text-o"></i>',
+                                    titleAttr: 'CSV',
+                                    className: 'btn btn-sm green-meadow',
                                     exportOptions: {
                                         columns: ':visible'
                                     }
                                 },
                                 {
                                     extend: 'excel',
+                                    text: '<i class="fa fa-fw fa-file-excel-o"></i>',
+                                    titleAttr: 'Excel',
+                                    className: 'btn btn-sm green-jungle',
                                     exportOptions: {
                                         columns: ':visible'
                                     }
                                 },
-                                'colvis'
+                                {
+                                    extend: 'colvis',
+                                    text: '<i class="fa fa-fw fa-eye-slash"></i>',
+                                    titleAttr: 'Hide Column',
+                                    className: 'btn btn-sm btn-outline dark',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                }
                             ]
                         });
                     }
@@ -1678,95 +1767,101 @@
                     },
                     success:function(response) {
                         if ($.trim(response)) {
+                            // console.log(response);
                             msg = "Sucessfully Save!";
 
                             var obj = jQuery.parseJSON(response);
-                            var data = '<td>'+obj.num+'</td>';
-                            data += '<td>'+obj.last_name+'</td>';
-                            data += '<td>'+obj.first_name+'</td>';
-                            data += '<td>'+obj.position+'</td>';
-                            data += '<td>'+obj.email+'</td>';
-                            data += '<td>'+obj.date_hired+'</td>';
-                            data += '<td>'+obj.employment_type+'</td>';
-                            data += '<td class="hide">0</td>';
-                            data += '<td class="hide">0</td>';
-                            data += '<td></td>';
-
-                            if ( obj.suspended == 1) {
-                                data += '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';
-                            } else {
-                                if ( obj.status == 1) {
-                                    data += '<td class="text-center"><span class="label label-sm label-success">Active</span></td>';
-                                } else {
-                                    data += '<td class="text-center"><span class="label label-sm label-danger">Inactive</span></td>';
-                                }
-                            }
                             
-                            data += '<td class="text-center">'+obj.registered+'</td>';
-                            data += '<td class="text-center">';
-                                data += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+', \'modalView\', '+obj.num+')">View</a>';
+                            if (obj.exist == false) {
+                                var data = '<td>'+obj.num+'</td>';
+                                data += '<td>'+obj.last_name+'</td>';
+                                data += '<td>'+obj.first_name+'</td>';
+                                data += '<td>'+obj.position+'</td>';
+                                data += '<td>'+obj.email+'</td>';
+                                data += '<td>'+obj.date_hired+'</td>';
+                                data += '<td>'+obj.employment_type+'</td>';
+                                data += '<td class="hide">0</td>';
+                                data += '<td class="hide">0</td>';
+                                data += '<td></td>';
+    
+                                if ( obj.suspended == 1) {
+                                    data += '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';
+                                } else {
+                                    if ( obj.status == 1) {
+                                        data += '<td class="text-center"><span class="label label-sm label-success">Active</span></td>';
+                                    } else {
+                                        data += '<td class="text-center"><span class="label label-sm label-danger">Inactive</span></td>';
+                                    }
+                                }
                                 
-                                if (obj.ID == 34) {
-                                    data += '<a href="#set_details" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="set_id('+obj.ID+')">Set</a>';
-                                }
-                            data += '</td>';
-                            
-                            // $('#tableData tbody #tr_'+obj.ID).html(data);
-                            // Check if Active or Inactive
-                            if (obj.status == 1) {
-
-                                // Check if existing or not
-                                if ($('#tableData tbody #tr_'+obj.ID).length > 0) {
-                                    $('#tableData tbody #tr_'+obj.ID).html(data);
+                                data += '<td class="text-center">'+obj.registered+'</td>';
+                                data += '<td class="text-center">';
+                                    data += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+', \'modalView\', '+obj.num+')">View</a>';
+                                    
+                                    if (obj.ID == 34) {
+                                        data += '<a href="#set_details" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="set_id('+obj.ID+')">Set</a>';
+                                    }
+                                data += '</td>';
+                                
+                                // $('#tableData tbody #tr_'+obj.ID).html(data);
+                                // Check if Active or Inactive
+                                if (obj.status == 1) {
+    
+                                    // Check if existing or not
+                                    if ($('#tableData tbody #tr_'+obj.ID).length > 0) {
+                                        $('#tableData tbody #tr_'+obj.ID).html(data);
+                                    } else {
+                                        var data2 = '<tr id="tr_'+obj.ID+'" class="content">';
+                                        data2 += data;
+                                        data2 += '</tr>';
+                                        $('#tableData tbody').append(data2);
+                                        $('#tableDataInactive tbody #tr_'+obj.ID).remove();
+                                    }
                                 } else {
-                                    var data2 = '<tr id="tr_'+obj.ID+'" class="content">';
-                                    data2 += data;
-                                    data2 += '</tr>';
-                                    $('#tableData tbody').append(data2);
-                                    $('#tableDataInactive tbody #tr_'+obj.ID).remove();
+    
+                                    // Check if existing or not
+                                    if ($('#tableDataInactive tbody #tr_'+obj.ID).length > 0) {
+                                        $('#tableDataInactive tbody #tr_'+obj.ID).html(data);
+                                    } else {
+                                        var data2 = '<tr id="tr_'+obj.ID+'" class="content">';
+                                        data2 += data;
+                                        data2 += '</tr>';
+                                        $('#tableDataInactive tbody').append(data2);
+                                        $('#tableData tbody #tr_'+obj.ID).remove();
+                                    }
                                 }
+    
+                                // CounterUp Section
+                                var pct_counter1 = (parseInt(obj.statusActive) / parseInt(obj.statusTotal)) * 100;
+                                var pct_counter2 = (parseInt(obj.statusInactive) / parseInt(obj.statusTotal)) * 100;
+                                var pct_counter4 = (parseInt(obj.statusTotal) / parseInt(obj.statusTotal)) * 100;
+    
+                                var pct_counter3 = 0;
+                                if (current_client == 1) { pct_counter3 = (parseInt(obj.statusSuspended) / parseInt(obj.statusTotal)) * 100; }
+                                else { pct_counter3 = (parseInt(obj.statusInactiveMonth) / parseInt(obj.statusTotal)) * 100; }
+    
+                                $(".counterup_1 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusActive+'"></span>');
+                                $(".counterup_1 .progress-bar").width(parseInt(pct_counter1) + '%');
+                                $(".counterup_1 .status-number").html(parseInt(pct_counter1) + '%');
+    
+                                $(".counterup_2 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusInactive+'"></span>');
+                                $(".counterup_2 .progress-bar").width(parseInt(pct_counter2) + '%');
+                                $(".counterup_2 .status-number").html(parseInt(pct_counter2) + '%');
+    
+                                $(".counterup_4 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusTotal+'"></span>');
+                                $(".counterup_4 .progress-bar").width(parseInt(pct_counter4) + '%');
+                                $(".counterup_4 .status-number").html(parseInt(pct_counter4) + '%');
+    
+                                if (current_client == 1) { $(".counterup_3 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusSuspended+'"></span>'); }
+                                else { $(".counterup_3 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusInactiveMonth+'"></span>'); }
+                                $(".counterup_3 .progress-bar").width(parseInt(pct_counter3) + '%');
+                                $(".counterup_3 .status-number").html(parseInt(pct_counter3) + '%');
+                                
+                                $('.counterup').counterUp();
+                                $('#modalView').modal('hide');
                             } else {
-
-                                // Check if existing or not
-                                if ($('#tableDataInactive tbody #tr_'+obj.ID).length > 0) {
-                                    $('#tableDataInactive tbody #tr_'+obj.ID).html(data);
-                                } else {
-                                    var data2 = '<tr id="tr_'+obj.ID+'" class="content">';
-                                    data2 += data;
-                                    data2 += '</tr>';
-                                    $('#tableDataInactive tbody').append(data2);
-                                    $('#tableData tbody #tr_'+obj.ID).remove();
-                                }
+                                msg = obj.message;
                             }
-
-                            // CounterUp Section
-                            var pct_counter1 = (parseInt(obj.statusActive) / parseInt(obj.statusTotal)) * 100;
-                            var pct_counter2 = (parseInt(obj.statusInactive) / parseInt(obj.statusTotal)) * 100;
-                            var pct_counter4 = (parseInt(obj.statusTotal) / parseInt(obj.statusTotal)) * 100;
-
-                            var pct_counter3 = 0;
-                            if (current_client == 1) { pct_counter3 = (parseInt(obj.statusSuspended) / parseInt(obj.statusTotal)) * 100; }
-                            else { pct_counter3 = (parseInt(obj.statusInactiveMonth) / parseInt(obj.statusTotal)) * 100; }
-
-                            $(".counterup_1 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusActive+'"></span>');
-                            $(".counterup_1 .progress-bar").width(parseInt(pct_counter1) + '%');
-                            $(".counterup_1 .status-number").html(parseInt(pct_counter1) + '%');
-
-                            $(".counterup_2 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusInactive+'"></span>');
-                            $(".counterup_2 .progress-bar").width(parseInt(pct_counter2) + '%');
-                            $(".counterup_2 .status-number").html(parseInt(pct_counter2) + '%');
-
-                            $(".counterup_4 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusTotal+'"></span>');
-                            $(".counterup_4 .progress-bar").width(parseInt(pct_counter4) + '%');
-                            $(".counterup_4 .status-number").html(parseInt(pct_counter4) + '%');
-
-                            if (current_client == 1) { $(".counterup_3 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusSuspended+'"></span>'); }
-                            else { $(".counterup_3 h3").html('<span class="counterup" data-counter="counterup" data-value="'+obj.statusInactiveMonth+'"></span>'); }
-                            $(".counterup_3 .progress-bar").width(parseInt(pct_counter3) + '%');
-                            $(".counterup_3 .status-number").html(parseInt(pct_counter3) + '%');
-                            
-                            $('.counterup').counterUp();
-                            $('#modalView').modal('hide');
                         } else {
                             msg = "Error!"
                         }
@@ -1913,7 +2008,217 @@
                     swal("Done!", "This item has been deleted.", "success");
                 });
             }
-        </script>
+            
+            // Permission Tab
+            function btnDuplicateColumn() {
+                const table = document.getElementById('permTable');
+                if (!table) return;
 
+                dupCounter++;
+                const colId = 'dup_col_' + dupCounter;
+
+                // Collect rows in order
+                const rows = Array.from(table.querySelectorAll('tr'));
+
+                rows.forEach((tr, rowIndex) => {
+                    const cells = Array.from(tr.children);
+
+                    // Need at least two cells to clone the second one
+                    if (cells.length < 2) return;
+
+                    const secondCell = cells[1];
+                    const clone = secondCell.cloneNode(true);
+
+                    // Remove any duplicate action links/buttons from the clone
+                    // (specifically remove elements that call btnDuplicateColumn or have that text)
+                    const duplicateTriggers = clone.querySelectorAll('[onclick], a, button');
+                    duplicateTriggers.forEach(el => {
+                        const onclick = el.getAttribute && el.getAttribute('onclick');
+                        const text = (el.textContent || '').trim().toLowerCase();
+                        if ((onclick && onclick.includes('btnDuplicateColumn')) || text === 'duplicate 2nd column' || text === 'duplicate 2nd column') {
+                            el.remove();
+                        }
+                    });
+
+                    // Mark the cloned cell with the column id so it can be removed later
+                    clone.setAttribute('data-col-id', colId);
+
+                    // Update names on cloned inputs so they stay unique and clear values
+                    const inputs = clone.querySelectorAll('input, select, textarea');
+                    inputs.forEach((el) => {
+                        const name = el.getAttribute('name') || '';
+                        if (name) {
+                            const m = name.match(/^([^\[]+)(.*)$/);
+                            if (m) {
+                                const base = m[1];
+                                const rest = m[2] || '';
+                                // el.setAttribute('name', `${base}_dup${dupCounter}${rest}`);
+                                el.setAttribute('name', `${base}${rest}`);
+                            } else {
+                                el.setAttribute('name', name + `_dup${dupCounter}`);
+                            }
+                        }
+                        if ('value' in el) el.value = '';
+                        if (el.checked) el.checked = false;
+                    });
+
+                    // On the first row place a Delete button for this duplicated column only once
+                    if (rowIndex === 0) {
+                        const delBtn = document.createElement('button');
+                        delBtn.type = 'button';
+                        delBtn.textContent = 'Delete column';
+                        delBtn.className = 'btn btn-danger';
+                        delBtn.addEventListener('click', function () {
+                            removeDuplicatedColumn(colId);
+                        });
+
+                        // Ensure we don't append duplicate delete buttons if clone already contains one
+                        // (though we've removed existing triggers above)
+                        clone.appendChild(delBtn);
+                    }
+
+                    // Append the cloned cell as the right-most column
+                    tr.appendChild(clone);
+
+                    // restart multi select
+                });
+                
+                // unwrap the plugin wrapper so only the original <select> remains
+                // removes the surrounding <span.multiselect-native-select>
+                $("#permTable tr > td[data-col-id='"+colId+"'] .multiselect-native-select select").each(function() {
+                    $(this).unwrap(); 
+                });
+                $("#permTable tr > td[data-col-id='"+colId+"'] > .btn-group").remove();
+                $("#permTable tr > td[data-col-id='"+colId+"'] select").multiselect({
+                    widthSynchronizationMode: 'ifPopupIsSmaller',
+                    buttonTextAlignment: 'left',
+                    buttonWidth: '100%',
+                    maxHeight: 200,
+                    enableResetButton: true,
+                    enableFiltering: true,
+                    enableCaseInsensitiveFiltering: true,
+                    includeSelectAllOption: true,
+                    nonSelectedText: 'None Selected'
+                });
+            }
+            function removeDuplicatedColumn(colId) {
+                if (!colId) return;
+                const table = document.getElementById('permTable');
+                if (!table) return;
+
+                const rows = Array.from(table.querySelectorAll('tr'));
+                rows.forEach((tr) => {
+                    const cells = Array.from(tr.children);
+                    for (let i = cells.length - 1; i >= 0; i--) {
+                        const c = cells[i];
+                        if (c.getAttribute && c.getAttribute('data-col-id') === colId) {
+                            tr.removeChild(c);
+                            break;
+                        }
+                    }
+                });
+            }
+            function removeColumn(colId) {
+                $('#permTable tr > td[data-col-id="'+colId+'"]').remove();
+            }
+            function selectUser(e) {
+                id = e.value;
+
+                const table = document.getElementById('permTable');
+                const el = e;
+                // Only handle text inputs
+                // if (!(el instanceof HTMLInputElement && el.type === 'text')) return;
+
+                // 1) Determine the column index (1-based) inside its row
+                const td = el.closest('td');
+                const tr = el.closest('tr');
+                if (!td || !tr) return;
+
+                // Find column index among sibling td elements
+                const tds = Array.from(tr.children).filter(n => n.tagName.toLowerCase() === 'td');
+                const colIndex = tds.indexOf(td) + 1; // 1-based
+
+                // 2) Determine row index inside the table body (1-based, counting only rows with inputs if you want)
+                const rows = Array.from(table.querySelectorAll('tr'));
+                const rowIndex = rows.indexOf(tr) + 1; // 1-based overall tr index
+
+                // 3) Extract numeric index from the input name if it's like name="f_name[1][][]"
+                const name = el.getAttribute('name') || '';
+                // match the first numeric bracketed index: [123]
+                const match = name.match(/\[(\d+)\]/);
+                const nameIndex = match ? parseInt(match[1], 10) : null;
+
+                // 4) Result object
+                const info = {
+                    value: el.value,
+                    column: colIndex,
+                    trIndex: rowIndex,
+                    name: name,
+                    nameIndex: nameIndex
+                };
+
+                // Example action: log or handle as needed
+                // console.log('Input changed:', info);
+                // You can call a custom handler instead of console.log:
+                // handleInputChange(info, el);
+
+                var ent = $(e);
+                var newVal = $.trim(ent.val());
+                if (newVal === '') return;
+
+                // compute column index of this enterprise input
+                var entCol = ent.closest('td').index();
+
+                // find module inputs in the same column and update first index
+                $('.permission').each(function(){
+                    var mi = $(this);
+                    var miCol = mi.closest('td').index();
+                    if (miCol !== entCol) return;
+
+                    // replace first bracketed index only: module[old]... -> module[newVal]...
+                    var name = mi.attr('name');
+                    var updatedFirst = name.replace(/^permission\[\s*([^\]]+)\s*\]/, 'permission[' + newVal + ']');
+                    mi.attr('name', updatedFirst);
+
+                    var updatedSecond = updatedFirst.replace(/^permission\[\s*([^\]]+)\s*\]\[\s*([^\]]*)\s*\]/, function(_, first){
+                        return 'permission[' + first + '][0]';
+                    });
+                    mi.attr('name', updatedSecond);
+                });
+
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalCloneFacility="+id,
+                    dataType: "html",
+                    success: function(data){
+                        // alert(data);
+                        // $("#permTable tr > td:nth-child("+colIndex+") > .facility").html(data);
+                        $("#permTable tr:nth-child(3) > td:nth-child("+(colIndex)+") select").html(data);
+                        $("#permTable tr:nth-child(3) > td:nth-child("+(colIndex)+") select").multiselect("rebuild");
+                    }
+                });
+            }
+            function selectFacility(e) {
+                var fac = $(e);
+                var newVal = $.trim(fac.val());
+                if (newVal === '') return; // skip empty values if you want
+
+                // column index of the facility input
+                var facCol = fac.closest('td').index();
+
+                // update module inputs in the same column by replacing the second bracketed index only
+                $('.permission').each(function(){
+                    var mi = $(this);
+                    if (mi.closest('td').index() !== facCol) return;
+
+                    // replace the second bracketed index: module[<first>][OLD][...]
+                    var name = mi.attr('name');
+                    var updated = name.replace(/^permission\[\s*([^\]]+)\s*\]\[\s*([^\]]*)\s*\]/, function(_, first){
+                        return 'permission[' + first + '][' + newVal + ']';
+                    });
+                    mi.attr('name', updated);
+                });
+            }
+        </script>
     </body>
 </html>

@@ -15,6 +15,23 @@
         </div>
     </div>
 </div>
+
+ <div class="modal fade bs-modal-lg" id="logsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+             <form action="mypro_function/function.php" method="POST" enctype="multipart/form-data">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Project Details</h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                 </div>
+            </form>
+        </div>
+    </div>
+</div>
  
  <!-- add new parent -->
 <div class="modal fade" id="modalAddActionItem" tabindex="-1" role="basic" aria-hidden="true">

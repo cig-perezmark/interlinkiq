@@ -70,8 +70,12 @@
                                                                 <input class="form-control" type="text" name="last_name" id="last_name" placeholder="<?php echo $current_userLName; ?>" value="<?php echo $current_userLName; ?>" required />
                                                             </div>
                                                             <div class="form-group">
-                                                                <label class="control-label">Mobile Number</label>
+                                                                <label class="control-label">Phone Number</label>
                                                                 <input class="form-control" type="text" name="mobile" id="mobile" placeholder="<?php echo $current_userMobile; ?>" value="<?php echo $current_userMobile; ?>" required />
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label">Phone Number (Backup)</label>
+                                                                <input class="form-control" type="text" name="mobile2" id="mobile2" placeholder="<?php echo $current_userMobile2; ?>" value="<?php echo $current_userMobile2; ?>" />
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="control-label">Address</label>
@@ -500,12 +504,36 @@
                                                                 </select>
                                                             </div>
                                                             <div class="form-group">
-                                                                <label class="control-label">Bank Account</label>
+                                                                <label class="control-label">Account Name</label>
                                                                 <input type="text" name="accountname" value="<?= $accountname ?>" class="form-control" required>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="control-label">Account Number</label>
                                                                 <input type="text" name="accountno" value="<?= $accountno ?>" class="form-control" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <hr>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <span class="caption-subject font-blue-madison bold uppercase">GCash Details</span>
+                                                            </div>
+                                                            <?php
+                                                                $gcash_name = '';
+                                                                $gcash_number = '';
+                                                                $gcash_details = mysqli_query($conn,"SELECT * FROM tbl_user_gcash WHERE user_id = '$current_userID' " );
+                                                                if ( mysqli_num_rows($gcash_details) > 0 ) {
+                                                                    $rowGCash = mysqli_fetch_array($gcash_details);
+                                                                    $gcash_name = $rowGCash['name'];
+                                                                    $gcash_number = $rowGCash['number'];
+                                                                }
+                                                            ?>
+                                                            <div class="form-group">
+                                                                <label class="control-label">GCash Name</label>
+                                                                <input type="text" name="gcash_name" value="<?= $gcash_name ?>" class="form-control" />
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label">GCash Number</label>
+                                                                <input type="text" name="gcash_number" value="<?= $gcash_number ?>" class="form-control" />
                                                             </div>
                                                             <div class="margiv-top-10">
                                                                 <input type="submit" class="btn green" name="save_others" id="save_others" value="Save Changes" />

@@ -1,7 +1,4 @@
 <?php
-
-
-
 include_once __DIR__ ."/../../alt-setup/setup.php";
 date_default_timezone_set('America/Chicago');
 
@@ -52,15 +49,76 @@ function getRawSuppliersByUser($conn, $userId) {
 
 // to populate importers dropdown in the new importer form (importer list tab)
 function getRawImportersByUser($conn, $userId) {
-    return $conn->execute(
-        "SELECT sup.ID as id, sup.name, sup.address
-         FROM tbl_supplier sup
-         LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.user_id = sup.user_id AND fsup.supplier_id = sup.ID
-         WHERE sup.user_id = ?
-         AND (fsup.id IS NULL OR sup.ID <> fsup.supplier_id)
-         AND sup.status = 1 AND sup.page = 1
-         AND (TRIM(SUBSTRING_INDEX(sup.address, ',', 1)) LIKE 'US' OR TRIM(SUBSTRING_INDEX(sup.address, '|', 1)) LIKE 'US')",
-        $userId
+    // return $conn->execute(
+    //     "SELECT sup.ID as id, sup.name, sup.address
+    //      FROM tbl_supplier sup
+    //      LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.user_id = sup.user_id AND fsup.supplier_id = sup.ID
+    //      WHERE sup.user_id = ?
+    //      AND (fsup.id IS NULL OR sup.ID <> fsup.supplier_id)
+    //      AND sup.status = 1 AND sup.page = 1
+    //      AND (TRIM(SUBSTRING_INDEX(sup.address, ',', 1)) LIKE 'US' OR TRIM(SUBSTRING_INDEX(sup.address, '|', 1)) LIKE 'US')",
+    //     $userId
+    // )->fetchAll(function($data) { 
+    //     $data['address'] = formatSupplierAddress($data['address']);
+    //     return $data;
+    // });
+    
+    // return $conn->execute(
+    //     "SELECT sup.ID as id, sup.name, sup.address
+    //      FROM tbl_supplier sup
+    //      LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.user_id = sup.user_id AND fsup.supplier_id = sup.ID
+    //      WHERE sup.user_id = 464
+    //      AND (fsup.id IS NULL OR sup.ID <> fsup.supplier_id)
+    //      AND sup.status = 1 AND sup.page = 1
+    //      AND (TRIM(SUBSTRING_INDEX(sup.address, ',', 1)) LIKE 'US' OR TRIM(SUBSTRING_INDEX(sup.address, '|', 1)) LIKE 'US')",
+    //     $userId
+    // )->fetchAll(function($data) { 
+    //     $data['address'] = formatSupplierAddress($data['address']);
+    //     return $data;
+    // });
+    
+    
+    return $conn->execute("
+        SELECT
+        r.id,
+        r.name,
+        r.address,
+        e.businessname,
+        e.country,
+        c.iso2
+        FROM (
+            SELECT 
+            sup.ID as id, sup.name, sup.address
+            FROM tbl_supplier sup
+        
+            LEFT JOIN tbl_fsvp_suppliers fsup 
+            ON fsup.user_id = sup.user_id 
+            AND fsup.supplier_id = sup.ID
+        
+            WHERE sup.user_id = $userId
+            AND sup.is_deleted = 0 AND sup.status = 1 AND sup.page = 1
+            AND (fsup.id IS NULL OR sup.ID <> fsup.supplier_id)
+        ) r
+        
+        LEFT JOIN (
+            SELECT
+            businessname,
+            country,
+            users_entities
+            FROM tblEnterpiseDetails
+        ) AS e
+        ON e.users_entities = $userId
+        
+        LEFT JOIN (
+            SELECT
+            ID,
+            iso2
+            FROM countries
+        ) AS c
+        ON c.ID = e.country
+        
+        WHERE TRIM(SUBSTRING_INDEX(r.address, ',', 1)) NOT LIKE c.iso2 AND TRIM(SUBSTRING_INDEX(r.address, '|', 1)) NOT LIKE c.iso2 
+    "
     )->fetchAll(function($data) { 
         $data['address'] = formatSupplierAddress($data['address']);
         return $data;
@@ -104,45 +162,121 @@ function getSupplierList($conn, $userId) {
     try {
         $recordType = 'supplier-list:';
 
-        $sql = "SELECT 
-                    tbl_fsvp_suppliers.id,
-                    tbl_fsvp_suppliers.supplier_id,
+        // $sql = "SELECT 
+        //             tbl_fsvp_suppliers.id,
+        //             tbl_fsvp_suppliers.supplier_id,
+        //             tbl_supplier.name,
+        //             tbl_supplier.address,
+        //             tbl_fsvp_suppliers.supplier_agreement,
+        //             tbl_fsvp_suppliers.compliance_statement,
+        //             'FSVP Supplier' AS source
+        //         FROM 
+        //             tbl_fsvp_suppliers
+        //         JOIN 
+        //             tbl_supplier ON tbl_fsvp_suppliers.supplier_id = tbl_supplier.ID
+        //         WHERE 
+        //             tbl_fsvp_suppliers.user_id = ?
+        //             AND tbl_fsvp_suppliers.deleted_at IS NULL
+
+        //         UNION
+
+        //         SELECT 
+        //             NULL,
+        //             tbl_supplier.ID,
+        //             tbl_supplier.name,
+        //             tbl_supplier.address,
+        //             NULL,
+        //             NULL,
+        //             'Foreign Supplier' AS source
+        //         FROM 
+        //             tbl_supplier
+        //         WHERE 
+        //             TRIM(SUBSTRING_INDEX(tbl_supplier.address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(tbl_supplier.address, '|', 1)) NOT LIKE 'US' 
+        //             AND tbl_supplier.user_id = ?
+        //             AND tbl_supplier.is_deleted = 0
+        //             AND tbl_supplier.page = 1
+        //             AND tbl_supplier.`status` = 1
+        //             AND tbl_supplier.ID NOT IN (
+        //                 SELECT supplier_id 
+        //                 FROM tbl_fsvp_suppliers
+        //                 WHERE tbl_fsvp_suppliers.user_id = ?
+        //                 AND tbl_fsvp_suppliers.deleted_at IS NULL
+        //             );
+        // ";
+        $sql = "SELECT
+            r.id,
+            r.user_id,
+            r.supplier_id,
+            r.name,
+            r.address,
+            r.supplier_agreement,
+            r.compliance_statement,
+            r.source,
+            e.businessname,
+            e.country,
+            c.iso2
+            FROM (
+                SELECT 
+                    f.id,
+                    f.user_id,
+                    f.supplier_id,
                     tbl_supplier.name,
                     tbl_supplier.address,
-                    tbl_fsvp_suppliers.supplier_agreement,
-                    tbl_fsvp_suppliers.compliance_statement,
+                    f.supplier_agreement,
+                    f.compliance_statement,
                     'FSVP Supplier' AS source
                 FROM 
-                    tbl_fsvp_suppliers
+                    tbl_fsvp_suppliers AS f
                 JOIN 
-                    tbl_supplier ON tbl_fsvp_suppliers.supplier_id = tbl_supplier.ID
+                    tbl_supplier ON f.supplier_id = tbl_supplier.ID
                 WHERE 
-                    tbl_fsvp_suppliers.user_id = ?
-                    AND tbl_fsvp_suppliers.deleted_at IS NULL
-
+                    f.user_id = ?
+                    AND f.deleted_at IS NULL
+            
                 UNION
-
+            
                 SELECT 
                     NULL,
-                    tbl_supplier.ID,
-                    tbl_supplier.name,
-                    tbl_supplier.address,
+                    s.user_id,
+                    s.ID,
+                    s.name,
+                    s.address,
                     NULL,
                     NULL,
                     'Foreign Supplier' AS source
                 FROM 
-                    tbl_supplier
+                    tbl_supplier AS s
                 WHERE 
-                    TRIM(SUBSTRING_INDEX(tbl_supplier.address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(tbl_supplier.address, '|', 1)) NOT LIKE 'US' 
-                    AND tbl_supplier.user_id = ?
-                    AND tbl_supplier.is_deleted = 0
-                    AND tbl_supplier.`status` = 1
-                    AND tbl_supplier.ID NOT IN (
+                    s.user_id = ?
+                    AND s.is_deleted = 0
+                    AND s.page = 1
+                    AND s.status = 1
+                    AND s.ID NOT IN (
                         SELECT supplier_id 
                         FROM tbl_fsvp_suppliers
-                        WHERE tbl_fsvp_suppliers.user_id = ?
-                        AND tbl_fsvp_suppliers.deleted_at IS NULL
-                    );
+                        WHERE user_id = ?
+                        AND deleted_at IS NULL
+                    )
+            ) r
+            
+            LEFT JOIN (
+                SELECT
+                businessname,
+                country,
+                users_entities
+                FROM tblEnterpiseDetails
+            ) AS e
+            ON e.users_entities = r.user_id
+            
+            LEFT JOIN (
+                SELECT
+                ID,
+                iso2
+                FROM countries
+            ) AS c
+            ON c.ID = e.country
+            
+            WHERE TRIM(SUBSTRING_INDEX(r.address, ',', 1)) NOT LIKE c.iso2 AND TRIM(SUBSTRING_INDEX(r.address, '|', 1)) NOT LIKE c.iso2 
         ";
 
         $list = $conn->execute($sql, $userId, $userId, $userId)->fetchAll();
@@ -298,6 +432,9 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
                 rec.reviewed_by,
                 rec.reviewed_by_sign,
                 rec.review_date,
+                rec.prepared_by,
+                rec.prepared_by_sign,
+                rec.prepare_date,
                 rec.comments,
                 supp.name AS supplier_name, 
                 supp.address AS supplier_address,
@@ -331,8 +468,8 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
     ($eval['import_alerts'] == 1) && ($evalFileCategoriesToFetch[] = 'import-alerts');
     ($eval['recalls'] == 1) && ($evalFileCategoriesToFetch[] = 'recalls');
     ($eval['warning_letters'] == 1) && ($evalFileCategoriesToFetch[] = 'warning-letters');
-    ($eval['other_significant_ca'] == 1) && ($evalFileCategoriesToFetch[] = 'other-significant-ca');
-    ($eval['suppliers_corrective_actions'] == 1) && ($evalFileCategoriesToFetch[] = 'suppliers-corrective-actions');
+    ($eval['other_significant_ca'] == 1) && ($evalFileCategoriesToFetch[] = 'other-sca');
+    ($eval['suppliers_corrective_actions'] == 1) && ($evalFileCategoriesToFetch[] = 'supplier-corrective-actions');
 
     if(count($evalFileCategoriesToFetch) > 0) {
         $eval['files'] = fetchEvaluationFiles($conn, $eval['record_id'], $evalFileCategoriesToFetch);
@@ -433,11 +570,12 @@ function getEmployeesInfo($conn, $employeeIds, $jdIds) {
     $userAvatars = [];
     $jds = [];
     $employeeIds = implode(',', $employeeIds);
-    $conn->execute("SELECT ui.avatar, ui.mobile, u.employee_id AS eid FROM tbl_user_info ui JOIN tbl_user u ON u.ID = ui.user_id WHERE u.employee_id IN ($employeeIds)")
+    $conn->execute("SELECT ui.avatar, ui.mobile, ui.mobile2, u.employee_id AS eid FROM tbl_user_info ui JOIN tbl_user u ON u.ID = ui.user_id WHERE u.employee_id IN ($employeeIds)")
         ->fetchAll(function($data) use(&$userAvatars) {
             $userAvatars[$data['eid']] = [
                 'avatar'=> 'uploads\\avatar\\' . $data['avatar'],
                 'mobile' => $data['mobile'],
+                'mobile2' => $data['mobile2'],
                 'eid' => $data['eid'],
             ];
             return $data;
@@ -503,7 +641,7 @@ function prepareFileInfo($data) {
         'note' => empty($data['note']) ? '': $data['note'],
         'document_date' => $data['document_date'],
         'expiration_date' => $data['expiration_date'],
-        'upload_date' => date('Y-m-d', strtotime($data['uploaded_at'])),
+        'upload_date' => date('Y-m-d', strtotime($data['uploaded_at']))
     ];
 }
 
@@ -561,8 +699,8 @@ function saveEvalFiles($postData, $conn, $id) {
         saveEvaluationFile($postData, 'import_alerts'),
         saveEvaluationFile($postData, 'recalls'),
         saveEvaluationFile($postData, 'warning_letters'),
-        saveEvaluationFile($postData, 'other_significant_ca'),
-        saveEvaluationFile($postData, 'suppliers_corrective_actions'),
+        saveEvaluationFile($postData, 'other_sca'),
+        saveEvaluationFile($postData, 'supplier_corrective_actions'),
     ], function($r) { return is_array($r); }));
 }
 
@@ -592,12 +730,15 @@ function saveNewEvaluationRecord($conn, $post, $evalId, $preRecordId = null) {
             'warning_letters'               => $post['warning_letters'] ?? NULL,
             'other_significant_ca'          => $post['other_sca'] ?? NULL,
             'suppliers_corrective_actions'  => $post['supplier_corrective_actions'] ?? NULL,
-            'approved_by'                   => emptyIsNull($_POST['approved_by']),
-            'approved_by_sign'              => emptyIsNull($_POST['approver_sign'] == 'null' ? null : $_POST['approver_sign']),
-            'approve_date'                  => emptyIsNull($_POST['approve_date']),
+            'prepared_by'                   => emptyIsNull($_POST['prepared_by']),
+            'prepared_by_sign'              => emptyIsNull($_POST['preparer_sign'] == 'null' ? null : $_POST['preparer_sign']),
+            'prepare_date'                  => emptyIsNull($_POST['prepare_date']),
             'reviewed_by'                   => emptyIsNull($_POST['reviewed_by']),
             'reviewed_by_sign'              => emptyIsNull($_POST['reviewer_sign'] == 'null' ? null : $_POST['reviewer_sign']),
             'review_date'                   => emptyIsNull($_POST['review_date']),
+            'approved_by'                   => emptyIsNull($_POST['approved_by']),
+            'approved_by_sign'              => emptyIsNull($_POST['approver_sign'] == 'null' ? null : $_POST['approver_sign']),
+            'approve_date'                  => emptyIsNull($_POST['approve_date']),
             'comments'                      => emptyIsNull($_POST['comments']),
         ];
 
@@ -636,6 +777,25 @@ function saveNewEvaluationRecord($conn, $post, $evalId, $preRecordId = null) {
 }
 
 function updateAWData($conn, $POST, $portal_user, $id, $importerId, $fsvpqiId, $supplierId) {
+    
+    $approved_by_sign = '';
+    $reviewed_by_sign = '';
+    $prepared_by_sign = '';
+    $sqlSelect = mysqli_query($conn,"SELECT approved_by_sign, reviewed_by_sign, prepared_by_sign FROM tbl_fsvp_activities_worksheets WHERE id = $id");
+    if ( mysqli_num_rows($sqlSelect) > 0 ) {
+        $rowSelect = mysqli_fetch_array($sqlSelect);
+        $approved_by_sign = $rowSelect["approved_by_sign"];
+        $reviewed_by_sign = $rowSelect["reviewed_by_sign"];
+        $prepared_by_sign = $rowSelect["prepared_by_sign"];
+        
+        // var_dump($rowSelect);
+        // return;
+    }
+    
+    // if ( $_POST['approver_sign'] === "null") {
+        
+    // }
+    
     $sql = "UPDATE tbl_fsvp_activities_worksheets SET
             portal_user = ?,
             importer_id = ?,
@@ -654,7 +814,16 @@ function updateAWData($conn, $POST, $portal_user, $id, $importerId, $fsvpqiId, $
             assessment_results = ?,
             corrective_actions = ?,
             reevaluation_date = ?,
-            comments = ?
+            comments = ?,
+            approved_by = ?,
+            approved_by_sign = ?,
+            approve_date = ?,
+            reviewed_by = ?,
+            reviewed_by_sign = ?,
+            review_date = ?,
+            prepared_by = ?,
+            prepared_by_sign = ?,
+            prepare_date = ?
         WHERE id = ?
     ";
     $values = [
@@ -676,6 +845,15 @@ function updateAWData($conn, $POST, $portal_user, $id, $importerId, $fsvpqiId, $
         emptyIsNull($POST['corrective_actions']),
         emptyIsNull($POST['reevaluation_date']),
         emptyIsNull($POST['comments']),
+        emptyIsNull($_POST['approved_by']),
+        $_POST['approver_sign'] == "null" ? $approved_by_sign:$_POST['approver_sign'],
+        emptyIsNull($_POST['approve_date']),
+        emptyIsNull($_POST['reviewed_by']),
+        $_POST['reviewer_sign'] == "null" ? $reviewed_by_sign:$_POST['reviewer_sign'],
+        emptyIsNull($_POST['review_date']),
+        emptyIsNull($_POST['prepared_by']),
+        $_POST['preparer_sign'] == "null" ? $prepared_by_sign:$_POST['preparer_sign'],
+        emptyIsNull($_POST['prepare_date']),
         $id
     ];
 

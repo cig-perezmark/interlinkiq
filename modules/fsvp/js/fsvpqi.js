@@ -16,7 +16,7 @@ jQuery(function() {
             },
             {
                 className: "text-center",
-                targets: [2,3,4,5,6]
+                targets: [2,3,4,5,6,7]
             },
             {
                 visible: false,
@@ -138,6 +138,7 @@ function renderDTRow(set, d, table) {
         fileCellHtml(d.certifications['haccp-training'], d.id),
         fileCellHtml(d.certifications['food-safety-training-certificate'], d.id),
         fileCellHtml(d.certifications['gfsi-certificate'], d.id),
+        fileCellHtml(d.certifications['fsvpqi-certificate'], d.id),
         // `
         //     <div class="d-flex center">
         //         <button type="button" class="btn-link">Open</button>

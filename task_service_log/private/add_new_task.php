@@ -4,6 +4,7 @@
     
     $user_id        = $_COOKIE['ID'];
     $description    = htmlspecialchars($_POST['description']);
+    $services         = $_POST['services'];
     $action         = $_POST['action'];
     $account        = $_POST['account'];
     $task_date      = $_POST['task_date'];
@@ -45,10 +46,10 @@
     $total_minute;
     $overall = $total_minute + $minute;
      
-     if($overall > 480){
-         $stmt_ot = $con->prepare("INSERT INTO tbl_service_logs(user_id, description, action, comment, account, task_date, minute, not_approved) 
-                VALUES (?,?,?,?,?,?,?,?)");
-        $stmt_ot->bind_param('isssssdi', $user_id, $description, $action, $comment, $account, $task_date, $minute,$not_approved);
+     if($overall > 510){
+         $stmt_ot = $con->prepare("INSERT INTO tbl_service_logs(user_id, description, services, action, comment, account, task_date, minute, not_approved) 
+                VALUES (?,?,?,?,?,?,?,?,?)");
+        $stmt_ot->bind_param('issssssdi', $user_id, $description, $services, $action, $comment, $account, $task_date, $minute,$not_approved);
         
         if($stmt_ot->execute()) {
             $task_ot = $con->query("SELECT * FROM tbl_service_logs WHERE task_id = {$con->insert_id}");
@@ -62,9 +63,9 @@
     //end filter overtime
     
     
-    $stmt = $con->prepare("INSERT INTO tbl_service_logs(user_id, description, action, comment, account, task_date, minute) 
-                    VALUES (?,?,?,?,?,?,?)");
-    $stmt->bind_param('isssssd', $user_id, $description, $action, $comment, $account, $task_date, $minute);
+    $stmt = $con->prepare("INSERT INTO tbl_service_logs(user_id, description, services, action, comment, account, task_date, minute) 
+                    VALUES (?,?,?,?,?,?,?,?)");
+    $stmt->bind_param('issssssd', $user_id, $description, $services, $action, $comment, $account, $task_date, $minute);
     
     if($stmt->execute()) {
         $task = $con->query("SELECT * FROM tbl_service_logs WHERE task_id = {$con->insert_id}");

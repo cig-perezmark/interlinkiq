@@ -10,7 +10,7 @@
       if (document.referrer == "") {
         window.history.back();
       } else {
-        window.location.href = "profile";
+        window.location.href = "customer";
       }
     </script>';
   }
@@ -289,8 +289,8 @@
 
               <!-- Register -->
               <form method="POST" class="form formSignUp" style="display: none;">
-                <img class="w-100" src="uploads/login/icon/marukan22.png" />
-                <h2 style="font-weight: 800;">Create Account</h2>
+                <h2 style="font-weight: 800;">MARUKAN SUPPLIER PORTAL</h2>
+                <h3 style="font-weight: 800;">Create Account</h3>
 
                 <div class="alert_msg text-white"></div>
                 <input class="form-control" type="hidden" name="ID" value="<?php echo !empty($invited_id) ? $invited_id : ''; ?>" />
@@ -361,6 +361,7 @@
         $(".form").validate();
 
         <?php if ( !empty( $_GET['i'] ) AND !empty( $_GET['r'] ) AND $_GET['r'] == 1 ) { ?> btnCreate(); <?php } ?>
+        <?php if ( !empty( $_GET['sc'] ) AND $_GET['sc'] == 1 ) { ?> btnCreate(); <?php } ?>
       });
 
       function btnCreate() {
@@ -403,7 +404,7 @@
 
               prev_link = document.referrer;
               if (prev_link.indexOf('forum/index.php') > -1) { window.location.href = prev_link; }
-              else { window.location.href = 'profile'; }
+              else { window.location.href = obj.page; }
             } else {
               var data = '<div class="alert alert-danger">';
               data += obj.message;
